@@ -49,4 +49,24 @@ export interface RegistryMetadata {
   migrationAliases: MigrationAlias[];
   securityPolicy: RegistrySecurityPolicy;
   defaultBudget: ResourceBudget;
+  formatsCount: number;
+  routesCount: number;
+}
+
+export interface BundledResourceReader {
+  getRawFileContent(path: string): Promise<Uint8Array>;
+}
+export interface FormatsDocument {
+  schemaVersion: number;
+  configVersion: string;
+  formats: RegistryFormat[];
+}
+export interface MatrixDocument {
+  schemaVersion: number;
+  configVersion: string;
+  routes: ConversionRouteDefinition[];
+}
+export interface RegistrySnapshot {
+  formats: RegistryFormat[];
+  routes: ConversionRouteDefinition[];
 }

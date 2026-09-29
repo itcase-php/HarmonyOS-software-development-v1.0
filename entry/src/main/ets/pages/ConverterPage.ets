@@ -1,6 +1,6 @@
 import { RegistryFormat, ConversionRouteDefinition } from '../models/RegistryTypes';
 import { FidelityTier, Intent, QualityMode } from '../models/NativeProtocol';
-import { ConverterNavigationParams, DemoTask, DemoSubmission, FidelitySelection, IntentChoice,
+import { ConverterNavigationParams, DemoTask, DemoSubmission, FidelitySelection, FidelitySettingsVM, IntentChoice,
   taskStatusLabel, taskStatusColor, isActiveTask } from '../models/InteractionModels';
 import { FormatRegistry } from '../services/FormatRegistry';
 import { ConversionPlanner } from '../viewmodel/ConversionPlanner';
@@ -13,6 +13,7 @@ import { StatusBadge } from '../components/StatusBadge';
 import { FidelitySettingsCard } from '../components/FidelitySettingsCard';
 import { FidelityText } from '../common/FidelityText';
 import { FidelityReportCard } from '../components/FidelityReportCard';
+import { RegistryUi } from '../common/RegistryUi';
 
 @Entry
 @Preview
@@ -26,29 +27,19 @@ struct ConverterPage {
   @State targetIndex: number = 0;
   @State routeIndex: number = 0;
   @State approved: boolean = false;
-  @State qualityMode: QualityMode = 'balanced';
-  @State selectedIntent: Intent = 'layout_preserved';
-  @State requestedTier: FidelityTier = 'standard';
-  @State intentIndex: number = 0;
-  @State tierIndex: number = 1;
-  @State routeDescription: string = '';
-  @State routeNotice: string = '';
-  @State qualitySummary: string = '';
-  @State intentText: string = '';
-  @State requestedTierText: string = '';
-  @State selectionSummary: string = '';
+  @State fidelityVM: FidelitySettingsVM = new FidelitySettingsVM();
   @State sourceChoices: SelectOption[] = [];
   @State targetChoices: SelectOption[] = [];
   @State routeChoices: SelectOption[] = [];
-  @State intentChoices: SelectOption[] = [];
-  @State tierChoices: SelectOption[] = [];
   @State errorText: string = '';
   @State taskId: string = '';
   @State visibleTasks: DemoTask[] = [];
   @State working: boolean = false;
   @State confirming: boolean = false;
   @State inlineConfirmationText: string = '';
-  private formats: RegistryFormat[] = FormatRegistry.listFormats();
+  @State registryReady: boolean = false;
+  @State registryLoading: boolean = false;
+  private formats: RegistryFormat[] = [];
   private targetFormats: RegistryFormat[] = [];
   private activeRoutes: ConversionRouteDefinition[] = [];
   private supportedIntents: IntentChoice[] = [];
@@ -59,11 +50,30 @@ struct ConverterPage {
 
   aboutToAppear(): void {
     this.observeTasks();
+    this.loadFormats();
+  }
+
+  private async loadFormats(): Promise<void> {
+    if (this.registryLoading) { return; }
+    this.registryLoading = true;
+    try {
+      await RegistryUi.ensure(this.getUIContext());
+      this.formats = FormatRegistry.listFormats(); this.registryReady = true;
+      this.errorText = ''; this.syncInteractivity();
+      this.initializeSelections();
+    } catch (_) {
+      this.registryReady = false;
+      this.errorText = FidelityText.read(this.getUIContext(), $r('app.string.registry_error'));
+      this.syncInteractivity();
+    } finally { this.registryLoading = false; }
+  }
+
+  private initializeSelections(): void {
     if (this.sourceId.length !== 0) { return; }
     this.sourceChoices = this.formats.map((format: RegistryFormat): SelectOption => ({
       value: `${format.displayName} (${format.id})`
     }));
-    this.tierChoices = this.tiers.map((tier: FidelityTier): SelectOption => ({ value: FidelityText.tier(this.getUIContext(), tier) }));
+    this.fidelityVM.tierChoices = this.tiers.map((tier: FidelityTier): SelectOption => ({ value: FidelityText.tier(this.getUIContext(), tier) }));
     let source = this.formats.findIndex((format: RegistryFormat) => ConversionPlanner.targets(format.id).length > 0);
     try {
       const params = this.getUIContext().getRouter().getParams() as ConverterNavigationParams;
@@ -72,7 +82,7 @@ struct ConverterPage {
         if (index >= 0) { source = index; }
       }
       if (params && params.qualityMode && FidelityPolicy.isQualityMode(params.qualityMode)) {
-        this.qualityMode = params.qualityMode;
+        this.fidelityVM.qualityMode = params.qualityMode;
       }
     } catch (_) { /* Standalone preview has no navigation parameters. */ }
     this.selectSource(Math.max(0, source));
@@ -90,12 +100,19 @@ struct ConverterPage {
     this.visibleTasks = tasks.filter((task: DemoTask) => task.id === this.taskId);
     const task = this.visibleTasks[0];
     this.working = task !== undefined && isActiveTask(task.status);
+    this.syncInteractivity();
   }
   private observeTasks(): void {
     this.receiveTasks(this.store.snapshot());
     if (this.token === -1) {
       this.token = this.store.subscribe((tasks: DemoTask[]) => { this.receiveTasks(tasks); });
     }
+  }
+
+  private syncInteractivity(): void {
+    const vm = this.fidelityVM.clone();
+    vm.interactive = this.registryReady && !this.working && !this.confirming;
+    this.fidelityVM = vm;
   }
 
   private selectSource(index: number): void {
@@ -114,8 +131,8 @@ struct ConverterPage {
     this.targetIndex = index; this.targetId = target ? target.id : '';
     const first = ConversionPlanner.routes(this.sourceId, this.targetId)[0];
     if (first) {
-      this.selectedIntent = first.intent;
-      this.requestedTier = first.fidelityTier;
+      this.fidelityVM.requestedIntent = first.intent;
+      this.fidelityVM.requestedTier = first.fidelityTier;
     }
     this.refreshRoutes();
   }
@@ -130,17 +147,17 @@ struct ConverterPage {
       }
     }
     this.supportedIntents = intents;
-    this.intentChoices = intents.map((choice: IntentChoice): SelectOption => ({ value: choice.label }));
-    this.intentIndex = Math.max(0, intents.findIndex((choice: IntentChoice) => choice.value === this.selectedIntent));
-    this.tierIndex = Math.max(0, this.tiers.findIndex((tier: FidelityTier) => tier === this.requestedTier));
-    this.intentText = FidelityText.intent(this.getUIContext(), this.selectedIntent);
-    this.requestedTierText = FidelityText.tier(this.getUIContext(), this.requestedTier);
-    this.qualitySummary = FidelityText.read(this.getUIContext(), $r('app.string.quality_duration'),
-      [FidelityText.quality(this.getUIContext(), this.qualityMode), (FidelityPolicy.durationMs(this.qualityMode) / 1000).toString()]);
-    this.selectionSummary = FidelityText.read(this.getUIContext(), $r('app.string.fidelity_selection_summary'),
-      [this.qualitySummary, this.requestedTierText]);
-    this.activeRoutes = ConversionPlanner.routes(this.sourceId, this.targetId, this.qualityMode,
-      this.selectedIntent, this.requestedTier);
+    this.fidelityVM.intentChoices = intents.map((choice: IntentChoice): SelectOption => ({ value: choice.label }));
+    this.fidelityVM.intentIndex = Math.max(0, intents.findIndex((choice: IntentChoice) => choice.value === this.fidelityVM.requestedIntent));
+    this.fidelityVM.tierIndex = Math.max(0, this.tiers.findIndex((tier: FidelityTier) => tier === this.fidelityVM.requestedTier));
+    this.fidelityVM.intentText = FidelityText.intent(this.getUIContext(), this.fidelityVM.requestedIntent);
+    this.fidelityVM.tierText = FidelityText.tier(this.getUIContext(), this.fidelityVM.requestedTier);
+    this.fidelityVM.qualitySummary = FidelityText.read(this.getUIContext(), $r('app.string.quality_duration'),
+      [FidelityText.quality(this.getUIContext(), this.fidelityVM.qualityMode), (FidelityPolicy.durationMs(this.fidelityVM.qualityMode) / 1000).toString()]);
+    this.fidelityVM.selectionSummary = FidelityText.read(this.getUIContext(), $r('app.string.fidelity_selection_summary'),
+      [this.fidelityVM.qualitySummary, this.fidelityVM.tierText]);
+    this.activeRoutes = ConversionPlanner.routes(this.sourceId, this.targetId, this.fidelityVM.qualityMode,
+      this.fidelityVM.requestedIntent, this.fidelityVM.requestedTier);
     this.routeChoices = this.activeRoutes.map((route: ConversionRouteDefinition): SelectOption => ({
       value: FidelityText.read(this.getUIContext(), $r('app.string.route_choice'), [
         FidelityText.read(this.getUIContext(), route.pathMode === 'direct' ? $r('app.string.path_direct') : $r('app.string.path_relay')),
@@ -149,35 +166,38 @@ struct ConverterPage {
     const preferred = this.activeRoutes.findIndex((route: ConversionRouteDefinition) => route.id === preferredId);
     this.selectRoute(preferred >= 0 ? preferred : 0);
     this.errorText = '';
+    this.fidelityVM = this.fidelityVM.clone();
   }
   private selectRoute(index: number): void {
     const route = this.activeRoutes[index];
     this.routeIndex = index; this.routeId = route ? route.id : '';
     this.approved = false;
     if (route) {
-      this.selectedIntent = route.intent;
-      this.routeDescription = FidelityText.read(this.getUIContext(), $r('app.string.route_description'), [
+      this.fidelityVM.requestedIntent = route.intent;
+      this.fidelityVM.routeDescription = FidelityText.read(this.getUIContext(), $r('app.string.route_description'), [
         FidelityText.tier(this.getUIContext(), route.fidelityTier),
         FidelityText.read(this.getUIContext(), route.pathMode === 'direct' ? $r('app.string.path_direct') : $r('app.string.path_relay')),
         FidelityText.intent(this.getUIContext(), route.intent)]);
-      this.routeNotice = FidelityText.read(this.getUIContext(), route.requiresUserApproval ?
+      this.fidelityVM.routeNotice = FidelityText.read(this.getUIContext(), route.requiresUserApproval ?
         $r('app.string.route_approval_notice') : $r('app.string.route_limit_notice'));
     } else {
-      this.routeDescription = FidelityText.read(this.getUIContext(), $r('app.string.route_missing'));
-      this.routeNotice = FidelityText.read(this.getUIContext(), $r('app.string.route_missing_notice'));
+      this.fidelityVM.routeDescription = FidelityText.read(this.getUIContext(), $r('app.string.route_missing'));
+      this.fidelityVM.routeNotice = FidelityText.read(this.getUIContext(), $r('app.string.route_missing_notice'));
     }
+    this.fidelityVM.routeAvailable = route !== undefined;
+    this.fidelityVM = this.fidelityVM.clone();
   }
   private selectIntent(index: number): void {
     const intent = this.supportedIntents[index];
-    if (intent) { this.selectedIntent = intent.value; this.refreshRoutes(); }
+    if (intent) { this.fidelityVM.requestedIntent = intent.value; this.refreshRoutes(); }
   }
   private selectTier(index: number): void {
     const tier = this.tiers[index];
-    if (tier) { this.requestedTier = tier; this.refreshRoutes(); }
+    if (tier) { this.fidelityVM.requestedTier = tier; this.refreshRoutes(); }
   }
   private selectQuality(mode: QualityMode): void {
-    if (this.working || this.confirming) { return; }
-    this.qualityMode = mode; this.refreshRoutes(this.routeId);
+    if (!this.registryReady || this.working || this.confirming) { return; }
+    this.fidelityVM.qualityMode = mode; this.refreshRoutes(this.routeId);
   }
 
   private useExample(): void {
@@ -189,7 +209,7 @@ struct ConverterPage {
   }
 
   private selection(): FidelitySelection {
-    return { qualityMode: this.qualityMode, requestedIntent: this.selectedIntent, requestedTier: this.requestedTier };
+    return { qualityMode: this.fidelityVM.qualityMode, requestedIntent: this.fidelityVM.requestedIntent, requestedTier: this.fidelityVM.requestedTier };
   }
   private showError(error: Error): void {
     const failure = error as BridgeError;
@@ -206,7 +226,7 @@ struct ConverterPage {
     UiFeedback.toast(this.getUIContext(), this.errorText);
   }
   private start(): void {
-    if (this.working || this.confirming) { return; }
+    if (!this.registryReady || this.working || this.confirming) { return; }
     try {
       const route = this.activeRoutes.find((item: ConversionRouteDefinition) => item.id === this.routeId);
       if (!route) { throw new BridgeError('UNSUPPORTED_FORMAT', 'DEMO_ROUTE_NOT_FOUND'); }
@@ -219,8 +239,8 @@ struct ConverterPage {
       this.pendingSubmission = { fileName: name, sourceId: this.sourceId, targetId: this.targetId,
         routeId: route.id, approved: this.approved, fidelity: fidelity };
       this.errorText = '';
-      this.confirming = true;
-      const message = `文件：${name}\n格式：${this.sourceId} → ${this.targetId}\n质量：${this.qualitySummary}\n意图：${this.intentText}\n最低期望：${this.requestedTierText}\n${this.routeDescription}\n路线：${route.id}\n降级配置：${route.allowedDegradations.join('、') || '无'}\n\n演示不会读取文件或产生真实保真结果。`;
+      this.confirming = true; this.syncInteractivity();
+      const message = `文件：${name}\n格式：${this.sourceId} → ${this.targetId}\n质量：${this.fidelityVM.qualitySummary}\n意图：${this.fidelityVM.intentText}\n最低期望：${this.fidelityVM.tierText}\n${this.fidelityVM.routeDescription}\n路线：${route.id}\n降级配置：${route.allowedDegradations.join('、') || '无'}\n\n演示不会读取文件或产生真实保真结果。`;
       try {
         this.getUIContext().showAlertDialog({
           title: '确认保真度配置（演示）', message: message, autoCancel: true,
@@ -235,7 +255,7 @@ struct ConverterPage {
     } catch (error) { this.showError(error as Error); }
   }
   private cancelConfirmation(): void {
-    this.confirming = false; this.inlineConfirmationText = ''; this.pendingSubmission = undefined;
+    this.confirming = false; this.inlineConfirmationText = ''; this.pendingSubmission = undefined; this.syncInteractivity();
   }
   private beginConfirmed(): void {
     const submission = this.pendingSubmission;
@@ -282,6 +302,10 @@ struct ConverterPage {
       Column({ space: 12 }) {
         PageHeader({ title: '转换执行器', subtitle: '选择格式、设置保真策略、确认后体验任务流程' })
         StatusBadge({ text: '演示模式 · 不生成文件', color: '#A65C00' })
+        if (!this.registryReady) {
+          Text(this.registryLoading ? $r('app.string.registry_loading') : $r('app.string.registry_error'))
+          Button($r('app.string.registry_retry')).enabled(!this.registryLoading).onClick(() => { this.loadFormats(); })
+        }
         Text('真实转换引擎尚未接入。保真设置与报告均用于交互演示，不是文件质量的测量结果。')
           .fontSize(14).fontColor('#526077')
         Column({ space: 12 }) {
@@ -297,22 +321,18 @@ struct ConverterPage {
           } else {
             Text('此源格式暂无单文件规划路线，请切换源格式。').fontSize(14).fontColor('#C53030')
           }
-          FidelitySettingsCard({ qualityMode: this.qualityMode, interactive: !this.working && !this.confirming,
-            intentChoices: this.intentChoices, tierChoices: this.tierChoices, intentIndex: this.intentIndex,
-            tierIndex: this.tierIndex, intentText: this.intentText, tierText: this.requestedTierText,
-            routeDescription: this.routeDescription, routeNotice: this.routeNotice,
-            selectionSummary: this.selectionSummary, routeAvailable: this.routeId.length > 0,
+          FidelitySettingsCard({ vm: this.fidelityVM,
             onSelectQuality: (mode: QualityMode) => { this.selectQuality(mode); },
             onSelectIntent: (index: number) => { this.selectIntent(index); },
             onSelectTier: (index: number) => { this.selectTier(index); } })
           if (this.routeChoices.length > 0) {
             Select(this.routeChoices).selected(this.routeIndex).value(this.routeId).width('100%')
-              .accessibilityText($r('app.string.a11y_route')).accessibilityDescription(this.routeDescription)
+              .accessibilityText($r('app.string.a11y_route')).accessibilityDescription(this.fidelityVM.routeDescription)
               .enabled(!this.working && !this.confirming).onSelect((index: number) => { this.selectRoute(index); })
           }
           Row({ space: 8 }) {
             Checkbox({ name: 'approve-demo' }).select(this.approved).enabled(!this.working && !this.confirming)
-              .accessibilityText($r('app.string.a11y_approval')).accessibilityDescription(this.routeNotice)
+              .accessibilityText($r('app.string.a11y_approval')).accessibilityDescription(this.fidelityVM.routeNotice)
               .onChange((value: boolean) => { this.approved = value; })
             Text('同意演示所选路线配置的兼容降级').fontSize(13).fontColor('#526077').layoutWeight(1)
           }
@@ -326,7 +346,7 @@ struct ConverterPage {
           Text('只填写演示名称，不读取或上传设备文件。').fontSize(12).fontColor('#526077')
           if (this.errorText.length > 0) { Text(this.errorText).fontSize(14).fontColor('#C53030') }
           Button(this.working ? '演示任务进行中' : this.confirming ? '等待配置确认' : '④ 确认配置并开始演示')
-            .accessibilityText($r('app.string.a11y_start')).accessibilityDescription(this.selectionSummary)
+            .accessibilityText($r('app.string.a11y_start')).accessibilityDescription(this.fidelityVM.selectionSummary)
             .enabled(!this.working && !this.confirming && this.routeId.length > 0).width('100%').backgroundColor('#007AFF')
             .onClick(() => { this.start(); })
           if (this.inlineConfirmationText.length > 0) {

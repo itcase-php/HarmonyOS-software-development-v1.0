@@ -4,6 +4,7 @@ import { CapabilityMatrix, CapabilityRequest } from '../models/NativeProtocol';
 import { FormatRegistry } from '../services/FormatRegistry';
 import { NativeBridge } from '../services/NativeBridge';
 import { BridgeError } from '../common/BridgeError';
+import { RawfileResources } from '../services/RawfileResources';
 
 export class FoundationViewModel {
   async inspect(resources?: resourceManager.ResourceManager): Promise<CapabilityMatrix> {
@@ -22,7 +23,7 @@ export class FoundationViewModel {
   }
 
   private async inspectNative(resources?: resourceManager.ResourceManager): Promise<CapabilityMatrix> {
-    if (resources) { await FormatRegistry.verifyBundledResources(resources); }
+    if (resources) { await FormatRegistry.initialize(new RawfileResources(resources)); }
     const request: CapabilityRequest = {
       schemaVersion: registryMetadata.schemaVersion,
       sessionId: 'capability-only-bootstrap',

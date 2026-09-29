@@ -11,6 +11,45 @@ export interface FidelitySelection {
   requestedTier: FidelityTier;
 }
 
+export interface TaskRuntime {
+  now(): number;
+  setTimeout(callback: () => void, delayMs: number): number;
+  clearTimeout(id: number): void;
+}
+
+// Page-owned selection and presentation state. Components receive one complete snapshot.
+export class FidelitySettingsVM {
+  qualityMode: QualityMode = 'balanced';
+  requestedIntent: Intent = 'layout_preserved';
+  requestedTier: FidelityTier = 'standard';
+  intentChoices: SelectOption[] = [];
+  tierChoices: SelectOption[] = [];
+  intentIndex: number = 0;
+  tierIndex: number = 1;
+  intentText: string = '';
+  tierText: string = '';
+  qualitySummary: string = '';
+  routeDescription: string = '';
+  routeNotice: string = '';
+  selectionSummary: string = '';
+  routeAvailable: boolean = false;
+  interactive: boolean = true;
+
+  clone(): FidelitySettingsVM {
+    const copy = new FidelitySettingsVM();
+    copy.qualityMode = this.qualityMode; copy.requestedIntent = this.requestedIntent;
+    copy.requestedTier = this.requestedTier;
+    copy.intentChoices = this.intentChoices.map((item: SelectOption): SelectOption => ({ value: item.value, icon: item.icon }));
+    copy.tierChoices = this.tierChoices.map((item: SelectOption): SelectOption => ({ value: item.value, icon: item.icon }));
+    copy.intentIndex = this.intentIndex; copy.tierIndex = this.tierIndex;
+    copy.intentText = this.intentText; copy.tierText = this.tierText; copy.qualitySummary = this.qualitySummary;
+    copy.routeDescription = this.routeDescription; copy.routeNotice = this.routeNotice;
+    copy.selectionSummary = this.selectionSummary; copy.routeAvailable = this.routeAvailable;
+    copy.interactive = this.interactive;
+    return copy;
+  }
+}
+
 export interface DemoSubmission {
   fileName: string;
   sourceId: string;
@@ -78,7 +117,7 @@ export interface ConverterNavigationParams {
   qualityMode?: QualityMode;
 }
 
-export interface CategoryChoice { id: string; label: string; }
+export interface CategoryChoice { id: string; label: Resource; }
 
 export function taskStatusLabel(status: DemoTaskStatus, mode: ExecutionMode = 'demo'): string {
   switch (status) {

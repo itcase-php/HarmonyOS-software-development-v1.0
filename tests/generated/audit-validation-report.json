@@ -1,0 +1,73 @@
+{
+  "scope": "audit_implementation_validation_not_device_or_real_conversion",
+  "date": "2026-09-29",
+  "baseCommit": "48f2bd9",
+  "result": "passed",
+  "mainEtsFiles": 35,
+  "coreHypiumSuites": 8,
+  "totalHostChecks": 107,
+  "hostChecks": {
+    "interactionLogicTests": {
+      "passed": 15,
+      "report": "tests/generated/interaction-check-report.json"
+    },
+    "fidelityLogicTests": {
+      "passed": 13,
+      "report": "tests/generated/fidelity-check-report.json"
+    },
+    "refactorLogicTests": {
+      "passed": 12,
+      "report": "tests/generated/refactor-check-report.json"
+    },
+    "hypiumSourceHostTests": {
+      "passed": 55,
+      "report": "tests/generated/hypium-host-check-report.json"
+    },
+    "auditRegressionTests": {
+      "passed": 12,
+      "report": "tests/generated/audit-check-report.json"
+    }
+  },
+  "applicationBuild": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "elapsed": "12 s 523 ms \u001b[39m",
+    "tasks": {
+      "total": 33,
+      "executed": 19,
+      "upToDate": 14
+    },
+    "artifact": "entry/build/default/outputs/default/entry-default-unsigned.hap",
+    "sha256": "aac1a2b3a74a4a9eab7f157dd9d7476c32ea1865c4b614f031ec167c519fe2b9",
+    "log": "tests/generated/audit-build.log"
+  },
+  "testBuild": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "elapsed": "12 s 859 ms \u001b[39m",
+    "tasks": {
+      "total": 35,
+      "executed": 20,
+      "upToDate": 15
+    },
+    "artifact": "entry/build/default/outputs/ohosTest/entry-ohosTest-unsigned.hap",
+    "sha256": "844e65641e7ca5bb4a5762d7b6964c06c143cd7c9298df037e9477680e9129d8",
+    "log": "tests/generated/audit-test-build.log"
+  },
+  "packageReport": "tests/generated/hap-package-report.json",
+  "metadataLines": 74,
+  "formats": 18,
+  "plannedRoutes": 43,
+  "availableRoutes": 0,
+  "generatorIdempotence": "passed",
+  "readmeCopiesIdentical": "passed",
+  "warnings": [
+    "SDK crypto createMd/update/digest device capability warnings; canIUse guard and failure handling present",
+    "ohosTest template start_window_background resource conflict",
+    "No signingConfig found for product default; unsigned HAPs"
+  ],
+  "deviceTargets": "empty",
+  "deviceExecution": "not_executed",
+  "previewerExecution": "not_executed",
+  "realConversion": "not_executed"
+}

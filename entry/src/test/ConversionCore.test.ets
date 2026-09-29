@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach } from '@ohos/hypium';
+import { describe, it, expect, beforeAll, beforeEach, afterEach } from '@ohos/hypium';
+import { initializeRegistry, ManualTaskRuntime } from '../ohosTest/ets/test/CoreFixtures';
 import { FidelityPolicy } from '../main/ets/viewmodel/FidelityPolicy';
 import { ConversionPlanner } from '../main/ets/viewmodel/ConversionPlanner';
 import { TaskStore } from '../main/ets/viewmodel/TaskStore';
@@ -16,8 +17,10 @@ function route(id: string): ConversionRouteDefinition {
 // Hypium uses describe()/it(), rather than decorator syntax.
 export default function conversionCoreTest() {
   describe('ConversionCore', () => {
-    let store: TaskStore = new TaskStore();
-    beforeEach(() => { store = new TaskStore(); });
+    let runtime: ManualTaskRuntime = new ManualTaskRuntime();
+    let store: TaskStore = new TaskStore(runtime);
+    beforeAll(initializeRegistry);
+    beforeEach(() => { runtime = new ManualTaskRuntime(); store = new TaskStore(runtime); });
     afterEach(() => { store.shutdown(); });
 
     it('qualityDurations', 0, () => {
@@ -68,6 +71,7 @@ export default function conversionCoreTest() {
     });
     it('advanceReportsAtCommitAndCompletes', 0, () => {
       const task = store.enqueue('sample.pdf', 'pdf', 'png', 'pdf-png');
+      store.advance(runtime.now());
       store.advance(task.createdAtMs + 2974);
       expect(store.snapshot()[0].fidelityReport).assertUndefined();
       store.advance(task.createdAtMs + 2975);
@@ -79,6 +83,7 @@ export default function conversionCoreTest() {
     });
     it('advancePromotesOnlyNextFifoTask', 0, () => {
       const first = store.enqueue('first.pdf', 'pdf', 'png', 'pdf-png');
+      store.advance(runtime.now());
       const second = store.enqueue('second.pdf', 'pdf', 'png', 'pdf-png');
       expect(second.status).assertEqual('queued');
       store.advance(first.createdAtMs + 3500);
@@ -88,6 +93,7 @@ export default function conversionCoreTest() {
     });
     it('cancelCannotBecomeCompleted', 0, () => {
       const task = store.enqueue('cancel.pdf', 'pdf', 'png', 'pdf-png');
+      store.advance(runtime.now());
       expect(store.cancel(task.id)).assertTrue();
       store.advance(task.createdAtMs + 10000);
       expect(store.snapshot()[0].status).assertEqual('cancelled');
@@ -95,6 +101,7 @@ export default function conversionCoreTest() {
     });
     it('pauseFreezesAdvanceAndResumeCompletes', 0, () => {
       const task = store.enqueue('pause.pdf', 'pdf', 'png', 'pdf-png');
+      store.advance(runtime.now());
       store.advance(task.createdAtMs + 500);
       expect(store.pause(task.id)).assertTrue();
       const paused = store.snapshot()[0];
@@ -102,11 +109,12 @@ export default function conversionCoreTest() {
       expect(store.snapshot()[0].status).assertEqual('paused');
       expect(store.snapshot()[0].elapsedMs).assertEqual(paused.elapsedMs);
       expect(store.resume(task.id)).assertTrue();
-      store.advance(Date.now() + 3000);
+      store.advance(runtime.now() + 3000);
       expect(store.snapshot()[0].status).assertEqual('completed');
     });
     it('cloneIsolatesNestedReport', 0, () => {
       const task = store.enqueue('copy.pdf', 'pdf', 'png', 'pdf-png');
+      store.advance(runtime.now());
       store.advance(task.createdAtMs + 3500);
       const first = store.snapshot()[0];
       const copy = first.clone();

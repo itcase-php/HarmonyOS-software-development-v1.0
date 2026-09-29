@@ -1,4 +1,4 @@
-import { DemoTask, DemoTaskTiming, TaskListener, isActiveTask, FidelitySelection } from '../models/InteractionModels';
+import { DemoTask, DemoTaskTiming, TaskListener, isActiveTask, FidelitySelection, TaskRuntime } from '../models/InteractionModels';
 import { ConversionPlanner } from './ConversionPlanner';
 import { BridgeError } from '../common/BridgeError';
 import { FormatRegistry } from '../services/FormatRegistry';
@@ -7,6 +7,12 @@ import { DemoFidelityReport } from './DemoFidelityReport';
 import { NativeFidelityReport } from './NativeFidelityReport';
 import { NativeTaskRunner } from '../services/NativeTaskRunner';
 import { ConvertRequest, ConvertResult, ProgressEvent } from '../models/NativeProtocol';
+
+class SystemTaskRuntime implements TaskRuntime {
+  now(): number { return Date.now(); }
+  setTimeout(callback: () => void, delayMs: number): number { return setTimeout(callback, delayMs); }
+  clearTimeout(id: number): void { clearTimeout(id); }
+}
 
 // Session UI records; production ConversionTask/ConvertResult protocol stays unchanged.
 // Native dispatch is reserved for authorized prepared requests, never selected by the demo UI.
@@ -23,6 +29,10 @@ export class TaskStore {
   private nativeRunningId: string = '';
   private nativeSequences: Map<string, number> = new Map<string, number>();
   private closing: boolean = false;
+  private advancing: boolean = false;
+  private runtime: TaskRuntime;
+
+  constructor(runtime: TaskRuntime = new SystemTaskRuntime()) { this.runtime = runtime; }
 
   static shared(): TaskStore {
     // A recreated UIAbility may reuse the same JS process after onDestroy().
@@ -60,7 +70,7 @@ export class TaskStore {
       throw new BridgeError('INVALID_REQUEST', 'DEMO_APPROVAL_REQUIRED');
     }
     this.ensureCapacity();
-    const now = Date.now();
+    const now = this.runtime.now();
     const task = new DemoTask();
     task.id = `demo-${now}-${++this.sequence}`; task.fileName = source;
     task.sourceFormat = FormatRegistry.normalizeFormat(sourceId); task.targetFormat = route.to; task.routeId = routeId;
@@ -70,8 +80,8 @@ export class TaskStore {
     this.tasks.unshift(task);
     this.timings.set(task.id, { lastTickMs: now, activeMs: 0,
       plannedTier: route.fidelityTier, allowedDegradations: route.allowedDegradations.slice() });
-    this.advance(now);
     this.startTimer();
+    this.notify();
     return task.clone();
   }
 
@@ -86,9 +96,9 @@ export class TaskStore {
     task.sourceFormat = prepared.inputs[0].sourceFormatId; task.targetFormat = prepared.targetFormatId;
     task.routeId = prepared.plan.routeId; task.qualityMode = prepared.qualityMode;
     task.intent = prepared.intent; task.requestedIntent = prepared.intent; task.requestedTier = prepared.plan.minimumTier;
-    task.createdAtMs = Date.now(); task.stage = '等待 Native 能力校验';
+    task.createdAtMs = this.runtime.now(); task.stage = '等待 Native 能力校验';
     this.tasks.unshift(task); this.nativeRequests.set(task.id, prepared);
-    this.advance(Date.now()); this.startTimer();
+    this.startTimer(); this.notify();
     return task.clone();
   }
 
@@ -105,13 +115,23 @@ export class TaskStore {
 
   // Explicit clock step makes queue/control behaviour testable without waiting for UI timers.
   advance(now: number): void {
+    if (this.advancing || this.closing || !Number.isFinite(now)) { return; }
+    this.advancing = true;
+    try { this.advanceOnce(now); }
+    finally {
+      this.advancing = false;
+      if (this.hasRunnableWork()) { this.startTimer(200); } else { this.stopTimer(); }
+    }
+  }
+
+  private advanceOnce(now: number): void {
     for (const task of this.tasks) {
       if (task.status !== 'running') { continue; }
       if (task.mode === 'native') { this.dispatchNative(task); continue; }
       const timing = this.timings.get(task.id);
       if (!timing) { continue; }
       timing.activeMs += Math.max(0, now - timing.lastTickMs);
-      timing.lastTickMs = now;
+      timing.lastTickMs = Math.max(timing.lastTickMs, now);
       task.elapsedMs = timing.activeMs;
       task.progress = Math.min(100, Math.floor(timing.activeMs / FidelityPolicy.durationMs(task.qualityMode) * 100));
       if (task.progress < 15) { task.stage = '① 模拟准备'; }
@@ -163,7 +183,7 @@ export class TaskStore {
       task.progress = Math.max(task.progress, Math.min(99, Math.max(0, Math.floor(event.fraction * 100))));
     }
     task.stage = `Native · ${event.stage}`;
-    // advance() publishes at the same 120 ms cadence as the demo lane.
+    // advance() publishes at the same 200 ms cadence as the demo lane.
   }
 
   private async executeNative(task: DemoTask, request: ConvertRequest): Promise<void> {
@@ -200,7 +220,7 @@ export class TaskStore {
       if (result && !retained) { await NativeTaskRunner.releaseOutputs(result); }
       this.nativeRequests.delete(task.id); this.nativeSequences.delete(task.id);
       this.nativeRunningId = '';
-      this.advance(Date.now());
+      this.advance(this.runtime.now());
     }
   }
 
@@ -212,10 +232,10 @@ export class TaskStore {
   pause(id: string): boolean {
     const task = this.tasks.find((item: DemoTask) => item.id === id);
     if (!task || task.mode === 'native' || task.status !== 'running') { return false; }
-    this.advance(Date.now());
+    this.advance(this.runtime.now());
     if (task.status !== 'running') { return false; }
     task.status = 'paused'; task.stage = '演示已暂停';
-    this.advance(Date.now());
+    this.advance(this.runtime.now());
     return true;
   }
 
@@ -223,7 +243,7 @@ export class TaskStore {
     const task = this.tasks.find((item: DemoTask) => item.id === id);
     if (!task || task.mode === 'native' || task.status !== 'paused') { return false; }
     task.status = 'queued'; task.stage = '等待继续演示';
-    this.advance(Date.now()); this.startTimer();
+    this.advance(this.runtime.now()); this.startTimer();
     return true;
   }
 
@@ -242,7 +262,7 @@ export class TaskStore {
     }
     task.fidelityReport = undefined; task.achievedTier = undefined;
     this.timings.delete(task.id);
-    this.advance(Date.now());
+    this.advance(this.runtime.now());
     return true;
   }
 
@@ -254,14 +274,20 @@ export class TaskStore {
     return before - this.tasks.length;
   }
 
-  private startTimer(): void {
-    if (this.timer === -1 && this.tasks.some((task: DemoTask) => task.status === 'running' || task.status === 'queued')) {
-      this.timer = setInterval(() => { this.advance(Date.now()); }, 120);
-    }
+  private hasRunnableWork(): boolean {
+    return !this.closing && this.tasks.some((task: DemoTask) => task.status === 'running' || task.status === 'queued');
+  }
+
+  private startTimer(delayMs: number = 50): void {
+    if (this.timer !== -1 || !this.hasRunnableWork()) { return; }
+    this.timer = this.runtime.setTimeout(() => {
+      this.timer = -1;
+      this.advance(this.runtime.now());
+    }, delayMs);
   }
 
   private stopTimer(): void {
-    if (this.timer !== -1) { clearInterval(this.timer); this.timer = -1; }
+    if (this.timer !== -1) { this.runtime.clearTimeout(this.timer); this.timer = -1; }
   }
 
   shutdown(): void {

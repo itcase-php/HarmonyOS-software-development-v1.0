@@ -5,6 +5,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
+const {TextDecoder} = require('node:util');
 const root = path.resolve(__dirname,'..');
 const sourceRoot = path.join(root,'entry/src/main/ets');
 const tsPath = process.env.HDM_TYPESCRIPT_PATH ||
@@ -19,16 +21,26 @@ function host(options = {}) {
   let nativeExports;
   let nativeLoads = 0;
   const timers = new Map();
-  const timeouts = new Map();
+  const timeouts = timers;
   const cache = new Map();
   class ClockDate extends Date { static now() { return clock; } }
-  const context = vm.createContext({Date:ClockDate,Map,Math,Number,Array,Error,Object,Promise,String,console,
+  const context = vm.createContext({Date:ClockDate,Map,Math,Number,Array,Error,Object,Promise,String,Uint8Array,console,
+    canIUse:()=>options.cryptoAvailable!==false,
     setInterval(callback) { timers.set(++intervalId,callback); return intervalId; },
     clearInterval(id) { timers.delete(id); },
     setTimeout(callback) { timeouts.set(++intervalId,callback); return intervalId; },
     clearTimeout(id) { timeouts.delete(id); }});
   function load(relative, from=sourceRoot) {
     if (relative === '@ohos/hypium' && options.hypium) return options.hypium;
+    if (relative === '@kit.ArkTS') return {util:{TextDecoder:{create:(encoding,settings)=>{
+      const decoder=new TextDecoder(encoding,settings);return {decodeToString:bytes=>decoder.decode(bytes)};
+    }}}};
+    if (relative === '@kit.CryptoArchitectureKit') return {cryptoFramework:{createMd:algorithm=>{
+      assert.equal(algorithm,'SHA256');const digest=crypto.createHash('sha256');
+      return {update:async blob=>{digest.update(blob.data);},digest:async()=>({data:new Uint8Array(digest.digest())})};
+    }}};
+    if (relative === '@kit.TestKit' && options.hypium) return {abilityDelegatorRegistry:{
+      getAbilityDelegator:()=>({getAppContext:()=>({resourceManager:resources})})}};
     if (relative==='libentry.so') {
       nativeLoads++;
       if (!nativeExports) throw new Error('Native library unavailable in host test');
@@ -37,7 +49,9 @@ function host(options = {}) {
     assert.ok(relative.startsWith('.'),'Unexpected runtime SDK dependency in pure logic test: '+relative);
     const file = path.resolve(from,relative)+'.ets';
     const testRoot = path.join(root,'entry/src/test');
-    assert.ok(file.startsWith(sourceRoot+path.sep) || (options.hypium && file.startsWith(testRoot+path.sep)),
+    const deviceRoot = path.join(root,'entry/src/ohosTest/ets/test');
+    assert.ok(file.startsWith(sourceRoot+path.sep) || (options.hypium &&
+      (file.startsWith(testRoot+path.sep) || file.startsWith(deviceRoot+path.sep))),
       'Source path outside permitted application/test directories');
     if (cache.has(file)) return cache.get(file).exports;
     const module = {exports:{}};
@@ -51,16 +65,25 @@ function host(options = {}) {
     fn(request=>load(request,path.dirname(file)),module,module.exports);
     return module.exports;
   }
+  const resources={getRawFileContent:async name=>new Uint8Array(fs.readFileSync(path.join(root,'entry/src/main/resources/rawfile',name)))};
+  // Legacy synchronous logic checks seed an isolated registry from validated fixtures.
+  // Runtime integrity/initialization suites use registryReady:false and the real loader.
+  const {FormatRegistry}=load('./services/FormatRegistry');
+  if(options.registryReady!==false) {
+    FormatRegistry.formats=JSON.parse(JSON.stringify(formats.formats));
+    FormatRegistry.routes=JSON.parse(JSON.stringify(matrix.routes));FormatRegistry.ready=true;
+  }
   const {TaskStore} = load('./viewmodel/TaskStore');
   const {ConversionPlanner} = load('./viewmodel/ConversionPlanner');
   return {store:new TaskStore(),planner:ConversionPlanner,load,
-    now:()=>clock,step(ms) { clock+=ms; },timers,timeouts,
+    resources,now:()=>clock,step(ms) { clock+=ms; },timers,timeouts,
     fireTimeouts() { const callbacks=Array.from(timeouts.values());timeouts.clear();callbacks.forEach(callback=>callback()); },
     setNative(value) { nativeExports=value; },nativeLoads:()=>nativeLoads};
 }
 function enqueue(h,name='报告.pdf') {
   const route = h.planner.routes('pdf','png')[0];
-  return h.store.enqueue(name,'pdf','png',route.id);
+  const task=h.store.enqueue(name,'pdf','png',route.id);
+  h.store.advance(h.now());return task;
 }
 async function test(name,fn) {
   await fn(); cases.push({name,result:'passed'});

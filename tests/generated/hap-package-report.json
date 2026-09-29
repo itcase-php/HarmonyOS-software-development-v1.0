@@ -2,8 +2,8 @@
   "scope": "hap_package_inspection_not_device_execution",
   "result": "passed",
   "hap": "D:\\HarmonyOS\\harmonyOS\\entry\\build\\default\\outputs\\default\\entry-default-unsigned.hap",
-  "hapBytes": 3612408,
-  "hapSha256": "ed00a14e07c5df511f82e48e0aca7f878eb4a462cc5bc0ee581ce7e9bc958550",
+  "hapBytes": 3578582,
+  "hapSha256": "aac1a2b3a74a4a9eab7f157dd9d7476c32ea1865c4b614f031ec167c519fe2b9",
   "inspectedEntries": [
     {
       "name": "libs/arm64-v8a/libentry.so",
@@ -17,8 +17,8 @@
     },
     {
       "name": "ets/modules.abc",
-      "bytes": 470688,
-      "sha256": "9a5c17573035e20568ca4eee9522bbf6c889c9facb5cfbc7da60d75c7ce963c2"
+      "bytes": 457320,
+      "sha256": "763969c695d39118aa0bd513f599944027a8471067c41f3040f655c5f85c61e6"
     },
     {
       "name": "resources/rawfile/format-registry/formats.json",
@@ -32,8 +32,8 @@
     },
     {
       "name": "resources/rawfile/format-registry/manifest.json",
-      "bytes": 1356,
-      "sha256": "d50110585b78fea2c9e03e4aadae33aeec11c1b3220af77c78cf99c79a3243d4"
+      "bytes": 1399,
+      "sha256": "17d3ffcd3bd630bf245cc8341bea49c0cc95f595494efce9434cf6b50ee72c23"
     }
   ],
   "rawfileMatchesSource": true,

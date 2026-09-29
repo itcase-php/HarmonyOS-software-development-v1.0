@@ -1,6 +1,6 @@
 # 迁移结果与实现边界
 
-更新日期：2026-09-29。本文描述当前实际工程；V1.0 方案和七份专题文档继续描述目标架构，不能据此认定所有功能已经实现。操作步骤和验证边界见《交互功能与使用说明》及《保真度控制与参数管道》。
+更新日期：2026-09-29。本文描述当前实际工程；V1.0 方案和七份专题文档继续描述目标架构，不能据此认定所有功能已经实现。最新审计改进与验证见[审计改进与验证说明](审计改进与验证说明.md)；操作步骤继续参考《交互功能与使用说明》及《保真度控制与参数管道》。
 
 ## 已迁入并接入工程
 
@@ -18,15 +18,15 @@
 
 | 范围 | 实际状态 |
 | --- | --- |
-| 页面/组件 | 保留五页及原交互；面板抽为 FidelitySettingsCard 并组合 QualitySelector；完成报告使用 FidelityReportCard，区分 demo/native。保真度、路线提示、报告和主要读屏标签使用中英文资源。其他页面及部分旧提示尚未全面国际化；真实文件选择/结果预览仍待引擎接入 |
-| 模型 | DemoTask 改为类，clone() 集中复制全部任务字段及报告；Native 协议/类型声明和 C++ DTO/IConverter 保持原样 |
-| 格式注册 | 18 格式、43 路线全部迁入；构建时校验并生成强类型缓存，启动检查 rawfile 可读取，查询可用路径取配置与 Native 能力交集 |
-| 转换规划/任务管理 | 保留演示路线、参数快照、2/3.5/6 秒活动时长、单并发 FIFO 与暂停/恢复/取消。新增 enqueueNative/advance 分支及 NativeTaskRunner，通过 NativeBridge.execute 调度准备好的请求；能力/保护门禁、进度序号校验、取消后迟到结果处理与释放已接线，但当前真实可用路线为 0，UI 不提供 Native 开关。Native 暂停、授权文件准备、持久化和后台服务仍未实现 |
-| NativeBridge | 保留已有动态 so 导入、13 API 异步封装和 isNativeAvailable；加强加载失败重试、导出检查和参数/结果校验。能力检测最长 5 秒；预览缺少 Native 时仍可使用全部演示交互 |
+| 页面/组件 | 保留五页及原交互；FidelitySettingsCard 使用单个 FidelitySettingsVM，保留三事件和内部展开状态，组合 QualitySelector；转换页用一个 @State fidelityVM 发布选择和展示快照。格式浏览器、保真度、路线提示、报告及主要读屏标签使用 base/en_US 资源；其他旧页面未全面国际化。首页/格式浏览器/转换页/指南均处理配置加载、失败及重试；真实文件选择/结果预览仍待引擎接入 |
+| 模型 | DemoTask.clone() 集中复制全部任务字段及报告；FidelitySettingsVM.clone() 复制完整面板状态及选项；TaskRuntime 支持独立测试时钟。Native 协议/类型声明和 C++ DTO/IConverter 保持原样 |
+| 格式注册 | 18 格式、43 路线全部保留；构建时设计校验并生成 74 行摘要元数据。首次使用从 rawfile 加载，核对 SHA-256、schema/config 及数量后原子缓存；并发调用共享加载，失败/五秒超时可重试，迟到数据不覆盖缓存，查询返回深复制。可用路径取配置与 Native 能力交集 |
+| 转换规划/任务管理 | 保留参数快照、2/3.5/6 秒活动时长、单并发 FIFO 与暂停/恢复/取消；enqueue 返回 queued/0%，首次 50ms 回调、后续 200ms 递归 setTimeout，advance 有 try/finally 防重入和时钟回拨保护。enqueueNative/NativeTaskRunner 沿用 NativeBridge.execute；保护门禁、进度序号、取消后迟到结果与释放仍接线。当前真实路线为 0；Native 暂停、授权文件、持久化和后台服务未实现 |
+| NativeBridge | 保留动态 so 导入、13 API 与 isNativeAvailable；原失败后重试已存在，本轮补共享加载尝试身份检查，防止旧拒绝清空新重试。参数/结果校验保留，能力查询五秒超时；预览器需要应用资源上下文才能加载配置，缺少 Native 可继续演示，缺少资源则显示错误及重试 |
 | C++ | 正式 entry 模块注册、异步 NAPI 调度、异常边界、五领域 unavailable 适配器及可生成注册表已接入；保留原 add 示例导出，业务不使用它 |
 | IR/资源/保真 | demo commit 生成模拟报告；native 仅从 ConvertResult.fidelity 读取并校验意图/等级/指标和证据，不生成示例填补缺失报告。两者共用深复制工具，界面按 mode 显示。流式 IR、资源监控、真实输出校验器尚未实现 |
-| 配置更新 | 已实现本地构建生成流程；运行时 JSON 解码、签名/哈希验证、热更新和原子快照切换仍待开发 |
-| 测试 | 保留 15 项交互与 13 项保真检查，增加 12 项重构/模拟 Native 检查及 12 项 Hypium 用例。后者已注册到本地/ohosTest 入口，并通过宿主断言适配器执行。应用和测试包构建通过；实际 Hypium 设备运行、真实引擎、预览器及读屏验收尚未执行 |
+| 配置更新 | 构建生成、运行时打包 JSON 解码/哈希验证及首次加载的原子缓存已实现。配置数字签名、热更新、回滚和新版本快照切换仍待开发；摘要校验不等于签名验证 |
+| 测试 | 15 项交互、13 项保真、12 项原重构、55 项 Hypium 源码和 12 项审计回归，共 107 项宿主检查通过。8 个 Hypium 套件注册到本地/ohosTest，源码通过宿主适配器执行；应用/测试包编译和 HAP 配置核验通过。实际设备 Hypium、Previewer、读屏和真实引擎仍未执行 |
 
 ## Native API 的当前行为
 
@@ -44,6 +44,8 @@
 NAPI 调度不在 worker 中访问 JS 对象；异常在入口和 completion 捕获，正常可用环境中拒绝原 Promise 并释放异步工作句柄。环境销毁/内存完全耗尽时 NAPI 操作只可尽力清理。C++ 异常捕获不能防御第三方解析器的越界或系统级信号；未来仍需模糊测试、资源限制与引擎隔离评估。
 
 ## 保留与调整
+
+本轮审计修改前的完整跟踪文件快照：`D:/HarmonyOS/migration-backups/harmonyOS-before-audit-20260929-194609`。已演进 RegistryTypes、RegistryData、NativeBridge 和 FeatureGuide；NativeProtocol、C++ converter.h、五页路由、原始格式/路线 JSON 与迁移归档仍原样保留。以下段落是此前各轮的历史记录，不能作为本轮未改文件清单。
 
 组件与调度优化前快照保存在 `D:/HarmonyOS/migration-backups/harmonyOS-before-refactor-20260929-110433`。本轮没有改变 NativeProtocol、RegistryTypes、RegistryData、NativeBridge、converter.h、FeatureGuide 或 main_pages.json。Native 预留入口要求已有授权 session/workspace/PreparedInput，不能根据演示文件名伪造这些数据；当前可用路径仍为 0。详见《组件与任务调度优化说明》。
 

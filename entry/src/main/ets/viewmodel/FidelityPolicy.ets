@@ -27,6 +27,10 @@ export class FidelityPolicy {
     return value === 'fast' || value === 'balanced' || value === 'high_fidelity';
   }
   static validate(route: ConversionRouteDefinition, selection: FidelitySelection): void {
+    if (!['extreme', 'standard', 'compatible'].includes(route.fidelityTier) ||
+      !['layout_preserved', 'structured_rebuild', 'content_only'].includes(route.intent)) {
+      throw new BridgeError('CONFIG_INVALID', 'FIDELITY_ROUTE_INVALID');
+    }
     if (!FidelityPolicy.isQualityMode(selection.qualityMode) ||
       !['layout_preserved', 'structured_rebuild', 'content_only'].includes(selection.requestedIntent) ||
       !['extreme', 'standard', 'compatible'].includes(selection.requestedTier)) {

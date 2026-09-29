@@ -18,6 +18,8 @@ struct Index {
   @State availableCount: number = 0;
   @State capabilityLabel: string = '检查中';
   @State checking: boolean = false;
+  @State formatCount: number = 0;
+  @State routeCount: number = 0;
   @State tasks: DemoTask[] = [];
   private viewModel: FoundationViewModel = new FoundationViewModel();
   private store: TaskStore = TaskStore.shared();
@@ -52,8 +54,11 @@ struct Index {
     this.checking = true;
     try {
       const context = this.getUIContext().getHostContext() as common.UIAbilityContext | undefined;
-      const capabilities = await this.viewModel.inspect(context ? context.resourceManager : undefined);
+      if (!context) { throw new BridgeError('CONFIG_INVALID', 'REGISTRY_CONTEXT_UNAVAILABLE'); }
+      const capabilities = await this.viewModel.inspect(context.resourceManager);
       if (this.active) {
+        this.formatCount = FormatRegistry.listFormats().length;
+        this.routeCount = FormatRegistry.listPlannedRoutes().length;
         this.availableCount = FormatRegistry.availableRoutes(capabilities).length;
         this.capabilityLabel = 'Native 已连接';
         this.nativeState = `${capabilities.abi} · 本地处理 · ${this.availableCount} 条真实可执行路线`;
@@ -62,10 +67,19 @@ struct Index {
     } catch (error) {
       if (this.active) {
         const failure = error as BridgeError;
+        if (FormatRegistry.isInitialized()) {
+          this.formatCount = FormatRegistry.listFormats().length;
+          this.routeCount = FormatRegistry.listPlannedRoutes().length;
+        }
         this.availableCount = 0;
-        this.capabilityLabel = '演示可用';
-        this.nativeState = `原生暂不可用（${failure.code ?? 'INTERNAL_ERROR'}），格式浏览与演示流程仍可使用`;
-        if (feedback) { UiFeedback.toast(this.getUIContext(), '当前可使用演示功能，原生转换暂不可用'); }
+        this.capabilityLabel = FormatRegistry.isInitialized() ? '演示可用' : '配置未加载';
+        this.nativeState = FormatRegistry.isInitialized() ?
+          `原生暂不可用（${failure.code ?? 'INTERNAL_ERROR'}），格式浏览与演示流程仍可使用` :
+          '格式配置读取或校验失败，请重新检测；转换功能暂不可用';
+        if (feedback) {
+          UiFeedback.toast(this.getUIContext(), FormatRegistry.isInitialized() ?
+            '当前可使用演示功能，原生转换暂不可用' : '格式配置读取或校验失败，请重新检测');
+        }
       }
     } finally { this.checking = false; }
   }
@@ -94,8 +108,8 @@ struct Index {
             onAction: () => { this.inspect(true); } }).layoutWeight(1)
         }.width('100%')
         Row({ space: 12 }) {
-          FoundationCard({ label: '格式定义', value: `${FormatRegistry.listFormats().length}` }).layoutWeight(1)
-          FoundationCard({ label: '规划路线', value: `${FormatRegistry.listPlannedRoutes().length}` }).layoutWeight(1)
+          FoundationCard({ label: '格式定义', value: `${this.formatCount}` }).layoutWeight(1)
+          FoundationCard({ label: '规划路线', value: `${this.routeCount}` }).layoutWeight(1)
         }.width('100%')
         FoundationCard({ label: '本次会话任务 / 活动任务',
           value: `${this.tasks.length} / ${this.tasks.filter((task: DemoTask) => isActiveTask(task.status)).length}` })

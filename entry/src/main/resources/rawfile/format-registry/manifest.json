@@ -65,5 +65,7 @@
     "maxTempBytes": 536870912,
     "maxThreads": 2,
     "timeoutMs": 180000
-  }
+  },
+  "formatsCount": 18,
+  "routesCount": 43
 }

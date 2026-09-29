@@ -1,10 +1,12 @@
 import { RegistryFormat } from '../models/RegistryTypes';
 import { CategoryChoice } from '../models/InteractionModels';
 import { FormatRegistry } from '../services/FormatRegistry';
+import { RegistryUi } from '../common/RegistryUi';
 import { UiFeedback } from '../common/UiFeedback';
 import { PageHeader } from '../components/PageHeader';
 import { FormatTag } from '../components/FormatTag';
 import { StatusBadge } from '../components/StatusBadge';
+import { FidelityText } from '../common/FidelityText';
 
 @Entry
 @Preview
@@ -13,11 +15,31 @@ struct FormatBrowser {
   @State query: string = '';
   @State category: string = 'all';
   @State expandedId: string = '';
-  private formats: RegistryFormat[] = FormatRegistry.listFormats();
+  @State formats: RegistryFormat[] = [];
+  @State loading: boolean = false;
+  @State loadFailed: boolean = false;
   private categories: CategoryChoice[] = [
-    { id: 'all', label: '全部' }, { id: 'pdf', label: 'PDF' }, { id: 'image', label: '图片' },
-    { id: 'office', label: 'Office' }, { id: 'text', label: '文本' }, { id: 'audio', label: '音频' }
+    { id: 'all', label: $r('app.string.category_all') }, { id: 'pdf', label: $r('app.string.category_pdf') },
+    { id: 'image', label: $r('app.string.category_image') }, { id: 'office', label: $r('app.string.category_office') },
+    { id: 'text', label: $r('app.string.category_text') }, { id: 'audio', label: $r('app.string.category_audio') }
   ];
+
+  aboutToAppear(): void { this.loadFormats(); }
+
+  private async loadFormats(): Promise<void> {
+    if (this.loading) { return; }
+    this.loading = true;
+    try {
+      await RegistryUi.ensure(this.getUIContext());
+      this.formats = FormatRegistry.listFormats(); this.loadFailed = false;
+    } catch (_) { this.formats = []; this.loadFailed = true; }
+    finally { this.loading = false; }
+  }
+
+  private categoryLabel(id: string): string {
+    const choice = this.categories.find((item: CategoryChoice) => item.id === id);
+    return choice ? FidelityText.read(this.getUIContext(), choice.label) : id;
+  }
 
   private filtered(): RegistryFormat[] {
     const keyword = this.query.trim().toLowerCase();
@@ -30,21 +52,26 @@ struct FormatBrowser {
   build() {
     Scroll() {
       Column({ space: 12 }) {
-        PageHeader({ title: '格式浏览器', subtitle: '查看全部格式定义与规划能力，点击卡片展开详情' })
-        Search({ value: this.query, placeholder: '搜索名称、ID 或扩展名' })
-          .onChange((value: string) => { this.query = value; })
+        PageHeader({ title: $r('app.string.browser_title'), subtitle: $r('app.string.browser_subtitle') })
+        Search({ value: this.query, placeholder: FidelityText.read(this.getUIContext(), $r('app.string.browser_search')) })
+          .accessibilityText($r('app.string.browser_search')).onChange((value: string) => { this.query = value; })
           .backgroundColor('#FFFFFF')
         Scroll() {
           Row({ space: 8 }) {
             ForEach(this.categories, (choice: CategoryChoice) => {
-              Button(choice.label).fontSize(13)
+              Button(choice.label).fontSize(13).accessibilityText(choice.label)
                 .backgroundColor(this.category === choice.id ? '#007AFF' : '#FFFFFF')
                 .fontColor(this.category === choice.id ? '#FFFFFF' : '#172B4D')
                 .onClick(() => { this.category = choice.id; })
             }, (choice: CategoryChoice) => choice.id)
           }
         }.scrollable(ScrollDirection.Horizontal).scrollBar(BarState.Off).width('100%')
-        Text(`找到 ${this.filtered().length} / ${this.formats.length} 个格式`).fontSize(14).fontColor('#526077')
+        if (this.loading) { Text($r('app.string.registry_loading')) }
+        if (this.loadFailed) {
+          Text($r('app.string.registry_error')).fontColor('#C53030')
+          Button($r('app.string.registry_retry')).onClick(() => { this.loadFormats(); })
+        }
+        Text($r('app.string.browser_count', this.filtered().length, this.formats.length)).fontSize(14).fontColor('#526077')
         ForEach(this.filtered(), (format: RegistryFormat) => {
           Column({ space: 10 }) {
             Button({ type: ButtonType.Normal }) {
@@ -52,30 +79,34 @@ struct FormatBrowser {
                 FormatTag({ formatId: format.id })
                 Column({ space: 5 }) {
                   Text(format.displayName).fontSize(18).fontWeight(FontWeight.Medium).fontColor('#172B4D')
-                  Text(`${format.category} · ${format.operations.includes('import') ? '规划导入' : ''} ${format.operations.includes('export') ? '规划导出' : ''}`)
+                  Text($r('app.string.browser_operations_summary', this.categoryLabel(format.category),
+                    format.operations.includes('import') ? FidelityText.read(this.getUIContext(), $r('app.string.browser_import')) : '',
+                    format.operations.includes('export') ? FidelityText.read(this.getUIContext(), $r('app.string.browser_export')) : ''))
                     .fontSize(13).fontColor('#526077')
                 }.layoutWeight(1).alignItems(HorizontalAlign.Start)
-                Text(this.expandedId === format.id ? '收起' : '详情').fontSize(13).fontColor('#007AFF')
+                Text(this.expandedId === format.id ? $r('app.string.browser_collapse') : $r('app.string.browser_details'))
+                  .fontSize(13).fontColor('#007AFF')
               }.width('100%')
             }.backgroundColor('#FFFFFF').width('100%').padding(0)
+              .accessibilityText($r('app.string.browser_format_details', format.displayName))
               .onClick(() => { this.expandedId = this.expandedId === format.id ? '' : format.id; })
             if (this.expandedId === format.id) {
-              StatusBadge({ text: '规划定义 · 不代表引擎已可用' })
-              Text(`ID：${format.id}`).fontSize(14).fontColor('#172B4D')
-              Text(`扩展名：${format.extensions.map((extension: string) => '.' + extension).join('、')}`)
+              StatusBadge({ text: FidelityText.read(this.getUIContext(), $r('app.string.browser_planned')) })
+              Text($r('app.string.browser_id', format.id)).fontSize(14).fontColor('#172B4D')
+              Text($r('app.string.browser_extensions', format.extensions.map((extension: string) => '.' + extension).join(', ')))
                 .fontSize(14).fontColor('#172B4D')
-              Text(`MIME：${format.mimeTypes.join('、')}`).fontSize(13).fontColor('#526077')
-              Text(`操作：${format.operations.join(' / ')}`).fontSize(14).fontColor('#526077')
-              Button('使用此格式演示').fontSize(14).backgroundColor('#007AFF')
+              Text($r('app.string.browser_mime', format.mimeTypes.join(', '))).fontSize(13).fontColor('#526077')
+              Text($r('app.string.browser_operations', format.operations.join(' / '))).fontSize(14).fontColor('#526077')
+              Button($r('app.string.browser_use')).fontSize(14).backgroundColor('#007AFF')
                 .onClick(() => { UiFeedback.open(this.getUIContext(), 'pages/ConverterPage', { sourceFormatId: format.id }); })
             }
           }.alignItems(HorizontalAlign.Start).width('100%').padding(16).backgroundColor('#FFFFFF').borderRadius(16)
         }, (format: RegistryFormat) => format.id)
-        if (this.filtered().length === 0) {
+        if (!this.loading && !this.loadFailed && this.filtered().length === 0) {
           Column({ space: 10 }) {
             Text('⌕').fontSize(40).fontColor('#526077')
-            Text('没有匹配的格式').fontSize(18).fontColor('#172B4D')
-            Button('重置筛选').onClick(() => { this.query = ''; this.category = 'all'; })
+            Text($r('app.string.browser_empty')).fontSize(18).fontColor('#172B4D')
+            Button($r('app.string.browser_reset')).onClick(() => { this.query = ''; this.category = 'all'; })
           }.padding(32).width('100%').backgroundColor('#FFFFFF').borderRadius(16)
         }
       }.padding(24).width('100%').constraintSize({ maxWidth: 720 }).alignItems(HorizontalAlign.Start)

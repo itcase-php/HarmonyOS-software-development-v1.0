@@ -52,7 +52,7 @@
       "result": "passed"
     },
     {
-      "name": "Read-only protocol, generated registry, native binding and fifth page stay byte-identical",
+      "name": "Native protocol C++ contract and page routes preserve the original fidelity baseline",
       "result": "passed"
     }
   ],

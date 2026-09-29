@@ -1,0 +1,60 @@
+{
+  "scope": "audit_regressions_with_host_sdk_and_native_adapters",
+  "result": "passed",
+  "testedCases": 12,
+  "cases": [
+    {
+      "name": "Generated metadata pins rawfile hashes counts and the unchanged planned matrix",
+      "result": "passed"
+    },
+    {
+      "name": "Cold registry rejects queries before initialization",
+      "result": "passed"
+    },
+    {
+      "name": "Failed initialization installs no partial snapshot and the next request can retry",
+      "result": "passed"
+    },
+    {
+      "name": "Concurrent initializers share one read and atomically cache both documents",
+      "result": "passed"
+    },
+    {
+      "name": "Pinned metadata mismatch rejects initialization even if rawfile hashes match",
+      "result": "passed"
+    },
+    {
+      "name": "Unavailable SDK hashing safely blocks cache publication",
+      "result": "passed"
+    },
+    {
+      "name": "Initialization timeout permits retry and ignores later data from the timed-out reader",
+      "result": "passed"
+    },
+    {
+      "name": "Many Native callers share one failed import then one successful retry",
+      "result": "passed"
+    },
+    {
+      "name": "A retry started by an early failed waiter survives another waiter rejecting",
+      "result": "passed"
+    },
+    {
+      "name": "Delayed initial queue publication starts at zero and default runtime has one recursive timer",
+      "result": "passed"
+    },
+    {
+      "name": "Observer-triggered advances and observer failures cannot reenter or strand queue progression",
+      "result": "passed"
+    },
+    {
+      "name": "Settings component consumes one VM and format browser resources have matching translations",
+      "result": "passed"
+    }
+  ],
+  "registryDataLines": 74,
+  "nativeCalls": "mocked_exports_only",
+  "realConversion": "not_executed",
+  "deviceExecution": "not_executed",
+  "previewerExecution": "not_executed"
+}

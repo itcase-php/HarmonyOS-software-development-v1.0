@@ -13,7 +13,7 @@ function fixture({available=true, protection='none', deep=false, engines=true}={
   const h = host();
   const {registryMetadata} = h.load('./generated/RegistryData');
   const {FormatRegistry} = h.load('./services/FormatRegistry');
-  const route = FormatRegistry.listPlannedRoutes().find(item=>item.id==='png-pdf');
+  const route = FormatRegistry.routes.find(item=>item.id==='png-pdf');
   if (available) route.status='available'; // Isolated VM fixture; never edits shared JSON.
   const request = {schemaVersion:1,taskId:'native-fixture',attemptId:'attempt-fixture',sessionId:'authorized-fixture',
     workspaceRef:'workspace-fixture',operation:route.operation,inputs:[{fileId:'input-fixture',sourceFormatId:'png',
@@ -52,7 +52,7 @@ function fixture({available=true, protection='none', deep=false, engines=true}={
 }
 async function main() {
   await test('Model clone copies every present data field and isolates nested report arrays',()=>{
-    const h=host(); const started=h.store.enqueue('clone.pdf','pdf','png','pdf-png');
+    const h=host(); const started=h.store.enqueue('clone.pdf','pdf','png','pdf-png');h.store.advance(h.now());
     h.step(3500);h.store.advance(h.now()); const original=h.store.snapshot()[0];
     for (const key of Object.keys(original)) {
       if (typeof original[key]==='string') original[key]='clone-marker-'+key;
@@ -77,11 +77,11 @@ async function main() {
     const h=host();const {TaskStore}=h.load('./viewmodel/TaskStore');
     const previous=TaskStore.shared();previous.shutdown();const current=TaskStore.shared();
     assert.notEqual(previous,current);
-    const task=current.enqueue('reopen.pdf','pdf','png','pdf-png');assert.equal(task.status,'running');
+    const task=current.enqueue('reopen.pdf','pdf','png','pdf-png');assert.equal(task.status,'queued');
     current.shutdown();assert.equal(h.timers.size,0);
   });
   await test('Planned capability blocks Native before probe/execute with no demo report',async()=>{
-    const f=fixture({available:false}); f.h.store.enqueueNative('input.png',f.request);
+    const f=fixture({available:false}); f.h.store.enqueueNative('input.png',f.request);f.h.store.advance(f.h.now());
     await flush(); const task=f.h.store.snapshot()[0];
     assert.equal(task.mode,'native');assert.equal(task.status,'failed');
     assert.match(task.error,/NATIVE_ROUTE_UNAVAILABLE/);
@@ -91,13 +91,13 @@ async function main() {
   });
   await test('Missing executors and protected/unverified probes cannot execute',async()=>{
     for (const options of [{engines:false},{protection:'drm'},{protection:'signed'},{protection:'encrypted'},{protection:'unknown'},{deep:true}]) {
-      const f=fixture(options);f.h.store.enqueueNative('input.png',f.request);await flush();
+      const f=fixture(options);f.h.store.enqueueNative('input.png',f.request);f.h.store.advance(f.h.now());await flush();
       assert.equal(f.h.store.snapshot()[0].status,'failed');assert.equal(f.trace.execute,0);
       assert.equal(f.trace.releaseTasks,1);f.h.store.shutdown();
     }
   });
   await test('Native request snapshot, single dispatch and monotonic progress are preserved',async()=>{
-    const f=fixture();f.h.store.enqueueNative('input.png',f.request);f.request.options.image.quality=1;
+    const f=fixture();f.h.store.enqueueNative('input.png',f.request);f.h.store.advance(f.h.now());f.request.options.image.quality=1;
     f.request.qualityMode='fast';f.request.plan.steps[0].executorEngineId='caller-mutation';
     await flush();assert.equal(f.trace.execute,1);assert.equal(f.trace.request.qualityMode,'balanced');
     assert.equal(f.trace.request.options.image.quality,95);
@@ -118,7 +118,7 @@ async function main() {
     f.h.store.shutdown();
   });
   await test('Missing Native report stays missing and does not fabricate an achieved tier',async()=>{
-    const f=fixture();delete f.result.fidelity;f.h.store.enqueueNative('input.png',f.request);await flush();
+    const f=fixture();delete f.result.fidelity;f.h.store.enqueueNative('input.png',f.request);f.h.store.advance(f.h.now());await flush();
     f.finish();await flush();const done=f.h.store.snapshot()[0];
     assert.equal(done.status,'completed');assert.equal(done.fidelityReport,undefined);assert.equal(done.achievedTier,undefined);
     f.h.store.shutdown();await flush();assert.equal(f.trace.releasedOutputs.length,1);
@@ -126,14 +126,14 @@ async function main() {
   await test('Invalid Native fidelity options or below-minimum grade fail and release outputs',async()=>{
     for (const change of [report=>{report.intent='content_only';},report=>{report.achievedTier='compatible';},
       report=>{report.metrics[0].value=42;},report=>{report.metrics[0].evidenceRefs=[];}]) {
-      const f=fixture();change(f.result.fidelity);f.h.store.enqueueNative('input.png',f.request);await flush();
+      const f=fixture();change(f.result.fidelity);f.h.store.enqueueNative('input.png',f.request);f.h.store.advance(f.h.now());await flush();
       f.finish();await flush();const failed=f.h.store.snapshot()[0];assert.equal(failed.status,'failed');
       assert.equal(failed.fidelityReport,undefined);assert.equal(failed.achievedTier,undefined);
       assert.equal(f.trace.releasedOutputs.length,1);f.h.store.shutdown();
     }
   });
   await test('Native cancellation holds scheduler slot until cleanup and ignores late success',async()=>{
-    const f=fixture();f.h.store.enqueueNative('input.png',f.request);await flush();
+    const f=fixture();f.h.store.enqueueNative('input.png',f.request);f.h.store.advance(f.h.now());await flush();
     const queued=f.h.store.enqueue('next.pdf','pdf','png','pdf-png');
     f.h.store.cancel('native-fixture');await flush();assert.equal(f.trace.cancel,1);
     assert.equal(f.h.store.snapshot().find(task=>task.id===queued.id).status,'queued');
@@ -143,7 +143,7 @@ async function main() {
     assert.equal(f.h.store.snapshot().find(task=>task.id===queued.id).status,'running');f.h.store.shutdown();
   });
   await test('Shutdown during Native work cannot start queued tasks or resurrect late results',async()=>{
-    const f=fixture();f.h.store.enqueueNative('input.png',f.request);await flush();
+    const f=fixture();f.h.store.enqueueNative('input.png',f.request);f.h.store.advance(f.h.now());await flush();
     f.h.store.enqueue('queued.pdf','pdf','png','pdf-png');f.h.store.shutdown();
     f.finish();await flush();assert.ok(f.h.store.snapshot().every(task=>task.status==='cancelled'));
     assert.equal(f.h.timers.size,0);assert.equal(f.trace.releaseTasks,1);assert.equal(f.trace.releasedOutputs.length,1);

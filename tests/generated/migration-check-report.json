@@ -5,6 +5,7 @@
   "originalOutputFilesChecked": 21,
   "originalProjectFilesRetained": 46,
   "originalProjectChanges": [
+    ".gitignore",
     "build-profile.json5",
     "entry/src/main/cpp/CMakeLists.txt",
     "entry/src/main/cpp/napi_init.cpp",

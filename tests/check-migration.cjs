@@ -69,10 +69,11 @@ for (const name of ['formats.json','conversion-matrix.json']) {
 assert.equal(metadata.formatsSha256, hash(read('shared/format-registry/formats.json')));
 assert.equal(metadata.matrixSha256, hash(read('shared/format-registry/conversion-matrix.json')));
 const generated = text('entry/src/main/ets/generated/RegistryData.ets');
-const cachedFormats = JSON.parse(generated.match(/export const bundledFormats: RegistryFormat\[\] = ([\s\S]*?);\n/)[1]);
-const cachedRoutes = JSON.parse(generated.match(/export const bundledRoutes: ConversionRouteDefinition\[\] = ([\s\S]*?);\n/)[1]);
-assert.deepEqual(cachedFormats,formats.formats);
-assert.deepEqual(cachedRoutes,matrix.routes);
+const pinnedMetadata = JSON.parse(generated.match(/export const registryMetadata: RegistryMetadata = ([\s\S]*?);\n/)[1]);
+assert.deepEqual(pinnedMetadata,metadata);
+assert.equal(pinnedMetadata.formatsCount,formats.formats.length);
+assert.equal(pinnedMetadata.routesCount,matrix.routes.length);
+assert.doesNotMatch(generated,/export const bundled(?:Formats|Routes)/,'Format data must be loaded from verified rawfile');
 assert.ok(matrix.routes.every(route=>route.status==='planned'),'Migration unexpectedly activated routes');
 for (const id of formats.engineIds) {
   const engine = `entry/src/main/cpp/engines/${id}/${id}_converter.cpp`;

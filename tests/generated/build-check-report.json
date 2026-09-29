@@ -6,12 +6,14 @@
   "commandArguments": "--mode module -p product=default -p module=entry@default -p buildMode=debug assembleHap --no-daemon",
   "result": "BUILD SUCCESSFUL",
   "exitCode": 0,
-  "elapsed": "16 s 474 ms",
+  "elapsed": "12 s 523 ms \u001b[39m",
   "tasks": {
     "total": 33,
-    "executed": 17,
-    "upToDate": 16
+    "executed": 19,
+    "upToDate": 14
   },
+  "artifact": "entry/build/default/outputs/default/entry-default-unsigned.hap",
+  "sha256": "aac1a2b3a74a4a9eab7f157dd9d7476c32ea1865c4b614f031ec167c519fe2b9",
   "arkTsCompilation": "passed",
   "nativeCompilationAbis": [
     "arm64-v8a",
@@ -20,11 +22,12 @@
   "protocolDeclarationStrictTypeCheck": "passed_exit_0",
   "cpp17HeaderSyntaxCheck": "passed_exit_0",
   "signing": "skipped_no_signingConfigs",
-  "artifact": "entry/build/default/outputs/default/entry-default-unsigned.hap",
   "warnings": [
-    "No signingConfig found for product default; unsigned HAP"
+    "SDK crypto createMd/update/digest device capability warnings; canIUse guard and failure handling present",
+    "ohosTest template start_window_background resource conflict",
+    "No signingConfig found for product default; unsigned HAPs"
   ],
-  "evidenceSource": "tests/generated/refactor-build.log; tests/generated/refactor-test-build.log; hap-package-report.json",
+  "evidenceSource": "tests/generated/audit-build.log; tests/generated/audit-test-build.log; hap-package-report.json",
   "previewerExecution": "not_executed",
   "deviceValidation": "not_executed",
   "realConversion": "not_executed",
@@ -41,22 +44,26 @@
     "report": "tests/generated/refactor-check-report.json"
   },
   "hypiumSourceHostTests": {
-    "passed": 12,
+    "passed": 55,
     "report": "tests/generated/hypium-host-check-report.json"
+  },
+  "auditRegressionTests": {
+    "passed": 12,
+    "report": "tests/generated/audit-check-report.json"
   },
   "hypiumTestBuild": {
     "result": "BUILD SUCCESSFUL",
     "exitCode": 0,
-    "elapsed": "13 s 629 ms",
+    "elapsed": "12 s 859 ms \u001b[39m",
     "tasks": {
       "total": 35,
-      "executed": 18,
-      "upToDate": 17
+      "executed": 20,
+      "upToDate": 15
     },
     "artifact": "entry/build/default/outputs/ohosTest/entry-ohosTest-unsigned.hap",
-    "sha256": "66da8a7f91e64a83c9200b5ab7180ca852d0ca36288b7c6577892b69d4f0556d",
-    "log": "tests/generated/refactor-test-build.log",
+    "sha256": "844e65641e7ca5bb4a5762d7b6964c06c143cd7c9298df037e9477680e9129d8",
+    "log": "tests/generated/audit-test-build.log",
     "actualHypiumRunner": "not_executed"
   },
-  "totalHostChecks": 52
+  "totalHostChecks": 107
 }

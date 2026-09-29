@@ -1,5 +1,6 @@
 import { RegistryFormat, ConversionRouteDefinition } from '../models/RegistryTypes';
 import { FormatRegistry } from '../services/FormatRegistry';
+import { RegistryUi } from '../common/RegistryUi';
 import { registryMetadata } from '../generated/RegistryData';
 import { UiFeedback } from '../common/UiFeedback';
 import { StatusBadge } from '../components/StatusBadge';
@@ -218,8 +219,24 @@ struct FeatureGuide {
   @State private routeGroups: RouteGroupData[] = [];
   @State private unavailItems: UnavailData[] = [];
   @State private blockedList: string[] = [];
+  @State private registryError: boolean = false;
+  @State private registryLoading: boolean = false;
 
   aboutToAppear(): void {
+    this.loadRegistry();
+  }
+
+  private async loadRegistry(): Promise<void> {
+    if (this.registryLoading) { return; }
+    this.registryLoading = true;
+    try {
+      await RegistryUi.ensure(this.getUIContext());
+      this.populateGuide(); this.registryError = false;
+    } catch (_) { this.registryError = true; }
+    finally { this.registryLoading = false; }
+  }
+
+  private populateGuide(): void {
     const all: RegistryFormat[] = FormatRegistry.listFormats();
     all.sort((a: RegistryFormat, b: RegistryFormat) => catOrder(a.category) - catOrder(b.category));
 
@@ -322,6 +339,11 @@ struct FeatureGuide {
         }.width('100%')
 
         // 概述
+        if (this.registryLoading) { Text($r('app.string.registry_loading')) }
+        if (this.registryError) {
+          Text($r('app.string.registry_error'))
+          Button($r('app.string.registry_retry')).onClick(() => { this.loadRegistry(); })
+        }
         Column({ space: 8 }) {
           Text('文档转换工具箱支持多种格式的互相转换，包括 PDF、Office 文档、图片、文本和音频文件。')
             .fontSize(14).fontColor('#526077').lineHeight(22)

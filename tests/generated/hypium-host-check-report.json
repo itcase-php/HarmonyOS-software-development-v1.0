@@ -1,57 +1,286 @@
 {
   "scope": "hypium_test_source_executed_with_host_adapter",
   "result": "passed",
-  "testedCases": 12,
+  "suiteCount": 8,
+  "testedCases": 55,
   "cases": [
     {
+      "suite": "ConversionCore",
       "name": "qualityDurations",
       "result": "passed"
     },
     {
+      "suite": "ConversionCore",
       "name": "matchingTierAndIntent",
       "result": "passed"
     },
     {
+      "suite": "ConversionCore",
       "name": "tierAboveRouteIsRejected",
       "result": "passed"
     },
     {
+      "suite": "ConversionCore",
       "name": "intentMismatchIsRejected",
       "result": "passed"
     },
     {
+      "suite": "ConversionCore",
       "name": "invalidEnumFromBoundaryIsRejected",
       "result": "passed"
     },
     {
+      "suite": "ConversionCore",
       "name": "targetAliasesAndUnknownInput",
       "result": "passed"
     },
     {
+      "suite": "ConversionCore",
       "name": "plannerKeepsIntentAndMinimum",
       "result": "passed"
     },
     {
+      "suite": "ConversionCore",
       "name": "advanceReportsAtCommitAndCompletes",
       "result": "passed"
     },
     {
+      "suite": "ConversionCore",
       "name": "advancePromotesOnlyNextFifoTask",
       "result": "passed"
     },
     {
+      "suite": "ConversionCore",
       "name": "cancelCannotBecomeCompleted",
       "result": "passed"
     },
     {
+      "suite": "ConversionCore",
       "name": "pauseFreezesAdvanceAndResumeCompletes",
       "result": "passed"
     },
     {
+      "suite": "ConversionCore",
       "name": "cloneIsolatesNestedReport",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "orders extreme standard and compatible tiers",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "uses the three documented demo durations",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "accepts matching intent and a minimum at or below the planned tier",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "rejects an invalid quality value from a boundary",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "rejects an invalid requested tier",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "rejects a mismatched or unknown intent",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "rejects a requested tier above the route even in high fidelity mode",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "accepts empty degradation arrays without changing them",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "rejects an invalid planned tier rather than comparing undefined ranks",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "returns exactly the single-input planned targets for PDF",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "normalizes dotted uppercase IDs extensions and migration aliases",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "returns no targets for unknown or protected extensions",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "returns matching routes and no routes for unsupported pairs",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "keeps best route ordering within the requested intent",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "does not lower the minimum tier or change intent to find a route",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "returns a queued zero-progress task before the first 50 ms tick",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "advances elapsed time and progress monotonically until completion",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "completes three queued tasks in FIFO order with one timer",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "stops timers while paused and resumes without counting paused time",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "keeps cancellation terminal across later ticks and resume attempts",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "clears finished history while retaining queued running and paused tasks",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "isolates task fields and nested reports in returned snapshots",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "ignores reentrant observer advances and remains usable after an observer throws",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "does not count the same timestamp twice or move the clock backwards",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "allows queued work to continue when the running demo is paused",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "creates the documented report structure without measured metrics",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "makes the layout metric inapplicable for content-only intent",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "marks the layout metric estimated for layout-preserved intent",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "uses 0.98 0.90 and 0.76 only as tier-specific demo examples",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "copies degradation input and preserves selection metadata",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "rejects native tasks instead of inventing real metrics",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityReportSnapshot",
+      "name": "isolates metric values and nested evidence arrays",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityReportSnapshot",
+      "name": "isolates degradations fonts limitations and report evidence",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityReportSnapshot",
+      "name": "copies empty containers and optional page counts",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "accepts exactly the generated rawfile documents",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "rejects a nonempty modified formats document",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "rejects a nonempty modified matrix document",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "rejects empty or oversized documents before decoding",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "normalizes resource read failures and keeps the current snapshot intact",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "returns deep snapshots so callers cannot alter future planning",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelitySettingsVM",
+      "name": "starts with a complete balanced selection and no executable route",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelitySettingsVM",
+      "name": "copies selection presentation and interactivity together",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelitySettingsVM",
+      "name": "isolates option arrays and individual SelectOption values",
       "result": "passed"
     }
   ],
+  "rawfileVerification": "actual_ArkTS_loader_with_host_crypto_and_resource_adapters",
   "actualHypiumRunner": "not_executed",
   "deviceExecution": "not_executed",
   "previewerExecution": "not_executed"

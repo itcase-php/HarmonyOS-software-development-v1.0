@@ -29,9 +29,15 @@ export class NativeBridge {
     if (!NativeBridge.nativeLoadPromise) {
       NativeBridge.nativeLoadPromise = NativeBridge.doLoadNativeModule();
     }
-    try { await NativeBridge.nativeLoadPromise; }
-    catch (error) { NativeBridge.nativeLoadPromise = null; throw NativeBridge.normalize(error as Error); }
-    return NativeBridge.nativeModule!;
+    const pending = NativeBridge.nativeLoadPromise;
+    try { await pending; }
+    catch (error) {
+      // All waiters share one attempt; an older rejection must not clear a newer retry.
+      if (NativeBridge.nativeLoadPromise === pending) { NativeBridge.nativeLoadPromise = null; }
+      throw NativeBridge.normalize(error as Error);
+    }
+    if (!NativeBridge.nativeModule) { throw new BridgeError('INTERNAL_ERROR', 'NATIVE_MODULE_NOT_AVAILABLE'); }
+    return NativeBridge.nativeModule;
   }
 
   private static async doLoadNativeModule(): Promise<void> {
