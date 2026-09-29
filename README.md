@@ -1,4 +1,4 @@
-# HarmonyOS软件开发v1.0
+# HarmonyOS软件开发v2.0
 
 基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。当前版本侧重交互流程、配置驱动的路线规划、保真度参数管道及 Native 接入框架。本轮完成独立核心测试、rawfile 完整性与按需加载、任务调度防重入、面板 VM 和格式浏览器国际化。
 
