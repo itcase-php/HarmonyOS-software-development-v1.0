@@ -22,7 +22,7 @@
 | 模型 | DemoTask.clone() 集中复制全部任务字段及报告；FidelitySettingsVM.clone() 复制完整面板状态及选项；TaskRuntime 支持独立测试时钟。Native 协议/类型声明和 C++ DTO/IConverter 保持原样 |
 | 格式注册 | 完整的 18 格式、43 规划路线从原 shared JSON 生成，启动和预览即刻可查询，资源加载失败不会缩减。rawfile 核对 SHA-256、schema/config 及数量后原子替换；并发调用共享加载，失败/五秒超时可重试，迟到数据不覆盖缓存，查询返回深复制。真实可用路径还要求资源校验成功、配置 available 状态和 Native 发布证据 |
 | 转换规划/任务管理 | 保留参数快照、2/3.5/6 秒活动时长、单并发 FIFO 与暂停/恢复/取消；enqueue 返回 queued/0%，首次 50ms 回调、后续 200ms 递归 setTimeout，advance 有 try/finally 防重入和时钟回拨保护。enqueueNative/NativeTaskRunner 沿用 NativeBridge.execute；保护门禁、进度序号、取消后迟到结果与释放仍接线。当前真实路线为 0；Native 暂停、授权文件、持久化和后台服务未实现 |
-| NativeBridge | 保留动态 so 导入、13 API 与 isNativeAvailable；原失败后重试已存在，本轮补共享加载尝试身份检查，防止旧拒绝清空新重试。参数/结果校验保留，能力查询五秒超时；预览器需要应用资源上下文才能加载配置，缺少 Native 可继续演示，缺少资源则显示错误及重试 |
+| NativeBridge | 保留动态 so 导入、13 API 与 isNativeAvailable；原失败后重试已存在，审计补共享加载尝试身份检查，防止旧拒绝清空新重试。参数/结果校验保留，能力查询五秒超时；预览器缺少 Native 模块或应用资源上下文仍可使用完整目录及演示，检测或资源校验失败不会启用真实路线 |
 | C++ | 正式 entry 模块注册、异步 NAPI 调度、异常边界、五领域 unavailable 适配器及可生成注册表已接入；保留原 add 示例导出，业务不使用它 |
 | IR/资源/保真 | demo commit 生成模拟报告；native 仅从 ConvertResult.fidelity 读取并校验意图/等级/指标和证据，不生成示例填补缺失报告。两者共用深复制工具，界面按 mode 显示。流式 IR、资源监控、真实输出校验器尚未实现 |
 | 配置更新 | 构建生成、运行时打包 JSON 解码/哈希验证及首次加载的原子缓存已实现。配置数字签名、热更新、回滚和新版本快照切换仍待开发；摘要校验不等于签名验证 |
