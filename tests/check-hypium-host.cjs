@@ -18,7 +18,7 @@ const hypium={describe:(name,body)=>{
 async function main() {
  const h=host({hypium,registryReady:false});
  const files=['../../../test/ConversionCore.test','./FidelityPolicy.test','./ConversionPlanner.test','./TaskStore.test',
- './DemoFidelityReport.test','./FidelityReportSnapshot.test','./FormatRegistry.test','./FidelitySettingsVM.test'];
+ './DemoFidelityReport.test','./FidelityReportSnapshot.test','./FormatRegistry.test','./FidelitySettingsVM.test','./FormatDetector.test'];
  const testRoot=path.join(__dirname,'../entry/src/ohosTest/ets/test');
  for(const file of files) h.load(file,testRoot).default();
  const results=[];

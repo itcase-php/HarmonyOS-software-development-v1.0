@@ -7,6 +7,10 @@ import { DemoFidelityReport } from './DemoFidelityReport';
 import { NativeFidelityReport } from './NativeFidelityReport';
 import { NativeTaskRunner } from '../services/NativeTaskRunner';
 import { ConvertRequest, ConvertResult, ProgressEvent } from '../models/NativeProtocol';
+import { AuthorizedFile, SessionContext } from '../models/SessionModels';
+import { AuthorizedInputTask } from '../services/AuthorizedInputTask';
+import { FileAuthorizationService } from '../services/FileAuthorizationService';
+import { NativeBridge } from '../services/NativeBridge';
 
 class SystemTaskRuntime implements TaskRuntime {
   now(): number { return Date.now(); }
@@ -31,6 +35,11 @@ export class TaskStore {
   private closing: boolean = false;
   private advancing: boolean = false;
   private runtime: TaskRuntime;
+  private inputSessions: Map<string, string> = new Map<string, string>();
+  private inputListener: number = -1;
+  private inputRegistrations: Map<string, ConvertRequest> = new Map<string, ConvertRequest>();
+  private inputDispatched: Set<string> = new Set<string>();
+  private inputCleanup: Promise<void>[] = [];
 
   constructor(runtime: TaskRuntime = new SystemTaskRuntime()) { this.runtime = runtime; }
 
@@ -100,6 +109,89 @@ export class TaskStore {
     this.tasks.unshift(task); this.nativeRequests.set(task.id, prepared);
     this.startTimer(); this.notify();
     return task.clone();
+  }
+
+  // Additive entry point. No authorized files means the original demo enqueue path.
+  async submitTask(fileName: string, sourceId: string, targetId: string, routeId: string,
+    approved: boolean = false, fidelity?: FidelitySelection, authorizedFiles: AuthorizedFile[] = [],
+    session?: SessionContext): Promise<DemoTask> {
+    if (authorizedFiles.length === 0) {
+      return this.enqueue(fileName, sourceId, targetId, routeId, approved, fidelity);
+    }
+    const route = ConversionPlanner.routes(sourceId, targetId).find((item) => item.id === routeId);
+    if (!route || !session) { throw new BridgeError('INVALID_REQUEST', 'AUTHORIZED_SUBMISSION_CONTEXT'); }
+    const selection: FidelitySelection = fidelity ?? { qualityMode: 'balanced',
+      requestedIntent: route.intent, requestedTier: route.fidelityTier };
+    let transferred: boolean = false;
+    let prepared: ConvertRequest | undefined = undefined;
+    try {
+      this.ensureCapacity();
+      const request: ConvertRequest = await AuthorizedInputTask.prepare(authorizedFiles, session, route,
+        selection, approved, () => !this.closing);
+      prepared = request;
+      const task: DemoTask = this.enqueueNative(authorizedFiles[0].originalName, request, approved);
+      this.inputSessions.set(task.id, session.sessionId); this.inputRegistrations.set(task.id, request); transferred = true;
+      if (this.inputListener === -1) { this.inputListener = this.subscribe(() => { this.releaseSettledInputs(); }); }
+      this.releaseSettledInputs();
+      return task;
+    } catch (error) {
+      this.ensureCapacity();
+      const failure: BridgeError = error instanceof BridgeError ? error : new BridgeError('INTERNAL_ERROR', 'NATIVE_INPUT_PREPARATION_FAILED');
+      const task: DemoTask = new DemoTask();
+      task.id = `native-input-${this.runtime.now()}-${++this.sequence}`; task.mode = 'native';
+      task.fileName = authorizedFiles[0].originalName; task.sourceFormat = sourceId; task.targetFormat = targetId;
+      task.routeId = routeId; task.qualityMode = selection.qualityMode; task.intent = selection.requestedIntent;
+      task.requestedIntent = selection.requestedIntent; task.requestedTier = selection.requestedTier;
+      task.status = 'failed'; task.stage = '真实输入提交失败'; task.createdAtMs = this.runtime.now();
+      task.error = `${failure.code}:${failure.reason}`;
+      this.tasks.unshift(task); this.notify(); return task.clone();
+    } finally {
+      if (!transferred) {
+        if (prepared) {
+          try { await NativeBridge.releaseTask(prepared.taskId, prepared.attemptId); }
+          catch (_) { console.error('Native input registration cleanup failed'); }
+        }
+        await FileAuthorizationService.destroySession(session.sessionId);
+      }
+    }
+  }
+
+  private releaseSettledInputs(): void {
+    for (const entry of this.inputSessions.entries()) {
+      if (this.nativeRunningId === entry[0]) { this.inputDispatched.add(entry[0]); }
+      const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === entry[0]);
+      if ((!task || !isActiveTask(task.status)) && !this.nativeRequests.has(entry[0]) && this.nativeRunningId !== entry[0]) {
+        this.inputSessions.delete(entry[0]);
+        const request: ConvertRequest | undefined = this.inputRegistrations.get(entry[0]);
+        const dispatched: boolean = this.inputDispatched.has(entry[0]);
+        this.inputRegistrations.delete(entry[0]); this.inputDispatched.delete(entry[0]);
+        const cleanup: Promise<void> = this.releaseOwnedInput(entry[1], dispatched ? undefined : request);
+        this.inputCleanup.push(cleanup);
+        cleanup.finally(() => { this.inputCleanup = this.inputCleanup.filter((item: Promise<void>) => item !== cleanup); });
+      }
+    }
+  }
+
+  private async releaseOwnedInput(sessionId: string, request?: ConvertRequest): Promise<void> {
+    if (request) {
+      try { await NativeBridge.releaseTask(request.taskId, request.attemptId); }
+      catch (_) { console.error('Native input registration cleanup failed'); }
+    }
+    try { await FileAuthorizationService.destroySession(sessionId); }
+    catch (_) { console.error('Owned input cleanup failed'); }
+  }
+
+  // Called at ability teardown after shutdown; never delete input files under a live Native call.
+  async releaseAuthorizedSessions(cleanup: () => Promise<void> = () => FileAuthorizationService.destroyAllSessions()): Promise<void> {
+    try {
+      while (this.nativeRunningId.length > 0) { await new Promise<void>((resolve) => { setTimeout(resolve, 20); }); }
+      this.releaseSettledInputs();
+      await Promise.all(this.inputCleanup);
+      await cleanup();
+    } catch (error) {
+      if (error instanceof BridgeError) { throw error; }
+      throw new BridgeError('IO_ERROR', 'WORKSPACE_REMOVE_FAILED');
+    }
   }
 
   private ensureCapacity(): void {

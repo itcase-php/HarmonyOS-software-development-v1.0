@@ -1,6 +1,6 @@
 # HarmonyOS软件开发v2.0
 
-基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。当前版本侧重交互流程、配置驱动的路线规划、保真度参数管道及 Native 接入框架。已完成独立核心测试、rawfile 完整性校验、任务调度防重入、面板 VM 和格式浏览器国际化；本次恢复完整目录在启动、预览及资源加载失败时的可用性。
+基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。已完成交互流程、完整目录规划、保真度参数管道、核心测试、rawfile 校验、调度防重入及相关国际化。本次按批准方案新增真实文件选择、受控副本、摘要与生命周期管理及真实提交入口，保留全部原演示功能。
 
 公共仓库：<https://github.com/itcase-php/HarmonyOS-software-development-v1.0>。仓库地址使用英文字符，软件展示标题保留“HarmonyOS软件开发v1.0”。许可证为 [MIT](LICENSE)。按交付要求，另提供同内容的 [READMES.md](READMES.md)。
 
@@ -16,11 +16,12 @@
 | 格式与规划 | 完整保留 18 种格式、43 条规划路线；启动及独立预览立即提供完整目录，资源加载失败不会缩减；单文件路线、意图、最低保真等级筛选与质量模式排序保持原行为 |
 | 保真度控制 | 快速/均衡/高保真、转换意图、最低等级、路线说明及执行前配置确认 |
 | 演示任务 | 2/3.5/6 秒活动时长，单并发 FIFO、暂停、恢复、取消与会话历史；退出应用不持久化 |
+| 文件输入 | Stage Picker、最多 10 文件管理、单文件 100 MiB/会话 300 MiB、分块副本与 SHA-256、信息卡片/移除/清理；真实提交保持单文件，设备验收待执行 |
 | 报告 | 演示报告展开查看；Native 报告读取接口与上下文/指标校验已预留 |
 | 原生层 | 13 个 Native 接口、统一错误码、IR/资源预算契约及五类引擎占位 |
 | 国际化与无障碍 | 保真度相关组件、路线提示和报告的中英文资源及主要控件读屏标注；格式浏览器文案已覆盖，其他旧页面尚未全部国际化 |
 
-**当前真实可用转换路线为 0。** UI 继续走 demo，不读取用户文件、不生成转换文件，也没有实测保真数据。Native 分支要求已有授权文件、session/workspace 和 available 路线；不提供把演示文件名当作真实输入的开关。真实引擎、文件授权/导出、持久化、后台调度和设备验收仍待开发。
+**当前真实可用转换路线为 0。** 未选择真实文件时，原演示不读取文件、不生成转换结果。新入口可通过 Picker 授权并复制文件，但 C++ initializeSession/registerWorkspace 仍占位，真实提交如实记录失败，不回退为演示成功。输入推断不是内容/保护验证；原 Native 门禁保持。真实会话/引擎、输出导出、持久化、后台调度及设备验收仍待开发。
 
 ## 工程结构
 
@@ -71,16 +72,18 @@ node tests/check-fidelity.cjs
 node tests/check-refactor.cjs
 node tests/check-hypium-host.cjs
 node tests/check-audit.cjs
+node tests/check-input-management.cjs
 node tests/check-design.cjs
 node tests/check-migration.cjs
 ```
 
-最新开发记录中，111 项宿主检查通过（15 项交互、13 项保真、12 项重构、55 项 Hypium 源码、16 项审计及目录回归），应用包与 ohosTest 测试包编译通过，包内资源完整性检查通过。Hypium 源码通过宿主断言适配器执行，Native 导出在分支测试中使用模拟对象；**这些结果不等于真实转换、设备 Hypium、Previewer 点击或读屏验收**。最新日志为 tests/generated/format-restore-build.log 与 format-restore-test-build.log，汇总见 format-restore-validation-report.json；SDK 密码学能力、测试模板重复资源和未签名警告仍有记录。详细记录在 tests/generated；本地绝对路径与历史产物哈希用于溯源，不是已上传二进制的下载地址。
+最新记录中，152 项宿主检查通过（交互 15、保真 13、原重构 12、Hypium 源码 61、审计/目录回归 16、输入管理 35），应用与 ohosTest 编译及 HAP 检查通过。原 22 个 TaskStore 方法及 7 个规划/Native/目录文件与批准基线一致。文件系统、Picker、Native 在宿主测试中使用模拟 SDK；**这些结果不等于真机选文件、真实转换、设备 Hypium、Previewer 点击或读屏验收**。最新日志为 tests/generated/input-management-build.log 与 input-management-test-build.log，汇总见 input-management-validation-report.json。hdc 未连接设备，独立编辑器诊断工具不可用；已有 SDK 能力、测试模板重复资源和未签名警告仍有记录。本地路径与产物哈希用于溯源，不是二进制下载地址。
 
 设备安装仍需通过 DevEco 使用合法调试签名；根工程 signingConfigs 当前为空，构建生成未签名包。不要提交自己的私钥、密码或个人签名配置。
 
 ## 开发文档
 
+- [文件授权与输入管理](docs/文件授权与输入管理说明.md)
 - [目录作用与修改方法](docs/工程目录分析与修改指南.md)
 - [交互功能与使用说明](docs/交互功能与使用说明.md)
 - [保真度控制与参数管道](docs/保真度控制与参数管道.md)

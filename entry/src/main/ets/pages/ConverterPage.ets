@@ -14,6 +14,9 @@ import { FidelitySettingsCard } from '../components/FidelitySettingsCard';
 import { FidelityText } from '../common/FidelityText';
 import { FidelityReportCard } from '../components/FidelityReportCard';
 import { RegistryUi } from '../common/RegistryUi';
+import { AuthorizedFile, PickedFile, SessionContext } from '../models/SessionModels';
+import { FileAuthorizationService } from '../services/FileAuthorizationService';
+import { FormatTag } from '../components/FormatTag';
 
 @Entry
 @Preview
@@ -47,8 +50,19 @@ struct ConverterPage {
   private store: TaskStore = TaskStore.shared();
   private token: number = -1;
   private pendingSubmission: DemoSubmission | undefined = undefined;
+  @State authorizedFiles: AuthorizedFile[] = [];
+  @State sessionContext: SessionContext | null = null;
+  @State filePickerAvailable: boolean = false;
+  @State pickingFile: boolean = false;
+  @State fileSubmitting: boolean = false;
+  @State realConfirmationText: string = '';
+  private pendingRealSubmission: DemoSubmission | undefined = undefined;
+  private importGeneration: number = 0;
+  private inputPageAlive: boolean = true;
 
   aboutToAppear(): void {
+    this.inputPageAlive = true;
+    this.filePickerAvailable = FileAuthorizationService.isAvailable();
     this.observeTasks();
     this.loadFormats();
   }
@@ -89,12 +103,13 @@ struct ConverterPage {
     this.selectSource(Math.max(0, source));
   }
 
-  aboutToDisappear(): void { this.detach(); }
+  aboutToDisappear(): void { this.detach(); this.releaseUnsubmittedInputs(); }
   onPageShow(): void { this.observeTasks(); }
   onPageHide(): void { this.detach(); }
 
   private detach(): void {
     this.store.unsubscribe(this.token); this.token = -1;
+    this.realConfirmationText = ''; this.pendingRealSubmission = undefined;
     this.cancelConfirmation();
   }
   private receiveTasks(tasks: DemoTask[]): void {
@@ -227,6 +242,7 @@ struct ConverterPage {
     UiFeedback.toast(this.getUIContext(), this.errorText);
   }
   private start(): void {
+    if (this.authorizedFiles.length > 0) { this.startAuthorized(); return; }
     if (!this.registryReady || this.working || this.confirming) { return; }
     try {
       const route = this.activeRoutes.find((item: ConversionRouteDefinition) => item.id === this.routeId);
@@ -270,6 +286,167 @@ struct ConverterPage {
     } catch (error) { this.showError(error as Error); }
   }
 
+  private inputText(key: Resource): string { return FidelityText.read(this.getUIContext(), key); }
+  private inputFailure(reason: string): string {
+    if (reason === 'FILE_TOO_LARGE') { return this.inputText($r('app.string.file_too_large')); }
+    if (reason === 'BATCH_TOO_LARGE') { return this.inputText($r('app.string.input_batch_too_large')); }
+    if (reason === 'NATIVE_SINGLE_FILE_REQUIRED') { return this.inputText($r('app.string.input_single_file_required')); }
+    if (reason === 'DRM_BLOCKED' || reason === 'FILE_FORMAT_UNSUPPORTED') { return this.inputText($r('app.string.input_format_unsupported')); }
+    if (reason === 'MIGRATED_CONTRACT_NOT_IMPLEMENTED' || reason === 'NATIVE_ROUTE_UNAVAILABLE' ||
+      reason === 'NATIVE_ENGINE_UNAVAILABLE' || reason === 'NATIVE_MODULE_NOT_AVAILABLE') {
+      return this.inputText($r('app.string.input_engine_not_ready'));
+    }
+    if (reason === 'SANDBOX_FULL') { return this.inputText($r('app.string.input_storage_full')); }
+    if (reason === 'NATIVE_SESSION_TIMEOUT') { return this.inputText($r('app.string.input_session_timeout')); }
+    if (reason === 'FILE_GRANT_EXPIRED') { return this.inputText($r('app.string.input_grant_expired')); }
+    return this.inputText($r('app.string.input_action_failed'));
+  }
+  private fileSizeText(size: number): string {
+    return size >= 1024 * 1024 ? `${(size / (1024 * 1024)).toFixed(1)} MB` : `${(size / 1024).toFixed(1)} KB`;
+  }
+
+  private async pickSourceFiles(): Promise<void> {
+    if (this.pickingFile || this.fileSubmitting || this.working || this.confirming) { return; }
+    this.pickingFile = true;
+    const generation: number = ++this.importGeneration;
+    let owned: SessionContext | null = null;
+    try {
+      const picked: PickedFile[] = await FileAuthorizationService.pickDocuments(10);
+      if (!this.inputPageAlive || generation !== this.importGeneration || picked.length === 0) { return; }
+      owned = await FileAuthorizationService.createSession();
+      if (!this.inputPageAlive || generation !== this.importGeneration) {
+        await FileAuthorizationService.destroySession(owned.sessionId); return;
+      }
+      this.sessionContext = owned;
+      for (const file of picked) {
+        const authorized: AuthorizedFile = await FileAuthorizationService.copyToSandbox(file, owned.sessionId);
+        if (!this.inputPageAlive || generation !== this.importGeneration) {
+          await FileAuthorizationService.destroySession(owned.sessionId); return;
+        }
+        this.authorizedFiles = this.authorizedFiles.concat([authorized]);
+      }
+      this.sessionContext = FileAuthorizationService.getSession(owned.sessionId);
+      const index: number = this.formats.findIndex((format: RegistryFormat) => format.id === this.authorizedFiles[0].detectedFormatId);
+      if (index >= 0) { this.selectSource(index); }
+      this.errorText = '';
+    } catch (error) {
+      if (owned) {
+        try { await FileAuthorizationService.destroySession(owned.sessionId); }
+        catch (_) { /* Ability teardown retries owned directory cleanup. */ }
+      }
+      if (this.inputPageAlive && generation === this.importGeneration) {
+        this.authorizedFiles = []; this.sessionContext = null;
+        this.errorText = this.inputFailure((error as BridgeError).reason);
+        UiFeedback.toast(this.getUIContext(), this.errorText);
+      }
+    } finally { if (generation === this.importGeneration) { this.pickingFile = false; } }
+  }
+
+  private async removeSourceFile(fileId: string): Promise<void> {
+    const session: SessionContext | null = this.sessionContext;
+    if (!session || this.pickingFile || this.fileSubmitting || this.confirming || this.working) { return; }
+    this.pickingFile = true;
+    try {
+      await FileAuthorizationService.removeFile(session.sessionId, fileId);
+      this.authorizedFiles = this.authorizedFiles.filter((file: AuthorizedFile) => file.fileId !== fileId);
+      if (this.authorizedFiles.length === 0) {
+        await FileAuthorizationService.destroySession(session.sessionId); this.sessionContext = null;
+      } else { this.sessionContext = FileAuthorizationService.getSession(session.sessionId); }
+    } catch (error) { this.errorText = this.inputFailure((error as BridgeError).reason); }
+    finally { this.pickingFile = false; }
+  }
+
+  private releaseUnsubmittedInputs(): void {
+    this.inputPageAlive = false; this.importGeneration++; this.pickingFile = false;
+    this.realConfirmationText = ''; this.pendingRealSubmission = undefined;
+    if (!this.fileSubmitting && this.sessionContext) {
+      FileAuthorizationService.destroySession(this.sessionContext.sessionId).catch(() => { console.error('Owned input cleanup failed'); });
+      this.sessionContext = null; this.authorizedFiles = [];
+    }
+  }
+
+  private startAuthorized(): void {
+    if (this.pickingFile || this.fileSubmitting || this.working || this.confirming || !this.sessionContext) { return; }
+    try {
+      if (this.authorizedFiles.length !== 1) { throw new BridgeError('INVALID_REQUEST', 'NATIVE_SINGLE_FILE_REQUIRED'); }
+      const file: AuthorizedFile = this.authorizedFiles[0];
+      const route: ConversionRouteDefinition | undefined = this.activeRoutes.find((item: ConversionRouteDefinition) => item.id === this.routeId);
+      if (!route || file.detectedFormatId !== this.sourceId) {
+        this.errorText = this.inputText($r('app.string.input_source_mismatch')); return;
+      }
+      const fidelity: FidelitySelection = this.selection();
+      FidelityPolicy.validate(route, fidelity);
+      if (route.requiresUserApproval && !this.approved) { throw new BridgeError('INVALID_REQUEST', 'NATIVE_APPROVAL_REQUIRED'); }
+      this.pendingRealSubmission = { fileName: file.originalName, sourceId: this.sourceId, targetId: this.targetId,
+        routeId: route.id, approved: this.approved, fidelity: fidelity };
+      this.confirming = true; this.syncInteractivity();
+      const message: string = `${file.originalName}\n${this.sourceId} → ${this.targetId}\n${this.fidelityVM.selectionSummary}\n${this.fidelityVM.intentText}\n${this.fidelityVM.routeDescription}\n${route.id}\n\n${this.inputText($r('app.string.input_native_boundary'))}`;
+      try {
+        this.getUIContext().showAlertDialog({ title: this.inputText($r('app.string.input_confirm_title')), message: message, autoCancel: true,
+          primaryButton: { value: this.inputText($r('app.string.input_back_edit')), action: () => { this.cancelAuthorizedConfirmation(); } },
+          secondaryButton: { value: this.inputText($r('app.string.input_start_real')), action: () => { this.beginAuthorized(); } },
+          cancel: () => { this.cancelAuthorizedConfirmation(); } });
+      } catch (_) { this.realConfirmationText = message; }
+    } catch (error) { this.errorText = this.inputFailure((error as BridgeError).reason); }
+  }
+  private cancelAuthorizedConfirmation(): void {
+    this.pendingRealSubmission = undefined; this.realConfirmationText = ''; this.cancelConfirmation();
+  }
+  private async beginAuthorized(): Promise<void> {
+    const submission: DemoSubmission | undefined = this.pendingRealSubmission;
+    const session: SessionContext | null = this.sessionContext;
+    if (!submission || !session || this.fileSubmitting || this.working) { return; }
+    this.cancelAuthorizedConfirmation(); this.fileSubmitting = true;
+    try {
+      const task: DemoTask = await this.store.submitTask(submission.fileName, submission.sourceId, submission.targetId,
+        submission.routeId, submission.approved, submission.fidelity, this.authorizedFiles, session);
+      this.authorizedFiles = []; this.sessionContext = null;
+      if (this.inputPageAlive) { this.taskId = task.id; this.receiveTasks(this.store.snapshot()); }
+    } catch (error) { if (this.inputPageAlive) { this.errorText = this.inputFailure((error as BridgeError).reason); } }
+    finally { this.fileSubmitting = false; }
+  }
+
+  @Builder
+  authorizedInputPanel() {
+    Column({ space: 10 }) {
+      if (!this.filePickerAvailable) {
+        Text($r('app.string.preview_file_picker_hint')).fontSize(13).fontColor('#526077')
+      } else if (this.authorizedFiles.length === 0) {
+        Button($r('app.string.select_source_file')).enabled(!this.pickingFile && !this.fileSubmitting && !this.working && !this.confirming)
+          .accessibilityText($r('app.string.select_source_file')).onClick(() => { this.pickSourceFiles(); })
+      }
+      if (this.pickingFile) { Text($r('app.string.input_importing')).fontSize(13).fontColor('#526077') }
+      if (this.fileSubmitting) { Text($r('app.string.input_submitting')).fontSize(13).fontColor('#526077') }
+      ForEach(this.authorizedFiles, (file: AuthorizedFile) => {
+        Column({ space: 6 }) {
+          Text(file.originalName).fontSize(16).fontWeight(FontWeight.Medium)
+          Row({ space: 8 }) { Text(this.fileSizeText(file.byteSize)).fontSize(13); FormatTag({ formatId: file.detectedFormatId }) }
+          Text($r('app.string.input_detection_hint')).fontSize(12).fontColor('#526077')
+          if (file.warnings && file.warnings.length > 0) { Text($r('app.string.input_mime_warning')).fontSize(12).fontColor('#A65C00') }
+          Button($r('app.string.input_remove')).enabled(!this.pickingFile && !this.fileSubmitting && !this.working && !this.confirming)
+            .accessibilityText($r('app.string.input_remove')).onClick(() => { this.removeSourceFile(file.fileId); })
+        }.width('100%').padding(12).backgroundColor('#F2F5FA').borderRadius(10)
+      }, (file: AuthorizedFile) => file.fileId)
+      if (this.authorizedFiles.length > 0) { Text($r('app.string.input_native_boundary')).fontSize(12).fontColor('#526077') }
+    }.width('100%').alignItems(HorizontalAlign.Start)
+  }
+
+  @Builder
+  nativeInputResult(task: DemoTask) {
+    Column({ space: 10 }) {
+      StatusBadge({ text: taskStatusLabel(task.status, task.mode), color: taskStatusColor(task.status) })
+      Text(task.fileName).fontSize(16)
+      Text(task.stage).fontSize(13).fontColor('#526077')
+      if (task.error.length > 0) { Text(this.inputFailure(task.error.substring(task.error.indexOf(':') + 1))).fontColor('#C53030') }
+      if (isActiveTask(task.status)) {
+        Progress({ value: task.progress, total: 100, type: ProgressType.Linear }).width('100%')
+        Button($r('app.string.input_cancel_task')).onClick(() => { this.store.cancel(task.id); })
+      }
+      if (task.status === 'completed') { Text(task.resultLabel); FidelityReportCard({ report: task.fidelityReport }) }
+      Button($r('app.string.input_task_history')).onClick(() => { UiFeedback.open(this.getUIContext(), 'pages/TaskHistory'); })
+    }.padding(16).backgroundColor('#FFFFFF').borderRadius(16).width('100%')
+  }
+
   @Builder
   taskResult(task: DemoTask) {
     Column({ space: 12 }) {
@@ -302,7 +479,9 @@ struct ConverterPage {
     Scroll() {
       Column({ space: 12 }) {
         PageHeader({ title: '转换执行器', subtitle: '选择格式、设置保真策略、确认后体验任务流程' })
-        StatusBadge({ text: '演示模式 · 不生成文件', color: '#A65C00' })
+        if (this.authorizedFiles.length > 0) {
+          StatusBadge({ text: this.inputText($r('app.string.input_real_mode')), color: '#A65C00' })
+        } else { StatusBadge({ text: '演示模式 · 不生成文件', color: '#A65C00' }) }
         if (!this.registryReady) {
           Text(this.registryLoading ? $r('app.string.registry_loading') : $r('app.string.registry_error'))
           Button($r('app.string.registry_retry')).enabled(!this.registryLoading).onClick(() => { this.loadFormats(); })
@@ -335,9 +514,13 @@ struct ConverterPage {
             Checkbox({ name: 'approve-demo' }).select(this.approved).enabled(!this.working && !this.confirming)
               .accessibilityText($r('app.string.a11y_approval')).accessibilityDescription(this.fidelityVM.routeNotice)
               .onChange((value: boolean) => { this.approved = value; })
-            Text('同意演示所选路线配置的兼容降级').fontSize(13).fontColor('#526077').layoutWeight(1)
+            Text(this.authorizedFiles.length > 0 ? $r('app.string.input_approval') : '同意演示所选路线配置的兼容降级')
+              .fontSize(13).fontColor('#526077').layoutWeight(1)
           }
-          Text('③ 模拟选择文件').fontSize(18).fontWeight(FontWeight.Medium).fontColor('#172B4D')
+          Text(this.authorizedFiles.length > 0 ? $r('app.string.input_title') : '③ 模拟选择文件')
+            .fontSize(18).fontWeight(FontWeight.Medium).fontColor('#172B4D')
+          this.authorizedInputPanel()
+          if (this.authorizedFiles.length === 0) {
           TextInput({ text: this.fileName, placeholder: '填写文件名及扩展名' }).maxLength(180)
             .accessibilityText($r('app.string.a11y_filename')).accessibilityDescription($r('app.string.a11y_filename'))
             .enabled(!this.working && !this.confirming).onChange((value: string) => { this.fileName = value; this.errorText = ''; })
@@ -345,19 +528,27 @@ struct ConverterPage {
             .accessibilityText('填入示例文件名').accessibilityDescription('只设置演示名称，不读取文件')
             .onClick(() => { this.useExample(); })
           Text('只填写演示名称，不读取或上传设备文件。').fontSize(12).fontColor('#526077')
+          }
           if (this.errorText.length > 0) { Text(this.errorText).fontSize(14).fontColor('#C53030') }
-          Button(this.working ? '演示任务进行中' : this.confirming ? '等待配置确认' : '④ 确认配置并开始演示')
-            .accessibilityText($r('app.string.a11y_start')).accessibilityDescription(this.fidelityVM.selectionSummary)
-            .enabled(!this.working && !this.confirming && this.routeId.length > 0).width('100%').backgroundColor('#007AFF')
+          Button(this.authorizedFiles.length > 0 ? this.inputText($r('app.string.input_start_real')) :
+            this.working ? '演示任务进行中' : this.confirming ? '等待配置确认' : '④ 确认配置并开始演示')
+            .accessibilityText(this.authorizedFiles.length > 0 ? $r('app.string.input_start_real') : $r('app.string.a11y_start'))
+            .accessibilityDescription(this.fidelityVM.selectionSummary)
+            .enabled(!this.working && !this.confirming && !this.pickingFile && !this.fileSubmitting && this.routeId.length > 0).width('100%').backgroundColor('#007AFF')
             .onClick(() => { this.start(); })
           if (this.inlineConfirmationText.length > 0) {
             Text(this.inlineConfirmationText).fontSize(14).fontColor('#172B4D')
             Button('确认开始演示').onClick(() => { this.beginConfirmed(); })
             Button('返回修改').onClick(() => { this.cancelConfirmation(); })
           }
+          if (this.realConfirmationText.length > 0) {
+            Text(this.realConfirmationText).fontSize(14)
+            Button($r('app.string.input_start_real')).onClick(() => { this.beginAuthorized(); })
+            Button($r('app.string.input_back_edit')).onClick(() => { this.cancelAuthorizedConfirmation(); })
+          }
         }.width('100%').padding(16).backgroundColor('#FFFFFF').borderRadius(16).alignItems(HorizontalAlign.Start)
         ForEach(this.visibleTasks, (task: DemoTask) => {
-          this.taskResult(task)
+          if (task.mode === 'native') { this.nativeInputResult(task) } else { this.taskResult(task) }
         }, (task: DemoTask) => `${task.id}-${task.status}-${task.progress}-${task.elapsedMs}`)
       }.padding(24).width('100%').constraintSize({ maxWidth: 720 }).alignItems(HorizontalAlign.Start)
     }.height('100%').width('100%').backgroundColor('#F2F5FA')

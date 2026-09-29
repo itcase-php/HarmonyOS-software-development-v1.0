@@ -3,18 +3,27 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { NativeBridge } from '../services/NativeBridge';
 import { TaskStore } from '../viewmodel/TaskStore';
+import { FileAuthorizationService } from '../services/FileAuthorizationService';
 
 const DOMAIN = 0x0000;
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+    try { FileAuthorizationService.configure(this.context); }
+    catch (_) { hilog.error(DOMAIN, 'FileAuthorization', '%{public}s', 'File service unavailable'); }
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onCreate');
   }
 
   onDestroy(): void {
-    TaskStore.shared().shutdown();
+    const store: TaskStore = TaskStore.shared();
+    const cleanup: () => Promise<void> = FileAuthorizationService.captureCleanup();
+    store.shutdown();
     NativeBridge.shutdown().catch(() => {
       hilog.error(DOMAIN, 'NativeBridge', '%{public}s', 'Native shutdown failed');
+    }).finally(() => {
+      store.releaseAuthorizedSessions(cleanup).catch(() => {
+        hilog.error(DOMAIN, 'FileAuthorization', '%{public}s', 'Owned workspace cleanup failed');
+      });
     });
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onDestroy');
   }

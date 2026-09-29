@@ -1,8 +1,8 @@
 {
   "scope": "hypium_test_source_executed_with_host_adapter",
   "result": "passed",
-  "suiteCount": 8,
-  "testedCases": 55,
+  "suiteCount": 9,
+  "testedCases": 61,
   "cases": [
     {
       "suite": "ConversionCore",
@@ -277,6 +277,36 @@
     {
       "suite": "FidelitySettingsVM",
       "name": "isolates option arrays and individual SelectOption values",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "covers every extension in the complete approved catalogue",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "covers registered MIME values including case and parameters",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "normalizes jpg through the registered jpeg extension",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "prefers the extension when MIME disagrees",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "uses MIME when no registered extension exists",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "does not invent unsupported formats or treat a trailing dot as an extension",
       "result": "passed"
     }
   ],

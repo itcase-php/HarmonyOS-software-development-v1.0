@@ -1,6 +1,6 @@
 # 迁移结果与实现边界
 
-更新日期：2026-09-29。本文描述当前实际工程；V1.0 方案和七份专题文档继续描述目标架构，不能据此认定所有功能已经实现。最新修复与验证见[格式目录恢复与回归验证](格式目录恢复与回归验证.md)；上一轮审计记录见[审计改进与验证说明](审计改进与验证说明.md)。操作步骤继续参考《交互功能与使用说明》及《保真度控制与参数管道》。
+更新日期：2026-09-29。本文描述当前工程；V1.0 方案和专题文档描述目标，不能认定全部实现。最新新增入口和边界见[文件授权与输入管理](文件授权与输入管理说明.md)，原目录恢复及审计记录保留作历史溯源。
 
 ## 已迁入并接入工程
 
@@ -18,15 +18,16 @@
 
 | 范围 | 实际状态 |
 | --- | --- |
-| 页面/组件 | 保留五页及原交互；FidelitySettingsCard 使用单个 FidelitySettingsVM，保留三事件和内部展开状态，组合 QualitySelector；转换页用一个 @State fidelityVM 发布选择和展示快照。格式浏览器、保真度、路线提示、报告及主要读屏标签使用 base/en_US 资源；其他旧页面未全面国际化。首页/格式浏览器/转换页/指南立即使用完整目录，资源或 Native 检测失败仍保留演示；真实文件选择/结果预览仍待引擎接入 |
+| 页面/组件 | 保留五页及原交互；FidelitySettingsCard 使用单个 FidelitySettingsVM，保留三事件和内部展开状态，组合 QualitySelector；转换页用一个 @State fidelityVM 发布选择和展示快照。格式浏览器、保真度、路线提示、报告及主要读屏标签使用 base/en_US 资源；其他旧页面未全面国际化。首页/格式浏览器/转换页/指南立即使用完整目录，资源或 Native 检测失败仍保留演示；已新增真实文件选择/卡片/移除，结果预览仍待引擎接入 |
 | 模型 | DemoTask.clone() 集中复制全部任务字段及报告；FidelitySettingsVM.clone() 复制完整面板状态及选项；TaskRuntime 支持独立测试时钟。Native 协议/类型声明和 C++ DTO/IConverter 保持原样 |
+| 文件输入 | 新增 SessionModels、FormatDetector、CoreFileKit 平台适配器、FileAuthorizationService 和 AuthorizedInputTask；Picker 授权、256 KiB 分块副本、100/300 MiB 预算、SHA-256、串行复制、幂等清理与单文件真实确认/提交。C++ 会话占位如实失败；正常生命周期逻辑有宿主验证，真实设备验收待执行 |
 | 格式注册 | 完整的 18 格式、43 规划路线从原 shared JSON 生成，启动和预览即刻可查询，资源加载失败不会缩减。rawfile 核对 SHA-256、schema/config 及数量后原子替换；并发调用共享加载，失败/五秒超时可重试，迟到数据不覆盖缓存，查询返回深复制。真实可用路径还要求资源校验成功、配置 available 状态和 Native 发布证据 |
-| 转换规划/任务管理 | 保留参数快照、2/3.5/6 秒活动时长、单并发 FIFO 与暂停/恢复/取消；enqueue 返回 queued/0%，首次 50ms 回调、后续 200ms 递归 setTimeout，advance 有 try/finally 防重入和时钟回拨保护。enqueueNative/NativeTaskRunner 沿用 NativeBridge.execute；保护门禁、进度序号、取消后迟到结果与释放仍接线。当前真实路线为 0；Native 暂停、授权文件、持久化和后台服务未实现 |
+| 转换规划/任务管理 | 保留参数快照、2/3.5/6 秒活动时长、单并发 FIFO 与暂停/恢复/取消；enqueue 返回 queued/0%，首次 50ms 回调、后续 200ms 递归 setTimeout，advance 有 try/finally 防重入和时钟回拨保护。enqueueNative/NativeTaskRunner 沿用 NativeBridge.execute；保护门禁、进度序号、取消后迟到结果与释放仍接线。当前真实路线为 0；授权输入与单文件真实提交入口已实现，C++ 会话/工作区仍占位；Native 暂停、持久化和后台服务未实现 |
 | NativeBridge | 保留动态 so 导入、13 API 与 isNativeAvailable；原失败后重试已存在，审计补共享加载尝试身份检查，防止旧拒绝清空新重试。参数/结果校验保留，能力查询五秒超时；预览器缺少 Native 模块或应用资源上下文仍可使用完整目录及演示，检测或资源校验失败不会启用真实路线 |
 | C++ | 正式 entry 模块注册、异步 NAPI 调度、异常边界、五领域 unavailable 适配器及可生成注册表已接入；保留原 add 示例导出，业务不使用它 |
 | IR/资源/保真 | demo commit 生成模拟报告；native 仅从 ConvertResult.fidelity 读取并校验意图/等级/指标和证据，不生成示例填补缺失报告。两者共用深复制工具，界面按 mode 显示。流式 IR、资源监控、真实输出校验器尚未实现 |
 | 配置更新 | 构建生成、运行时打包 JSON 解码/哈希验证及首次加载的原子缓存已实现。配置数字签名、热更新、回滚和新版本快照切换仍待开发；摘要校验不等于签名验证 |
-| 测试 | 15 项交互、13 项保真、12 项原重构、55 项 Hypium 源码和 16 项审计及目录回归，共 111 项宿主检查通过。8 个 Hypium 套件注册到本地/ohosTest，源码通过宿主适配器执行；应用/测试包编译和 HAP 配置核验通过。目录回归覆盖 18×18 格式组合和 15,552 组质量/意图/最低等级选择。实际设备 Hypium、Previewer、读屏和真实引擎仍未执行 |
+| 测试 | 15 项交互、13 项保真、12 项原重构、61 项 Hypium 源码、16 项审计/目录回归和 35 项输入管理，共 152 项宿主检查通过。9 个 Hypium 套件注册到本地/ohosTest，源码通过宿主适配器执行；应用/测试包编译和 HAP 配置核验通过。目录回归覆盖 18×18 格式组合和 15,552 组质量/意图/最低等级选择。实际设备 Hypium、Previewer、读屏和真实引擎仍未执行 |
 
 ## Native API 的当前行为
 
@@ -44,6 +45,8 @@
 NAPI 调度不在 worker 中访问 JS 对象；异常在入口和 completion 捕获，正常可用环境中拒绝原 Promise 并释放异步工作句柄。环境销毁/内存完全耗尽时 NAPI 操作只可尽力清理。C++ 异常捕获不能防御第三方解析器的越界或系统级信号；未来仍需模糊测试、资源限制与引擎隔离评估。
 
 ## 保留与调整
+
+本次 P0 输入管理前快照：`D:/HarmonyOS/migration-backups/harmonyOS-before-input-management-20260929-213740`。用户批准兼容方案后仅新增输入模块和接线；22 个 TaskStore 原方法及规划器/Native/完整目录基线一致，C++、权限声明和签名配置未变。真机/Previewer 验收未执行，SDD 状态为 implemented_pending_device_validation。
 
 本轮审计修改前的完整跟踪文件快照：`D:/HarmonyOS/migration-backups/harmonyOS-before-audit-20260929-194609`。已演进 RegistryTypes、RegistryData、NativeBridge 和 FeatureGuide；NativeProtocol、C++ converter.h、五页路由、原始格式/路线 JSON 与迁移归档仍原样保留。以下段落是此前各轮的历史记录，不能作为本轮未改文件清单。
 
@@ -67,6 +70,6 @@ AppScope bundleName、版本号、应用名称、已有 phone 设备声明、SDK
 
 ## 接入真实引擎的顺序
 
-先实现并验证文件授权与受控副本、Native 完整解码及路径/资源/保护校验，再用图片→PDF 建立首条真实链路。替换 `engines/image` / `engines/pdf` 适配器，补齐输出验证、工作目录清理、Native 引用释放与性能测量。绑定层的能力查询和 execute 目前是明确的占位逻辑，首次启用真实转换前需完成调度器接线；引擎注册表已经可由配置生成，后续新增引擎无需手写格式分支。
+ArkTS 文件授权与受控副本已完成宿主/编译验证，先完成设备验收和 Native 会话/工作区、完整解码及路径/资源/保护校验，再用图片→PDF 建立首条真实链路。替换 `engines/image` / `engines/pdf` 适配器，补齐输出验证、工作目录清理、Native 引用释放与性能测量。绑定层的能力查询和 execute 目前是明确的占位逻辑，首次启用真实转换前需完成调度器接线；引擎注册表已经可由配置生成，后续新增引擎无需手写格式分支。
 
 只有真实转换、独立输出验证和发布证据通过后，才将对应配置 route 改为 available，并由 Native 公布相同能力。DRM/加密/签名深层阻断测试必须在该门禁之前完成；当前扩展名黑名单查询不是内容保护检测器。接入后禁止返回无效“成功”。

@@ -1,0 +1,122 @@
+{
+  "scope": "input_management_host_and_compiler_validation_not_device_acceptance",
+  "date": "2026-09-29",
+  "result": "passed",
+  "sddStatus": "implemented_pending_device_validation",
+  "baseCommit": "dcabe166d076e9607dfdf908559fc55e46a986ea",
+  "backup": "D:/HarmonyOS/migration-backups/harmonyOS-before-input-management-20260929-213740",
+  "approval": {
+    "record": "spec/changes/file-authorization-input-management/implementation-review.md",
+    "answer": "同意兼容方案，保留现有功能和 C++ 占位（推荐）",
+    "scope": "existing APIs/error codes; no FILE_ACCESS_MANAGER; single-file real submission; truthful C++ placeholder failure"
+  },
+  "formats": 18,
+  "plannedRoutes": 43,
+  "availableRoutes": 0,
+  "formatIds": [
+    "pdf",
+    "docx",
+    "pptx",
+    "xlsx",
+    "txt",
+    "md",
+    "jpeg",
+    "png",
+    "webp",
+    "heif",
+    "mp3",
+    "wav",
+    "flac",
+    "aac",
+    "m4a",
+    "ogg",
+    "opus",
+    "wma"
+  ],
+  "preservation": {
+    "taskStoreOriginalMethods": 22,
+    "plannerNativeCatalogueFiles": 7,
+    "cppPermissionBuildFilesByteIdentical": 20,
+    "proof": "tests/approved-input-baseline.json"
+  },
+  "totalHostChecks": 152,
+  "hostChecks": [
+    {
+      "report": "tests/generated/interaction-check-report.json",
+      "passed": 15
+    },
+    {
+      "report": "tests/generated/fidelity-check-report.json",
+      "passed": 13
+    },
+    {
+      "report": "tests/generated/refactor-check-report.json",
+      "passed": 12
+    },
+    {
+      "report": "tests/generated/hypium-host-check-report.json",
+      "passed": 61
+    },
+    {
+      "report": "tests/generated/audit-check-report.json",
+      "passed": 16
+    },
+    {
+      "report": "tests/generated/input-management-check-report.json",
+      "passed": 35
+    }
+  ],
+  "hypiumSuiteCount": 9,
+  "applicationBuild": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "elapsed": "15 s 877 ms \u001b[39m",
+    "artifact": "entry/build/default/outputs/default/entry-default-unsigned.hap",
+    "bytes": 3801363,
+    "sha256": "25a9d3d0fd45497247fffddaa1022d6dacf974b24107d99fcd8c101054d2af03",
+    "log": "tests/generated/input-management-build.log",
+    "signing": "unsigned",
+    "arkTSCompileErrors": 0
+  },
+  "testBuild": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "elapsed": "15 s 103 ms \u001b[39m",
+    "artifact": "entry/build/default/outputs/ohosTest/entry-ohosTest-unsigned.hap",
+    "bytes": 1849731,
+    "sha256": "1f99cc39298d2b649df546f7d1194876897ec549b92c273883d7cf1203cbbd1f",
+    "log": "tests/generated/input-management-test-build.log",
+    "signing": "unsigned",
+    "arkTSCompileErrors": 0
+  },
+  "hapInspection": {
+    "result": "passed",
+    "report": "tests/generated/hap-package-report.json",
+    "rawfileMatchesSource": true
+  },
+  "designChecks": {
+    "result": "passed",
+    "report": "tests/generated/design-check-report.json"
+  },
+  "migrationChecks": {
+    "result": "passed",
+    "report": "tests/generated/migration-check-report.json"
+  },
+  "warnings": {
+    "observedFinalBuilds": [
+      "existing FormatRegistry crypto API system capability warnings",
+      "No signingConfig found"
+    ],
+    "knownTestTemplateWarning": "duplicate start_window_background resource, recorded in prior full resource rebuilds"
+  },
+  "limitations": {
+    "independentEditorDiagnostics": "tool_unavailable; actual ArkTS compiler passed",
+    "connectedDevices": "hdc list targets: [Empty]",
+    "realPickerExecution": "not_executed",
+    "deviceHypium": "not_executed",
+    "previewerExecution": "not_executed",
+    "accessibilityDeviceValidation": "not_executed",
+    "realConversion": "not_executed; native session/workspace and engines remain placeholders",
+    "forcedProcessTerminationCleanup": "recovery sweep not implemented"
+  }
+}

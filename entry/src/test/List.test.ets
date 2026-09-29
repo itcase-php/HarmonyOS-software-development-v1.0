@@ -7,6 +7,7 @@ import demoFidelityReportTest from '../ohosTest/ets/test/DemoFidelityReport.test
 import fidelityReportSnapshotTest from '../ohosTest/ets/test/FidelityReportSnapshot.test';
 import formatRegistryTest from '../ohosTest/ets/test/FormatRegistry.test';
 import fidelitySettingsVMTest from '../ohosTest/ets/test/FidelitySettingsVM.test';
+import formatDetectorTest from '../ohosTest/ets/test/FormatDetector.test';
 
 export default function testsuite() {
   localUnitTest();
@@ -18,4 +19,5 @@ export default function testsuite() {
   fidelityReportSnapshotTest();
   formatRegistryTest();
   fidelitySettingsVMTest();
+  formatDetectorTest();
 }

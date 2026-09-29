@@ -1,0 +1,151 @@
+{
+  "scope": "input_authorization_logic_with_mock_filesystem_and_native_adapters",
+  "result": "passed",
+  "testedCases": 35,
+  "cases": [
+    {
+      "name": "All approved TaskStore methods and planner Native registry source files remain unchanged",
+      "result": "passed"
+    },
+    {
+      "name": "Harmony adapter handles multiple chunks and partial writes without offsets or descriptor leaks",
+      "result": "passed"
+    },
+    {
+      "name": "Harmony picker derives file metadata from authorized descriptors and closes each descriptor",
+      "result": "passed"
+    },
+    {
+      "name": "Harmony adapter rejects oversized files and low space before opening a destination",
+      "result": "passed"
+    },
+    {
+      "name": "Harmony adapter rejects source size changes and zero writes and closes both descriptors",
+      "result": "passed"
+    },
+    {
+      "name": "Harmony copy cancellation and close failure still attempt both descriptor closures",
+      "result": "passed"
+    },
+    {
+      "name": "Harmony file SDK permission and storage errors normalize into existing BridgeError codes",
+      "result": "passed"
+    },
+    {
+      "name": "Format detection covers every extension and MIME in the unchanged 18-format registry",
+      "result": "passed"
+    },
+    {
+      "name": "Standalone preview has no configured picker and does not touch file APIs",
+      "result": "passed"
+    },
+    {
+      "name": "Picker cancellation is empty and invalid counts or malformed URIs are rejected",
+      "result": "passed"
+    },
+    {
+      "name": "Oversized picker metadata is rejected before creating any sandbox file",
+      "result": "passed"
+    },
+    {
+      "name": "Unauthorized URI and edited picker metadata never reach the copy adapter",
+      "result": "passed"
+    },
+    {
+      "name": "Controlled random paths real copied sizes SHA-256 and snapshots preserve ownership",
+      "result": "passed"
+    },
+    {
+      "name": "MIME disagreement records a warning and keeps the registered extension priority",
+      "result": "passed"
+    },
+    {
+      "name": "Blocked protected extensions and unregistered formats cannot create input copies",
+      "result": "passed"
+    },
+    {
+      "name": "Actual oversized data and copy failures remove incomplete files and normalize errors",
+      "result": "passed"
+    },
+    {
+      "name": "Hash failures and invalid digests remove the copy and do not publish an authorized file",
+      "result": "passed"
+    },
+    {
+      "name": "Insufficient storage rejects copying before an adapter opens the input",
+      "result": "passed"
+    },
+    {
+      "name": "Concurrent imports serialize the 300MB budget and cannot overfill the session",
+      "result": "passed"
+    },
+    {
+      "name": "Session destruction during copying waits for cancellation and leaves no late files",
+      "result": "passed"
+    },
+    {
+      "name": "Removing inputs requires ownership and updates both disk and session snapshots",
+      "result": "passed"
+    },
+    {
+      "name": "Concurrent destroy is idempotent and cleanup cannot target caller supplied paths",
+      "result": "passed"
+    },
+    {
+      "name": "Failed cleanup can retry and ability cleanup closes all sessions and grants",
+      "result": "passed"
+    },
+    {
+      "name": "Claimed task inputs cannot be removed or imported again by the page",
+      "result": "passed"
+    },
+    {
+      "name": "No authorized files preserves original queued demo state timer and duration",
+      "result": "passed"
+    },
+    {
+      "name": "Current Native session placeholder produces a failed real task without demo success and releases input",
+      "result": "passed"
+    },
+    {
+      "name": "Forged authorized hashes are rejected before Native initialization",
+      "result": "passed"
+    },
+    {
+      "name": "Native single-file and fidelity gates stay intact for real submissions",
+      "result": "passed"
+    },
+    {
+      "name": "Successful mock bootstrap uses Native handles and existing unavailable-route gate before probing",
+      "result": "passed"
+    },
+    {
+      "name": "Queued real cancellation removes owned inputs and cannot resurrect the task",
+      "result": "passed"
+    },
+    {
+      "name": "Running real cancellation keeps sandbox inputs until the Native call and release settle",
+      "result": "passed"
+    },
+    {
+      "name": "Late Native workspace registration after timeout is released and never enqueued",
+      "result": "passed"
+    },
+    {
+      "name": "Native bootstrap timeout destroys inputs and prevents a late workspace registration",
+      "result": "passed"
+    },
+    {
+      "name": "Ability shutdown closes owned input sessions without affecting the existing shutdown path",
+      "result": "passed"
+    },
+    {
+      "name": "Delayed old ability cleanup cannot close a newly configured file service",
+      "result": "passed"
+    }
+  ],
+  "realPickerExecution": "not_executed",
+  "deviceExecution": "not_executed",
+  "previewerExecution": "not_executed",
+  "realConversion": "not_executed"
+}

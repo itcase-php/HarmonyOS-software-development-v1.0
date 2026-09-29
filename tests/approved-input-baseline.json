@@ -1,0 +1,36 @@
+{
+  "baselineCommit": "dcabe166d076e9607dfdf908559fc55e46a986ea",
+  "taskStoreMethods": {
+    "shared": "c941dc86eb759bb353e8a2f6c3dad122f33ad0d86609548abbb57728d372e9a7",
+    "snapshot": "17169e92d0a2f26e8a3cd01cf8110f00ed2eb057c9fb2aef3fcb63cdc3ba0585",
+    "subscribe": "4634d57c524d0e874506f8acb7219f2a590c425bec831fb69fbc54aad53b7443",
+    "unsubscribe": "a0c139d2894b8d575df250903f8b9c355611d28066a31dd2e4506d74add74207",
+    "enqueue": "75f56b2e2f89a4dd417f0ebd5999b48dd6c0296f7c2664c3abab585eac82aa4a",
+    "enqueueNative": "f579101bac41e49f50fc2b13dc7cca3cf686b54725fb128647af99e6b23a1885",
+    "ensureCapacity": "717792eaca2d6504bfd37d9e7c7a1b4e5d74ab3a7a4571513965d30212b5528b",
+    "advance": "085685ac224f34a4586c8f66c2d63c90c27a3dcc919ea843cbada539a4557684",
+    "advanceOnce": "7ebf0e73ae2f999e593f0528c21945c1344435ade345a07c3adb0137f3579aaa",
+    "dispatchNative": "0341978cab2a950fa78f744f43134c6fcf127353d5308c7f039a78166ab164f2",
+    "receiveNativeProgress": "2052b623003a3a78a1b72d1dcf6bd6589e0d692773f8754999df172c8740d80a",
+    "executeNative": "30d2de0a958c30a1e99dccbbd3f728b3b5dae8162d2200b5d1376154e54820cc",
+    "releaseResult": "213edc0e1edb5706079ecc051c26ed0a935c543ac83a948e67e650d52e07367f",
+    "pause": "b4a366e998a1590924318f1d047c76286f6bfb3722817f1b649524dd214cdae0",
+    "resume": "7b01ad6e89ef10ef01efba3a760d591d1757966d1cc9b5ef540230a0d727f53c",
+    "cancel": "b5b8dbc97cf5acfef4931910beff509cacd35585f475e0c0745b54964ed5fd91",
+    "clearFinished": "91f4337e3fa22bc74a1382a98135076ad7e32d10f9747040fab0f07e5a402242",
+    "hasRunnableWork": "709c2e0acdc07f7ec7fcce4dcf09ca7fc854e9807ca9ac2a7ac87fd12b14eca9",
+    "startTimer": "9f6bae42a345f3c85d2d407f0444e286577ff854cfb68e22971533f9fa2f1c7f",
+    "stopTimer": "ba5e225b86a8afc27c6242698a1feb0f44521b6ba756e9c9813aea51f091323d",
+    "shutdown": "9343e9a42b6f92bab22615611decb688fa2b78769e0542696aff9367640eb1e0",
+    "notify": "703c935da55123a9a258a80c8ee0d5fadb9a9e99b591cf1a8ba9c0d960f98718"
+  },
+  "unchangedFiles": {
+    "entry/src/main/ets/viewmodel/ConversionPlanner.ets": "38ce704e428e9a0cadb63a6920e2244790b4b5084da0d3ebf0c9819bfa36e681",
+    "entry/src/main/ets/services/NativeTaskRunner.ets": "4c7668402b879d5e049c0f5a90fc6b5a5b4f4a0ea1f310054b3a06edd7991d06",
+    "entry/src/main/ets/services/NativeBridge.ets": "206513cfbe9f1c75dcb0f8f97eda617d08763548e19a6c46ea55ff07cfa8b9ff",
+    "entry/src/main/ets/models/NativeProtocol.ets": "2a47dbe12f5cac8cc84654a27f6769d82cc3baea9d9b6c3751fd661e4db800e0",
+    "entry/src/main/ets/generated/RegistryData.ets": "013490e513ad200a886f5ca0c6a72d2da23d3341900d89ebfab1fd6e138792a4",
+    "shared/format-registry/formats.json": "55d416083a65f2cc13a64a17aec06fb23def491534186d013cf5b88ceb8d4f10",
+    "shared/format-registry/conversion-matrix.json": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270"
+  }
+}

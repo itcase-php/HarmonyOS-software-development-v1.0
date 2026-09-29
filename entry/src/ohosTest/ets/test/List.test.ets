@@ -7,6 +7,7 @@ import demoFidelityReportTest from './DemoFidelityReport.test';
 import fidelityReportSnapshotTest from './FidelityReportSnapshot.test';
 import formatRegistryTest from './FormatRegistry.test';
 import fidelitySettingsVMTest from './FidelitySettingsVM.test';
+import formatDetectorTest from './FormatDetector.test';
 
 export default function testsuite() {
   abilityTest();
@@ -18,4 +19,5 @@ export default function testsuite() {
   fidelityReportSnapshotTest();
   formatRegistryTest();
   fidelitySettingsVMTest();
+  formatDetectorTest();
 }

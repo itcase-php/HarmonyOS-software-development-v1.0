@@ -31,8 +31,10 @@ function host(options = {}) {
     setTimeout(callback) { timeouts.set(++intervalId,callback); return intervalId; },
     clearTimeout(id) { timeouts.delete(id); }});
   function load(relative, from=sourceRoot) {
+    if (options.sdkModules && Object.prototype.hasOwnProperty.call(options.sdkModules,relative)) return options.sdkModules[relative];
+    if (relative === '@kit.CoreFileKit') return {};
     if (relative === '@ohos/hypium' && options.hypium) return options.hypium;
-    if (relative === '@kit.ArkTS') return {util:{TextDecoder:{create:(encoding,settings)=>{
+    if (relative === '@kit.ArkTS') return {util:{generateRandomUUID:()=>crypto.randomUUID(),TextDecoder:{create:(encoding,settings)=>{
       const decoder=new TextDecoder(encoding,settings);return {decodeToString:bytes=>decoder.decode(bytes)};
     }}}};
     if (relative === '@kit.CryptoArchitectureKit') return {cryptoFramework:{createMd:algorithm=>{
