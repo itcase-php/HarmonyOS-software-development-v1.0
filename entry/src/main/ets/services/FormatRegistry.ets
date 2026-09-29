@@ -1,19 +1,20 @@
 import { util } from '@kit.ArkTS';
 import { cryptoFramework } from '@kit.CryptoArchitectureKit';
-import { registryMetadata } from '../generated/RegistryData';
+import { bundledFormats, bundledRoutes, registryMetadata } from '../generated/RegistryData';
 import { RegistryFormat, ConversionRouteDefinition, BundledResourceReader,
   FormatsDocument, MatrixDocument, RegistrySnapshot } from '../models/RegistryTypes';
 import { CapabilityMatrix } from '../models/NativeProtocol';
 import { BridgeError } from '../common/BridgeError';
 
-// Only generated metadata is compiled. Rawfile data is read/verified once on demand.
+// The complete generated catalogue is available immediately, including in Previewer.
 // Pinned digests belong to this build; hot updates require a separate signed-config design.
 export class FormatRegistry {
   private static ready: boolean = false;
   private static loading: Promise<void> | null = null;
-  private static formats: RegistryFormat[] = [];
-  private static routes: ConversionRouteDefinition[] = [];
+  private static formats: RegistryFormat[] = bundledFormats;
+  private static routes: ConversionRouteDefinition[] = bundledRoutes;
 
+  // True only after rawfile verification; offline catalogue queries do not require it.
   static isInitialized(): boolean { return FormatRegistry.ready; }
 
   static async initialize(resources: BundledResourceReader): Promise<void> {
@@ -29,12 +30,11 @@ export class FormatRegistry {
 
   private static async loadAndInstall(resources: BundledResourceReader): Promise<void> {
     const snapshot = await FormatRegistry.readWithinDeadline(resources);
-    // Commit both documents after every check; never expose a partial registry.
+    // Replace both documents only after every integrity check succeeds.
     FormatRegistry.formats = snapshot.formats;
     FormatRegistry.routes = snapshot.routes;
     FormatRegistry.ready = true;
   }
-
   static async verifyBundledResources(resources: BundledResourceReader): Promise<void> {
     await FormatRegistry.readWithinDeadline(resources);
   }
@@ -99,21 +99,14 @@ export class FormatRegistry {
     }
   }
 
-  private static requireReady(): void {
-    if (!FormatRegistry.ready) { throw new BridgeError('CONFIG_INVALID', 'REGISTRY_NOT_INITIALIZED'); }
-  }
-
   static listFormats(): RegistryFormat[] {
-    FormatRegistry.requireReady();
     return JSON.parse(JSON.stringify(FormatRegistry.formats)) as RegistryFormat[];
   }
   static listPlannedRoutes(): ConversionRouteDefinition[] {
-    FormatRegistry.requireReady();
     return JSON.parse(JSON.stringify(FormatRegistry.routes)) as ConversionRouteDefinition[];
   }
 
   static normalizeFormat(id: string): string {
-    FormatRegistry.requireReady();
     const value = id.trim().toLowerCase().replace(/^\./, '');
     const alias = registryMetadata.migrationAliases.find((item) => item.from === value);
     if (alias) { return alias.to; }
@@ -126,6 +119,7 @@ export class FormatRegistry {
   }
 
   static availableRoutes(capabilities: CapabilityMatrix): ConversionRouteDefinition[] {
+    if (!FormatRegistry.ready) { return []; }
     return FormatRegistry.listPlannedRoutes().filter((route: ConversionRouteDefinition) => {
       const actual = capabilities.routes.find((item) => item.routeId === route.id);
       return route.status === 'available' && actual !== undefined && actual.availability === 'available' &&

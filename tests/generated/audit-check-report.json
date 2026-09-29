@@ -1,14 +1,14 @@
 {
   "scope": "audit_regressions_with_host_sdk_and_native_adapters",
   "result": "passed",
-  "testedCases": 12,
+  "testedCases": 16,
   "cases": [
     {
       "name": "Generated metadata pins rawfile hashes counts and the unchanged planned matrix",
       "result": "passed"
     },
     {
-      "name": "Cold registry rejects queries before initialization",
+      "name": "Cold registry immediately exposes all 18 approved formats and 43 planned routes",
       "result": "passed"
     },
     {
@@ -32,6 +32,22 @@
       "result": "passed"
     },
     {
+      "name": "Standalone preview and failed resource reads retain the complete catalogue and allow retry",
+      "result": "passed"
+    },
+    {
+      "name": "Unavailable preview hashing and modified resources preserve demo planning without approving Native routes",
+      "result": "passed"
+    },
+    {
+      "name": "Unverified offline catalogue snapshots cannot be mutated by callers",
+      "result": "passed"
+    },
+    {
+      "name": "Offline single-file targets intents minimum tiers and quality sorting match the verified catalogue",
+      "result": "passed"
+    },
+    {
       "name": "Many Native callers share one failed import then one successful retry",
       "result": "passed"
     },
@@ -52,7 +68,7 @@
       "result": "passed"
     }
   ],
-  "registryDataLines": 74,
+  "registryDataLines": 142,
   "nativeCalls": "mocked_exports_only",
   "realConversion": "not_executed",
   "deviceExecution": "not_executed",

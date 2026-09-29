@@ -37,9 +37,9 @@ struct ConverterPage {
   @State working: boolean = false;
   @State confirming: boolean = false;
   @State inlineConfirmationText: string = '';
-  @State registryReady: boolean = false;
+  @State registryReady: boolean = true;
   @State registryLoading: boolean = false;
-  private formats: RegistryFormat[] = [];
+  private formats: RegistryFormat[] = FormatRegistry.listFormats();
   private targetFormats: RegistryFormat[] = [];
   private activeRoutes: ConversionRouteDefinition[] = [];
   private supportedIntents: IntentChoice[] = [];
@@ -55,6 +55,7 @@ struct ConverterPage {
 
   private async loadFormats(): Promise<void> {
     if (this.registryLoading) { return; }
+    this.initializeSelections();
     this.registryLoading = true;
     try {
       await RegistryUi.ensure(this.getUIContext());

@@ -1,0 +1,100 @@
+{
+  "scope": "format_catalogue_restoration_not_device_or_real_conversion",
+  "date": "2026-09-29",
+  "baseCommit": "1e3a052d7434c1210ae17a6a3a70719e32f39fdc",
+  "approvedBaseline": "48f2bd9",
+  "result": "passed",
+  "formats": 18,
+  "plannedRoutes": 43,
+  "availableRoutes": 0,
+  "formatIds": [
+    "pdf",
+    "docx",
+    "pptx",
+    "xlsx",
+    "txt",
+    "md",
+    "jpeg",
+    "png",
+    "webp",
+    "heif",
+    "mp3",
+    "wav",
+    "flac",
+    "aac",
+    "m4a",
+    "ogg",
+    "opus",
+    "wma"
+  ],
+  "catalogueSource": "shared/format-registry JSON; complete generated offline snapshot",
+  "originalDefinitionsPreserved": true,
+  "plannerUnchangedFromApprovedBaseline": true,
+  "plannerSha256": "38ce704e428e9a0cadb63a6920e2244790b4b5084da0d3ebf0c9819bfa36e681",
+  "offlinePlanningComparisons": 15552,
+  "totalHostChecks": 111,
+  "hostChecks": {
+    "interactionLogicTests": {
+      "passed": 15,
+      "report": "tests/generated/interaction-check-report.json"
+    },
+    "fidelityLogicTests": {
+      "passed": 13,
+      "report": "tests/generated/fidelity-check-report.json"
+    },
+    "refactorLogicTests": {
+      "passed": 12,
+      "report": "tests/generated/refactor-check-report.json"
+    },
+    "hypiumSourceHostTests": {
+      "passed": 55,
+      "report": "tests/generated/hypium-host-check-report.json"
+    },
+    "auditRegressionTests": {
+      "passed": 16,
+      "report": "tests/generated/audit-check-report.json"
+    }
+  },
+  "applicationBuild": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "elapsed": "17 s 745 ms",
+    "tasks": {
+      "total": 33,
+      "executed": 27,
+      "upToDate": 6
+    },
+    "artifact": "entry/build/default/outputs/default/entry-default-unsigned.hap",
+    "sha256": "5c4b23bb25045fc7539a280de7bb5568df3bdc334142663ae3aa27e4c98b708d",
+    "log": "tests/generated/format-restore-build.log"
+  },
+  "testBuild": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "elapsed": "11 s 760 ms",
+    "tasks": {
+      "total": 35,
+      "executed": 20,
+      "upToDate": 15
+    },
+    "artifact": "entry/build/default/outputs/ohosTest/entry-ohosTest-unsigned.hap",
+    "sha256": "945b24adbec403b38431d1cc60edaf91357032031036faf1d1bb95fc982978c4",
+    "log": "tests/generated/format-restore-test-build.log"
+  },
+  "packageReport": "tests/generated/hap-package-report.json",
+  "generatedCatalogueLines": 142,
+  "generatorIdempotence": "passed",
+  "readmeCopiesIdentical": "passed",
+  "preExistingLocalChangesBackup": "D:/HarmonyOS/migration-backups/harmonyOS-before-format-restore-20260929-210231",
+  "warnings": [
+    "SDK crypto createMd/update/digest device capability warnings",
+    "ohosTest start_window_background resource conflict",
+    "Native clang unused gcc-toolchain arguments",
+    "Unsigned HAPs; no signingConfig"
+  ],
+  "deviceTargets": "empty",
+  "deviceExecution": "not_executed",
+  "previewerExecution": "not_executed",
+  "realConversion": "not_executed",
+  "remoteBaseAtSync": "1f4c0ff7466059cef735319182d3f18c60f120ea"
+}

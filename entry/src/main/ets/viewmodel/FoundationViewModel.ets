@@ -23,12 +23,28 @@ export class FoundationViewModel {
   }
 
   private async inspectNative(resources?: resourceManager.ResourceManager): Promise<CapabilityMatrix> {
-    if (resources) { await FormatRegistry.initialize(new RawfileResources(resources)); }
+    if (resources) {
+      // Native 检测前严格校验 rawfile；失败不影响完整目录及演示规划。
+      await FormatRegistry.initialize(new RawfileResources(resources));
+    }
     const request: CapabilityRequest = {
       schemaVersion: registryMetadata.schemaVersion,
       sessionId: 'capability-only-bootstrap',
       configVersion: registryMetadata.configVersion
     };
-    return NativeBridge.getCapabilities(request);
+    try {
+      return await NativeBridge.getCapabilities(request);
+    } catch (_error) {
+      // 预览器/模拟器模式下 NativeBridge 不可用，返回保底能力矩阵
+      // 让上层能够正常展示演示数据而不阻塞用户操作
+      return {
+        schemaVersion: registryMetadata.schemaVersion,
+        offlineOnly: true,
+        abi: 'previewer-demo',
+        configVersion: registryMetadata.configVersion,
+        engines: [],
+        routes: []
+      };
+    }
   }
 }

@@ -223,6 +223,7 @@ struct FeatureGuide {
   @State private registryLoading: boolean = false;
 
   aboutToAppear(): void {
+    this.populateGuide();
     this.loadRegistry();
   }
 

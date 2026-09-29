@@ -20,20 +20,26 @@ async function main() {
  await test('Generated metadata pins rawfile hashes counts and the unchanged planned matrix',()=>{
   const source=read('entry/src/main/ets/generated/RegistryData.ets');
   const metadata=JSON.parse(source.match(/export const registryMetadata: RegistryMetadata = ([\s\S]*?);\n/)[1]);
-  assert.ok(source.split('\n').length<200);assert.doesNotMatch(source,/bundledFormats|bundledRoutes/);
+  assert.ok(source.split('\n').length<200);
+  const {h}=cold();const generated=h.load('./generated/RegistryData');
+  assert.deepEqual(JSON.parse(JSON.stringify(generated.bundledFormats)),JSON.parse(Buffer.from(bytes('formats.json')).toString()).formats);
+  assert.deepEqual(JSON.parse(JSON.stringify(generated.bundledRoutes)),JSON.parse(Buffer.from(bytes('conversion-matrix.json')).toString()).routes);
   for(const [name,key] of [['formats.json','formatsSha256'],['conversion-matrix.json','matrixSha256']])
    assert.equal(crypto.createHash('sha256').update(bytes(name)).digest('hex'),metadata[key]);
   assert.equal(metadata.formatsCount,18);assert.equal(metadata.routesCount,43);
   assert.ok(JSON.parse(Buffer.from(bytes('conversion-matrix.json')).toString()).routes.every(route=>route.status==='planned'));
  });
- await test('Cold registry rejects queries before initialization',()=>{
-  const {h,registry}=cold();assert.throws(()=>registry.listFormats(),error=>error.reason==='REGISTRY_NOT_INITIALIZED');
-  assert.throws(()=>registry.listPlannedRoutes(),error=>error.reason==='REGISTRY_NOT_INITIALIZED');assert.equal(h.timers.size,0);
+ await test('Cold registry immediately exposes all 18 approved formats and 43 planned routes',()=>{
+  const {h,registry}=cold();
+  assert.deepEqual(JSON.parse(JSON.stringify(registry.listFormats())),JSON.parse(Buffer.from(bytes('formats.json')).toString()).formats);
+  assert.deepEqual(JSON.parse(JSON.stringify(registry.listPlannedRoutes())),JSON.parse(Buffer.from(bytes('conversion-matrix.json')).toString()).routes);
+  assert.equal(registry.isInitialized(),false);assert.equal(registry.availableRoutes(capabilities('1.0.0-design')).length,0);
+  assert.equal(h.timers.size,0);
  });
  await test('Failed initialization installs no partial snapshot and the next request can retry',async()=>{
   const {h,registry}=cold();const resources={getRawFileContent:async name=>name.endsWith('/formats.json')?bytes('formats.json'):new Uint8Array()};
   await assert.rejects(()=>registry.initialize(resources),error=>error.reason==='BUNDLED_RESOURCE_EMPTY');
-  assert.equal(registry.isInitialized(),false);assert.equal(registry.formats.length,0);assert.equal(registry.routes.length,0);
+  assert.equal(registry.isInitialized(),false);assert.equal(registry.formats.length,18);assert.equal(registry.routes.length,43);
   await registry.initialize(h.resources);assert.equal(registry.listFormats().length,18);assert.equal(registry.listPlannedRoutes().length,43);
   assert.equal(h.timers.size,0);
  });
@@ -64,6 +70,58 @@ async function main() {
   await registry.initialize(h.resources);const installed=registry.formats;
   finishFormats(bytes('formats.json'));finishMatrix(bytes('conversion-matrix.json'));await flush();
   assert.equal(registry.formats,installed);assert.equal(h.timers.size,0);
+ });
+ await test('Standalone preview and failed resource reads retain the complete catalogue and allow retry',async()=>{
+  const {h,registry}=cold();const {RegistryUi}=h.load('./common/RegistryUi');
+  await RegistryUi.ensure({getHostContext:()=>undefined});
+  await RegistryUi.ensure({getHostContext:()=>{throw new Error('unsupported preview context');}});
+  await RegistryUi.ensure({getHostContext:()=>({resourceManager:{getRawFileContent:async()=>{throw new Error('missing rawfile');}}})});
+  assert.equal(registry.listFormats().length,18);assert.equal(registry.listPlannedRoutes().length,43);
+  assert.equal(registry.isInitialized(),false);assert.equal(h.timers.size,0);
+  await RegistryUi.ensure({getHostContext:()=>({resourceManager:h.resources})});
+  assert.equal(registry.isInitialized(),true);assert.equal(registry.listFormats().length,18);assert.equal(registry.listPlannedRoutes().length,43);
+ });
+ await test('Unavailable preview hashing and modified resources preserve demo planning without approving Native routes',async()=>{
+  for(const options of [{cryptoAvailable:false},{}]) {
+   const {h,registry}=cold(options);const {RegistryUi}=h.load('./common/RegistryUi');
+   const changed=bytes('conversion-matrix.json');changed[changed.length-1]^=1;
+   const resources=options.cryptoAvailable===false?h.resources:{getRawFileContent:async name=>name.endsWith('/formats.json')?bytes('formats.json'):changed};
+   await RegistryUi.ensure({getHostContext:()=>({resourceManager:resources})});
+   assert.equal(registry.isInitialized(),false);assert.equal(registry.listFormats().length,18);assert.equal(registry.listPlannedRoutes().length,43);
+   assert.equal(registry.availableRoutes(capabilities('1.0.0-design')).length,0);
+   assert.equal(h.planner.bestRoute('png','pdf','layout_preserved','high_fidelity','extreme').id,'png-pdf');
+   await assert.rejects(()=>registry.initialize(resources),error=>error.reason===
+    (options.cryptoAvailable===false?'BUNDLED_RESOURCE_HASH_UNAVAILABLE':'BUNDLED_RESOURCE_HASH_MISMATCH'));
+  }
+ });
+ await test('Unverified offline catalogue snapshots cannot be mutated by callers',()=>{
+  const {registry}=cold();const formats=registry.listFormats(),routes=registry.listPlannedRoutes();
+  formats[0].extensions.push('fixture-mutation');routes[0].steps[0].executorEngineId='fixture-mutation';
+  assert.equal(registry.listFormats()[0].extensions.includes('fixture-mutation'),false);
+  assert.notEqual(registry.listPlannedRoutes()[0].steps[0].executorEngineId,'fixture-mutation');
+ });
+ await test('Offline single-file targets intents minimum tiers and quality sorting match the verified catalogue',()=>{
+  const offline=cold().h,verified=host();
+  const ids=JSON.parse(Buffer.from(bytes('formats.json')).toString()).formats.map(format=>format.id);
+  for(const source of ids) {
+   assert.deepEqual(Array.from(offline.planner.targets(source),format=>format.id),Array.from(verified.planner.targets(source),format=>format.id));
+   for(const target of ids)for(const mode of ['fast','balanced','high_fidelity'])
+    for(const intent of [undefined,'layout_preserved','structured_rebuild','content_only'])
+     for(const tier of [undefined,'compatible','standard','extreme']) {
+      const actual=offline.planner.routes(source,target,mode,intent,tier);
+      assert.deepEqual(Array.from(actual,route=>route.id),Array.from(verified.planner.routes(source,target,mode,intent,tier),route=>route.id));
+      assert.ok(actual.every(route=>route.inputConstraints.minInputs<=1&&route.inputConstraints.maxInputs>=1));
+      if(intent)assert.ok(actual.every(route=>route.intent===intent));
+      if(tier) {
+       const ranks={compatible:1,standard:2,extreme:3};assert.ok(actual.every(route=>ranks[route.fidelityTier]>=ranks[tier]));
+      }
+     }
+  }
+  assert.equal(offline.planner.routes('pdf','pdf').some(route=>route.id==='pdf-merge'),false);
+  assert.equal(offline.planner.bestRoute('pdf','pptx','layout_preserved','high_fidelity','standard').id,'pdf-pptx-visual');
+  assert.equal(offline.planner.bestRoute('pdf','pptx','structured_rebuild','high_fidelity','compatible').id,'pdf-pptx');
+  assert.deepEqual(Array.from(offline.planner.routes('png','pdf','high_fidelity','layout_preserved'),route=>route.id),
+   ['png-pdf','mixed-images-pdf','png-pdf-alternate','png-pdf-compatible']);
  });
  await test('Many Native callers share one failed import then one successful retry',async()=>{
   const h=host();const {NativeBridge}=h.load('./services/NativeBridge');

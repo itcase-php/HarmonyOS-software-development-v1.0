@@ -18,8 +18,8 @@ struct Index {
   @State availableCount: number = 0;
   @State capabilityLabel: string = '检查中';
   @State checking: boolean = false;
-  @State formatCount: number = 0;
-  @State routeCount: number = 0;
+  @State formatCount: number = FormatRegistry.listFormats().length;
+  @State routeCount: number = FormatRegistry.listPlannedRoutes().length;
   @State tasks: DemoTask[] = [];
   private viewModel: FoundationViewModel = new FoundationViewModel();
   private store: TaskStore = TaskStore.shared();
@@ -60,25 +60,25 @@ struct Index {
         this.formatCount = FormatRegistry.listFormats().length;
         this.routeCount = FormatRegistry.listPlannedRoutes().length;
         this.availableCount = FormatRegistry.availableRoutes(capabilities).length;
-        this.capabilityLabel = 'Native 已连接';
-        this.nativeState = `${capabilities.abi} · 本地处理 · ${this.availableCount} 条真实可执行路线`;
+        if (this.availableCount > 0) {
+          this.capabilityLabel = 'Native 已连接';
+          this.nativeState = `${capabilities.abi} · 本地处理 · ${this.availableCount} 条真实可执行路线`;
+        } else {
+          this.capabilityLabel = '演示可用';
+          this.nativeState = `格式配置已加载 · 演示模式 · ${this.formatCount} 种格式 · ${this.routeCount} 条转换路线`;
+        }
         if (feedback) { UiFeedback.toast(this.getUIContext(), '能力检测完成，交互演示可继续使用'); }
       }
     } catch (error) {
       if (this.active) {
         const failure = error as BridgeError;
-        if (FormatRegistry.isInitialized()) {
-          this.formatCount = FormatRegistry.listFormats().length;
-          this.routeCount = FormatRegistry.listPlannedRoutes().length;
-        }
+        this.formatCount = FormatRegistry.listFormats().length;
+        this.routeCount = FormatRegistry.listPlannedRoutes().length;
         this.availableCount = 0;
-        this.capabilityLabel = FormatRegistry.isInitialized() ? '演示可用' : '配置未加载';
-        this.nativeState = FormatRegistry.isInitialized() ?
-          `原生暂不可用（${failure.code ?? 'INTERNAL_ERROR'}），格式浏览与演示流程仍可使用` :
-          '格式配置读取或校验失败，请重新检测；转换功能暂不可用';
+        this.capabilityLabel = '演示可用';
+        this.nativeState = `原生暂不可用（${failure.code ?? 'INTERNAL_ERROR'}），${this.formatCount} 种格式、${this.routeCount} 条规划路线与演示流程仍可使用`;
         if (feedback) {
-          UiFeedback.toast(this.getUIContext(), FormatRegistry.isInitialized() ?
-            '当前可使用演示功能，原生转换暂不可用' : '格式配置读取或校验失败，请重新检测');
+          UiFeedback.toast(this.getUIContext(), '当前可使用完整格式目录与演示功能，原生转换暂不可用');
         }
       }
     } finally { this.checking = false; }

@@ -15,7 +15,7 @@ struct FormatBrowser {
   @State query: string = '';
   @State category: string = 'all';
   @State expandedId: string = '';
-  @State formats: RegistryFormat[] = [];
+  @State formats: RegistryFormat[] = FormatRegistry.listFormats();
   @State loading: boolean = false;
   @State loadFailed: boolean = false;
   private categories: CategoryChoice[] = [

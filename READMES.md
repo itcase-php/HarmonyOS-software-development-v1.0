@@ -1,6 +1,6 @@
-# HarmonyOS软件开发v1.0
+# HarmonyOS软件开发v2.0
 
-基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。当前版本侧重交互流程、配置驱动的路线规划、保真度参数管道及 Native 接入框架。本轮完成独立核心测试、rawfile 完整性与按需加载、任务调度防重入、面板 VM 和格式浏览器国际化。
+基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。当前版本侧重交互流程、配置驱动的路线规划、保真度参数管道及 Native 接入框架。已完成独立核心测试、rawfile 完整性校验、任务调度防重入、面板 VM 和格式浏览器国际化；本次恢复完整目录在启动、预览及资源加载失败时的可用性。
 
 公共仓库：<https://github.com/itcase-php/HarmonyOS-software-development-v1.0>。仓库地址使用英文字符，软件展示标题保留“HarmonyOS软件开发v1.0”。许可证为 [MIT](LICENSE)。按交付要求，另提供同内容的 [READMES.md](READMES.md)。
 
@@ -13,7 +13,7 @@
 | 范围 | 当前状态 |
 | --- | --- |
 | 页面 | Index、FormatBrowser、ConverterPage、TaskHistory、FeatureGuide 五页及页面导航 |
-| 格式与规划 | 18 种格式、43 条规划路线；单文件路线、意图、最低保真等级筛选与质量模式排序 |
+| 格式与规划 | 完整保留 18 种格式、43 条规划路线；启动及独立预览立即提供完整目录，资源加载失败不会缩减；单文件路线、意图、最低保真等级筛选与质量模式排序保持原行为 |
 | 保真度控制 | 快速/均衡/高保真、转换意图、最低等级、路线说明及执行前配置确认 |
 | 演示任务 | 2/3.5/6 秒活动时长，单并发 FIFO、暂停、恢复、取消与会话历史；退出应用不持久化 |
 | 报告 | 演示报告展开查看；Native 报告读取接口与上下文/指标校验已预留 |
@@ -75,7 +75,7 @@ node tests/check-design.cjs
 node tests/check-migration.cjs
 ```
 
-最新开发记录中，107 项宿主检查通过（15 项交互、13 项保真、12 项重构、55 项 Hypium 源码、12 项审计回归），应用包与 ohosTest 测试包编译通过，包内资源完整性检查通过。Hypium 源码通过宿主断言适配器执行，Native 导出在分支测试中使用模拟对象；**这些结果不等于真实转换、设备 Hypium、Previewer 点击或读屏验收**。最新日志为 tests/generated/audit-build.log 与 audit-test-build.log；SDK 密码学能力、测试模板重复资源和未签名警告仍有记录。详细记录在 tests/generated；本地绝对路径与历史产物哈希用于溯源，不是已上传二进制的下载地址。
+最新开发记录中，111 项宿主检查通过（15 项交互、13 项保真、12 项重构、55 项 Hypium 源码、16 项审计及目录回归），应用包与 ohosTest 测试包编译通过，包内资源完整性检查通过。Hypium 源码通过宿主断言适配器执行，Native 导出在分支测试中使用模拟对象；**这些结果不等于真实转换、设备 Hypium、Previewer 点击或读屏验收**。最新日志为 tests/generated/format-restore-build.log 与 format-restore-test-build.log，汇总见 format-restore-validation-report.json；SDK 密码学能力、测试模板重复资源和未签名警告仍有记录。详细记录在 tests/generated；本地绝对路径与历史产物哈希用于溯源，不是已上传二进制的下载地址。
 
 设备安装仍需通过 DevEco 使用合法调试签名；根工程 signingConfigs 当前为空，构建生成未签名包。不要提交自己的私钥、密码或个人签名配置。
 
@@ -85,7 +85,8 @@ node tests/check-migration.cjs
 - [交互功能与使用说明](docs/交互功能与使用说明.md)
 - [保真度控制与参数管道](docs/保真度控制与参数管道.md)
 - [组件、任务模型与 Native 分支优化](docs/组件与任务调度优化说明.md)
-- [本轮审计改进与验证](docs/审计改进与验证说明.md)
+- [格式目录恢复与回归验证](docs/格式目录恢复与回归验证.md)
+- [上一轮审计改进与验证](docs/审计改进与验证说明.md)
 - [迁移结果与实现边界](docs/IMPLEMENTATION_STATUS.md)
 - [逐文件迁移清单](docs/MIGRATION_MANIFEST.json)
 - [原始 V1.0 设计](V1.0初步功能开发方案.md)
@@ -102,6 +103,6 @@ node tests/check-refactor.cjs
 node tests/check-hypium-host.cjs
 ```
 
-生成器先运行配置验证，再生成小型 ArkTS 元数据、Native 元数据与引擎注册表、Native 类型声明和 rawfile。现有引擎实现不会被生成器覆盖。FormatRegistry 首次使用时读取 rawfile，以编译元数据的 SHA-256、schema/config 版本及数量校验后原子缓存；读取失败/超时可重试，查询结果为深复制。RegistryData.ets 从 2371 行缩减为 74 行；此机制不包含签名配置热更新。生成后按正常 Hvigor 流程构建。
+生成器先运行配置验证，再从同一份 shared JSON 生成完整 ArkTS 目录、摘要元数据、Native 元数据与引擎注册表、Native 类型声明和 rawfile。现有引擎实现不会被生成器覆盖。FormatRegistry 立即提供完整的 18 格式/43 规划路线；rawfile 按需读取，以编译元数据的 SHA-256、schema/config 版本及数量校验后原子替换缓存。读取失败/超时可重试，并保留完整目录及演示功能；查询结果为深复制。真实 Native 路线继续要求资源校验通过、路线状态及原生发布证据满足条件。此机制不包含签名配置热更新。生成后按正常 Hvigor 流程构建。
 
 `tools/migrate-output-package.cjs` 是已经执行的一次性导入记录，后续不要重复运行。日常修改本工程源码；`docs/migration-source` 是原交付包的只读溯源副本。

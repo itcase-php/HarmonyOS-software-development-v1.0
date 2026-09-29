@@ -73,7 +73,10 @@ const pinnedMetadata = JSON.parse(generated.match(/export const registryMetadata
 assert.deepEqual(pinnedMetadata,metadata);
 assert.equal(pinnedMetadata.formatsCount,formats.formats.length);
 assert.equal(pinnedMetadata.routesCount,matrix.routes.length);
-assert.doesNotMatch(generated,/export const bundled(?:Formats|Routes)/,'Format data must be loaded from verified rawfile');
+const bundledFormats = JSON.parse(generated.match(/export const bundledFormats: RegistryFormat\[\] = ([\s\S]*?);\n/)[1]);
+const bundledRoutes = JSON.parse(generated.match(/export const bundledRoutes: ConversionRouteDefinition\[\] = ([\s\S]*?);\n/)[1]);
+assert.deepEqual(bundledFormats,formats.formats,'Offline catalogue lost approved formats');
+assert.deepEqual(bundledRoutes,matrix.routes,'Offline catalogue changed approved route definitions');
 assert.ok(matrix.routes.every(route=>route.status==='planned'),'Migration unexpectedly activated routes');
 for (const id of formats.engineIds) {
   const engine = `entry/src/main/cpp/engines/${id}/${id}_converter.cpp`;
