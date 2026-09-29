@@ -1,0 +1,59 @@
+{
+  "scope": "refactor_logic_with_mock_native_not_real_engine",
+  "result": "passed",
+  "testedCases": 12,
+  "cases": [
+    {
+      "name": "Model clone copies every present data field and isolates nested report arrays",
+      "result": "passed"
+    },
+    {
+      "name": "Native task cannot enter the simulated report factory",
+      "result": "passed"
+    },
+    {
+      "name": "A recreated application session gets a usable store after shutdown",
+      "result": "passed"
+    },
+    {
+      "name": "Planned capability blocks Native before probe/execute with no demo report",
+      "result": "passed"
+    },
+    {
+      "name": "Missing executors and protected/unverified probes cannot execute",
+      "result": "passed"
+    },
+    {
+      "name": "Native request snapshot, single dispatch and monotonic progress are preserved",
+      "result": "passed"
+    },
+    {
+      "name": "Missing Native report stays missing and does not fabricate an achieved tier",
+      "result": "passed"
+    },
+    {
+      "name": "Invalid Native fidelity options or below-minimum grade fail and release outputs",
+      "result": "passed"
+    },
+    {
+      "name": "Native cancellation holds scheduler slot until cleanup and ignores late success",
+      "result": "passed"
+    },
+    {
+      "name": "Shutdown during Native work cannot start queued tasks or resurrect late results",
+      "result": "passed"
+    },
+    {
+      "name": "Tampered approved plan is rejected before enqueue or Native load",
+      "result": "passed"
+    },
+    {
+      "name": "UI resource keys are present in base and English catalogs with matching placeholders",
+      "result": "passed"
+    }
+  ],
+  "nativeCalls": "mocked_exports_only",
+  "realConversion": "not_executed",
+  "deviceExecution": "not_executed",
+  "previewerExecution": "not_executed"
+}

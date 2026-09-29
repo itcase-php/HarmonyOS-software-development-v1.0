@@ -1,0 +1,58 @@
+{
+  "scope": "hypium_test_source_executed_with_host_adapter",
+  "result": "passed",
+  "testedCases": 12,
+  "cases": [
+    {
+      "name": "qualityDurations",
+      "result": "passed"
+    },
+    {
+      "name": "matchingTierAndIntent",
+      "result": "passed"
+    },
+    {
+      "name": "tierAboveRouteIsRejected",
+      "result": "passed"
+    },
+    {
+      "name": "intentMismatchIsRejected",
+      "result": "passed"
+    },
+    {
+      "name": "invalidEnumFromBoundaryIsRejected",
+      "result": "passed"
+    },
+    {
+      "name": "targetAliasesAndUnknownInput",
+      "result": "passed"
+    },
+    {
+      "name": "plannerKeepsIntentAndMinimum",
+      "result": "passed"
+    },
+    {
+      "name": "advanceReportsAtCommitAndCompletes",
+      "result": "passed"
+    },
+    {
+      "name": "advancePromotesOnlyNextFifoTask",
+      "result": "passed"
+    },
+    {
+      "name": "cancelCannotBecomeCompleted",
+      "result": "passed"
+    },
+    {
+      "name": "pauseFreezesAdvanceAndResumeCompletes",
+      "result": "passed"
+    },
+    {
+      "name": "cloneIsolatesNestedReport",
+      "result": "passed"
+    }
+  ],
+  "actualHypiumRunner": "not_executed",
+  "deviceExecution": "not_executed",
+  "previewerExecution": "not_executed"
+}

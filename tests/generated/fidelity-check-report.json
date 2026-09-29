@@ -1,0 +1,63 @@
+{
+  "scope": "fidelity_demo_logic_not_real_document_validation",
+  "result": "passed",
+  "testedCases": 13,
+  "cases": [
+    {
+      "name": "Each quality mode retains options and completes at its specified active duration",
+      "result": "passed"
+    },
+    {
+      "name": "Report begins at commit; achieved task tier is exposed only on completion",
+      "result": "passed"
+    },
+    {
+      "name": "Minimum fidelity cannot be exceeded by selecting a faster or higher quality mode",
+      "result": "passed"
+    },
+    {
+      "name": "Intent mismatch is blocked before queue insertion and bestRoute never changes intent",
+      "result": "passed"
+    },
+    {
+      "name": "Invalid fidelity enum values are rejected rather than defaulted silently",
+      "result": "passed"
+    },
+    {
+      "name": "Selection is frozen at enqueue even if the caller mutates its options later",
+      "result": "passed"
+    },
+    {
+      "name": "In-flight reports use the route snapshot instead of later registry mutations",
+      "result": "passed"
+    },
+    {
+      "name": "Report snapshots deeply isolate metrics, evidence and warning arrays",
+      "result": "passed"
+    },
+    {
+      "name": "Explicitly approved compatible route records its degradation configuration",
+      "result": "passed"
+    },
+    {
+      "name": "Content-only report makes layout non-applicable and never emits measured document metrics",
+      "result": "passed"
+    },
+    {
+      "name": "Cancelling or shutting down after commit removes provisional reports",
+      "result": "passed"
+    },
+    {
+      "name": "Mixed-quality queue preserves per-task duration and paused time exclusion",
+      "result": "passed"
+    },
+    {
+      "name": "Read-only protocol, generated registry, native binding and fifth page stay byte-identical",
+      "result": "passed"
+    }
+  ],
+  "nativeExecution": "not_executed",
+  "realFidelityMeasurement": "not_executed",
+  "previewerExecution": "not_executed",
+  "deviceExecution": "not_executed"
+}

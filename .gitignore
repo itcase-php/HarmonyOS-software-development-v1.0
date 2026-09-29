@@ -1,0 +1,38 @@
+/node_modules
+/oh_modules
+/local.properties
+/.idea
+**/build
+/.hvigor
+.cxx
+**/.test
+/.appanalyzer
+
+# IDE/assistant state and preview caches (not application source)
+/.codegenie/
+**/.preview/
+**/.hvigor/
+**/.appanalyzer/
+
+# Local credentials and signing material
+.env
+.env.*
+!.env.example
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.pem
+*.key
+*.p7b
+
+# Built application packages
+*.hap
+*.hsp
+*.app
+
+# OS/editor temporary files
+Thumbs.db
+.DS_Store
+*.swp
+*.tmp

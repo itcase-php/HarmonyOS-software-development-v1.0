@@ -1,0 +1,255 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:harmony-doc-manager:matrix:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "configVersion",
+    "maxRouteSteps",
+    "priorityOrder",
+    "notes",
+    "routes"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "configVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "maxRouteSteps": {
+      "const": 3
+    },
+    "priorityOrder": {
+      "const": "ascending"
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "from",
+          "to",
+          "operation",
+          "pathMode",
+          "intent",
+          "fidelityTier",
+          "engineIds",
+          "priority",
+          "status",
+          "phase",
+          "steps",
+          "fallbackRouteIds",
+          "requiresUserApproval",
+          "allowedDegradations",
+          "inputConstraints",
+          "optionsProfileId",
+          "validationProfileId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+          },
+          "from": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "maxItems": 100
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+          },
+          "operation": {
+            "enum": [
+              "convert",
+              "images_to_pdf",
+              "pdf_split",
+              "pdf_merge",
+              "extract_text",
+              "ocr_extract"
+            ]
+          },
+          "pathMode": {
+            "enum": [
+              "direct",
+              "relay"
+            ]
+          },
+          "intent": {
+            "enum": [
+              "layout_preserved",
+              "structured_rebuild",
+              "content_only"
+            ]
+          },
+          "fidelityTier": {
+            "enum": [
+              "extreme",
+              "standard",
+              "compatible"
+            ]
+          },
+          "engineIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "maxItems": 100
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000
+          },
+          "status": {
+            "enum": [
+              "planned",
+              "experimental",
+              "available",
+              "unavailable"
+            ]
+          },
+          "phase": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "stepId",
+                "engineIds",
+                "executorEngineId",
+                "inputFormatIds",
+                "outputFormatId",
+                "operation"
+              ],
+              "properties": {
+                "stepId": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+                },
+                "engineIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "maxItems": 100
+                },
+                "executorEngineId": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+                },
+                "inputFormatIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "maxItems": 100
+                },
+                "outputFormatId": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+                },
+                "operation": {
+                  "enum": [
+                    "convert",
+                    "images_to_pdf",
+                    "pdf_split",
+                    "pdf_merge",
+                    "extract_text",
+                    "ocr_extract"
+                  ]
+                }
+              }
+            },
+            "minItems": 1,
+            "maxItems": 3
+          },
+          "fallbackRouteIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 10
+          },
+          "requiresUserApproval": {
+            "type": "boolean"
+          },
+          "allowedDegradations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 100
+          },
+          "inputConstraints": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "minInputs",
+              "maxInputs",
+              "protectedInputs"
+            ],
+            "properties": {
+              "minInputs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "maxInputs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "protectedInputs": {
+                "const": "block"
+              }
+            }
+          },
+          "optionsProfileId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+          },
+          "validationProfileId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,79}$"
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 5000
+    }
+  }
+}

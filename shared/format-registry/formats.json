@@ -1,0 +1,529 @@
+{
+  "schemaVersion": 1,
+  "configVersion": "1.0.0-design",
+  "status": "planned",
+  "formats": [
+    {
+      "id": "pdf",
+      "displayName": "PDF",
+      "category": "pdf",
+      "extensions": [
+        "pdf"
+      ],
+      "mimeTypes": [
+        "application/pdf"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        },
+        {
+          "key": "dpi",
+          "kind": "number",
+          "numberValue": 144
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "docx",
+      "displayName": "Word（DOCX）",
+      "category": "office",
+      "extensions": [
+        "docx"
+      ],
+      "mimeTypes": [
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        },
+        {
+          "key": "missingFontPolicy",
+          "kind": "string",
+          "stringValue": "reject"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "pptx",
+      "displayName": "PowerPoint（PPTX）",
+      "category": "office",
+      "extensions": [
+        "pptx"
+      ],
+      "mimeTypes": [
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        },
+        {
+          "key": "missingFontPolicy",
+          "kind": "string",
+          "stringValue": "reject"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "xlsx",
+      "displayName": "Excel（XLSX）",
+      "category": "office",
+      "extensions": [
+        "xlsx"
+      ],
+      "mimeTypes": [
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ],
+      "operations": [
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        },
+        {
+          "key": "missingFontPolicy",
+          "kind": "string",
+          "stringValue": "reject"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "txt",
+      "displayName": "纯文本",
+      "category": "text",
+      "extensions": [
+        "txt"
+      ],
+      "mimeTypes": [
+        "text/plain"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "md",
+      "displayName": "Markdown",
+      "category": "text",
+      "extensions": [
+        "md",
+        "markdown"
+      ],
+      "mimeTypes": [
+        "text/markdown"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "jpeg",
+      "displayName": "JPEG",
+      "category": "image",
+      "extensions": [
+        "jpg",
+        "jpeg"
+      ],
+      "mimeTypes": [
+        "image/jpeg"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        },
+        {
+          "key": "metadataPolicy",
+          "kind": "string",
+          "stringValue": "preserve_allowed"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "png",
+      "displayName": "PNG",
+      "category": "image",
+      "extensions": [
+        "png"
+      ],
+      "mimeTypes": [
+        "image/png"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        },
+        {
+          "key": "metadataPolicy",
+          "kind": "string",
+          "stringValue": "preserve_allowed"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "webp",
+      "displayName": "WebP",
+      "category": "image",
+      "extensions": [
+        "webp"
+      ],
+      "mimeTypes": [
+        "image/webp"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        },
+        {
+          "key": "metadataPolicy",
+          "kind": "string",
+          "stringValue": "preserve_allowed"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "heif",
+      "displayName": "HEIF",
+      "category": "image",
+      "extensions": [
+        "heif",
+        "heic"
+      ],
+      "mimeTypes": [
+        "image/heif",
+        "image/heic"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        },
+        {
+          "key": "metadataPolicy",
+          "kind": "string",
+          "stringValue": "preserve_allowed"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "mp3",
+      "displayName": "MP3",
+      "category": "audio",
+      "extensions": [
+        "mp3"
+      ],
+      "mimeTypes": [
+        "audio/mpeg"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "wav",
+      "displayName": "WAV",
+      "category": "audio",
+      "extensions": [
+        "wav"
+      ],
+      "mimeTypes": [
+        "audio/wav"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "flac",
+      "displayName": "FLAC",
+      "category": "audio",
+      "extensions": [
+        "flac"
+      ],
+      "mimeTypes": [
+        "audio/flac"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "aac",
+      "displayName": "AAC",
+      "category": "audio",
+      "extensions": [
+        "aac"
+      ],
+      "mimeTypes": [
+        "audio/aac"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "m4a",
+      "displayName": "M4A",
+      "category": "audio",
+      "extensions": [
+        "m4a"
+      ],
+      "mimeTypes": [
+        "audio/mp4"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "ogg",
+      "displayName": "Ogg",
+      "category": "audio",
+      "extensions": [
+        "ogg"
+      ],
+      "mimeTypes": [
+        "audio/ogg"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "opus",
+      "displayName": "Opus",
+      "category": "audio",
+      "extensions": [
+        "opus"
+      ],
+      "mimeTypes": [
+        "audio/opus"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        }
+      ],
+      "availability": "planned"
+    },
+    {
+      "id": "wma",
+      "displayName": "WMA",
+      "category": "audio",
+      "extensions": [
+        "wma"
+      ],
+      "mimeTypes": [
+        "audio/x-ms-wma"
+      ],
+      "operations": [
+        "import",
+        "export"
+      ],
+      "defaultOptions": [
+        {
+          "key": "qualityMode",
+          "kind": "string",
+          "stringValue": "balanced"
+        }
+      ],
+      "availability": "planned"
+    }
+  ],
+  "blockedFormats": [
+    "ncm",
+    "kgg",
+    "kgma",
+    "mflac",
+    "kwm"
+  ],
+  "securityPolicy": {
+    "version": "v1-protected-block",
+    "allowDrm": false,
+    "allowEncrypted": false,
+    "allowSigned": false,
+    "unknownProtection": "block",
+    "networkResources": "deny"
+  },
+  "resourceProfiles": {
+    "default": {
+      "maxInputBytes": 104857600,
+      "maxBatchBytes": 314572800,
+      "maxPages": 300,
+      "maxPixels": 16000000,
+      "maxNativeBytes": 201326592,
+      "maxTempBytes": 536870912,
+      "maxThreads": 2,
+      "timeoutMs": 180000
+    }
+  },
+  "engineIds": [
+    "pdf",
+    "office",
+    "media",
+    "image",
+    "ocr"
+  ],
+  "optionsProfileIds": [
+    "images_pdf",
+    "pdf_render",
+    "pdf_pages",
+    "image_convert",
+    "office_render",
+    "office_rebuild",
+    "office_content",
+    "pdf_content",
+    "pdf_table",
+    "audio",
+    "ocr"
+  ],
+  "validationProfileIds": [
+    "image_pdf",
+    "pdf_image",
+    "pdf_pages",
+    "image",
+    "office_layout",
+    "office_structure",
+    "content",
+    "table",
+    "audio",
+    "ocr"
+  ],
+  "migrationAliases": [
+    {
+      "from": "jpg",
+      "to": "jpeg"
+    }
+  ]
+}

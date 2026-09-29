@@ -1,0 +1,353 @@
+明白了，你想要的是一个可运行的、有交互功能的应用，而不仅仅是静态展示页。我来为你写一份**详细的可交互功能实现提示词**。
+
+---
+
+## 文档转换工具箱 — 详细交互功能实现提示词
+
+你可以将以下内容直接粘贴给 AI 助手，用于实现完整的交互功能。
+
+<｜DSML｜tool_controls>
+<｜DSML｜invoke name="builtin_write_file">
+<｜DSML｜parameter name="file_path" string="true">D:/HarmonyOS/harmonyOS/交互功能实现提示词.md</｜DSML｜parameter>
+<｜DSML｜parameter name="content" string="true"># 文档转换工具箱 — 交互功能实现说明
+
+## 项目概述
+
+基于现有 ArkTS 工程（FormatRegistry + NativeBridge 架构），实现一个**功能完整的文档转换交互应用**。应用需支持：
+- 浏览格式定义与转换路径
+- 模拟文件选择与转换流程（预览器/真机通用）
+- 转换任务的状态管理
+- 友好的交互反馈
+
+## 现有代码架构（不可破坏）
+
+### 已存在的文件
+
+| 文件路径 | 说明 |
+|---------|------|
+| `services/NativeBridge.ets` | 已重构为动态导入，预览器/真机兼容 |
+| `services/FormatRegistry.ets` | 格式注册表 | 
+| `generated/RegistryData.ets` | 格式/路径元数据 |
+| `viewmodel/FoundationViewModel.ets` | 能力检查 VM |
+| `common/BridgeError.ets` | 错误类型 |
+| `models/NativeProtocol.ets` | 协议类型定义 |
+| `models/RegistryTypes.ets` | 注册表类型定义 |
+| `components/FoundationCard.ets` | 信息展示卡片 |
+
+### 注意事项
+- 所有文件必须使用 ArkTS 语法，遵循 `arkts-no-any-unknown`、`arkts-no-standalone-this`、`arkts-no-obj-literals-as-types` 规则
+- 使用 `@Component`、`@State`、`@Prop`、`@Link`、`@Builder` 等 ArkUI 装饰器
+- 预览器下 NativeBridge 不可用，需要通过 `NativeBridge.isNativeAvailable()` 判断
+- 新增页面必须在 `main_pages.json` 中注册
+
+## 功能需求
+
+### 1. 页面结构
+
+#### 1.1 首页（Index.ets）— 重构为仪表盘
+- 顶部：应用标题 + 能力状态指示器
+- 中间：**功能入口网格**（2x2 Grid），包含：
+  - **格式浏览器** → 跳转格式列表页
+  - **转换执行器** → 跳转转换操作页  
+  - **任务记录** → 跳转任务历史页
+  - **能力检测** → 重新执行能力检查（保留现有逻辑）
+- 底部：当前原生连接状态 + 版本信息
+
+#### 1.2 新增页面
+
+**a) 格式浏览器页（FormatBrowser.ets）**
+- 展示 `FormatRegistry.listFormats()` 返回的所有格式
+- 每个格式项展示：名称、ID、类别、支持的操作
+- 支持按类别筛选（pdf / image / document / spreadsheet）
+- 点击格式项展开详情
+- 搜索框支持按名称/扩展名搜索
+
+**b) 转换执行器页（ConverterPage.ets）**
+- 核心交互页面，模拟文档转换流程
+- **步骤①：选择源格式** — 下拉列表（从 FormatRegistry.listFormats() 获取）
+- **步骤②：选择目标格式** — 下拉列表（根据源格式过滤可用转换路径）
+- **步骤③：模拟文件选择** — 展示文件输入框（输入文件名，如 "report.pdf"）
+- **步骤④：执行转换** — 点击按钮执行
+- **步骤⑤：结果展示** — 展示转换结果（模拟或真实）
+
+**c) 任务记录页（TaskHistory.ets）**
+- 展示转换任务列表（本地内存存储）
+- 每个任务项：文件名、源格式→目标格式、状态、时间戳
+- 支持清除历史
+
+**d) 格式详情弹窗**
+- 复用为自定义弹窗或页面内展开
+- 展示格式 ID、扩展名列表、MIME 类型、可用操作
+
+### 2. 交互功能详细实现
+
+#### 2.1 可用的转换路径筛选逻辑
+
+```typescript
+// 根据源格式筛选可用目标格式
+function getAvailableTargets(sourceFormatId: string): RegistryFormat[] {
+  const routes = FormatRegistry.listPlannedRoutes();
+  const sourceFormats = routes
+    .filter(route => route.from.includes(sourceFormatId))
+    .map(route => route.to);
+  return FormatRegistry.listFormats()
+    .filter(f => sourceFormats.includes(f.id));
+}
+
+// 根据源格式+目标格式获取具体路线
+function getConversionRoute(sourceId: string, targetId: string): ConversionRouteDefinition | undefined {
+  return FormatRegistry.listPlannedRoutes()
+    .find(route => route.from.includes(sourceId) && route.to === targetId);
+}
+```
+
+#### 2.2 模拟转换执行
+
+预览器模式下（`NativeBridge.isNativeAvailable() === false`）：
+- 使用 `setTimeout` 模拟异步转换过程
+- 进度从 0 → 100%，分 5 个阶段（preparing → executing → validating → committing → cleaning）
+- 每个阶段显示不同的状态文本
+- 完成后显示模拟结果（包含格式信息、耗时等）
+
+真机模式下：
+- 调用 `NativeBridge.execute()` 执行真实转换
+- 通过 `NativeBridge.subscribeProgress()` 监听进度
+- 显示真实进度和结果
+
+#### 2.3 状态管理
+
+创建 `TaskStore.ets` 用于任务状态管理：
+
+```typescript
+// viewmodel/TaskStore.ets
+import { Observable } from '@kit.ArkUI';
+
+@Observed
+export class ConvertTask {
+  id: string;
+  fileName: string;
+  sourceFormat: string;
+  targetFormat: string;
+  status: 'pending' | 'running' | 'success' | 'failed';
+  progress: number;
+  stage: string;
+  startTime: number;
+  duration?: number;
+  error?: string;
+
+  constructor(fileName: string, sourceFormat: string, targetFormat: string) {
+    this.id = `task-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    this.fileName = fileName;
+    this.sourceFormat = sourceFormat;
+    this.targetFormat = targetFormat;
+    this.status = 'pending';
+    this.progress = 0;
+    this.stage = 'preparing';
+    this.startTime = Date.now();
+  }
+}
+
+@Observed
+export class TaskStore {
+  tasks: ConvertTask[] = [];
+
+  addTask(task: ConvertTask): void {
+    this.tasks.unshift(task);
+  }
+
+  updateTask(taskId: string, updates: Partial<ConvertTask>): void {
+    const task = this.tasks.find(t => t.id === taskId);
+    if (task) {
+      Object.assign(task, updates);
+    }
+  }
+
+  clear(): void {
+    this.tasks = [];
+  }
+}
+```
+
+### 3. 数据流设计
+
+```
+Index.ets (Dashboard)
+  │ 点击"格式浏览器" → router.pushUrl({ url: 'pages/FormatBrowser' })
+  │ 点击"转换执行器" → router.pushUrl({ url: 'pages/ConverterPage' })
+  │ 点击"任务记录"   → router.pushUrl({ url: 'pages/TaskHistory' })
+  │
+  ├── FormatBrowser.ets
+  │     ├── FormatRegistry.listFormats()
+  │     ├── format.category 筛选
+  │     └── 搜索过滤
+  │
+  ├── ConverterPage.ets
+  │     ├── FormatRegistry.listFormats()  → 源格式下拉
+  │     ├── getAvailableTargets()         → 目标格式下拉
+  │     ├── NativeBridge.isNativeAvailable() → 选择执行模式
+  │     └── TaskStore.addTask()           → 保存任务
+  │
+  └── TaskHistory.ets
+        └── TaskStore.tasks → 列表渲染
+```
+
+### 4. UI 设计规范
+
+#### 4.1 配色方案
+- 背景色: `#F2F5FA`（与现有一致）
+- 卡片背景: `#FFFFFF`
+- 主文字色: `#172B4D`
+- 次要文字色: `#526077`
+- 主按钮色: `#007AFF`
+- 成功色: `#34C759`
+- 失败色: `#FF3B30`
+- 进行中: `#FF9500`
+
+#### 4.2 组件复用
+- 使用现有 `FoundationCard` 组件展示关键指标
+- 创建通用 `ActionCard` 组件用于功能入口网格卡片
+- 创建通用 `StatusBadge` 组件用于状态标签显示
+- 创建通用 `FormatTag` 组件用于格式标识显示
+
+#### 4.3 布局规则
+- 所有页面使用 `Scroll` + `Column` 布局
+- 内容区左右 padding 24vp
+- 卡片间距 12vp
+- 最大宽度约束 `constraintSize({ maxWidth: 720 })`
+- 网格使用 `GridRow`/`GridCol` 或手动 `Row` 布局
+
+### 5. 交互反馈要求
+
+- 所有按钮在操作中应显示加载状态（`loading` 属性）
+- 转换执行时显示进度条（`Progress` 组件）
+- 操作成功/失败使用 `promptAction.showToast()` 提示
+- 列表为空时显示空状态占位图
+- 错误信息使用红色文字展示
+
+### 6. 文件清单（需创建/修改）
+
+| 操作 | 路径 | 说明 |
+|------|------|------|
+| 修改 | `pages/Index.ets` | 重构为仪表盘布局 |
+| 新增 | `pages/FormatBrowser.ets` | 格式浏览页 |
+| 新增 | `pages/ConverterPage.ets` | 转换执行页 |
+| 新增 | `pages/TaskHistory.ets` | 任务历史页 |
+| 新增 | `viewmodel/TaskStore.ets` | 任务状态管理 |
+| 新增 | `components/ActionCard.ets` | 功能入口卡片组件 |
+| 新增 | `components/StatusBadge.ets` | 状态标签组件 |
+| 新增 | `components/FormatTag.ets` | 格式标识组件 |
+| 修改 | `resources/base/profile/main_pages.json` | 注册新增页面路由 |
+
+### 7. 关键实现提示
+
+#### 模拟转换的核心逻辑
+```typescript
+async function simulateConversion(task: ConvertTask, store: TaskStore): Promise<void> {
+  const stages = [
+    { name: 'preparing', weight: 0.15 },
+    { name: 'executing', weight: 0.50 },
+    { name: 'validating', weight: 0.20 },
+    { name: 'committing', weight: 0.10 },
+    { name: 'cleaning', weight: 0.05 },
+  ];
+
+  store.updateTask(task.id, { status: 'running', stage: stages[0].name });
+
+  let cumulativeProgress = 0;
+  for (const stage of stages) {
+    const stageDuration = 300 + Math.random() * 600; // 0.3~0.9s per stage
+    const steps = 5;
+    for (let i = 1; i <= steps; i++) {
+      await new Promise(resolve => setTimeout(resolve, stageDuration / steps));
+      cumulativeProgress += (stage.weight / steps) * 100;
+      store.updateTask(task.id, {
+        progress: Math.min(Math.round(cumulativeProgress), 100),
+        stage: i < steps ? stage.name : (stages[stages.indexOf(stage) + 1]?.name ?? stage.name),
+      });
+    }
+  }
+
+  store.updateTask(task.id, {
+    status: 'success',
+    progress: 100,
+    stage: 'completed',
+    duration: Date.now() - task.startTime,
+  });
+}
+```
+
+#### 路由跳转
+```typescript
+import { router } from '@kit.ArkUI';
+
+// 跳转到格式浏览页
+router.pushUrl({ url: 'pages/FormatBrowser' });
+
+// 接收参数
+// const params = router.getParams() as Record<string, string>;
+```
+
+## 最终交付标准
+
+1. ✅ 预览器下所有页面可正常渲染
+2. ✅ 格式列表可正常展示和筛选
+3. ✅ 转换流程可完整模拟执行（预览器）
+4. ✅ 任务历史可记录和查看
+5. ✅ 所有交互有恰当的加载/成功/失败反馈
+6. ✅ 无语法错误，构建通过
+7. ✅ 无签名配置警告
+</｜DSML｜parameter>
+</｜DSML｜invoke>
+</｜DSML｜tool_calls>
+
+tool: builtin_write_file
+result: [{"addedLines":288,"removedLines":0,"filePath":"交互功能实现提示词.md","id":"e6c5381a-7591-4536-acfd-2a47a3597185"}]
+
+提示词已生成并保存到 `交互功能实现提示词.md`。
+
+---
+
+## 提示词概览
+
+这份提示词定义了 **3 个新增页面 + 4 个新增组件 + 1 个 ViewModel**，构成了完整的文档转换交互应用：
+
+### 页面结构
+
+```
+首页（仪表盘）
+ ├── 格式浏览器  →  浏览所有格式定义，搜索/筛选/查看详情
+ ├── 转换执行器  →  选源格式→选目标格式→输入文件名→模拟转换→看结果
+ ├── 任务记录    →  查看历史转换任务、状态、耗时
+ └── 能力检测    →  保留现有 NativeBridge 检查逻辑
+```
+
+### 核心交互流程
+
+```
+选源格式 → 自动过滤可用目标格式 → 输入文件名 → 点击转换
+                                                   │
+                    ┌────────────────────────────────┤
+                    ▼                                ▼
+              预览器模式                      真机模式
+          setTimeout 模拟 5 阶段进度       NativeBridge.execute()
+          0.3~0.9s/阶段                 subscribeProgress 监听
+                    │                                │
+                    └────────────────────────────────┤
+                                                   ▼
+                                          存入 TaskStore
+                                          跳转任务记录页查看
+```
+
+### 文件清单（9 个文件）
+
+| 操作 | 文件 | 说明 |
+|------|------|------|
+| 修改 | `Index.ets` | → 仪表盘+功能入口网格 |
+| 新增 | `FormatBrowser.ets` | 格式浏览+筛选+搜索 |
+| 新增 | `ConverterPage.ets` | 转换流程（步骤①~⑤） |
+| 新增 | `TaskHistory.ets` | 任务列表+清除 |
+| 新增 | `TaskStore.ets` | @Observed 任务状态管理 |
+| 新增 | `ActionCard.ets` / `StatusBadge.ets` / `FormatTag.ets` | 通用 UI 组件 |
+| 修改 | `main_pages.json` | 注册新页面路由 |
+
+你可以把这份提示词发给 AI 助手，一步到位实现所有交互功能。

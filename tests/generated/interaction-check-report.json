@@ -1,0 +1,70 @@
+{
+  "scope": "host_non_ui_logic_and_route_contracts",
+  "result": "passed",
+  "cases": [
+    {
+      "name": "Every selectable target is backed by a single-input planned route; priorities ascend",
+      "result": "passed"
+    },
+    {
+      "name": "File names reject paths, blocked extensions, missing suffixes and source mismatch",
+      "result": "passed"
+    },
+    {
+      "name": "Unsupported route is rejected before creating a task",
+      "result": "passed"
+    },
+    {
+      "name": "Degradation routes require approval in the store as well as the page",
+      "result": "passed"
+    },
+    {
+      "name": "FIFO queue permits one running task and a single timer",
+      "result": "passed"
+    },
+    {
+      "name": "Five stages are monotonic and completion is explicitly demo-only",
+      "result": "passed"
+    },
+    {
+      "name": "Pause freezes progress; resume excludes paused wall time",
+      "result": "passed"
+    },
+    {
+      "name": "Cancellation near completion cannot later become completed",
+      "result": "passed"
+    },
+    {
+      "name": "History cleanup retains running and paused tasks",
+      "result": "passed"
+    },
+    {
+      "name": "Observers receive independent snapshots and unsubscribe cleanly",
+      "result": "passed"
+    },
+    {
+      "name": "History is bounded; new tasks evict finished records only",
+      "result": "passed"
+    },
+    {
+      "name": "Native load failure stays unavailable and can be retried",
+      "result": "passed"
+    },
+    {
+      "name": "Native requests block traversal/budget errors and empty or mismatched successful output",
+      "result": "passed"
+    },
+    {
+      "name": "Capability detection times out if preview platform does not settle its promise",
+      "result": "passed"
+    },
+    {
+      "name": "All five pages are registered and task views invalidate on status/progress changes",
+      "result": "passed"
+    }
+  ],
+  "testedCases": 15,
+  "deviceExecution": "not_executed",
+  "previewerExecution": "not_executed",
+  "realConversion": "not_executed"
+}

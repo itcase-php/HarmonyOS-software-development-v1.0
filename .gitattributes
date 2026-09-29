@@ -1,0 +1,3 @@
+# Preserve exact bytes for archived sources and SHA-256 configuration checks.
+# This disables automatic newline conversion; Git still detects text for diffs.
+* -text

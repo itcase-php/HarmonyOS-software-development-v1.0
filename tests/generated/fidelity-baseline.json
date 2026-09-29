@@ -1,0 +1,33 @@
+{
+  "backup": "D:\\HarmonyOS\\migration-backups\\harmonyOS-before-fidelity-20260929-093220",
+  "readOnlyFiles": [
+    {
+      "path": "entry/src/main/ets/models/NativeProtocol.ets",
+      "sha256": "2A47DBE12F5CAC8CC84654A27F6769D82CC3BAEA9D9B6C3751FD661E4DB800E0"
+    },
+    {
+      "path": "entry/src/main/ets/models/RegistryTypes.ets",
+      "sha256": "53F1B1DD4CA4A1A262DE0ED481155B3C2E4073FBD2AAD1AE35DB2045A75EB630"
+    },
+    {
+      "path": "entry/src/main/ets/generated/RegistryData.ets",
+      "sha256": "F90A8676A9C299515750F1E272242B50ABEA2C116036C6825FAF057B1484BC8D"
+    },
+    {
+      "path": "entry/src/main/ets/pages/FeatureGuide.ets",
+      "sha256": "3A319A57861E68D13055936180ED3AE0017EDF1262A815B296BE1DF5FA072910"
+    },
+    {
+      "path": "entry/src/main/resources/base/profile/main_pages.json",
+      "sha256": "FCD90AF2E07C793FAEA4C8E373D3F30643BB10D03F9BFBCF0F251EE071A05CEA"
+    },
+    {
+      "path": "entry/src/main/ets/services/NativeBridge.ets",
+      "sha256": "4A558E05E0D17E7A1D39A4959A3E14D6438928950CB76DB3F15BB65951219463"
+    },
+    {
+      "path": "entry/src/main/cpp/core/converter.h",
+      "sha256": "7AE85FA80670570458FBFB25162D281EBFFED8E0CC476BD5C5CF26ABB2FEE2AE"
+    }
+  ]
+}

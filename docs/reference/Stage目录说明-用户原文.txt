@@ -1,0 +1,126 @@
+一、典型 HarmonyOS Stage 模型工程目录结构
+一个标准的 HarmonyOS 应用工程（基于 DevEco Studio 创建，API Version 10+）的目录通常如下：
+
+
+
+
+├── AppScope/                          # 应用级配置（API 10+）
+│   ├── app.json5                      # 应用全局配置（包名、版本号、图标等）
+│   └── resources/                     # 应用级资源（icon、label等）
+│
+├── entry/                             # Entry 类型模块（主模块，产物为 HAP）
+│   ├── src/main/ets/                  # 核心代码区
+│   │   ├── entryability/              # UIAbility（应用入口能力）
+│   │   │   └── EntryAbility.ets
+│   │   ├── pages/                     # 页面文件
+│   │   │   └── Index.ets
+│   │   ├── view/                      # 自定义组件
+│   │   ├── viewmodel/                 # 视图模型（数据逻辑）
+│   │   ├── common/                    # 通用工具类、常量
+│   │   └── utils/                     # 工具函数
+│   ├── src/main/resources/            # 模块资源文件
+│   │   ├── base/                      # 基础资源
+│   │   │   ├── element/               # 字符串、颜色等
+│   │   │   ├── media/                 # 图片、音频等
+│   │   │   └── profile/               # 配置文件（如 startup_config.json）
+│   │   └── rawfile/                   # 原始文件（如本地HTML）
+│   ├── build-profile.json5            # 模块级构建配置
+│   ├── hvigorfile.ts                  # 模块级构建脚本
+│   ├── obfuscation-rules.txt          # 模块级混淆规则
+│   └── oh-package.json5               # 模块依赖说明
+│
+├── library/                           # 库模块（产物为 HAR）
+│   ├── src/main/ets/
+│   │   ├── Index.ets                  # 库的导出入口
+│   │   └── components/
+│   ├── build-profile.json5
+│   ├── hvigorfile.ts
+│   ├── oh-package.json5
+│   └── consumer-rules.txt             # 被依赖时的混淆规则
+│
+├── hvigor/                            # Hvigor构建插件配置
+│   ├── hvigor-config.json5            # 插件配置（缓存、并行编译等）
+│   └── hvigor-wrapper.js
+│
+├── build-profile.json5                # 工程级构建配置（签名、product等）
+├── hvigorfile.ts                      # 工程级构建脚本
+├── oh-package.json5                   # 工程级依赖
+├── obfuscation-rules.txt              # 工程级混淆规则
+└── code-linter.json5                  # 代码检查规则
+说明：以上是典型结构，实际项目可能因模块数量不同而有所增减。您当前文件夹 D:/HarmonyOS/harmonyOS 如果是一个完整工程，应包含以上主要目录和文件。
+
+二、各关键文件/文件夹的作用
+1. 配置文件类
+文件/文件夹	作用	参考文档
+AppScope/app.json5	应用级配置：包名（bundleName）、版本号（version）、图标、标签等。	配置编译构建信息
+build-profile.json5（工程级）	工程级构建配置：签名信息（signingConfigs）、产品定制（products）、编译选项（buildOption）等。	[25] 工程级build-profile.json5文件
+entry/build-profile.json5	模块级构建配置：模块类型、设备类型、编译选项（如是否开启混淆）等。	[37] 配置编译构建信息
+oh-package.json5	依赖管理：dependencies 列出依赖的 HAR/HSP/ohpm 包，overrides 可覆盖依赖版本。	配置编译构建信息
+hvigor-config.json5	Hvigor 构建插件配置：增量编译、并行任务、日志级别等。	[20] hvigor-config.json5文件
+hvigorfile.ts	自定义构建脚本（通常无需修改入口文件）。	配置编译构建信息
+obfuscation-rules.txt	混淆规则：开启/关闭属性混淆、顶层作用域混淆等。	[5] ArkGuard混淆实践指导
+module.json5（位于 entry/src/main/ 下）	模块配置：Ability 注册、权限声明（requestPermissions）、应用启动框架配置（appStartup）等。	应用启动框架AppStartup 1
+code-linter.json5	代码检查规则配置，可指定检查范围、规则集。 2	[8] Code Linter代码检查
+2. 核心代码类
+文件夹/文件	作用	说明
+entry/src/main/ets/entryability/EntryAbility.ets	应用入口 Ability，负责初始化 UI 窗口、设置页面根视图等。	每个 HAP 必有一入口
+pages/	页面级组件（Page），使用 @Entry 装饰器，通常对应一个路由页面。	修改页面 UI 和交互在此目录
+view/	自定义组件（@Component），被页面或其他组件复用。	封装可复用的 UI 片段
+viewmodel/	视图模型，管理业务逻辑和数据状态，常通过 @State、@Link 等与 UI 绑定。	分离数据处理
+common/	常量、通用类型定义，例如 common/constants/CommonConst.ets。	集中管理常量
+utils/	工具类，例如日志工具 Logger.ets。	通用函数封装
+resources/base/profile/	存放配置文件，如启动框架配置 startup_config.json、意图配置文件 insight_intent.json。	影响应用启动、系统意图
+3. 资源文件
+目录	作用
+resources/base/element/	字符串（string.json）、颜色、数值等资源。
+resources/base/media/	图片、音频等媒体资源。
+resources/rawfile/	原始文件（HTML、JSON、ZIP 等），可通过 $rawfile 或 resource://rawfile/ 访问。
+4. 其他
+test/ohosTest/ets/test/：自动化测试用例，使用 Instrument Test 框架。参考 [43] Instrument Test。
+build/：编译产物目录（构建后生成），通常不需要手动修改。
+三、修改指导：常见需求对应的修改位置
+场景1：修改页面显示内容或交互逻辑
+修改文件：entry/src/main/ets/pages/Index.ets（或其他页面文件）。
+涉及知识点：ArkTS 语法、@State 状态管理、build() 方法。
+示例：修改按钮文字或点击事件。
+场景2：添加或修改网络请求
+修改文件：entry/src/main/ets/viewmodel/ 下的数据获取文件，或直接在页面中调用 rcp 模块。
+配置修改：在 entry/src/main/module.json5 中添加 ohos.permission.INTERNET 权限。
+依赖导入：确保 oh-package.json5 中无缺失依赖。
+场景3：更换应用图标、应用名称
+修改文件：
+AppScope/resources/base/media/ 替换图标图片（保持同名）。
+AppScope/app.json5 修改 icon 和 label 字段。
+如需多语言，修改 element/string.json。
+场景4：添加新模块（例如新增 HAR 或 HAP）
+创建目录：在工程根目录下创建 myfeature/ 并设置 build-profile.json5、hvigorfile.ts 等。
+修改文件：
+build-profile.json5（工程级）的 modules 列表中添加新模块。
+根目录 oh-package.json5 中声明对模块的依赖（如果模块是 HAR）。
+场景5：开启或调整混淆规则
+修改文件：entry/obfuscation-rules.txt。
+常见操作：添加 -enable-property-obfuscation 或 -keep-global-name。
+场景6：修改构建参数（如编译模式、签名）
+修改文件：build-profile.json5（工程级或模块级）。
+示例：配置 signingConfigs 手动签名，或修改 buildOption 中 strictMode。
+场景7：修改资源文件（图片、字符串）
+修改文件：
+图片：resources/base/media/ 下替换同名文件。
+字符串：resources/base/element/string.json 中修改对应键值。
+注意：如果图片在 rawfile 目录下，则直接替换 resources/rawfile/ 下的文件。
+场景8：调试或查看日志
+日志输出：使用 hilog 工具，在需要跟踪的代码段添加 hilog.info(...)。
+查看日志：通过 DevEco Studio 的 Log 窗口或 hdc 命令查看。
+场景9：修改应用启动任务（AppStartup）
+配置：resources/base/profile/startup_config.json（定义任务顺序、依赖）。
+代码：实现 StartupTask 接口的类通常在 ets/ 目录下。
+场景10：适配平板、折叠屏
+断点配置：在 build-profile.json5 中根据屏幕宽度配置 breakpoints。
+布局修改：使用 GridRow/GridCol 响应式布局，或根据 windowSize 动态调整。
+四、快速定位技巧
+使用 DevEco Studio 的搜索功能（Ctrl+Shift+F）：可全局搜索关键字、API 调用等。
+查看文件依赖：打开 oh-package.json5 可了解本项目依赖的三方库。
+利用 Code Linter：修改代码后运行 Code Linter 可自动检查编码规范问题。2
+查看构建错误日志：如果编译失败，检查 build/ 目录下的日志或使用 hvigor --stacktrace 命令。
+五、总结
+以上是基于 HarmonyOS 标准工程结构的通用解读。

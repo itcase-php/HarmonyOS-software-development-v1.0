@@ -1,0 +1,9 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/FormatBrowser",
+    "pages/ConverterPage",
+    "pages/TaskHistory",
+    "pages/FeatureGuide"
+  ]
+}

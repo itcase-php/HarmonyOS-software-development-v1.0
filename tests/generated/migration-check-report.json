@@ -1,0 +1,177 @@
+{
+  "scope": "migration_integrity_not_runtime_conversion",
+  "result": "passed",
+  "exactSourceSnapshots": 21,
+  "originalOutputFilesChecked": 21,
+  "originalProjectFilesRetained": 46,
+  "originalProjectChanges": [
+    "build-profile.json5",
+    "entry/src/main/cpp/CMakeLists.txt",
+    "entry/src/main/cpp/napi_init.cpp",
+    "entry/src/main/cpp/types/libentry/Index.d.ts",
+    "entry/src/main/ets/entryability/EntryAbility.ets",
+    "entry/src/main/ets/pages/Index.ets",
+    "entry/src/main/resources/base/element/string.json",
+    "entry/src/main/resources/base/profile/backup_config.json",
+    "entry/src/main/resources/base/profile/main_pages.json",
+    "entry/src/ohosTest/ets/test/List.test.ets",
+    "entry/src/test/List.test.ets"
+  ],
+  "nativeMethodsPreserved": 13,
+  "formats": 18,
+  "plannedRoutes": 43,
+  "availableRoutes": 0,
+  "generatedProtocolEquivalent": true,
+  "configCopiesByteIdentical": true,
+  "realConversion": "not_executed",
+  "deviceValidation": "not_executed",
+  "records": [
+    {
+      "source": "contracts/converter.h",
+      "target": "entry/src/main/cpp/core/converter.h",
+      "sourceSha256": "7ae85fa80670570458fbfb25162d281ebffed8e0cc476bd5c5cf26abb2fee2ae",
+      "currentTargetSha256": "7ae85fa80670570458fbfb25162d281ebffed8e0cc476bd5c5cf26abb2fee2ae",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "contracts/native_bridge.d.ts",
+      "target": "entry/src/main/ets/models/NativeProtocol.ets",
+      "sourceSha256": "b557f768c2e3ca21755a68c775b81402dafa0b59f9f5eda0adb83daa99e1bf92",
+      "currentTargetSha256": "2a47dbe12f5cac8cc84654a27f6769d82cc3baea9d9b6c3751fd661e4db800e0",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "docs/AI_CODING_RULES.md",
+      "target": "docs/AI_CODING_RULES.md",
+      "sourceSha256": "a4ce3cdfdbfad38d182a5df277450c8522c3b9f18101d854dd928eb42f0e82fc",
+      "currentTargetSha256": "a4ce3cdfdbfad38d182a5df277450c8522c3b9f18101d854dd928eb42f0e82fc",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "docs/ARCHITECTURE.md",
+      "target": "docs/ARCHITECTURE.md",
+      "sourceSha256": "649fc397dbb1b1887ff60bdf00ff28d1a427799af85683d034cefdf754761887",
+      "currentTargetSha256": "cdaef512670710144cb5c7ccc38ecc1fa4b1d63da967a84af560851853ec54b5",
+      "changedSinceFirstImport": true
+    },
+    {
+      "source": "docs/CONVERSION_MATRIX.md",
+      "target": "docs/CONVERSION_MATRIX.md",
+      "sourceSha256": "91e9a504aa0bf50e5d690aca18509ca20cb01089958fb9953b260ec83129cea8",
+      "currentTargetSha256": "91e9a504aa0bf50e5d690aca18509ca20cb01089958fb9953b260ec83129cea8",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "docs/ERROR_CODES.md",
+      "target": "docs/ERROR_CODES.md",
+      "sourceSha256": "2d83eec66a53a071cac7861584fb7d85fb7506713fe49ff345ab97f2b9849d0f",
+      "currentTargetSha256": "2d83eec66a53a071cac7861584fb7d85fb7506713fe49ff345ab97f2b9849d0f",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "docs/FIDELITY_POLICY.md",
+      "target": "docs/FIDELITY_POLICY.md",
+      "sourceSha256": "ba13de6c50a4936f0ecde486edfd322addd53e5ffccaa61438e21101eb9e92cd",
+      "currentTargetSha256": "ba13de6c50a4936f0ecde486edfd322addd53e5ffccaa61438e21101eb9e92cd",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "docs/PRIVACY.md",
+      "target": "docs/PRIVACY.md",
+      "sourceSha256": "6df7805fc1cece70b12e2dae9106f11d894f779f83166e71633ccf57df60e0bf",
+      "currentTargetSha256": "6df7805fc1cece70b12e2dae9106f11d894f779f83166e71633ccf57df60e0bf",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "docs/RELEASE_CHECKLIST.md",
+      "target": "docs/RELEASE_CHECKLIST.md",
+      "sourceSha256": "84ef1b73b27f17cd3ee5292b914f245a758dddc2ebbc7be35b20e91ecc142747",
+      "currentTargetSha256": "84ef1b73b27f17cd3ee5292b914f245a758dddc2ebbc7be35b20e91ecc142747",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "docs/VALIDATION.md",
+      "target": "docs/VALIDATION-DESIGN.md",
+      "sourceSha256": "e8633204a9fa1ee7c3d11c27db0a8d778379f7dc7bca442346e4cde4877c16fe",
+      "currentTargetSha256": "e8633204a9fa1ee7c3d11c27db0a8d778379f7dc7bca442346e4cde4877c16fe",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "README.md",
+      "target": "docs/reference/DESIGN_README.md",
+      "sourceSha256": "2f0da2925aaa4fb32cd3a714279e3098ffc3f31b8ad9036ada37070e594ffaec",
+      "currentTargetSha256": "2f0da2925aaa4fb32cd3a714279e3098ffc3f31b8ad9036ada37070e594ffaec",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "shared/format-registry/conversion-matrix.json",
+      "target": "shared/format-registry/conversion-matrix.json",
+      "sourceSha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270",
+      "currentTargetSha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "shared/format-registry/formats.json",
+      "target": "shared/format-registry/formats.json",
+      "sourceSha256": "55d416083a65f2cc13a64a17aec06fb23def491534186d013cf5b88ceb8d4f10",
+      "currentTargetSha256": "55d416083a65f2cc13a64a17aec06fb23def491534186d013cf5b88ceb8d4f10",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "shared/format-registry/schema/conversion-matrix.schema.json",
+      "target": "shared/format-registry/schema/conversion-matrix.schema.json",
+      "sourceSha256": "36817b25df95486f6488e5a6d591d36634e377e1da3a12d8a338b4d63ff84a7e",
+      "currentTargetSha256": "36817b25df95486f6488e5a6d591d36634e377e1da3a12d8a338b4d63ff84a7e",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "shared/format-registry/schema/formats.schema.json",
+      "target": "shared/format-registry/schema/formats.schema.json",
+      "sourceSha256": "1f24bb08af531a4bf39c1440ad54077170aba312e3edd63ff439c20eeeb39838",
+      "currentTargetSha256": "1f24bb08af531a4bf39c1440ad54077170aba312e3edd63ff439c20eeeb39838",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "tests/check-design.cjs",
+      "target": "tests/check-design.cjs",
+      "sourceSha256": "3b125c8b83cb7d6b37e0bda9c0ab9da427543c8176ba8a93fd382f3b5733dee5",
+      "currentTargetSha256": "04668b2a669de50ee25af7ebd6b21d38048645f9d9e38b942f265b3e49dda16a",
+      "changedSinceFirstImport": true
+    },
+    {
+      "source": "tests/contract-header-check.cpp",
+      "target": "tests/contract-header-check.cpp",
+      "sourceSha256": "53a47983cedbc18b04bc4dc12bb041c44eb9a9e5beb8574893ff801ca4bc2417",
+      "currentTargetSha256": "82e17e57a23a0c3e4809e846cac9b5e431a308e80861a8fa1978f5e5978db6d0",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "tests/generated/design-check-report.json",
+      "target": "tests/generated/design-check-report.json",
+      "sourceSha256": "0e4befedc1a4586720aed387adad83b048b9911e7e70ddf43d778b02dc09a2cd",
+      "currentTargetSha256": "82b38e99d24e26b245f3230931f0d3620253c0aaf74cd05b77736bb4203383eb",
+      "changedSinceFirstImport": true
+    },
+    {
+      "source": "tests/generated/matrix-cases.json",
+      "target": "tests/generated/matrix-cases.json",
+      "sourceSha256": "4dd045b854d11c049ddcc4f06482f5febd2b30e7547e93adec9ff02ddac6c227",
+      "currentTargetSha256": "4dd045b854d11c049ddcc4f06482f5febd2b30e7547e93adec9ff02ddac6c227",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "tools/assemble-docs.cjs",
+      "target": "tools/assemble-docs.cjs",
+      "sourceSha256": "d3a2a9dee06110339e4bc8e3184e436d0efc07cc8cbe4cd271a13c59870ab4b3",
+      "currentTargetSha256": "d3a2a9dee06110339e4bc8e3184e436d0efc07cc8cbe4cd271a13c59870ab4b3",
+      "changedSinceFirstImport": false
+    },
+    {
+      "source": "V1.0初步功能开发方案.md",
+      "target": "V1.0初步功能开发方案.md",
+      "sourceSha256": "9c397821e91c82023483f0d7930eee8cfd9ba197b810d0eada7bc3e3a89afb49",
+      "currentTargetSha256": "ec637ac1b1ae10224dfd25b0b57eec04d31c884ca6d7946b8c9e44de84b89815",
+      "changedSinceFirstImport": true
+    }
+  ]
+}

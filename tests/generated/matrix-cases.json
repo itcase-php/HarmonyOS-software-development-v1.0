@@ -1,0 +1,3429 @@
+{
+  "schemaVersion": 1,
+  "pairCases": [
+    {
+      "source": "pdf",
+      "target": "pdf",
+      "routeIds": [
+        "pdf_split",
+        "pdf_merge"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "docx",
+      "routeIds": [
+        "pdf-docx",
+        "pdf-docx-ocr"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "pptx",
+      "routeIds": [
+        "pdf-pptx",
+        "pdf-pptx-visual"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "xlsx",
+      "routeIds": [
+        "pdf-xlsx"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "txt",
+      "routeIds": [
+        "pdf-txt",
+        "pdf-txt-ocr"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "md",
+      "routeIds": [
+        "pdf-md"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "jpeg",
+      "routeIds": [
+        "pdf-jpeg"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "png",
+      "routeIds": [
+        "pdf-png"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pdf",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "pdf",
+      "routeIds": [
+        "docx-pdf"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "pptx",
+      "routeIds": [
+        "docx-pptx"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "txt",
+      "routeIds": [
+        "docx-txt"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "md",
+      "routeIds": [
+        "docx-md"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "docx",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "pdf",
+      "routeIds": [
+        "pptx-pdf"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "docx",
+      "routeIds": [
+        "pptx-docx"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "txt",
+      "routeIds": [
+        "pptx-txt"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "md",
+      "routeIds": [
+        "pptx-md"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "pptx",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "xlsx",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "txt",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "md",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "pdf",
+      "routeIds": [
+        "jpeg-pdf",
+        "mixed-images-pdf"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "docx",
+      "routeIds": [
+        "jpeg-docx-ocr"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "txt",
+      "routeIds": [
+        "jpeg-txt-ocr"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "png",
+      "routeIds": [
+        "jpeg-png"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "webp",
+      "routeIds": [
+        "jpeg-webp"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "jpeg",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "pdf",
+      "routeIds": [
+        "png-pdf",
+        "mixed-images-pdf",
+        "png-pdf-alternate",
+        "png-pdf-compatible"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "docx",
+      "routeIds": [
+        "png-docx-ocr"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "txt",
+      "routeIds": [
+        "png-txt-ocr"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "jpeg",
+      "routeIds": [
+        "png-jpeg"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "webp",
+      "routeIds": [
+        "png-webp"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "png",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "pdf",
+      "routeIds": [
+        "webp-pdf"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "jpeg",
+      "routeIds": [
+        "webp-jpeg"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "png",
+      "routeIds": [
+        "webp-png"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "webp",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "heif",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "wav",
+      "routeIds": [
+        "mp3-wav"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "mp3",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "mp3",
+      "routeIds": [
+        "wav-mp3"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wav",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "mp3",
+      "routeIds": [
+        "flac-mp3"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "flac",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "mp3",
+      "routeIds": [
+        "aac-mp3"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "aac",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "mp3",
+      "routeIds": [
+        "m4a-mp3"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "m4a",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "mp3",
+      "routeIds": [
+        "ogg-mp3"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "ogg",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "mp3",
+      "routeIds": [
+        "opus-mp3"
+      ],
+      "expectedPlannerOutcome": "planned_not_available",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "opus",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "pdf",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "docx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "pptx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "xlsx",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "txt",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "md",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "jpeg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "png",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "webp",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "heif",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "mp3",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "wav",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "flac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "aac",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "m4a",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "ogg",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "opus",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    },
+    {
+      "source": "wma",
+      "target": "wma",
+      "routeIds": [],
+      "expectedPlannerOutcome": "unsupported_format",
+      "requiresRealRuntimeEvidence": true
+    }
+  ],
+  "routeCases": [
+    {
+      "routeId": "jpeg-pdf",
+      "operation": "images_to_pdf",
+      "sourceIds": [
+        "jpeg"
+      ],
+      "target": "pdf",
+      "fixtureId": "jpeg-pdf-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pdf",
+      "validationProfile": "image_pdf",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "png-pdf",
+      "operation": "images_to_pdf",
+      "sourceIds": [
+        "png"
+      ],
+      "target": "pdf",
+      "fixtureId": "png-pdf-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pdf",
+      "validationProfile": "image_pdf",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "mixed-images-pdf",
+      "operation": "images_to_pdf",
+      "sourceIds": [
+        "jpeg",
+        "png"
+      ],
+      "target": "pdf",
+      "fixtureId": "mixed-images-pdf-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pdf",
+      "validationProfile": "image_pdf",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf-png",
+      "operation": "convert",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "png",
+      "fixtureId": "pdf-png-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "png",
+      "validationProfile": "pdf_image",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf-jpeg",
+      "operation": "convert",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "jpeg",
+      "fixtureId": "pdf-jpeg-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "jpeg",
+      "validationProfile": "pdf_image",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf_split",
+      "operation": "pdf_split",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "pdf",
+      "fixtureId": "pdf_split-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pdf",
+      "validationProfile": "pdf_pages",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf_merge",
+      "operation": "pdf_merge",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "pdf",
+      "fixtureId": "pdf_merge-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pdf",
+      "validationProfile": "pdf_pages",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "jpeg-png",
+      "operation": "convert",
+      "sourceIds": [
+        "jpeg"
+      ],
+      "target": "png",
+      "fixtureId": "jpeg-png-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "png",
+      "validationProfile": "image",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "jpeg-webp",
+      "operation": "convert",
+      "sourceIds": [
+        "jpeg"
+      ],
+      "target": "webp",
+      "fixtureId": "jpeg-webp-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "webp",
+      "validationProfile": "image",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "png-jpeg",
+      "operation": "convert",
+      "sourceIds": [
+        "png"
+      ],
+      "target": "jpeg",
+      "fixtureId": "png-jpeg-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "jpeg",
+      "validationProfile": "image",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "png-webp",
+      "operation": "convert",
+      "sourceIds": [
+        "png"
+      ],
+      "target": "webp",
+      "fixtureId": "png-webp-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "webp",
+      "validationProfile": "image",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "webp-jpeg",
+      "operation": "convert",
+      "sourceIds": [
+        "webp"
+      ],
+      "target": "jpeg",
+      "fixtureId": "webp-jpeg-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "jpeg",
+      "validationProfile": "image",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "webp-png",
+      "operation": "convert",
+      "sourceIds": [
+        "webp"
+      ],
+      "target": "png",
+      "fixtureId": "webp-png-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "png",
+      "validationProfile": "image",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "webp-pdf",
+      "operation": "images_to_pdf",
+      "sourceIds": [
+        "webp"
+      ],
+      "target": "pdf",
+      "fixtureId": "webp-pdf-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pdf",
+      "validationProfile": "image_pdf",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "docx-pdf",
+      "operation": "convert",
+      "sourceIds": [
+        "docx"
+      ],
+      "target": "pdf",
+      "fixtureId": "docx-pdf-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pdf",
+      "validationProfile": "office_layout",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pptx-pdf",
+      "operation": "convert",
+      "sourceIds": [
+        "pptx"
+      ],
+      "target": "pdf",
+      "fixtureId": "pptx-pdf-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pdf",
+      "validationProfile": "office_layout",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf-docx",
+      "operation": "convert",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "docx",
+      "fixtureId": "pdf-docx-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "docx",
+      "validationProfile": "office_structure",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf-pptx",
+      "operation": "convert",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "pptx",
+      "fixtureId": "pdf-pptx-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pptx",
+      "validationProfile": "office_structure",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf-pptx-visual",
+      "operation": "convert",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "pptx",
+      "fixtureId": "pdf-pptx-visual-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pptx",
+      "validationProfile": "office_layout",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf-txt",
+      "operation": "extract_text",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "txt",
+      "fixtureId": "pdf-txt-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "txt",
+      "validationProfile": "content",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf-md",
+      "operation": "extract_text",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "md",
+      "fixtureId": "pdf-md-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "md",
+      "validationProfile": "content",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "docx-txt",
+      "operation": "extract_text",
+      "sourceIds": [
+        "docx"
+      ],
+      "target": "txt",
+      "fixtureId": "docx-txt-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "txt",
+      "validationProfile": "content",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "docx-md",
+      "operation": "extract_text",
+      "sourceIds": [
+        "docx"
+      ],
+      "target": "md",
+      "fixtureId": "docx-md-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "md",
+      "validationProfile": "content",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pptx-txt",
+      "operation": "extract_text",
+      "sourceIds": [
+        "pptx"
+      ],
+      "target": "txt",
+      "fixtureId": "pptx-txt-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "txt",
+      "validationProfile": "content",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pptx-md",
+      "operation": "extract_text",
+      "sourceIds": [
+        "pptx"
+      ],
+      "target": "md",
+      "fixtureId": "pptx-md-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "md",
+      "validationProfile": "content",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "docx-pptx",
+      "operation": "convert",
+      "sourceIds": [
+        "docx"
+      ],
+      "target": "pptx",
+      "fixtureId": "docx-pptx-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pptx",
+      "validationProfile": "content",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pptx-docx",
+      "operation": "convert",
+      "sourceIds": [
+        "pptx"
+      ],
+      "target": "docx",
+      "fixtureId": "pptx-docx-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "docx",
+      "validationProfile": "content",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf-xlsx",
+      "operation": "convert",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "xlsx",
+      "fixtureId": "pdf-xlsx-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "xlsx",
+      "validationProfile": "table",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "mp3-wav",
+      "operation": "convert",
+      "sourceIds": [
+        "mp3"
+      ],
+      "target": "wav",
+      "fixtureId": "mp3-wav-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "wav",
+      "validationProfile": "audio",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "wav-mp3",
+      "operation": "convert",
+      "sourceIds": [
+        "wav"
+      ],
+      "target": "mp3",
+      "fixtureId": "wav-mp3-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "mp3",
+      "validationProfile": "audio",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "flac-mp3",
+      "operation": "convert",
+      "sourceIds": [
+        "flac"
+      ],
+      "target": "mp3",
+      "fixtureId": "flac-mp3-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "mp3",
+      "validationProfile": "audio",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "aac-mp3",
+      "operation": "convert",
+      "sourceIds": [
+        "aac"
+      ],
+      "target": "mp3",
+      "fixtureId": "aac-mp3-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "mp3",
+      "validationProfile": "audio",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "m4a-mp3",
+      "operation": "convert",
+      "sourceIds": [
+        "m4a"
+      ],
+      "target": "mp3",
+      "fixtureId": "m4a-mp3-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "mp3",
+      "validationProfile": "audio",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "ogg-mp3",
+      "operation": "convert",
+      "sourceIds": [
+        "ogg"
+      ],
+      "target": "mp3",
+      "fixtureId": "ogg-mp3-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "mp3",
+      "validationProfile": "audio",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "opus-mp3",
+      "operation": "convert",
+      "sourceIds": [
+        "opus"
+      ],
+      "target": "mp3",
+      "fixtureId": "opus-mp3-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "mp3",
+      "validationProfile": "audio",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "png-txt-ocr",
+      "operation": "ocr_extract",
+      "sourceIds": [
+        "png"
+      ],
+      "target": "txt",
+      "fixtureId": "png-txt-ocr-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "txt",
+      "validationProfile": "ocr",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "png-docx-ocr",
+      "operation": "ocr_extract",
+      "sourceIds": [
+        "png"
+      ],
+      "target": "docx",
+      "fixtureId": "png-docx-ocr-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "docx",
+      "validationProfile": "ocr",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "jpeg-txt-ocr",
+      "operation": "ocr_extract",
+      "sourceIds": [
+        "jpeg"
+      ],
+      "target": "txt",
+      "fixtureId": "jpeg-txt-ocr-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "txt",
+      "validationProfile": "ocr",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "jpeg-docx-ocr",
+      "operation": "ocr_extract",
+      "sourceIds": [
+        "jpeg"
+      ],
+      "target": "docx",
+      "fixtureId": "jpeg-docx-ocr-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "docx",
+      "validationProfile": "ocr",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf-txt-ocr",
+      "operation": "ocr_extract",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "txt",
+      "fixtureId": "pdf-txt-ocr-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "txt",
+      "validationProfile": "ocr",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "pdf-docx-ocr",
+      "operation": "ocr_extract",
+      "sourceIds": [
+        "pdf"
+      ],
+      "target": "docx",
+      "fixtureId": "pdf-docx-ocr-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "docx",
+      "validationProfile": "ocr",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "png-pdf-alternate",
+      "operation": "images_to_pdf",
+      "sourceIds": [
+        "png"
+      ],
+      "target": "pdf",
+      "fixtureId": "png-pdf-alternate-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pdf",
+      "validationProfile": "image_pdf",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    },
+    {
+      "routeId": "png-pdf-compatible",
+      "operation": "images_to_pdf",
+      "sourceIds": [
+        "png"
+      ],
+      "target": "pdf",
+      "fixtureId": "png-pdf-compatible-basic",
+      "fixtureState": "required_not_supplied",
+      "expectedOutputFormat": "pdf",
+      "validationProfile": "image_pdf",
+      "requiredCategories": [
+        "basic",
+        "complex_supported_subset",
+        "corrupted",
+        "cancel",
+        "resource_limit"
+      ],
+      "requiredIndependentValidation": true,
+      "releaseState": "not_executed"
+    }
+  ],
+  "protectionCases": [
+    {
+      "fixtureId": "blocked-ncm",
+      "reason": "DRM_BLOCKED",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    },
+    {
+      "fixtureId": "blocked-kgg",
+      "reason": "DRM_BLOCKED",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    },
+    {
+      "fixtureId": "blocked-kgma",
+      "reason": "DRM_BLOCKED",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    },
+    {
+      "fixtureId": "blocked-mflac",
+      "reason": "DRM_BLOCKED",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    },
+    {
+      "fixtureId": "blocked-kwm",
+      "reason": "DRM_BLOCKED",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    },
+    {
+      "fixtureId": "drm-renamed-as-mp3",
+      "reason": "DRM_BLOCKED",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    },
+    {
+      "fixtureId": "encrypted-pdf-no-password",
+      "reason": "ENCRYPTED_BLOCKED",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    },
+    {
+      "fixtureId": "encrypted-pdf-with-password",
+      "reason": "ENCRYPTED_BLOCKED",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    },
+    {
+      "fixtureId": "encrypted-ooxml",
+      "reason": "ENCRYPTED_BLOCKED",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    },
+    {
+      "fixtureId": "signed-pdf",
+      "reason": "SIGNATURE_BLOCKED",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    },
+    {
+      "fixtureId": "signed-ooxml",
+      "reason": "SIGNATURE_BLOCKED",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    },
+    {
+      "fixtureId": "protection-unknown",
+      "reason": "PROTECTION_UNKNOWN",
+      "fixtureState": "required_not_supplied",
+      "expectedError": "PERMISSION_DENIED",
+      "assertions": {
+        "engineCalled": false,
+        "outputCount": 0,
+        "temporaryFilesAfterCleanup": 0,
+        "sensitiveLogFields": 0,
+        "originalHashUnchanged": true
+      },
+      "releaseState": "not_executed"
+    }
+  ]
+}

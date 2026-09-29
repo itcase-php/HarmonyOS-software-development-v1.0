@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "configVersion": "1.0.0-design",
+  "formatsSha256": "55d416083a65f2cc13a64a17aec06fb23def491534186d013cf5b88ceb8d4f10",
+  "matrixSha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270",
+  "blockedFormats": [
+    "ncm",
+    "kgg",
+    "kgma",
+    "mflac",
+    "kwm"
+  ],
+  "engineIds": [
+    "pdf",
+    "office",
+    "media",
+    "image",
+    "ocr"
+  ],
+  "optionsProfileIds": [
+    "images_pdf",
+    "pdf_render",
+    "pdf_pages",
+    "image_convert",
+    "office_render",
+    "office_rebuild",
+    "office_content",
+    "pdf_content",
+    "pdf_table",
+    "audio",
+    "ocr"
+  ],
+  "validationProfileIds": [
+    "image_pdf",
+    "pdf_image",
+    "pdf_pages",
+    "image",
+    "office_layout",
+    "office_structure",
+    "content",
+    "table",
+    "audio",
+    "ocr"
+  ],
+  "migrationAliases": [
+    {
+      "from": "jpg",
+      "to": "jpeg"
+    }
+  ],
+  "securityPolicy": {
+    "version": "v1-protected-block",
+    "allowDrm": false,
+    "allowEncrypted": false,
+    "allowSigned": false,
+    "unknownProtection": "block",
+    "networkResources": "deny"
+  },
+  "defaultBudget": {
+    "maxInputBytes": 104857600,
+    "maxBatchBytes": 314572800,
+    "maxPages": 300,
+    "maxPixels": 16000000,
+    "maxNativeBytes": 201326592,
+    "maxTempBytes": 536870912,
+    "maxThreads": 2,
+    "timeoutMs": 180000
+  }
+}

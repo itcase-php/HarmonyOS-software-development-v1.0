@@ -1,0 +1,62 @@
+{
+  "scope": "actual_harmonyos_debug_application_build",
+  "date": "2026-09-29",
+  "project": "D:/HarmonyOS/harmonyOS",
+  "tool": "DevEco Hvigor wrapper",
+  "commandArguments": "--mode module -p product=default -p module=entry@default -p buildMode=debug assembleHap --no-daemon",
+  "result": "BUILD SUCCESSFUL",
+  "exitCode": 0,
+  "elapsed": "16 s 474 ms",
+  "tasks": {
+    "total": 33,
+    "executed": 17,
+    "upToDate": 16
+  },
+  "arkTsCompilation": "passed",
+  "nativeCompilationAbis": [
+    "arm64-v8a",
+    "x86_64"
+  ],
+  "protocolDeclarationStrictTypeCheck": "passed_exit_0",
+  "cpp17HeaderSyntaxCheck": "passed_exit_0",
+  "signing": "skipped_no_signingConfigs",
+  "artifact": "entry/build/default/outputs/default/entry-default-unsigned.hap",
+  "warnings": [
+    "No signingConfig found for product default; unsigned HAP"
+  ],
+  "evidenceSource": "tests/generated/refactor-build.log; tests/generated/refactor-test-build.log; hap-package-report.json",
+  "previewerExecution": "not_executed",
+  "deviceValidation": "not_executed",
+  "realConversion": "not_executed",
+  "interactionLogicTests": {
+    "passed": 15,
+    "report": "tests/generated/interaction-check-report.json"
+  },
+  "fidelityLogicTests": {
+    "passed": 13,
+    "report": "tests/generated/fidelity-check-report.json"
+  },
+  "refactorLogicTests": {
+    "passed": 12,
+    "report": "tests/generated/refactor-check-report.json"
+  },
+  "hypiumSourceHostTests": {
+    "passed": 12,
+    "report": "tests/generated/hypium-host-check-report.json"
+  },
+  "hypiumTestBuild": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "elapsed": "13 s 629 ms",
+    "tasks": {
+      "total": 35,
+      "executed": 18,
+      "upToDate": 17
+    },
+    "artifact": "entry/build/default/outputs/ohosTest/entry-ohosTest-unsigned.hap",
+    "sha256": "66da8a7f91e64a83c9200b5ab7180ca852d0ca36288b7c6577892b69d4f0556d",
+    "log": "tests/generated/refactor-test-build.log",
+    "actualHypiumRunner": "not_executed"
+  },
+  "totalHostChecks": 52
+}

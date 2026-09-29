@@ -1,0 +1,14 @@
+{
+  "scope": "design_only_see_migration_build_report",
+  "designChecks": "passed",
+  "formats": 18,
+  "routes": 43,
+  "formatPairCases": 324,
+  "routeCases": 43,
+  "protectionCases": 12,
+  "rejectedMalformedDesigns": 10,
+  "generatedCaseExecution": "not_executed",
+  "harmonyOsBuild": "not_executed",
+  "realConversion": "not_executed",
+  "deviceValidation": "not_executed"
+}
