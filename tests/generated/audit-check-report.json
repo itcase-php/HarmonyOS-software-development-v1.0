@@ -68,7 +68,7 @@
       "result": "passed"
     }
   ],
-  "registryDataLines": 142,
+  "registryDataLines": 102,
   "nativeCalls": "mocked_exports_only",
   "realConversion": "not_executed",
   "deviceExecution": "not_executed",

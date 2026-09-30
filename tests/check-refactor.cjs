@@ -13,7 +13,7 @@ function fixture({available=true, protection='none', deep=false, engines=true}={
   const h = host();
   const {registryMetadata} = h.load('./generated/RegistryData');
   const {FormatRegistry} = h.load('./services/FormatRegistry');
-  const route = FormatRegistry.routes.find(item=>item.id==='png-pdf');
+  const route = FormatRegistry.shared().routes.find(item=>item.id==='png-pdf');
   if (available) route.status='available'; // Isolated VM fixture; never edits shared JSON.
   const request = {schemaVersion:1,taskId:'native-fixture',attemptId:'attempt-fixture',sessionId:'authorized-fixture',
     workspaceRef:'workspace-fixture',operation:route.operation,inputs:[{fileId:'input-fixture',sourceFormatId:'png',
@@ -156,7 +156,7 @@ async function main() {
   await test('UI resource keys are present in base and English catalogs with matching placeholders',()=>{
     const source=path.join(root,'entry/src/main/ets');
     const files=['common/FidelityText.ets','components/FidelitySettingsCard.ets','components/QualitySelector.ets',
-      'components/FidelityReportCard.ets','pages/ConverterPage.ets','pages/TaskHistory.ets'];
+      'components/FidelityReportCard.ets','components/FidelityConfigPanel.ets','components/AuthorizedFilePanel.ets','components/SourceFormatSelector.ets','components/TargetFormatSelector.ets','components/ConversionErrorBanner.ets','components/ConversionProgressPanel.ets','viewmodel/FormatSelectionVM.ets','viewmodel/ConversionStatusVM.ets','pages/ConverterPage.ets','pages/TaskHistory.ets'];
     const base=JSON.parse(fs.readFileSync(path.join(root,'entry/src/main/resources/base/element/string.json'),'utf8')).string;
     const english=JSON.parse(fs.readFileSync(path.join(root,'entry/src/main/resources/en_US/element/string.json'),'utf8')).string;
     assert.equal(new Set(base.map(item=>item.name)).size,base.length);
@@ -167,7 +167,7 @@ async function main() {
         assert.equal((a.value.match(/%s/g)||[]).length,(b.value.match(/%s/g)||[]).length);
       }
     }
-    assert.match(fs.readFileSync(path.join(source,'pages/ConverterPage.ets'),'utf8'),/FidelitySettingsCard\(/);
+    assert.match(fs.readFileSync(path.join(source,'components/FidelityConfigPanel.ets'),'utf8'),/FidelitySettingsCard\(/);
     assert.doesNotMatch(fs.readFileSync(path.join(source,'pages/ConverterPage.ets'),'utf8'),/fidelitySettings\(\)/);
     assert.match(fs.readFileSync(path.join(source,'components/FidelitySettingsCard.ets'),'utf8'),/accessibilityDescription/);
   });

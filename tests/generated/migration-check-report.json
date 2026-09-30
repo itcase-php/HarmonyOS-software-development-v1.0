@@ -12,6 +12,7 @@
     "entry/src/main/cpp/types/libentry/Index.d.ts",
     "entry/src/main/ets/entryability/EntryAbility.ets",
     "entry/src/main/ets/pages/Index.ets",
+    "entry/src/main/resources/base/element/color.json",
     "entry/src/main/resources/base/element/string.json",
     "entry/src/main/resources/base/profile/backup_config.json",
     "entry/src/main/resources/base/profile/main_pages.json",

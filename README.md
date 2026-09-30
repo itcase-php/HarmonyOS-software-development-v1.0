@@ -1,6 +1,6 @@
 # HarmonyOS软件开发v2.0
 
-基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。已完成交互流程、完整目录规划、保真度参数管道、核心测试、rawfile 校验、调度防重入及相关国际化。本次按批准方案新增真实文件选择、受控副本、摘要与生命周期管理及真实提交入口，保留全部原演示功能。
+基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。已完成交互流程、完整目录规划、保真度参数管道、核心测试、rawfile 校验、调度防重入及相关国际化。已接入真实文件选择、受控副本和真实提交入口；本次按批准方案拆分转换页、观察 VM 与可注入服务，优化索引、错误诊断和资源清理，保留原功能。
 
 公共仓库：<https://github.com/itcase-php/HarmonyOS-software-development-v1.0>。仓库地址使用英文字符，软件展示标题保留“HarmonyOS软件开发v1.0”。许可证为 [MIT](LICENSE)。按交付要求，另提供同内容的 [READMES.md](READMES.md)。
 
@@ -73,11 +73,12 @@ node tests/check-refactor.cjs
 node tests/check-hypium-host.cjs
 node tests/check-audit.cjs
 node tests/check-input-management.cjs
+node tests/check-architecture.cjs
 node tests/check-design.cjs
 node tests/check-migration.cjs
 ```
 
-最新记录中，152 项宿主检查通过（交互 15、保真 13、原重构 12、Hypium 源码 61、审计/目录回归 16、输入管理 35），应用与 ohosTest 编译及 HAP 检查通过。原 22 个 TaskStore 方法及 7 个规划/Native/目录文件与批准基线一致。文件系统、Picker、Native 在宿主测试中使用模拟 SDK；**这些结果不等于真机选文件、真实转换、设备 Hypium、Previewer 点击或读屏验收**。最新日志为 tests/generated/input-management-build.log 与 input-management-test-build.log，汇总见 input-management-validation-report.json。hdc 未连接设备，独立编辑器诊断工具不可用；已有 SDK 能力、测试模板重复资源和未签名警告仍有记录。本地路径与产物哈希用于溯源，不是二进制下载地址。
+最新记录中，173 项宿主检查通过（交互 15、保真 13、原重构 12、Hypium 源码 61、审计/目录 16、输入管理 35、架构 21）。应用及 ohosTest 编译、HAP 检查通过；最新日志为 tests/generated/architecture-step9-build.log 和 architecture-test-hap-build.log，汇总见 architecture-validation-report.json。转换页四个观察 VM/六个组件、实例服务、分类工厂和索引已实现；保留 100 条历史及跨页运行，闲置未提交会话默认 30 分钟 TTL。原任务方法实现已获批重构，旧输入阶段的哈希仅为历史基线；原 18/43 配置、Native 协议、C++ 和路由保持。**宿主 SDK/Native 使用替身，这些检查不等于真机 Picker、真实转换、设备 Hypium、Previewer 点击、实际响应式刷新或读屏验收**。hdc 无连接设备，独立编辑器工具不可用，SDK 能力及未签名警告仍有记录。
 
 设备安装仍需通过 DevEco 使用合法调试签名；根工程 signingConfigs 当前为空，构建生成未签名包。不要提交自己的私钥、密码或个人签名配置。
 

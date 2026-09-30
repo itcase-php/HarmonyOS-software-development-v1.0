@@ -1,3 +1,4 @@
+import { ErrorHandler } from '../common/ErrorHandler';
 import { common } from '@kit.AbilityKit';
 import { BridgeError } from '../common/BridgeError';
 import { FoundationCard } from '../components/FoundationCard';
@@ -71,7 +72,7 @@ struct Index {
       }
     } catch (error) {
       if (this.active) {
-        const failure = error as BridgeError;
+        const failure: BridgeError = ErrorHandler.catchBridge(error, 'Index');
         this.formatCount = FormatRegistry.listFormats().length;
         this.routeCount = FormatRegistry.listPlannedRoutes().length;
         this.availableCount = 0;
@@ -88,13 +89,13 @@ struct Index {
     Scroll() {
       Column({ space: 12 }) {
         Row({ space: 8 }) {
-          Text('文档转换工具箱').fontSize(28).fontWeight(FontWeight.Bold).fontColor('#172B4D').layoutWeight(1)
-          Button('?').fontSize(20).fontWeight(FontWeight.Bold).fontColor('#007AFF').width(40).height(40)
-            .type(ButtonType.Circle).backgroundColor('#EDF4FF')
+          Text('文档转换工具箱').fontSize(28).fontWeight(FontWeight.Bold).fontColor($r('app.color.palette_172b4d')).layoutWeight(1)
+          Button('?').fontSize(20).fontWeight(FontWeight.Bold).fontColor($r('app.color.palette_007aff')).width(40).height(40)
+            .type(ButtonType.Circle).backgroundColor($r('app.color.palette_edf4ff'))
             .onClick(() => { UiFeedback.open(this.getUIContext(), 'pages/FeatureGuide'); })
         }.width('100%')
-        StatusBadge({ text: this.capabilityLabel, color: '#007AFF' })
-        Text('浏览格式、体验流程、管理任务').fontSize(16).fontColor('#526077')
+        StatusBadge({ text: this.capabilityLabel, color: $r('app.color.palette_007aff') })
+        Text('浏览格式、体验流程、管理任务').fontSize(16).fontColor($r('app.color.palette_526077'))
         Row({ space: 12 }) {
           ActionCard({ title: '格式浏览器', symbol: '文', description: '搜索、筛选与格式详情',
             onAction: () => { UiFeedback.open(this.getUIContext(), 'pages/FormatBrowser'); } }).layoutWeight(1)
@@ -113,9 +114,9 @@ struct Index {
         }.width('100%')
         FoundationCard({ label: '本次会话任务 / 活动任务',
           value: `${this.tasks.length} / ${this.tasks.filter((task: DemoTask) => isActiveTask(task.status)).length}` })
-        Text(this.nativeState).fontSize(14).fontColor('#172B4D')
-        Text('演示模式不会生成真实文件。当前真实转换引擎尚未接入。').fontSize(14).fontColor('#526077')
-        Text(`V1.0 交互开发版 · 配置 ${registryMetadata.configVersion}`).fontSize(12).fontColor('#526077')
+        Text(this.nativeState).fontSize(14).fontColor($r('app.color.palette_172b4d'))
+        Text('演示模式不会生成真实文件。当前真实转换引擎尚未接入。').fontSize(14).fontColor($r('app.color.palette_526077'))
+        Text(`V1.0 交互开发版 · 配置 ${registryMetadata.configVersion}`).fontSize(12).fontColor($r('app.color.palette_526077'))
       }
       .alignItems(HorizontalAlign.Start)
       .padding(24)
@@ -124,6 +125,6 @@ struct Index {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F2F5FA')
+    .backgroundColor($r('app.color.palette_f2f5fa'))
   }
 }

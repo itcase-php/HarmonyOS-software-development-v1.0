@@ -5,7 +5,7 @@ import { StatusBadge } from './StatusBadge';
 
 @Component
 export struct FidelityReportCard {
-  @Prop @Watch('prepare') report: FidelityReport | undefined = undefined;
+  @Require @Prop @Watch('prepare') report: FidelityReport | undefined = undefined;
   @Prop @Watch('prepare') mode: ExecutionMode = 'demo';
   @State expanded: boolean = false;
   @State summary: string = '';
@@ -74,37 +74,37 @@ export struct FidelityReportCard {
   build() {
     Column({ space: 10 }) {
       Button(this.expanded ? $r('app.string.report_collapse') : $r('app.string.report_expand')).fontSize(14)
-        .backgroundColor('#E5ECF5').fontColor('#172B4D')
+        .backgroundColor($r('app.color.palette_e5ecf5')).fontColor($r('app.color.palette_172b4d'))
         .accessibilityText($r('app.string.report_title'))
         .accessibilityDescription(this.expanded ? $r('app.string.a11y_collapse') : $r('app.string.a11y_expand'))
         .onClick(() => { this.expanded = !this.expanded; })
-      Text(this.summary).fontSize(13).fontColor('#526077')
+      Text(this.summary).fontSize(13).fontColor($r('app.color.palette_526077'))
       if (this.expanded) {
         StatusBadge({ text: FidelityText.read(this.getUIContext(), this.mode === 'demo' ?
-          $r('app.string.report_demo_badge') : $r('app.string.report_native_badge')), color: this.mode === 'demo' ? '#A65C00' : '#167644' })
-        Text(this.intent).fontSize(14).fontColor('#172B4D')
+          $r('app.string.report_demo_badge') : $r('app.string.report_native_badge')), color: this.mode === 'demo' ? $r('app.color.palette_a65c00') : $r('app.color.palette_167644') })
+        Text(this.intent).fontSize(14).fontColor($r('app.color.palette_172b4d'))
         Text(this.mode === 'demo' ? $r('app.string.report_demo_notice') : $r('app.string.report_native_notice'))
-          .fontSize(13).fontColor('#526077')
+          .fontSize(13).fontColor($r('app.color.palette_526077'))
         ForEach(this.metrics, (metric: ReportMetricRow) => {
           Column({ space: 4 }) {
-            Text(`${metric.name}：${metric.value}`).fontSize(14).fontColor('#172B4D')
-            Text(metric.state).fontSize(12).fontColor('#526077')
+            Text(`${metric.name}：${metric.value}`).fontSize(14).fontColor($r('app.color.palette_172b4d'))
+            Text(metric.state).fontSize(12).fontColor($r('app.color.palette_526077'))
           }.alignItems(HorizontalAlign.Start)
         }, (metric: ReportMetricRow) => metric.name)
         Text(this.mode === 'demo' ? $r('app.string.report_degradations_demo') : $r('app.string.report_degradations'))
-          .fontSize(14).fontWeight(FontWeight.Medium).fontColor('#172B4D')
+          .fontSize(14).fontWeight(FontWeight.Medium).fontColor($r('app.color.palette_172b4d'))
         if (this.degradations.length === 0) {
           Text(this.mode === 'demo' ? $r('app.string.report_no_degradation_demo') : $r('app.string.report_no_degradation'))
-            .fontSize(13).fontColor('#526077')
+            .fontSize(13).fontColor($r('app.color.palette_526077'))
         }
-        ForEach(this.degradations, (item: string) => { Text(item).fontSize(13).fontColor('#526077') }, (item: string) => item)
+        ForEach(this.degradations, (item: string) => { Text(item).fontSize(13).fontColor($r('app.color.palette_526077')) }, (item: string) => item)
         Text(this.mode === 'demo' ? $r('app.string.report_fonts_demo') : $r('app.string.report_fonts'))
-          .fontSize(14).fontWeight(FontWeight.Medium).fontColor('#172B4D')
-        if (this.substitutions.length === 0) { Text($r('app.string.report_no_fonts')).fontSize(13).fontColor('#526077') }
-        ForEach(this.substitutions, (item: string) => { Text(item).fontSize(13).fontColor('#526077') }, (item: string) => item)
-        Text($r('app.string.report_limitations')).fontSize(14).fontWeight(FontWeight.Medium).fontColor('#172B4D')
-        ForEach(this.unsupported, (item: string) => { Text(item).fontSize(13).fontColor('#526077') }, (item: string) => item)
-        Text(this.detector).fontSize(12).fontColor('#526077')
+          .fontSize(14).fontWeight(FontWeight.Medium).fontColor($r('app.color.palette_172b4d'))
+        if (this.substitutions.length === 0) { Text($r('app.string.report_no_fonts')).fontSize(13).fontColor($r('app.color.palette_526077')) }
+        ForEach(this.substitutions, (item: string) => { Text(item).fontSize(13).fontColor($r('app.color.palette_526077')) }, (item: string) => item)
+        Text($r('app.string.report_limitations')).fontSize(14).fontWeight(FontWeight.Medium).fontColor($r('app.color.palette_172b4d'))
+        ForEach(this.unsupported, (item: string) => { Text(item).fontSize(13).fontColor($r('app.color.palette_526077')) }, (item: string) => item)
+        Text(this.detector).fontSize(12).fontColor($r('app.color.palette_526077'))
       }
     }.alignItems(HorizontalAlign.Start).width('100%')
   }

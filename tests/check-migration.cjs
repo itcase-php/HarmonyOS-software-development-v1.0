@@ -73,8 +73,13 @@ const pinnedMetadata = JSON.parse(generated.match(/export const registryMetadata
 assert.deepEqual(pinnedMetadata,metadata);
 assert.equal(pinnedMetadata.formatsCount,formats.formats.length);
 assert.equal(pinnedMetadata.routesCount,matrix.routes.length);
-const bundledFormats = JSON.parse(generated.match(/export const bundledFormats: RegistryFormat\[\] = ([\s\S]*?);\n/)[1]);
-const bundledRoutes = JSON.parse(generated.match(/export const bundledRoutes: ConversionRouteDefinition\[\] = ([\s\S]*?);\n/)[1]);
+const catalogueFiles=['Pdf','Office','Text','Image','Media'];
+const bundledFormats=catalogueFiles.flatMap(name=>JSON.parse(text(`entry/src/main/ets/generated/catalogue/${name}.ets`)
+  .match(/export function createFormats\(\): RegistryFormat\[\] \{ return ([\s\S]*?); \}/)[1]))
+  .sort((a,b)=>formats.formats.findIndex(item=>item.id===a.id)-formats.formats.findIndex(item=>item.id===b.id));
+const bundledRoutes=catalogueFiles.flatMap(name=>JSON.parse(text(`entry/src/main/ets/generated/catalogue/${name}.ets`)
+  .match(/export function createRoutes\(\): ConversionRouteDefinition\[\] \{ return ([\s\S]*?); \}/)[1]))
+  .sort((a,b)=>matrix.routes.findIndex(item=>item.id===a.id)-matrix.routes.findIndex(item=>item.id===b.id));
 assert.deepEqual(bundledFormats,formats.formats,'Offline catalogue lost approved formats');
 assert.deepEqual(bundledRoutes,matrix.routes,'Offline catalogue changed approved route definitions');
 assert.ok(matrix.routes.every(route=>route.status==='planned'),'Migration unexpectedly activated routes');

@@ -1,0 +1,93 @@
+{
+  "scope": "architecture_logic_with_host_sdk_adapters",
+  "result": "passed",
+  "testedCases": 21,
+  "cases": [
+    {
+      "name": "BridgeError UUIDs uniquely identify errors created within the same clock millisecond",
+      "result": "passed"
+    },
+    {
+      "name": "Unavailable UUID support has a monotonic preview fallback and cannot break error construction",
+      "result": "passed"
+    },
+    {
+      "name": "ErrorHandler retains typed errors and reports sanitized fallbacks without raw SDK messages",
+      "result": "passed"
+    },
+    {
+      "name": "Every FidelityPolicy enum switch rejects invalid boundary values while preserving valid durations",
+      "result": "passed"
+    },
+    {
+      "name": "FormatRegistry instances own readiness and verification independently",
+      "result": "passed"
+    },
+    {
+      "name": "Extension and MIME indexes build once per catalogue revision and rebuild only after a change",
+      "result": "passed"
+    },
+    {
+      "name": "Injected Native loaders do not share module state and failed loads remain retryable",
+      "result": "passed"
+    },
+    {
+      "name": "Promise race deadlines clear their timers and discard late caller results",
+      "result": "passed"
+    },
+    {
+      "name": "Category factories instantiate only requested records and still expose the entire offline catalogue",
+      "result": "passed"
+    },
+    {
+      "name": "Idle draft session TTL removes owned copies but claimed task inputs never expire",
+      "result": "passed"
+    },
+    {
+      "name": "Copying draft sessions survive TTL and successful activity refreshes their idle deadline",
+      "result": "passed"
+    },
+    {
+      "name": "Cleanup deadlines report pending ownership without deleting live or uncompleted resources",
+      "result": "passed"
+    },
+    {
+      "name": "ServiceContainer preview construction calls no Native loader and owned scope shutdown leaves other scopes available",
+      "result": "passed"
+    },
+    {
+      "name": "Independent converter VMs retain all formats, original route filters and quality ordering without cloning",
+      "result": "passed"
+    },
+    {
+      "name": "Inline confirmation never starts automatically and uses the frozen approved submission",
+      "result": "passed"
+    },
+    {
+      "name": "Submission throws clear UI authorization in finally and release the owned draft for retry",
+      "result": "passed"
+    },
+    {
+      "name": "Temporary system Picker hide preserves its result while copy-time hide discards late data",
+      "result": "passed"
+    },
+    {
+      "name": "TTL invalidates visible unsubmitted inputs and unsubscribes the page observer on hide",
+      "result": "passed"
+    },
+    {
+      "name": "Task history stays at 100, protects active work, reuses original ordering and bounds timing caches",
+      "result": "passed"
+    },
+    {
+      "name": "Native result cache preserves recency and releases only the oldest result at its bound",
+      "result": "passed"
+    },
+    {
+      "name": "Six preview components have bounded local state and the page supplies four observed VMs",
+      "result": "passed"
+    }
+  ],
+  "deviceExecution": "not_executed",
+  "previewerExecution": "not_executed"
+}

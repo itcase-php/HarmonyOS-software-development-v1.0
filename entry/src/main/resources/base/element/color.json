@@ -3,6 +3,66 @@
     {
       "name": "start_window_background",
       "value": "#FFFFFF"
+    },
+    {
+      "name": "palette_007aff",
+      "value": "#007AFF"
+    },
+    {
+      "name": "palette_172b4d",
+      "value": "#172B4D"
+    },
+    {
+      "name": "palette_526077",
+      "value": "#526077"
+    },
+    {
+      "name": "palette_ffffff",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "palette_a65c00",
+      "value": "#A65C00"
+    },
+    {
+      "name": "palette_f2f5fa",
+      "value": "#F2F5FA"
+    },
+    {
+      "name": "palette_c53030",
+      "value": "#C53030"
+    },
+    {
+      "name": "palette_e5ecf5",
+      "value": "#E5ECF5"
+    },
+    {
+      "name": "palette_167644",
+      "value": "#167644"
+    },
+    {
+      "name": "palette_edf4ff",
+      "value": "#EDF4FF"
+    },
+    {
+      "name": "palette_2563eb",
+      "value": "#2563EB"
+    },
+    {
+      "name": "palette_7c3aed",
+      "value": "#7C3AED"
+    },
+    {
+      "name": "palette_0d9488",
+      "value": "#0D9488"
+    },
+    {
+      "name": "palette_d97706",
+      "value": "#D97706"
+    },
+    {
+      "name": "palette_a0aec0",
+      "value": "#A0AEC0"
     }
   ]
 }

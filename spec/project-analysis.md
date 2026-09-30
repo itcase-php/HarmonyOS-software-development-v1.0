@@ -1,8 +1,8 @@
 # 项目架构与进度分析
 
-本次批准范围内输入管理已实现，宿主与编译验证通过；下文状态已更新，设备/预览验收仍待执行。详见 changes/file-authorization-input-management/tasks.md。
+本次批准范围内输入管理已实现，宿主与编译验证通过；下文状态已更新，设备/预览验收仍待执行。输入与架构变更分别见 changes/file-authorization-input-management/tasks.md、changes/deep-architecture-refactor/tasks.md。
 
-更新日期：2026-09-29
+更新日期：2026-09-30
 
 ## 技术栈
 
@@ -75,7 +75,7 @@ NativeBridge.getCapabilities() 返回 engines=[] routes=[]，因此 availableRou
 
 ## 测试覆盖
 
-- 15 项交互测试 + 13 项保真测试 + 12 项重构测试 + 61 项 Hypium 源码 + 16 项审计 + 35 项输入管理 = **152 项宿主检查通过**
+- 15 项交互测试 + 13 项保真测试 + 12 项重构测试 + 61 项 Hypium 源码 + 16 项审计 + 35 项输入管理 + 21 项架构 = **173 项宿主检查通过**
 - 覆盖 18×18 格式组合 + 15,552 组质量/意图/等级选择
 - **缺失**：真机 Hypium、Previewer UI、读屏、真实引擎端到端
 
@@ -86,3 +86,9 @@ NativeBridge.getCapabilities() 返回 engines=[] routes=[]，因此 availableRou
 3. **保真度门禁**：达不到最低等级禁止开始，不自动降级
 4. **配置原子性**：rawfile 校验通过后才原子替换，失败保留旧缓存
 5. **预览器降级**：rawfile/Native 不可用时自动使用内置演示数据，不阻塞用户
+
+## 当前架构重构（2026-09-30）
+
+ConverterPage 以四个观察 VM 装配六个职责组件，参数和 @ObjectLink 共享观察对象，services 由根页 @Provide、进度组件 @Consume。EntryAbility 创建隔离的服务容器，静态 API 为兼容委托。目录分五类工厂按查询实例化；全量仍为 18/43。FormatDetector 使用实例版本索引。调度维护 runningTask/创建顺序队列，结果 LRU 跟随 100 条历史预算。文件 VM 管 Picker 例外、finally 清理和闲置会话过期；原生输入所有权继续由服务保持。
+
+对应新增目录/文件：components 六个 Panel/Selector/Banner、viewmodel 四个 VM/ConverterCoordinator/ConverterUiPort、services ServiceContainer/ServiceContracts/TaskDependencies、generated/catalogue 五个工厂、common ErrorHandler/Deadline/ArkUiConverterUi。验证见 tests/generated/architecture-validation-report.json；原 C++ 会话与五类引擎仍占位，无真实可用路线。

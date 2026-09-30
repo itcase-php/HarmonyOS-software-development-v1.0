@@ -1,0 +1,123 @@
+{
+  "result": "passed",
+  "baselineCommit": "c3a7e414dc5ddf2015564d56ffb1ba3f911c8b10",
+  "byteIdenticalFiles": [
+    {
+      "file": "entry/src/main/cpp/CMakeLists.txt",
+      "sha256": "cc20b67ef3cd657e1a8546363a67c7f251cccbe63a7a23b6ed0dc60c261754b4"
+    },
+    {
+      "file": "entry/src/main/cpp/core/converter.h",
+      "sha256": "7ae85fa80670570458fbfb25162d281ebffed8e0cc476bd5c5cf26abb2fee2ae"
+    },
+    {
+      "file": "entry/src/main/cpp/core/engine_registry.cpp",
+      "sha256": "2135029bb1680ec8cc1dbb494d3969e3e1a12fb8fbac2754eecfd7accd2665a3"
+    },
+    {
+      "file": "entry/src/main/cpp/core/engine_registry.h",
+      "sha256": "88adaa3b87cfdd4d8f296f3811a1e138af336fa06b24f7928fb5d01cc5c2fc94"
+    },
+    {
+      "file": "entry/src/main/cpp/core/missing_converter.h",
+      "sha256": "91bd88acb7c0331646497b07093e3c7ea48b4924491898f74588364ed509e89b"
+    },
+    {
+      "file": "entry/src/main/cpp/engines/image/image_converter.cpp",
+      "sha256": "f80401ce34340e30cb8d51d0eb1211555df5235a281d4e5a3ec3502ab171d326"
+    },
+    {
+      "file": "entry/src/main/cpp/engines/media/media_converter.cpp",
+      "sha256": "abaa692ff7ab55a0f61193d7fb9b1b533017897b9636e1d838e64d849177343d"
+    },
+    {
+      "file": "entry/src/main/cpp/engines/ocr/ocr_converter.cpp",
+      "sha256": "da87409efe9795adc394fb77b407bee502bc008caffcd88c10f09a2fb030ec72"
+    },
+    {
+      "file": "entry/src/main/cpp/engines/office/office_converter.cpp",
+      "sha256": "8c730f4a7c5d2acc68fb39b0067d778f0b6591a03dc81da9017fc951166062ba"
+    },
+    {
+      "file": "entry/src/main/cpp/engines/pdf/pdf_converter.cpp",
+      "sha256": "b8038801113b8fd358adde5cf60dc6657fa4c15d7d32d00f9ba5c284a844cd9c"
+    },
+    {
+      "file": "entry/src/main/cpp/generated/engine_sources.cmake",
+      "sha256": "7d72e3b550605dd92c2f89baacafaebf86f451e2a8994f2be73d7ac1b4089ea8"
+    },
+    {
+      "file": "entry/src/main/cpp/generated/registry_metadata.h",
+      "sha256": "06fb6c534b864783792e797558e48715a84d71473132b8d55707e404277b8e8e"
+    },
+    {
+      "file": "entry/src/main/cpp/napi/native_bridge.cpp",
+      "sha256": "f76fd78a869fb1e8386976e5e1ed07f901e3e83062c35ec1a7693fc7785a3d2a"
+    },
+    {
+      "file": "entry/src/main/cpp/napi/native_bridge.h",
+      "sha256": "c7bbaa36f397a31a02fb45ee2995b8611665e395971e307686dc26574e3a7749"
+    },
+    {
+      "file": "entry/src/main/cpp/napi_init.cpp",
+      "sha256": "006887e7b042c82480fb34dd665d9df28ad1f80a7b16aeaf084d0e37a11ab42e"
+    },
+    {
+      "file": "entry/src/main/cpp/types/libentry/Index.d.ts",
+      "sha256": "7fb7dd261bb76c65d7f99be71a3c679f1fc79a1b16516df8309bd0da7e6396c6"
+    },
+    {
+      "file": "entry/src/main/cpp/types/libentry/Protocol.d.ts",
+      "sha256": "c3252f80348ee94232bfe3f14b8c4a1645236c2e503a2f1f4458cc75e304ebfe"
+    },
+    {
+      "file": "entry/src/main/cpp/types/libentry/oh-package.json5",
+      "sha256": "028b2aeb3416ad46e258ee82b1e19d51468547f14e45d8f689ca2692e2e6645e"
+    },
+    {
+      "file": "entry/src/main/ets/models/NativeProtocol.ets",
+      "sha256": "2a47dbe12f5cac8cc84654a27f6769d82cc3baea9d9b6c3751fd661e4db800e0"
+    },
+    {
+      "file": "entry/src/main/ets/viewmodel/DemoFidelityReport.ets",
+      "sha256": "465cfda10101cdc5ec6e4ef7b37d602b28ff654c0e91a914ea8aa25d85e4abcb"
+    },
+    {
+      "file": "entry/src/main/module.json5",
+      "sha256": "6f133d67a9044bdc6d559536057c3bbe81caef6d2934810bfc59ea151dac9020"
+    },
+    {
+      "file": "entry/src/main/resources/base/profile/main_pages.json",
+      "sha256": "fcd90af2e07c793faea4c8e373d3f30643bb10d03f9bfbcf0f251ee071a05cea"
+    },
+    {
+      "file": "entry/src/main/resources/rawfile/format-registry/conversion-matrix.json",
+      "sha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270"
+    },
+    {
+      "file": "entry/src/main/resources/rawfile/format-registry/formats.json",
+      "sha256": "55d416083a65f2cc13a64a17aec06fb23def491534186d013cf5b88ceb8d4f10"
+    },
+    {
+      "file": "entry/src/main/resources/rawfile/format-registry/manifest.json",
+      "sha256": "17d3ffcd3bd630bf245cc8341bea49c0cc95f595494efce9434cf6b50ee72c23"
+    },
+    {
+      "file": "shared/format-registry/conversion-matrix.json",
+      "sha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270"
+    },
+    {
+      "file": "shared/format-registry/formats.json",
+      "sha256": "55d416083a65f2cc13a64a17aec06fb23def491534186d013cf5b88ceb8d4f10"
+    },
+    {
+      "file": "shared/format-registry/schema/conversion-matrix.schema.json",
+      "sha256": "36817b25df95486f6488e5a6d591d36634e377e1da3a12d8a338b4d63ff84a7e"
+    },
+    {
+      "file": "shared/format-registry/schema/formats.schema.json",
+      "sha256": "1f24bb08af531a4bf39c1440ad54077170aba312e3edd63ff439c20eeeb39838"
+    }
+  ],
+  "publicBehavior": "173 host checks; prior method bodies deliberately refactored, historical input hashes not rewritten"
+}

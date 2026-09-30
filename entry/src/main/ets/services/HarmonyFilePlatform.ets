@@ -1,17 +1,21 @@
+import { RegistryFormat } from '../models/RegistryTypes';
+import { FormatRegistry } from './FormatRegistry';
+import { FormatDetectorIndex } from './FormatDetector';
+import { FormatRegistryPort } from './ServiceContracts';
+import { ErrorHandler } from '../common/ErrorHandler';
 import { common } from '@kit.AbilityKit';
 import { util } from '@kit.ArkTS';
 import { fileIo, fileUri, hash, picker, statfs } from '@kit.CoreFileKit';
 import { FileAuthorizationPlatform, PickedFile } from '../models/SessionModels';
-import { RegistryFormat } from '../models/RegistryTypes';
-import { FormatRegistry } from './FormatRegistry';
-import { FormatDetector } from './FormatDetector';
 import { BridgeError } from '../common/BridgeError';
 
 interface FilePlatformFailure { code?: number; }
 
 export function fileAuthorizationError(error: Error, reason: string): BridgeError {
   if (error instanceof BridgeError) { return error; }
-  const failure: FilePlatformFailure = error as FilePlatformFailure;
+  // SDK errors expose an optional numeric code; validate it before mapping recovery.
+  const failure: FilePlatformFailure = error && typeof error === 'object' ? error as FilePlatformFailure : {};
+  ErrorHandler.swallow('FilePlatform', error);
   if (failure.code === 13900025 || failure.code === 13900041) { return new BridgeError('STORAGE_FULL', 'SANDBOX_FULL'); }
   if (failure.code === 13900001 || failure.code === 13900012) { return new BridgeError('PERMISSION_DENIED', 'FILE_GRANT_EXPIRED'); }
   return new BridgeError('IO_ERROR', reason);
@@ -19,14 +23,18 @@ export function fileAuthorizationError(error: Error, reason: string): BridgeErro
 
 export class HarmonyFilePlatform implements FileAuthorizationPlatform {
   private context: common.UIAbilityContext;
-  constructor(context: common.UIAbilityContext) { this.context = context; }
+  private registry: FormatRegistryPort;
+  private detector: FormatDetectorIndex;
+  constructor(context: common.UIAbilityContext, registry: FormatRegistryPort = FormatRegistry.shared()) {
+    this.context = context; this.registry = registry; this.detector = new FormatDetectorIndex(registry);
+  }
   isAvailable(): boolean {
     try {
       if (this.context.cacheDir.length === 0 || !canIUse('SystemCapability.FileManagement.UserFileService') ||
         !canIUse('SystemCapability.FileManagement.File.FileIO')) { return false; }
       const documentPicker: picker.DocumentViewPicker = new picker.DocumentViewPicker(this.context);
       return typeof documentPicker.select === 'function';
-    } catch (_) { return false; }
+    } catch (error) { ErrorHandler.swallow('HarmonyFilePlatform.fallback', error); return false; }
   }
   cacheDir(): string { return this.context.cacheDir; }
   uuid(): string { return util.generateRandomUUID(false).toLowerCase(); }
@@ -45,8 +53,8 @@ export class HarmonyFilePlatform implements FileAuthorizationPlatform {
           const stat: fileIo.Stat = await fileIo.stat(source.fd);
           if (!stat.isFile()) { throw new BridgeError('INVALID_REQUEST', 'INPUT_NOT_REGULAR_FILE'); }
           const name: string = new fileUri.FileUri(uri).name;
-          const detected: string | null = FormatDetector.detectByExtension(name);
-          const format: RegistryFormat | undefined = FormatRegistry.listFormats().find((item: RegistryFormat) => item.id === detected);
+          const detected: string | null = this.detector.detectByExtension(name);
+          const format: RegistryFormat | undefined = this.registry.listFormats().find((item: RegistryFormat) => item.id === detected);
           // Picker returns URIs, not MIME metadata. Keep the registered hint separate from Native probing.
           const file: PickedFile = { uri: uri, fileName: name, fileSize: stat.size,
             mimeType: format && format.mimeTypes.length > 0 ? format.mimeTypes[0] : '' };
@@ -54,20 +62,20 @@ export class HarmonyFilePlatform implements FileAuthorizationPlatform {
         } finally { await fileIo.close(source); }
       }
       return files;
-    } catch (error) { throw fileAuthorizationError(error as Error, 'FILE_PICK_FAILED'); }
+    } catch (error) { throw fileAuthorizationError(error, 'FILE_PICK_FAILED'); }
   }
 
   async exists(path: string): Promise<boolean> {
     try { return await fileIo.access(path); }
-    catch (error) { throw fileAuthorizationError(error as Error, 'FILE_ACCESS_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'FILE_ACCESS_FAILED'); }
   }
   async mkdir(path: string): Promise<void> {
     try { await fileIo.mkdir(path, true); }
-    catch (error) { throw fileAuthorizationError(error as Error, 'WORKSPACE_CREATE_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'WORKSPACE_CREATE_FAILED'); }
   }
   async freeBytes(path: string): Promise<number> {
     try { return await statfs.getFreeSize(path); }
-    catch (error) { throw fileAuthorizationError(error as Error, 'STORAGE_CHECK_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'STORAGE_CHECK_FAILED'); }
   }
 
   async copyUri(uri: string, destination: string, maxBytes: number, active: () => boolean): Promise<number> {
@@ -101,27 +109,27 @@ export class HarmonyFilePlatform implements FileAuthorizationPlatform {
       const copied: fileIo.Stat = await fileIo.stat(target.fd);
       if (total !== stat.size || copied.size !== total) { throw new BridgeError('IO_ERROR', 'FILE_CHANGED_DURING_COPY'); }
       return total;
-    } catch (error) { throw fileAuthorizationError(error as Error, 'FILE_COPY_FAILED'); }
+    } catch (error) { throw fileAuthorizationError(error, 'FILE_COPY_FAILED'); }
     finally {
       let failure: BridgeError | null = null;
       try { if (target) { await fileIo.close(target); } }
-      catch (error) { failure = fileAuthorizationError(error as Error, 'FILE_CLOSE_FAILED'); }
+      catch (error) { failure = fileAuthorizationError(error, 'FILE_CLOSE_FAILED'); }
       try { if (source) { await fileIo.close(source); } }
-      catch (error) { failure = fileAuthorizationError(error as Error, 'FILE_CLOSE_FAILED'); }
+      catch (error) { failure = fileAuthorizationError(error, 'FILE_CLOSE_FAILED'); }
       if (failure) { throw failure; }
     }
   }
 
   async sha256(path: string): Promise<string> {
     try { return (await hash.hash(path, 'sha256')).toLowerCase(); }
-    catch (error) { throw fileAuthorizationError(error as Error, 'FILE_HASH_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'FILE_HASH_FAILED'); }
   }
   async unlink(path: string): Promise<void> {
     try { if (await fileIo.access(path)) { await fileIo.unlink(path); } }
-    catch (error) { throw fileAuthorizationError(error as Error, 'FILE_REMOVE_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'FILE_REMOVE_FAILED'); }
   }
   async removeDirectory(path: string): Promise<void> {
     try { if (await fileIo.access(path)) { await fileIo.rmdir(path); } }
-    catch (error) { throw fileAuthorizationError(error as Error, 'WORKSPACE_REMOVE_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'WORKSPACE_REMOVE_FAILED'); }
   }
 }

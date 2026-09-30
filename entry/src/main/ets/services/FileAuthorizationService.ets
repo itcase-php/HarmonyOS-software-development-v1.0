@@ -3,8 +3,12 @@ import { AuthorizedFile, FileAuthorizationPlatform, PickedFile, SessionContext }
 import { registryMetadata } from '../generated/RegistryData';
 import { BridgeError } from '../common/BridgeError';
 import { FormatRegistry } from './FormatRegistry';
-import { FormatDetector } from './FormatDetector';
 import { HarmonyFilePlatform, fileAuthorizationError } from './HarmonyFilePlatform';
+import { FormatRegistryPort, FileAuthorizationPort } from './ServiceContracts';
+import { FormatDetectorIndex } from './FormatDetector';
+import { TaskRuntime } from '../models/InteractionModels';
+import { SystemRuntime, withDeadline } from '../common/Deadline';
+import { ErrorHandler } from '../common/ErrorHandler';
 
 class OwnedSession {
   context: SessionContext;
@@ -13,19 +17,35 @@ class OwnedSession {
   pending: Promise<void> = Promise.resolve();
   destroying: Promise<void> | null = null;
   operations: number = 0;
-  constructor(context: SessionContext) { this.context = context; }
+  lastUsedAt: number;
+  constructor(context: SessionContext) { this.context = context; this.lastUsedAt = context.createdAt; }
 }
 
 // Injectable ownership logic; never accepts a caller-provided directory for deletion.
-export class FileAuthorizationManager {
+export class FileAuthorizationManager implements FileAuthorizationPort {
   private platform: FileAuthorizationPlatform;
   private sessions: Map<string, OwnedSession> = new Map<string, OwnedSession>();
   private grants: Map<string, PickedFile> = new Map<string, PickedFile>();
   private closed: boolean = false;
-  constructor(platform: FileAuthorizationPlatform) { this.platform = platform; }
+  private registry: FormatRegistryPort;
+  private detector: FormatDetectorIndex;
+  private runtime: TaskRuntime;
+  private ttlMs: number;
+  private expiryTimer: number = -1;
+  private expiryListeners: Map<number, (id: string) => void> = new Map<number, (id: string) => void>();
+  private expirySequence: number = 0;
+  subscribeExpiry(listener: (id: string) => void): number { const token: number = ++this.expirySequence; this.expiryListeners.set(token, listener); return token; }
+  unsubscribeExpiry(token: number): void { this.expiryListeners.delete(token); }
+  constructor(platform: FileAuthorizationPlatform, registry: FormatRegistryPort = FormatRegistry.shared(),
+    runtime: TaskRuntime = new SystemRuntime(), ttlMs: number = 30 * 60 * 1000) {
+    this.platform = platform; this.registry = registry; this.detector = new FormatDetectorIndex(registry);
+    this.runtime = runtime; this.ttlMs = ttlMs;
+    if (!Number.isFinite(ttlMs) || ttlMs < 0) { throw new BridgeError('INVALID_REQUEST', 'SESSION_TTL_INVALID'); }
+  }
 
   isAvailable(): boolean {
-    try { return !this.closed && this.platform.isAvailable(); } catch (_) { return false; }
+    try { return !this.closed && this.platform.isAvailable(); }
+    catch (error) { ErrorHandler.swallow('FileAuthorization.available', error); return false; }
   }
   getWorkspaceRoot(): string {
     const cache: string = this.platform.cacheDir().replace(/\/+$/, '');
@@ -59,6 +79,7 @@ export class FileAuthorizationManager {
     const record: OwnedSession = this.owned(sessionId);
     if (record.closing || record.claimed || record.operations > 0) { throw new BridgeError('TASK_BUSY', 'SESSION_ALREADY_SUBMITTED'); }
     record.claimed = true;
+    this.scheduleExpiry();
   }
 
   async pickDocuments(maxCount: number): Promise<PickedFile[]> {
@@ -77,7 +98,7 @@ export class FileAuthorizationManager {
       }
       for (const file of picked) { this.grants.set(file.uri, JSON.parse(JSON.stringify(file)) as PickedFile); }
       return JSON.parse(JSON.stringify(picked)) as PickedFile[];
-    } catch (error) { throw fileAuthorizationError(error as Error, 'FILE_PICK_FAILED'); }
+    } catch (error) { throw fileAuthorizationError(error, 'FILE_PICK_FAILED'); }
   }
 
   async createSession(): Promise<SessionContext> {
@@ -92,10 +113,11 @@ export class FileAuthorizationManager {
       if (this.closed) { throw new BridgeError('CONVERSION_CANCELLED', 'FILE_IMPORT_CANCELLED'); }
       const context: SessionContext = { sessionId: id, workspaceRef: workspace, createdAt: this.platform.now(), inputFiles: [] };
       this.sessions.set(id, new OwnedSession(context));
+      this.scheduleExpiry();
       return JSON.parse(JSON.stringify(context)) as SessionContext;
     } catch (error) {
       if (workspace.length > 0) { await this.platform.removeDirectory(workspace); }
-      throw fileAuthorizationError(error as Error, 'WORKSPACE_CREATE_FAILED');
+      throw fileAuthorizationError(error, 'WORKSPACE_CREATE_FAILED');
     }
   }
 
@@ -105,9 +127,10 @@ export class FileAuthorizationManager {
       record.operations++;
       const previous: Promise<void> = record.pending;
       const operation: Promise<AuthorizedFile> = this.copyOwned(file, record, previous);
-      record.pending = operation.then(() => {}).catch(() => {});
-      try { return await operation; } finally { record.operations--; }
-    } catch (error) { throw fileAuthorizationError(error as Error, 'FILE_COPY_FAILED'); }
+      record.pending = operation.then(() => {}).catch((error: Error) => { ErrorHandler.swallow('FileAuthorization.pending', error); });
+      try { return await operation; }
+      finally { record.operations--; record.lastUsedAt = this.platform.now(); this.scheduleExpiry(); }
+    } catch (error) { throw fileAuthorizationError(error, 'FILE_COPY_FAILED'); }
   }
 
   private async copyOwned(file: PickedFile, record: OwnedSession, previous: Promise<void>): Promise<AuthorizedFile> {
@@ -122,8 +145,8 @@ export class FileAuthorizationManager {
       }
       if (record.context.inputFiles.length >= 10) { throw new BridgeError('RESOURCE_LIMIT_EXCEEDED', 'FILE_SELECTION_LIMIT'); }
       const extension: string = file.fileName.substring(file.fileName.lastIndexOf('.') + 1);
-      if (FormatRegistry.isBlocked(extension)) { throw new BridgeError('PERMISSION_DENIED', 'DRM_BLOCKED'); }
-      const formatId: string = FormatDetector.detect(file.fileName, file.mimeType);
+      if (this.registry.isBlocked(extension)) { throw new BridgeError('PERMISSION_DENIED', 'DRM_BLOCKED'); }
+      const formatId: string = this.detector.detect(file.fileName, file.mimeType);
       if (formatId.length === 0) { throw new BridgeError('UNSUPPORTED_FORMAT', 'FILE_FORMAT_UNSUPPORTED'); }
       const used: number = record.context.inputFiles.reduce((total: number, item: AuthorizedFile) => total + item.byteSize, 0);
       const remaining: number = registryMetadata.defaultBudget.maxBatchBytes - used;
@@ -146,7 +169,7 @@ export class FileAuthorizationManager {
       const digest: string = await this.platform.sha256(target);
       if (!/^[a-f0-9]{64}$/.test(digest)) { throw new BridgeError('IO_ERROR', 'FILE_HASH_INVALID'); }
       if (record.closing || this.closed) { throw new BridgeError('CONVERSION_CANCELLED', 'FILE_IMPORT_CANCELLED'); }
-      const mimeId: string | null = FormatDetector.detectByMime(file.mimeType);
+      const mimeId: string | null = this.detector.detectByMime(file.mimeType);
       const authorized: AuthorizedFile = { fileId: id, originalName: file.fileName, relativePath: relativePath,
         byteSize: size, sha256: digest, detectedFormatId: formatId, mimeType: file.mimeType,
         warnings: mimeId !== null && mimeId !== formatId ? ['FORMAT_MIME_MISMATCH'] : [] };
@@ -155,7 +178,7 @@ export class FileAuthorizationManager {
       return JSON.parse(JSON.stringify(authorized)) as AuthorizedFile;
     } catch (error) {
       if (destination.length > 0) { await this.platform.unlink(destination); }
-      throw fileAuthorizationError(error as Error, 'FILE_COPY_FAILED');
+      throw fileAuthorizationError(error, 'FILE_COPY_FAILED');
     }
   }
 
@@ -166,9 +189,10 @@ export class FileAuthorizationManager {
       const previous: Promise<void> = record.pending;
       record.operations++;
       const operation: Promise<void> = this.removeOwned(record, fileId, previous);
-      record.pending = operation.catch(() => {});
-      try { await operation; } finally { record.operations--; }
-    } catch (error) { throw fileAuthorizationError(error as Error, 'FILE_REMOVE_FAILED'); }
+      record.pending = operation.catch((error: Error) => { ErrorHandler.swallow('FileAuthorization.pending', error); });
+      try { await operation; }
+      finally { record.operations--; record.lastUsedAt = this.platform.now(); this.scheduleExpiry(); }
+    } catch (error) { throw fileAuthorizationError(error, 'FILE_REMOVE_FAILED'); }
   }
   private async removeOwned(record: OwnedSession, fileId: string, previous: Promise<void>): Promise<void> {
     try {
@@ -180,7 +204,7 @@ export class FileAuthorizationManager {
       }
       await this.platform.unlink(`${record.context.workspaceRef}/${file.relativePath}`);
       record.context.inputFiles = record.context.inputFiles.filter((item: AuthorizedFile) => item.fileId !== fileId);
-    } catch (error) { throw fileAuthorizationError(error as Error, 'FILE_REMOVE_FAILED'); }
+    } catch (error) { throw fileAuthorizationError(error, 'FILE_REMOVE_FAILED'); }
   }
 
   async destroySession(sessionId: string): Promise<void> {
@@ -190,28 +214,68 @@ export class FileAuthorizationManager {
       record.closing = true;
       if (!record.destroying) { record.destroying = this.destroyOwned(record); }
       try { await record.destroying; }
-      catch (error) { record.destroying = null; throw error as Error; }
-    } catch (error) { throw fileAuthorizationError(error as Error, 'WORKSPACE_REMOVE_FAILED'); }
+      catch (error) { record.destroying = null; throw ErrorHandler.catchBridge(error, 'FileAuthorization.destroySession', 'IO_ERROR', 'WORKSPACE_REMOVE_FAILED'); }
+    } catch (error) { throw fileAuthorizationError(error, 'WORKSPACE_REMOVE_FAILED'); }
   }
   private async destroyOwned(record: OwnedSession): Promise<void> {
     try {
       await record.pending;
       await this.platform.removeDirectory(record.context.workspaceRef);
       this.sessions.delete(record.context.sessionId);
-    } catch (error) { throw fileAuthorizationError(error as Error, 'WORKSPACE_REMOVE_FAILED'); }
+      this.scheduleExpiry();
+    } catch (error) { throw fileAuthorizationError(error, 'WORKSPACE_REMOVE_FAILED'); }
   }
   async destroyAllSessions(): Promise<void> {
     this.closed = true;
+    this.stopExpiryTimer();
     this.grants.clear();
+    await withDeadline(this.destroyAllOwned(), 5000,
+      () => new BridgeError('CONVERSION_TIMEOUT', 'WORKSPACE_CLEANUP_TIMEOUT'), this.runtime);
+  }
+  private async destroyAllOwned(): Promise<void> {
     let failed: boolean = false;
     for (const id of Array.from(this.sessions.keys())) {
-      try { await this.destroySession(id); } catch (_) { failed = true; }
+      try { await this.destroySession(id); }
+      catch (error) { ErrorHandler.catchBridge(error, 'FileAuthorization.destroyAll'); failed = true; }
     }
     if (failed) { throw new BridgeError('IO_ERROR', 'WORKSPACE_REMOVE_FAILED'); }
   }
+  private stopExpiryTimer(): void {
+    if (this.expiryTimer !== -1) { this.runtime.clearTimeout(this.expiryTimer); this.expiryTimer = -1; }
+  }
+  private scheduleExpiry(): void {
+    this.stopExpiryTimer();
+    if (this.closed || this.ttlMs === 0) { return; }
+    let delay: number = this.ttlMs;
+    let hasDraft: boolean = false;
+    for (const record of this.sessions.values()) {
+      if (record.claimed || record.closing) { continue; }
+      hasDraft = true;
+      delay = Math.min(delay, Math.max(1000, record.lastUsedAt + this.ttlMs - this.platform.now()));
+    }
+    if (!hasDraft) { return; }
+    this.expiryTimer = this.runtime.setTimeout(() => {
+      this.expiryTimer = -1;
+      this.expireIdleSessions().catch((error: Error) => { ErrorHandler.catchBridge(error, 'FileAuthorization.expiry'); });
+    }, delay);
+  }
+  async expireIdleSessions(): Promise<void> {
+    try {
+      for (const record of Array.from(this.sessions.values())) {
+        if (!record.claimed && !record.closing && record.operations === 0 &&
+          this.platform.now() - record.lastUsedAt >= this.ttlMs && this.ttlMs > 0) {
+          for (const listener of this.expiryListeners.values()) {
+            try { listener(record.context.sessionId); }
+            catch (error) { ErrorHandler.swallow('FileAuthorization.expiryObserver', error); }
+          }
+          await this.destroySession(record.context.sessionId);
+        }
+      }
+    } finally { this.scheduleExpiry(); }
+  }
 }
 
-export class FileAuthorizationService {
+export class FileAuthorizationService extends FileAuthorizationManager {
   private static manager: FileAuthorizationManager | null = null;
   static configure(context: common.UIAbilityContext): void {
     FileAuthorizationService.configurePlatform(new HarmonyFilePlatform(context));
@@ -222,45 +286,60 @@ export class FileAuthorizationService {
     }
     FileAuthorizationService.manager = new FileAuthorizationManager(platform);
   }
+  static useDefault(manager: FileAuthorizationManager): void { FileAuthorizationService.manager = manager; }
   private static current(): FileAuthorizationManager {
     if (!FileAuthorizationService.manager) { throw new BridgeError('UNSUPPORTED_FEATURE', 'FILE_PICKER_UNAVAILABLE'); }
     return FileAuthorizationService.manager;
   }
   static isAvailable(): boolean {
-    try { return FileAuthorizationService.current().isAvailable(); } catch (_) { return false; }
+    try { return FileAuthorizationService.current().isAvailable(); } catch (error) { ErrorHandler.swallow('FileAuthorizationService.fallback', error); return false; }
   }
   static getWorkspaceRoot(): string { return FileAuthorizationService.current().getWorkspaceRoot(); }
   static getSession(id: string): SessionContext { return FileAuthorizationService.current().getSession(id); }
   static claimSession(id: string): void { FileAuthorizationService.current().claimSession(id); }
   static async pickDocuments(maxCount: number): Promise<PickedFile[]> {
     try { return await FileAuthorizationService.current().pickDocuments(maxCount); }
-    catch (error) { throw fileAuthorizationError(error as Error, 'FILE_PICK_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'FILE_PICK_FAILED'); }
   }
   static async createSession(): Promise<SessionContext> {
     try { return await FileAuthorizationService.current().createSession(); }
-    catch (error) { throw fileAuthorizationError(error as Error, 'WORKSPACE_CREATE_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'WORKSPACE_CREATE_FAILED'); }
   }
   static async copyToSandbox(file: PickedFile, id: string): Promise<AuthorizedFile> {
     try { return await FileAuthorizationService.current().copyToSandbox(file, id); }
-    catch (error) { throw fileAuthorizationError(error as Error, 'FILE_COPY_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'FILE_COPY_FAILED'); }
   }
   static async removeFile(id: string, fileId: string): Promise<void> {
     try { await FileAuthorizationService.current().removeFile(id, fileId); }
-    catch (error) { throw fileAuthorizationError(error as Error, 'FILE_REMOVE_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'FILE_REMOVE_FAILED'); }
   }
   static async destroySession(id: string): Promise<void> {
     try { if (FileAuthorizationService.manager) { await FileAuthorizationService.manager.destroySession(id); } }
-    catch (error) { throw fileAuthorizationError(error as Error, 'WORKSPACE_REMOVE_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'WORKSPACE_REMOVE_FAILED'); }
   }
   static async destroyAllSessions(): Promise<void> {
     try { if (FileAuthorizationService.manager) { await FileAuthorizationService.manager.destroyAllSessions(); } }
-    catch (error) { throw fileAuthorizationError(error as Error, 'WORKSPACE_REMOVE_FAILED'); }
+    catch (error) { throw fileAuthorizationError(error, 'WORKSPACE_REMOVE_FAILED'); }
   }
   static captureCleanup(): () => Promise<void> {
     const manager: FileAuthorizationManager | null = FileAuthorizationService.manager;
     return async () => {
       try { if (manager) { await manager.destroyAllSessions(); } }
-      catch (error) { throw fileAuthorizationError(error as Error, 'WORKSPACE_REMOVE_FAILED'); }
+      catch (error) { throw fileAuthorizationError(error, 'WORKSPACE_REMOVE_FAILED'); }
     };
   }
+}
+
+// Legacy callers resolve the current facade at call time; app scopes inject an owned instance.
+export class LegacyFileAuthorization implements FileAuthorizationPort {
+  isAvailable(): boolean { return FileAuthorizationService.isAvailable(); }
+  getWorkspaceRoot(): string { return FileAuthorizationService.getWorkspaceRoot(); }
+  getSession(id: string): SessionContext { return FileAuthorizationService.getSession(id); }
+  claimSession(id: string): void { return FileAuthorizationService.claimSession(id); }
+  pickDocuments(maxCount: number): Promise<PickedFile[]> { return FileAuthorizationService.pickDocuments(maxCount); }
+  createSession(): Promise<SessionContext> { return FileAuthorizationService.createSession(); }
+  copyToSandbox(file: PickedFile, id: string): Promise<AuthorizedFile> { return FileAuthorizationService.copyToSandbox(file, id); }
+  removeFile(id: string, fileId: string): Promise<void> { return FileAuthorizationService.removeFile(id, fileId); }
+  destroySession(id: string): Promise<void> { return FileAuthorizationService.destroySession(id); }
+  destroyAllSessions(): Promise<void> { return FileAuthorizationService.destroyAllSessions(); }
 }

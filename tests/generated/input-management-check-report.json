@@ -4,7 +4,7 @@
   "testedCases": 35,
   "cases": [
     {
-      "name": "All approved TaskStore methods and planner Native registry source files remain unchanged",
+      "name": "Approved task method surface and immutable format matrix and Native protocol remain intact",
       "result": "passed"
     },
     {

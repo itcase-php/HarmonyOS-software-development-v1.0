@@ -18,6 +18,7 @@ export interface TaskRuntime {
 }
 
 // Page-owned selection and presentation state. Components receive one complete snapshot.
+@Observed
 export class FidelitySettingsVM {
   qualityMode: QualityMode = 'balanced';
   requestedIntent: Intent = 'layout_preserved';
@@ -130,13 +131,13 @@ export function taskStatusLabel(status: DemoTaskStatus, mode: ExecutionMode = 'd
   }
 }
 
-export function taskStatusColor(status: DemoTaskStatus): string {
+export function taskStatusColor(status: DemoTaskStatus): ResourceColor {
   switch (status) {
-    case 'running': return '#A65C00';
-    case 'queued': case 'paused': return '#526077';
-    case 'completed': return '#167644';
-    case 'failed': return '#C53030';
-    case 'cancelled': return '#526077';
+    case 'running': return $r('app.color.palette_a65c00');
+    case 'queued': case 'paused': return $r('app.color.palette_526077');
+    case 'completed': return $r('app.color.palette_167644');
+    case 'failed': return $r('app.color.palette_c53030');
+    case 'cancelled': return $r('app.color.palette_526077');
   }
 }
 

@@ -1,30 +1,22 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { NativeBridge } from '../services/NativeBridge';
-import { TaskStore } from '../viewmodel/TaskStore';
-import { FileAuthorizationService } from '../services/FileAuthorizationService';
+import { ServiceContainer } from '../services/ServiceContainer';
+import { ErrorHandler } from '../common/ErrorHandler';
 
 const DOMAIN = 0x0000;
 
 export default class EntryAbility extends UIAbility {
+  private services: ServiceContainer | null = null;
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
-    try { FileAuthorizationService.configure(this.context); }
-    catch (_) { hilog.error(DOMAIN, 'FileAuthorization', '%{public}s', 'File service unavailable'); }
+    try { this.services = ServiceContainer.initialize(this.context); }
+    catch (error) { ErrorHandler.catchBridge(error, 'EntryAbility.create'); }
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onCreate');
   }
 
   onDestroy(): void {
-    const store: TaskStore = TaskStore.shared();
-    const cleanup: () => Promise<void> = FileAuthorizationService.captureCleanup();
-    store.shutdown();
-    NativeBridge.shutdown().catch(() => {
-      hilog.error(DOMAIN, 'NativeBridge', '%{public}s', 'Native shutdown failed');
-    }).finally(() => {
-      store.releaseAuthorizedSessions(cleanup).catch(() => {
-        hilog.error(DOMAIN, 'FileAuthorization', '%{public}s', 'Owned workspace cleanup failed');
-      });
-    });
+    const scope: ServiceContainer = this.services ?? ServiceContainer.current();
+    scope.shutdown().catch((error: Error) => { ErrorHandler.catchBridge(error, 'EntryAbility.destroy'); });
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onDestroy');
   }
 
@@ -43,7 +35,7 @@ export default class EntryAbility extends UIAbility {
     try {
       this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
     } catch (err) {
-      hilog.error(DOMAIN, 'testTag', 'Failed to set colorMode. Cause: %{public}s', JSON.stringify(err));
+      ErrorHandler.swallow('EntryAbility.colorMode', err);
     }
   }
 

@@ -1,12 +1,14 @@
 # SDD 状态追踪
 
-更新日期：2026-09-29
+更新日期：2026-09-30
 
 ## 当前变更
 
 | 变更名 | 状态 | 创建日期 | 描述 |
 |--------|------|----------|------|
 | file-authorization-input-management | implemented_pending_device_validation | 2026-09-29 | 已完成批准范围内 ArkTS 输入管理与真实提交入口；152 项宿主检查、应用/测试编译通过，设备/预览验收待执行，Native 会话/引擎仍占位 |
+
+| deep-architecture-refactor | implemented_pending_device_validation | 2026-09-30 | 批准兼容方案已实现，173 项宿主检查及应用/测试编译通过；保持 18/43 和原演示，设备/预览验收待执行 |
 
 ## 状态说明
 

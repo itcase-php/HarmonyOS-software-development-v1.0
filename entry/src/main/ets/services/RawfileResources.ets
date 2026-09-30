@@ -1,3 +1,4 @@
+import { ErrorHandler } from '../common/ErrorHandler';
 import { resourceManager } from '@kit.LocalizationKit';
 import { BundledResourceReader } from '../models/RegistryTypes';
 import { BridgeError } from '../common/BridgeError';
@@ -8,6 +9,6 @@ export class RawfileResources implements BundledResourceReader {
   constructor(resources: resourceManager.ResourceManager) { this.resources = resources; }
   async getRawFileContent(path: string): Promise<Uint8Array> {
     try { return await this.resources.getRawFileContent(path); }
-    catch (_) { throw new BridgeError('CONFIG_INVALID', 'BUNDLED_RESOURCE_READ_FAILED'); }
+    catch (error) { ErrorHandler.swallow('RawfileResources.fallback', error); throw new BridgeError('CONFIG_INVALID', 'BUNDLED_RESOURCE_READ_FAILED'); }
   }
 }

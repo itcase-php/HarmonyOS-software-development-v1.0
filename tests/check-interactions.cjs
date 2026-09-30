@@ -24,7 +24,7 @@ function host(options = {}) {
   const timeouts = timers;
   const cache = new Map();
   class ClockDate extends Date { static now() { return clock; } }
-  const context = vm.createContext({Date:ClockDate,Map,Math,Number,Array,Error,Object,Promise,String,Uint8Array,console,
+  const context = vm.createContext({Date:ClockDate,Map,Math,Number,Array,Error,Object,Promise,String,Uint8Array,console,Observed:target=>target,$r:name=>({id:name}),
     canIUse:()=>options.cryptoAvailable!==false,
     setInterval(callback) { timers.set(++intervalId,callback); return intervalId; },
     clearInterval(id) { timers.delete(id); },
@@ -72,8 +72,8 @@ function host(options = {}) {
   // Runtime integrity/initialization suites use registryReady:false and the real loader.
   const {FormatRegistry}=load('./services/FormatRegistry');
   if(options.registryReady!==false) {
-    FormatRegistry.formats=JSON.parse(JSON.stringify(formats.formats));
-    FormatRegistry.routes=JSON.parse(JSON.stringify(matrix.routes));FormatRegistry.ready=true;
+    FormatRegistry.shared().formats=JSON.parse(JSON.stringify(formats.formats));
+    FormatRegistry.shared().routes=JSON.parse(JSON.stringify(matrix.routes));FormatRegistry.shared().ready=true;
   }
   const {TaskStore} = load('./viewmodel/TaskStore');
   const {ConversionPlanner} = load('./viewmodel/ConversionPlanner');
@@ -237,7 +237,7 @@ async function main() {
     const routes=JSON.parse(fs.readFileSync(path.join(root,'entry/src/main/resources/base/profile/main_pages.json'),'utf8')).src;
     assert.deepEqual(routes,['pages/Index','pages/FormatBrowser','pages/ConverterPage','pages/TaskHistory','pages/FeatureGuide']);
     for(const route of routes) assert.match(fs.readFileSync(path.join(sourceRoot,route+'.ets'),'utf8'),/@Entry/);
-    for(const route of ['pages/ConverterPage','pages/TaskHistory'])
+    for(const route of ['components/ConversionProgressPanel','pages/TaskHistory'])
       assert.match(fs.readFileSync(path.join(sourceRoot,route+'.ets'),'utf8'),/task\.id\}-\$\{task\.status\}-\$\{task\.progress\}/);
     for(const route of ['pages/Index','pages/ConverterPage','pages/TaskHistory']) {
       const source=fs.readFileSync(path.join(sourceRoot,route+'.ets'),'utf8');

@@ -1,0 +1,92 @@
+{
+  "scope": "architecture_host_compiler_and_package_not_device_acceptance",
+  "date": "2026-09-30",
+  "result": "passed",
+  "sddStatus": "implemented_pending_device_validation",
+  "baseCommit": "c3a7e414dc5ddf2015564d56ffb1ba3f911c8b10",
+  "approval": {
+    "record": "spec/changes/deep-architecture-refactor/implementation-review.md",
+    "answer": "同意上述兼容方案（推荐）"
+  },
+  "formats": 18,
+  "plannedRoutes": 43,
+  "availableRoutes": 0,
+  "converterPageLines": 79,
+  "observedPageStates": 4,
+  "components": 6,
+  "totalHostChecks": 173,
+  "hostChecks": [
+    {
+      "report": "tests/generated/interaction-check-report.json",
+      "passed": 15
+    },
+    {
+      "report": "tests/generated/fidelity-check-report.json",
+      "passed": 13
+    },
+    {
+      "report": "tests/generated/refactor-check-report.json",
+      "passed": 12
+    },
+    {
+      "report": "tests/generated/hypium-host-check-report.json",
+      "passed": 61
+    },
+    {
+      "report": "tests/generated/audit-check-report.json",
+      "passed": 16
+    },
+    {
+      "report": "tests/generated/input-management-check-report.json",
+      "passed": 35
+    },
+    {
+      "report": "tests/generated/architecture-check-report.json",
+      "passed": 21
+    }
+  ],
+  "stepBuildLogs": [
+    "tests/generated/architecture-step1-build.log",
+    "tests/generated/architecture-step2-build.log",
+    "tests/generated/architecture-step3-build.log",
+    "tests/generated/architecture-step4-build.log",
+    "tests/generated/architecture-step5-build.log",
+    "tests/generated/architecture-step6-build.log",
+    "tests/generated/architecture-step7-build.log",
+    "tests/generated/architecture-step8-build.log",
+    "tests/generated/architecture-step9-build.log",
+    "tests/generated/architecture-test-hap-build.log"
+  ],
+  "immutableBaselineProof": "tests/generated/architecture-preservation-report.json",
+  "byteIdenticalProtectedFiles": 29,
+  "historicalInputBaseline": "tests/approved-input-baseline.json; original bodies deliberately refactored, hashes not rewritten",
+  "packageInspection": "tests/generated/hap-package-report.json",
+  "packagedRawfileMatchesSource": true,
+  "artifacts": [
+    {
+      "path": "entry/build/default/outputs/default/entry-default-unsigned.hap",
+      "bytes": 4008681,
+      "sha256": "0615c6f19050bc113f16e153fb9c5d26715272e5f7200adfad9ff6386f78a7e4",
+      "signing": "unsigned"
+    },
+    {
+      "path": "entry/build/default/outputs/ohosTest/entry-ohosTest-unsigned.hap",
+      "bytes": 1925802,
+      "sha256": "e996a2f1d74f4f71b8040a92189cd6118abd851c9f969b24ca4b09e5154244af",
+      "signing": "unsigned"
+    }
+  ],
+  "warnings": [
+    "SDK crypto system capability warnings",
+    "ohosTest template duplicate start_window_background",
+    "No signingConfig"
+  ],
+  "editorDiagnostics": "tool_unavailable",
+  "deviceConnection": "hdc list targets returned [Empty]",
+  "actualHypiumRunner": "not_executed",
+  "previewerExecution": "not_executed",
+  "deviceExecution": "not_executed",
+  "realConversion": "not_executed",
+  "ownership": "race bounds caller waiting, retains ownership while native/file calls are still live; default TTL only idle unsubmitted sessions",
+  "testChanges": "Original route/card source assertions follow extracted component locations; all behavioral assertions retained; 21 new architecture cases added"
+}

@@ -1,3 +1,4 @@
+import { ErrorHandler } from './ErrorHandler';
 import { FidelityTier, Intent, QualityMode } from '../models/NativeProtocol';
 
 // Resource lookup stays in the UI layer; FidelityPolicy remains SDK-independent.
@@ -5,9 +6,8 @@ export class FidelityText {
   static read(context: UIContext, resource: Resource, args: (string | number)[] = []): string {
     const manager = context.getHostContext()?.resourceManager;
     try { return manager ? manager.getStringSync(resource.id, ...args) : ''; }
-    catch (_) {
-      console.error(JSON.stringify({ timestamp: Date.now(), module: 'FidelityText',
-        code: 'INTERNAL_ERROR', reason: 'STRING_RESOURCE_LOOKUP_FAILED', resourceId: resource.id }));
+    catch (error) { ErrorHandler.swallow('FidelityText.fallback', error);
+      ErrorHandler.catchBridge(error, 'FidelityText.resource', 'INTERNAL_ERROR', 'STRING_RESOURCE_LOOKUP_FAILED');
       return '';
     }
   }

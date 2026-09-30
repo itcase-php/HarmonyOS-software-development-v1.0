@@ -1,6 +1,8 @@
 import { AppError, ErrorCode, Stage } from '../models/NativeProtocol';
+import { util } from '@kit.ArkTS';
 
 export class BridgeError extends Error implements AppError {
+  private static fallbackSequence: number = 0;
   code: ErrorCode;
   reason: string;
   module: string = 'NativeBridge';
@@ -14,7 +16,8 @@ export class BridgeError extends Error implements AppError {
     this.name = 'BridgeError';
     this.code = code;
     this.reason = reason;
-    this.traceId = `bridge-${Date.now()}`;
+    try { this.traceId = util.generateRandomUUID(false); }
+    catch (error) { this.traceId = `bridge-${Date.now()}-${++BridgeError.fallbackSequence}`; }
     this.messageKey = `errors.${code}`;
   }
 }

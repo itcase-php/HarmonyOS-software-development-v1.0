@@ -13,7 +13,7 @@ async function flush() {for(let i=0;i<60;i++) await Promise.resolve();}
 async function test(name,fn) {await fn();cases.push({name,result:'passed'});}
 function cold(options={}) {
  const h=host({...options,registryReady:false});
- return {h,registry:h.load('./services/FormatRegistry').FormatRegistry};
+ return {h,registry:h.load('./services/FormatRegistry').FormatRegistry.shared()};
 }
 const capabilities=version=>({schemaVersion:1,offlineOnly:true,abi:'host-adapter',configVersion:version,engines:[],routes:[]});
 async function main() {
@@ -22,8 +22,10 @@ async function main() {
   const metadata=JSON.parse(source.match(/export const registryMetadata: RegistryMetadata = ([\s\S]*?);\n/)[1]);
   assert.ok(source.split('\n').length<200);
   const {h}=cold();const generated=h.load('./generated/RegistryData');
-  assert.deepEqual(JSON.parse(JSON.stringify(generated.bundledFormats)),JSON.parse(Buffer.from(bytes('formats.json')).toString()).formats);
-  assert.deepEqual(JSON.parse(JSON.stringify(generated.bundledRoutes)),JSON.parse(Buffer.from(bytes('conversion-matrix.json')).toString()).routes);
+  const formats=generated.catalogueCategories.flatMap(category=>generated.loadBundledFormats(category)).sort((a,b)=>generated.formatOrder.indexOf(a.id)-generated.formatOrder.indexOf(b.id));
+  const routes=generated.catalogueCategories.flatMap(category=>generated.loadBundledRoutes(category)).sort((a,b)=>generated.routeOrder.indexOf(a.id)-generated.routeOrder.indexOf(b.id));
+  assert.deepEqual(JSON.parse(JSON.stringify(formats)),JSON.parse(Buffer.from(bytes('formats.json')).toString()).formats);
+  assert.deepEqual(JSON.parse(JSON.stringify(routes)),JSON.parse(Buffer.from(bytes('conversion-matrix.json')).toString()).routes);
   for(const [name,key] of [['formats.json','formatsSha256'],['conversion-matrix.json','matrixSha256']])
    assert.equal(crypto.createHash('sha256').update(bytes(name)).digest('hex'),metadata[key]);
   assert.equal(metadata.formatsCount,18);assert.equal(metadata.routesCount,43);
@@ -39,7 +41,7 @@ async function main() {
  await test('Failed initialization installs no partial snapshot and the next request can retry',async()=>{
   const {h,registry}=cold();const resources={getRawFileContent:async name=>name.endsWith('/formats.json')?bytes('formats.json'):new Uint8Array()};
   await assert.rejects(()=>registry.initialize(resources),error=>error.reason==='BUNDLED_RESOURCE_EMPTY');
-  assert.equal(registry.isInitialized(),false);assert.equal(registry.formats.length,18);assert.equal(registry.routes.length,43);
+  assert.equal(registry.isInitialized(),false);assert.equal(registry.listFormats().length,18);assert.equal(registry.listPlannedRoutes().length,43);
   await registry.initialize(h.resources);assert.equal(registry.listFormats().length,18);assert.equal(registry.listPlannedRoutes().length,43);
   assert.equal(h.timers.size,0);
  });
@@ -162,8 +164,9 @@ async function main() {
  });
  await test('Settings component consumes one VM and format browser resources have matching translations',()=>{
   const component=read('entry/src/main/ets/components/FidelitySettingsCard.ets');
-  assert.equal((component.match(/@Prop\b/g)||[]).length,1);assert.match(component,/@State expanded/);
-  const page=read('entry/src/main/ets/pages/ConverterPage.ets');assert.match(page,/FidelitySettingsCard\(\{ vm: this\.fidelityVM/);
+  assert.equal((component.match(/@ObjectLink\b/g)||[]).length,1);assert.match(component,/@State expanded/);
+  const page=read('entry/src/main/ets/pages/ConverterPage.ets');assert.match(page,/FidelityConfigPanel\(/);
+  assert.match(read('entry/src/main/ets/components/FidelityConfigPanel.ets'),/FidelitySettingsCard\(\{ vm: this\.model/);
   assert.doesNotMatch(page,/@State (?:qualityMode|selectedIntent|requestedTier|intentChoices|tierChoices):/);
   const base=JSON.parse(read('entry/src/main/resources/base/element/string.json')).string;
   const english=JSON.parse(read('entry/src/main/resources/en_US/element/string.json')).string;

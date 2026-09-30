@@ -17,8 +17,8 @@ export struct QualitySelector {
         Button(choice.label).layoutWeight(1).fontSize(14).type(ButtonType.Normal).borderRadius(10)
           .labelStyle({ maxLines: 1, minFontSize: 11, maxFontSize: 14,
             heightAdaptivePolicy: TextHeightAdaptivePolicy.MIN_FONT_SIZE_FIRST })
-          .backgroundColor(this.mode === choice.value ? '#007AFF' : '#E5ECF5')
-          .fontColor(this.mode === choice.value ? '#FFFFFF' : '#172B4D')
+          .backgroundColor(this.mode === choice.value ? $r('app.color.palette_007aff') : $r('app.color.palette_e5ecf5'))
+          .fontColor(this.mode === choice.value ? $r('app.color.palette_ffffff') : $r('app.color.palette_172b4d'))
           .enabled(this.interactive).onClick(() => { this.onSelectMode(choice.value); })
           .accessibilityText(choice.label)
           .accessibilityDescription(this.mode === choice.value ? $r('app.string.a11y_quality_selected') : $r('app.string.a11y_quality'))
