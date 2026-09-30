@@ -1,0 +1,4 @@
+[1/4] Building CXX object CMakeFiles/hdm_jpeg_pdf.dir/src/prototype.cpp.obj
+[2/4] Linking CXX static library libhdm_jpeg_pdf.a
+[3/4] Linking CXX executable hdm_jpeg_pdf_cli.exe
+[4/4] Linking CXX executable hdm_jpeg_pdf_tests.exe

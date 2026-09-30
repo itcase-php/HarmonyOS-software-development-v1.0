@@ -1,3 +1,4 @@
+import { RegistrySnapshotCopy } from '../models/RegistrySnapshotCopy';
 import { ErrorHandler } from '../common/ErrorHandler';
 import { util } from '@kit.ArkTS';
 import { cryptoFramework } from '@kit.CryptoArchitectureKit';
@@ -14,6 +15,11 @@ import { FormatRegistryPort } from './ServiceContracts';
 // Pinned digests belong to this build; hot updates require a separate signed-config design.
 export class FormatRegistryService implements FormatRegistryPort {
   private revision: number = 0;
+  private lookupRevision: number = -1;
+  private formatById: Map<string, RegistryFormat> = new Map<string, RegistryFormat>();
+  private formatIdByName: Map<string, string> = new Map<string, string>();
+  private formatPosition: Map<string, number> = new Map<string, number>();
+  private formatsByCategory: Map<string, RegistryFormat[]> = new Map<string, RegistryFormat[]>();
   catalogueVersion(): number { return this.revision; }
 
   private ready: boolean = false;
@@ -109,10 +115,11 @@ export class FormatRegistryService implements FormatRegistryPort {
     }
   }
 
-  listFormats(category?: string): RegistryFormat[] {
+  private formatDefinitions(category?: string): RegistryFormat[] {
     if (this.formats) {
-      const selected: RegistryFormat[] = category ? this.formats.filter((format: RegistryFormat) => format.category === category) : this.formats;
-      return JSON.parse(JSON.stringify(selected)) as RegistryFormat[];
+      if (!category) { return this.formats; }
+      this.ensureLookupIndex();
+      return this.formatsByCategory.get(category) ?? [];
     }
     let selected: RegistryFormat[] = [];
     for (const key of category ? [category] : catalogueCategories) {
@@ -120,7 +127,47 @@ export class FormatRegistryService implements FormatRegistryPort {
       selected = selected.concat(this.formatCategories.get(key) ?? []);
     }
     selected.sort((a: RegistryFormat, b: RegistryFormat) => formatOrder.indexOf(a.id) - formatOrder.indexOf(b.id));
-    return JSON.parse(JSON.stringify(selected)) as RegistryFormat[];
+    return selected;
+  }
+  listFormats(category?: string): RegistryFormat[] {
+    return this.formatDefinitions(category).map((format: RegistryFormat): RegistryFormat => RegistrySnapshotCopy.copyRegistryFormat(format));
+  }
+  private ensureLookupIndex(): void {
+    if (this.lookupRevision === this.revision) { return; }
+    const formats: RegistryFormat[] = this.formatDefinitions();
+    const byId: Map<string, RegistryFormat> = new Map<string, RegistryFormat>();
+    const byName: Map<string, string> = new Map<string, string>();
+    const byCategory: Map<string, RegistryFormat[]> = new Map<string, RegistryFormat[]>();
+    const positions: Map<string, number> = new Map<string, number>();
+    for (const format of formats) {
+      positions.set(format.id, positions.size);
+      const category: RegistryFormat[] = byCategory.get(format.category) ?? [];
+      category.push(format); byCategory.set(format.category, category);
+      byId.set(format.id, format);
+      for (const name of [format.id].concat(format.extensions)) {
+        if (!byName.has(name)) { byName.set(name, format.id); }
+      }
+    }
+    for (const alias of registryMetadata.migrationAliases) { byName.set(alias.from, alias.to); }
+    this.formatById = byId; this.formatIdByName = byName; this.formatsByCategory = byCategory; this.formatPosition = positions;
+    this.lookupRevision = this.revision;
+  }
+  getFormat(id: string): RegistryFormat | undefined {
+    const normalized: string = this.normalizeFormat(id);
+    const format: RegistryFormat | undefined = this.formatById.get(normalized);
+    return format ? RegistrySnapshotCopy.copyRegistryFormat(format) : undefined;
+  }
+  getFormatsByCategory(category: string): RegistryFormat[] { return this.listFormats(category); }
+  getFormatsByIds(ids: string[]): RegistryFormat[] {
+    this.ensureLookupIndex();
+    const wanted: Set<string> = new Set<string>(ids.map((id: string): string => this.normalizeFormat(id)));
+    const selected: RegistryFormat[] = [];
+    for (const id of wanted) {
+      const format: RegistryFormat | undefined = this.formatById.get(id);
+      if (format) { selected.push(format); }
+    }
+    selected.sort((a: RegistryFormat, b: RegistryFormat) => (this.formatPosition.get(a.id) ?? 0) - (this.formatPosition.get(b.id) ?? 0));
+    return selected.map((format: RegistryFormat): RegistryFormat => RegistrySnapshotCopy.copyRegistryFormat(format));
   }
   listPlannedRoutes(): ConversionRouteDefinition[] {
     if (!this.routes) {
@@ -131,15 +178,13 @@ export class FormatRegistryService implements FormatRegistryPort {
       }
       this.routes = selected.sort((a: ConversionRouteDefinition, b: ConversionRouteDefinition) => routeOrder.indexOf(a.id) - routeOrder.indexOf(b.id));
     }
-    return JSON.parse(JSON.stringify(this.routes)) as ConversionRouteDefinition[];
+    return this.routes.map((route: ConversionRouteDefinition): ConversionRouteDefinition => RegistrySnapshotCopy.copyConversionRouteDefinition(route));
   }
 
   normalizeFormat(id: string): string {
     const value = id.trim().toLowerCase().replace(/^\./, '');
-    const alias = registryMetadata.migrationAliases.find((item) => item.from === value);
-    if (alias) { return alias.to; }
-    const format = this.listFormats().find((item: RegistryFormat) => item.id === value || item.extensions.includes(value));
-    return format ? format.id : value;
+    this.ensureLookupIndex();
+    return this.formatIdByName.get(value) ?? value;
   }
 
   isBlocked(format: string): boolean {
@@ -159,12 +204,16 @@ export class FormatRegistryService implements FormatRegistryPort {
 // Compatibility entry point; all operational state belongs to an injectable instance.
 export class FormatRegistry {
   private static defaultService: FormatRegistryPort = new FormatRegistryService();
+  /** @deprecated Compatibility only. Obtain the owned instance from ServiceContainer or inject it. */
   static shared(): FormatRegistryPort { return FormatRegistry.defaultService; }
   static useDefault(service: FormatRegistryPort): void { FormatRegistry.defaultService = service; }
   static catalogueVersion(): number { return FormatRegistry.shared().catalogueVersion(); }
   static isInitialized(): boolean { return FormatRegistry.shared().isInitialized(); }
   static initialize(resources: BundledResourceReader): Promise<void> { return FormatRegistry.shared().initialize(resources); }
   static verifyBundledResources(resources: BundledResourceReader): Promise<void> { return FormatRegistry.shared().verifyBundledResources(resources); }
+  static getFormat(id: string): RegistryFormat | undefined { return FormatRegistry.shared().getFormat(id); }
+  static getFormatsByCategory(category: string): RegistryFormat[] { return FormatRegistry.shared().getFormatsByCategory(category); }
+  static getFormatsByIds(ids: string[]): RegistryFormat[] { return FormatRegistry.shared().getFormatsByIds(ids); }
   static listFormats(category?: string): RegistryFormat[] { return FormatRegistry.shared().listFormats(category); }
   static listPlannedRoutes(): ConversionRouteDefinition[] { return FormatRegistry.shared().listPlannedRoutes(); }
   static normalizeFormat(id: string): string { return FormatRegistry.shared().normalizeFormat(id); }

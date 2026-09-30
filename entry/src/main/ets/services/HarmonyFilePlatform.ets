@@ -54,7 +54,7 @@ export class HarmonyFilePlatform implements FileAuthorizationPlatform {
           if (!stat.isFile()) { throw new BridgeError('INVALID_REQUEST', 'INPUT_NOT_REGULAR_FILE'); }
           const name: string = new fileUri.FileUri(uri).name;
           const detected: string | null = this.detector.detectByExtension(name);
-          const format: RegistryFormat | undefined = this.registry.listFormats().find((item: RegistryFormat) => item.id === detected);
+          const format: RegistryFormat | undefined = detected ? this.registry.getFormat(detected) : undefined;
           // Picker returns URIs, not MIME metadata. Keep the registered hint separate from Native probing.
           const file: PickedFile = { uri: uri, fileName: name, fileSize: stat.size,
             mimeType: format && format.mimeTypes.length > 0 ? format.mimeTypes[0] : '' };

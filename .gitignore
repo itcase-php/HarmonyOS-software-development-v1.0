@@ -30,6 +30,9 @@
 *.hap
 *.hsp
 *.app
+/output/pdf/
+/tmp/pdfs/
+/tests/native/
 
 # OS/editor temporary files
 Thumbs.db

@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.16)
+project(hdm_native_contract_tests LANGUAGES CXX)
+include(CTest)
+
+# An actual host executable; no HarmonyOS NAPI library or third-party fetch required.
+include(${CMAKE_CURRENT_SOURCE_DIR}/../generated/engine_sources.cmake)
+list(TRANSFORM HDM_ENGINE_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/../")
+add_executable(hdm_core_tests core_tests.cpp ../core/engine_registry.cpp ${HDM_ENGINE_SOURCES})
+target_compile_features(hdm_core_tests PRIVATE cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+    target_compile_options(hdm_core_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+foreach(case errors factories missing lease exception)
+    add_test(NAME core_${case} COMMAND hdm_core_tests ${case})
+endforeach()
+
+# Compile the actual production bridge against an explicit host-only NAPI model.
+add_executable(hdm_napi_tests napi_tests.cpp ../napi/native_bridge.cpp)
+target_include_directories(hdm_napi_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/mock)
+target_compile_features(hdm_napi_tests PRIVATE cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+    target_compile_options(hdm_napi_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+foreach(case exports schema unsupported missing controls queue completion boundary)
+    add_test(NAME napi_${case} COMMAND hdm_napi_tests ${case})
+endforeach()

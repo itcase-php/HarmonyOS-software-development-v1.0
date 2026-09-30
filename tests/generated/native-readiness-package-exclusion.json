@@ -1,0 +1,7 @@
+{
+  "scope": "hap_host_test_exclusion",
+  "result": "passed",
+  "packageEntries": 19,
+  "hostTestsPackaged": false,
+  "prototypePackaged": false
+}

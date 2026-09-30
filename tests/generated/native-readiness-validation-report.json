@@ -1,0 +1,518 @@
+{
+  "scope": "compatible_optimisations_host_build_package_not_device_acceptance",
+  "date": "2026-09-30",
+  "result": "passed",
+  "baseCommit": "e58878fb0d4d19429748b892cfa3716691fa2343",
+  "sddStatus": "compatible_and_isolated_prototype_verified_native_integration_pending_review",
+  "formats": 18,
+  "plannedRoutes": 43,
+  "availableRoutes": 0,
+  "totalArkTSHostChecks": 205,
+  "hostChecks": [
+    {
+      "report": "tests/generated/interaction-check-report.json",
+      "passed": 15
+    },
+    {
+      "report": "tests/generated/fidelity-check-report.json",
+      "passed": 13
+    },
+    {
+      "report": "tests/generated/refactor-check-report.json",
+      "passed": 12
+    },
+    {
+      "report": "tests/generated/hypium-host-check-report.json",
+      "passed": 61
+    },
+    {
+      "report": "tests/generated/audit-check-report.json",
+      "passed": 16
+    },
+    {
+      "report": "tests/generated/input-management-check-report.json",
+      "passed": 35
+    },
+    {
+      "report": "tests/generated/architecture-check-report.json",
+      "passed": 21
+    },
+    {
+      "report": "tests/generated/copy-safety-check-report.json",
+      "passed": 32
+    }
+  ],
+  "cppTests": {
+    "passed": 13,
+    "framework": "CTest",
+    "compiler": "GCC 8.1 C++17 host",
+    "log": "tests/generated/native-readiness-cpp-tests.log",
+    "mockNapi": "production bridge linked to host model, not system NAPI"
+  },
+  "isolatedPrototype": {
+    "approvedByUser": true,
+    "applicationIntegrated": false,
+    "cTestPassed": 4,
+    "integrationPassed": 15,
+    "independentParser": "pypdf strict",
+    "renderer": "Poppler pdftoppm",
+    "dependency": "libjpeg-turbo 3.1.4.1 official release pinned SHA256 ecae8008e2cc9ade2f2c1bb9d5e6d4fb73e7c433866a056bd82980741571a022",
+    "log": "tests/generated/jpeg-pdf-prototype-ctest.log",
+    "report": "tests/generated/jpeg-pdf-prototype-integration.json",
+    "examples": [
+      "output/pdf/isolated-rgb.pdf",
+      "output/pdf/isolated-gray_300dpi.pdf",
+      "output/pdf/isolated-large_multichunk.pdf"
+    ]
+  },
+  "buildLogs": [
+    "tests/generated/native-readiness-step1-build.log",
+    "tests/generated/native-readiness-step2-build.log",
+    "tests/generated/native-readiness-step3-build.log",
+    "tests/generated/native-readiness-final-app-build.log",
+    "tests/generated/native-readiness-final-test-build.log"
+  ],
+  "nativeBuilds": [
+    {
+      "abi": "arm64-v8a",
+      "target": "OHOS",
+      "mode": "debug",
+      "optimisation": "SDK -O0",
+      "cxxStandard": 17,
+      "hostTests": false
+    },
+    {
+      "abi": "x86_64",
+      "target": "OHOS",
+      "mode": "debug",
+      "optimisation": "SDK -O0",
+      "cxxStandard": 17,
+      "hostTests": false
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "entry/build/default/outputs/default/entry-default-unsigned.hap",
+      "bytes": 4130492,
+      "sha256": "24ab8d11b0dae1f0ca628ebe31b812ada45edfa98748f1d92c685371a8e30823",
+      "signing": "unsigned"
+    },
+    {
+      "path": "entry/build/default/outputs/ohosTest/entry-ohosTest-unsigned.hap",
+      "bytes": 1967207,
+      "sha256": "da6279f8183610eee137535e789e45c8dbd04929cd0e4b3ba5069672cdc155b4",
+      "signing": "unsigned"
+    }
+  ],
+  "packageInspection": "tests/generated/hap-package-report.json",
+  "packageExclusion": "tests/generated/native-readiness-package-exclusion.json",
+  "preservation": "tests/generated/native-readiness-preservation-report.json",
+  "byteIdenticalProtectedFiles": 56,
+  "sourceHashes": [
+    {
+      "path": "entry/src/main/ets/common/ArkUiConverterUi.ets",
+      "sha256": "87dd863664493e8827ee028297f7933df824797ab388bfa04555914063f14543"
+    },
+    {
+      "path": "entry/src/main/ets/common/BridgeError.ets",
+      "sha256": "1011ba322fc380372d60d6fa0ca322865d0d3aa5ef3186d7119ab40fbda78e58"
+    },
+    {
+      "path": "entry/src/main/ets/common/Deadline.ets",
+      "sha256": "9026d76d4564fea8d96557d5f756958a3ed36633f668a02e3090d1b09ac83732"
+    },
+    {
+      "path": "entry/src/main/ets/common/ErrorHandler.ets",
+      "sha256": "2d68c91dce5f8dc3747cde80a873d0b20a031d5e312bb15303c07d5446e814b7"
+    },
+    {
+      "path": "entry/src/main/ets/common/FidelityText.ets",
+      "sha256": "96882941be7ec5e8ae1fd62100cf739cae895fe8be96de1381c0cd0501478598"
+    },
+    {
+      "path": "entry/src/main/ets/common/RegistryUi.ets",
+      "sha256": "d48b2d495df65b708b9baaa4d28028522700118d202e4d1482eb308683918166"
+    },
+    {
+      "path": "entry/src/main/ets/common/UiFeedback.ets",
+      "sha256": "835bb86c6981a2d57d6c6661a8b5f97c540203ee23313e3cd9620f4638565fd2"
+    },
+    {
+      "path": "entry/src/main/ets/components/ActionCard.ets",
+      "sha256": "1340f062b3f607b10630c9a1461bc8389fd3ae2da3b21cbcc52212ca6b52a867"
+    },
+    {
+      "path": "entry/src/main/ets/components/AuthorizedFilePanel.ets",
+      "sha256": "2975f52d872ecd7f57084f95b254f5fa32e515a176f2dd3da601c5af801bdab6"
+    },
+    {
+      "path": "entry/src/main/ets/components/ConversionErrorBanner.ets",
+      "sha256": "0e3339b878bf578d28b7044be0eec6301b232f85b942ec7f31ce11bf9abae32f"
+    },
+    {
+      "path": "entry/src/main/ets/components/ConversionProgressPanel.ets",
+      "sha256": "b528d2b65a46fb03e3c3d414edcef6fa20c6f91cf61f15a6dfa3679130fbc3a5"
+    },
+    {
+      "path": "entry/src/main/ets/components/FidelityConfigPanel.ets",
+      "sha256": "67942c857212663e0d815df24ef6393ea31f952e6d77ad42e2071edb4c3e50ee"
+    },
+    {
+      "path": "entry/src/main/ets/components/FidelityReportCard.ets",
+      "sha256": "d69c1ad3008ca9ff8e2d5375501cb4b9075ad02ca7fcdf164023300cf5becffa"
+    },
+    {
+      "path": "entry/src/main/ets/components/FidelitySettingsCard.ets",
+      "sha256": "47df83d51c1ab77ff954e73f68f4936fe7cb5d207e1e39bfcf5165c09526b5a3"
+    },
+    {
+      "path": "entry/src/main/ets/components/FormatTag.ets",
+      "sha256": "f48e72cf87c84b17bcf9d7a2693546011bca7ee88a216de07ecb721b72a364d4"
+    },
+    {
+      "path": "entry/src/main/ets/components/FoundationCard.ets",
+      "sha256": "e6d669d838e0cd69210282cff9be7a2cf2087cedc26f9bf8435d44c35fea014e"
+    },
+    {
+      "path": "entry/src/main/ets/components/PageHeader.ets",
+      "sha256": "13254dc11ad0b0f8db53400fa8c1b593c4e2150e9ef68cbc9d56d0e1faf4464b"
+    },
+    {
+      "path": "entry/src/main/ets/components/QualitySelector.ets",
+      "sha256": "19d84e84f5ff570e3f558818ea85234e4a7e2c6830becb05a2b7282e8235cb28"
+    },
+    {
+      "path": "entry/src/main/ets/components/SourceFormatSelector.ets",
+      "sha256": "176d5b9e799222d71293df8be3e1c842956e6fb7a00ea5613b6422a8244b12d1"
+    },
+    {
+      "path": "entry/src/main/ets/components/StatusBadge.ets",
+      "sha256": "90271fcc815d1bd47ea054fc2cb59ee3f63236239fdb0a4a5dfc8a34f3353d84"
+    },
+    {
+      "path": "entry/src/main/ets/components/TargetFormatSelector.ets",
+      "sha256": "a41a45ab7b7ff86cca25a1eca23a09a88ce38efc4fd8136f7cbba9491cb6820f"
+    },
+    {
+      "path": "entry/src/main/ets/entryability/EntryAbility.ets",
+      "sha256": "0d6328341a153264028b6e5bc7b21ae2f67dc39612154039e23e180bdf2c5179"
+    },
+    {
+      "path": "entry/src/main/ets/entrybackupability/EntryBackupAbility.ets",
+      "sha256": "ae94f286234d41ad5fa9f70bfd11f61e2f609994d6f16687d1ce4ec442115e5d"
+    },
+    {
+      "path": "entry/src/main/ets/generated/catalogue/Image.ets",
+      "sha256": "3890916367013326ec4510ac54a00e523168ec332f38f0259617290c2629691b"
+    },
+    {
+      "path": "entry/src/main/ets/generated/catalogue/Media.ets",
+      "sha256": "64612cee11d25af923372b3e4a8936b0bf581842e13e3dd143d39c05ae88da45"
+    },
+    {
+      "path": "entry/src/main/ets/generated/catalogue/Office.ets",
+      "sha256": "49c515a321efb88a7d90e995a235872e133ab3acd33ac084960a7bd081ada452"
+    },
+    {
+      "path": "entry/src/main/ets/generated/catalogue/Pdf.ets",
+      "sha256": "09ba13a83ef5b92a1bef89fb41b4d642c76ac6f94a1c800b3246a21c8f2f71fa"
+    },
+    {
+      "path": "entry/src/main/ets/generated/catalogue/Text.ets",
+      "sha256": "35c3aaf76fc6f8001234e1a81cdf58ae1af4ed07b0cb534d5052c00cdcc57c18"
+    },
+    {
+      "path": "entry/src/main/ets/generated/ErrorCatalog.ets",
+      "sha256": "846490289b148f8497d087230ad48b2d69634c9da6e8a4f37fe3eda18fc4fe0a"
+    },
+    {
+      "path": "entry/src/main/ets/generated/RegistryData.ets",
+      "sha256": "48ae4d6f2503737b72e687da9c954a50b92cff3b0156b5dc8e9feaca3f2ce5a3"
+    },
+    {
+      "path": "entry/src/main/ets/models/ConversionSnapshot.ets",
+      "sha256": "024cc3249a4f278f67cb3043fb2131ae12e894644b68902bed3ff5fa10e1ddad"
+    },
+    {
+      "path": "entry/src/main/ets/models/FidelityReportSnapshot.ets",
+      "sha256": "34f82d0b5379b6936a141204f6a385ece2efeec54849b6921b8e19369cf49b9f"
+    },
+    {
+      "path": "entry/src/main/ets/models/InteractionModels.ets",
+      "sha256": "8c0caf7a9e8c4af03a2fd39a1250980af7ea9b5f5297a4e2643c3e4c3a4265cf"
+    },
+    {
+      "path": "entry/src/main/ets/models/NativeProtocol.ets",
+      "sha256": "2a47dbe12f5cac8cc84654a27f6769d82cc3baea9d9b6c3751fd661e4db800e0"
+    },
+    {
+      "path": "entry/src/main/ets/models/RegistrySnapshotCopy.ets",
+      "sha256": "4ce0f92e13b7d6a137f6c6599fd23ebcd8781e8894ce06f2835ce8e774ef272f"
+    },
+    {
+      "path": "entry/src/main/ets/models/RegistryTypes.ets",
+      "sha256": "88ecf5787982c3f566c0744fc95e64ec3283238d729797ddffdda64f1b9068ea"
+    },
+    {
+      "path": "entry/src/main/ets/models/SessionModels.ets",
+      "sha256": "12ca6048bdb90b4b4021251d3ad26a80bd76de8fe01f025da53002513c76bf3c"
+    },
+    {
+      "path": "entry/src/main/ets/models/SessionSnapshot.ets",
+      "sha256": "3f9f1ab2253f5446c0e9463824fd9bcad6e4ab57c40a26963e1187c5b19bc160"
+    },
+    {
+      "path": "entry/src/main/ets/pages/ConverterPage.ets",
+      "sha256": "7e3df48d4975fc41ac93acdc13bbaa1c42cee5cce289c806ac866f4d8440c866"
+    },
+    {
+      "path": "entry/src/main/ets/pages/FeatureGuide.ets",
+      "sha256": "2313bee58c35f9766318bf838cb449a571d6ace714faf520267f97c93b98a6f3"
+    },
+    {
+      "path": "entry/src/main/ets/pages/FormatBrowser.ets",
+      "sha256": "2432ffc8300942127a5a6eff8b1ee79e73746d93d8399e7777b7b50b0f62d95c"
+    },
+    {
+      "path": "entry/src/main/ets/pages/Index.ets",
+      "sha256": "a6aaa96049577f1051389d791b22aa695687d8d6fb4498603f90481861a6ed47"
+    },
+    {
+      "path": "entry/src/main/ets/pages/TaskHistory.ets",
+      "sha256": "ff6e2959028b70f02297fbfead7af041cd9c7065f9ec8ed65690a74b2316dbbc"
+    },
+    {
+      "path": "entry/src/main/ets/services/AuthorizedInputTask.ets",
+      "sha256": "2a1501ffdd755e316771d3ac8b7ffafc863db65efe9fae5e2dd1c0e4d5320402"
+    },
+    {
+      "path": "entry/src/main/ets/services/FileAuthorizationService.ets",
+      "sha256": "fab087ddecdc87e9caa0d6c9fd932d4946f42a3a5f2cf4ec9f2a90245b9abece"
+    },
+    {
+      "path": "entry/src/main/ets/services/FormatDetector.ets",
+      "sha256": "d46abd2687f872524136063ffb964844557ed0fc4443eb6f4c8ab92f5e17d24f"
+    },
+    {
+      "path": "entry/src/main/ets/services/FormatRegistry.ets",
+      "sha256": "438d10da580fcfbcec6a41412fe5d438127827b07201e4d152048cb88d12fb94"
+    },
+    {
+      "path": "entry/src/main/ets/services/HarmonyFilePlatform.ets",
+      "sha256": "a212abd04565a1015204e39cd08ba549eb5486469ec79ffe59994c095ad7397f"
+    },
+    {
+      "path": "entry/src/main/ets/services/NativeBridge.ets",
+      "sha256": "34998e2e6fe4d81bbb7dfede539c016e9eebac28947248a9d246ffcf6276a02e"
+    },
+    {
+      "path": "entry/src/main/ets/services/NativeTaskRunner.ets",
+      "sha256": "d6d0e20031a810f9d1842c21a4b7284a4c7ce305ee599c02f85b8955b0a22adf"
+    },
+    {
+      "path": "entry/src/main/ets/services/RawfileResources.ets",
+      "sha256": "c93b40a8f1bca19534ca2031fab221ad25025c483a7eb9a07a104d23c01fc6c6"
+    },
+    {
+      "path": "entry/src/main/ets/services/ServiceContainer.ets",
+      "sha256": "32c834b6c3fc20fa7f19397ac968963931c5fe110531fe39f59db1ddaf7d3f1e"
+    },
+    {
+      "path": "entry/src/main/ets/services/ServiceContracts.ets",
+      "sha256": "6061bdda9e56072e5171f40d82322cf6a7a4b5dd5eec39b8dcc63b3d799962c6"
+    },
+    {
+      "path": "entry/src/main/ets/services/TaskDependencies.ets",
+      "sha256": "de3b3e9db191052d140427ba15fbf85003f4f9e6f8cf8946c1619340f77f8f41"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/ConversionPlanner.ets",
+      "sha256": "d7900e5bc45a9b9e10514c85c873f4623d86e1dbfb74bb72942a634fced21efc"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/ConversionStatusVM.ets",
+      "sha256": "cc0b4304b76f57bd8110dc2b3d8815e2c63d8d65066c5caba257b585e3735028"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/ConverterCoordinator.ets",
+      "sha256": "2da73845c9e4295e88b9df3f64ecfdb40fbb1c66db8dde3538b7337dfa9e4489"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/ConverterUiPort.ets",
+      "sha256": "d7a88dcb9bb029b211deda564bc8bfd0b3bf0a2bc3d00439c77ac0a847316bf2"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/DemoFidelityReport.ets",
+      "sha256": "465cfda10101cdc5ec6e4ef7b37d602b28ff654c0e91a914ea8aa25d85e4abcb"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/FidelityConfigVM.ets",
+      "sha256": "c6e6ec704a7d2375965fe6bebe509915cd09e8d873848417212330a27644b0a0"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/FidelityPolicy.ets",
+      "sha256": "cb421f1caa632aa52b53a4628580da13d7ef5982ff7fc4fc34ef6ac95594d678"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/FileAuthorizationVM.ets",
+      "sha256": "760b28b254c0a70fb0dfc8599383adebc2696c1dcab3dd28fc481d0bbe0d2778"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/FormatSelectionVM.ets",
+      "sha256": "cf4787f7e5a127107b31831740102fc69ea0e84b48304454a6eee8a47272e5d1"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/FoundationViewModel.ets",
+      "sha256": "762696dd7d1a71dcb6a4c56fd7b1331f50f86c74da66689452391772a0084572"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/NativeFidelityReport.ets",
+      "sha256": "14d008e29ea54a4ce955c2c7889574c32f101ebb436c77ddefb787c701ea80f7"
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/TaskStore.ets",
+      "sha256": "dfbde174564b07b7f24eb58912f21fcc179ecfa785b01f0affa15bfbc0d17a03"
+    },
+    {
+      "path": "entry/src/main/cpp/CMakeLists.txt",
+      "sha256": "4f0f8ce4c0dd7ab420a0d284f8ff39db57af48855137f24fee98331c7d292652"
+    },
+    {
+      "path": "entry/src/main/cpp/core/converter.h",
+      "sha256": "7ae85fa80670570458fbfb25162d281ebffed8e0cc476bd5c5cf26abb2fee2ae"
+    },
+    {
+      "path": "entry/src/main/cpp/core/engine_registry.cpp",
+      "sha256": "d60e6012533c36aa62c750d87cce6cbb03b8d759f05fa2ccde665bfce7fe07cf"
+    },
+    {
+      "path": "entry/src/main/cpp/core/engine_registry.h",
+      "sha256": "88adaa3b87cfdd4d8f296f3811a1e138af336fa06b24f7928fb5d01cc5c2fc94"
+    },
+    {
+      "path": "entry/src/main/cpp/core/missing_converter.h",
+      "sha256": "91bd88acb7c0331646497b07093e3c7ea48b4924491898f74588364ed509e89b"
+    },
+    {
+      "path": "entry/src/main/cpp/engines/image/image_converter.cpp",
+      "sha256": "f80401ce34340e30cb8d51d0eb1211555df5235a281d4e5a3ec3502ab171d326"
+    },
+    {
+      "path": "entry/src/main/cpp/engines/media/media_converter.cpp",
+      "sha256": "abaa692ff7ab55a0f61193d7fb9b1b533017897b9636e1d838e64d849177343d"
+    },
+    {
+      "path": "entry/src/main/cpp/engines/ocr/ocr_converter.cpp",
+      "sha256": "da87409efe9795adc394fb77b407bee502bc008caffcd88c10f09a2fb030ec72"
+    },
+    {
+      "path": "entry/src/main/cpp/engines/office/office_converter.cpp",
+      "sha256": "8c730f4a7c5d2acc68fb39b0067d778f0b6591a03dc81da9017fc951166062ba"
+    },
+    {
+      "path": "entry/src/main/cpp/engines/pdf/pdf_converter.cpp",
+      "sha256": "b8038801113b8fd358adde5cf60dc6657fa4c15d7d32d00f9ba5c284a844cd9c"
+    },
+    {
+      "path": "entry/src/main/cpp/generated/engine_sources.cmake",
+      "sha256": "7d72e3b550605dd92c2f89baacafaebf86f451e2a8994f2be73d7ac1b4089ea8"
+    },
+    {
+      "path": "entry/src/main/cpp/generated/registry_metadata.h",
+      "sha256": "06fb6c534b864783792e797558e48715a84d71473132b8d55707e404277b8e8e"
+    },
+    {
+      "path": "entry/src/main/cpp/napi/bridge_problem.h",
+      "sha256": "cd339048717c2eb08fa52fdcba8511f47f1be340dfc5b67529d3014100441358"
+    },
+    {
+      "path": "entry/src/main/cpp/napi/native_bridge.cpp",
+      "sha256": "f86ac3db7ffcfbc8db9d448e8153ac6c661a8319667da55aee2378fcc1a5dbc5"
+    },
+    {
+      "path": "entry/src/main/cpp/napi/native_bridge.h",
+      "sha256": "c7bbaa36f397a31a02fb45ee2995b8611665e395971e307686dc26574e3a7749"
+    },
+    {
+      "path": "entry/src/main/cpp/napi_init.cpp",
+      "sha256": "517571540e45b632bc16dcb1e04f9008c6036065eccd13f5d1b83055637fad0e"
+    },
+    {
+      "path": "entry/src/main/cpp/tests/CMakeLists.txt",
+      "sha256": "08e88c50a80884cdf5a4b965526284689e937a3430138a4b3b10a709e9a50285"
+    },
+    {
+      "path": "entry/src/main/cpp/tests/core_tests.cpp",
+      "sha256": "7e07477489ad925b3608296468866dca6575ece8aa1291820731c31f8eed06e2"
+    },
+    {
+      "path": "entry/src/main/cpp/tests/mock/napi/native_api.h",
+      "sha256": "9580fb7192fac6a13d29883446df02a61021c11c5974392e5460a74869460630"
+    },
+    {
+      "path": "entry/src/main/cpp/tests/napi_tests.cpp",
+      "sha256": "c1377ac76b80104cae4847527191bbaa2c119a6ba6993325bb113232a2de84fe"
+    },
+    {
+      "path": "prototypes/jpeg-pdf/cmake/windows-host.cmake",
+      "sha256": "8ed8105646511e16ecb8af72be3a3368a15b2660226ebfeedd42f4e67658db32"
+    },
+    {
+      "path": "prototypes/jpeg-pdf/CMakeLists.txt",
+      "sha256": "4bd6047cfe489cf5d4e9e7b49e4014dfcdbb6a8ed31d5d55f2a0efe5e180306c"
+    },
+    {
+      "path": "prototypes/jpeg-pdf/include/ir.h",
+      "sha256": "9d44d0fa8efd7e7413262fbcbdd24a95e7dff77e986df6caa88f326271555bcb"
+    },
+    {
+      "path": "prototypes/jpeg-pdf/include/stream.h",
+      "sha256": "8e38362ac0b9d0c265d834c6e6d945c3eeaeeff50c237087ee2a0b2c90891fcc"
+    },
+    {
+      "path": "prototypes/jpeg-pdf/src/ir.cpp",
+      "sha256": "84f37eec7610a66f9d3a851ca75a66d0b54a91801a245c00f4af7c0d01a5081d"
+    },
+    {
+      "path": "prototypes/jpeg-pdf/src/jpeg_probe.h",
+      "sha256": "b7c9007031c3cb76b69c71e2b33866693f60264a5219edc343764b4fcdb219b4"
+    },
+    {
+      "path": "prototypes/jpeg-pdf/src/jpeg_state.h",
+      "sha256": "9a059de09733b596d13559259320c76364eb95a90c7b4fbe12517ee7eaa2fa2a"
+    },
+    {
+      "path": "prototypes/jpeg-pdf/src/main.cpp",
+      "sha256": "9fe876cb7ae9e3a85a77f56b0d38f94fd1d086db8ba28bd5bfafd91e803ae610"
+    },
+    {
+      "path": "prototypes/jpeg-pdf/src/prototype.cpp",
+      "sha256": "4b75ea5bd428a57542aa4dbcbc940bd389619a46181a13490439d32b972c6c37"
+    },
+    {
+      "path": "prototypes/jpeg-pdf/src/stream.cpp",
+      "sha256": "a3779fa912536066d099430a67dfede81e3dda5a39338237facd788edd065851"
+    },
+    {
+      "path": "prototypes/jpeg-pdf/tests/core_tests.cpp",
+      "sha256": "41ea7424b84c8902030f6a677b6498a23bb48554b386d75227e34cdf68472e20"
+    }
+  ],
+  "builtinEditorCheck": "unavailable; used actual Hvigor",
+  "releaseBuild": "not_executed",
+  "connectedDevices": 0,
+  "deviceHypium": "not_executed",
+  "previewer": "not_executed",
+  "realConversion": "not_executed",
+  "pendingReview": [
+    "production Native session/workspace/probe/execute integration",
+    "full text/structure fidelity and production evidence"
+  ],
+  "missingSpecification": "M-02 attachment ends at problem location; user confirmed no further text",
+  "warnings": [
+    "SDK crypto system capability",
+    "SDK unused gcc-toolchain argument",
+    "test template duplicate color",
+    "unsigned HAP"
+  ]
+}

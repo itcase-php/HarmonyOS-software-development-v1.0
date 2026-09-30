@@ -16,8 +16,7 @@ export class ConversionPlannerService {
     const candidates = this.registry.listPlannedRoutes().filter((route: ConversionRouteDefinition) =>
       route.from.includes(source) && route.inputConstraints.minInputs <= 1 &&
       route.inputConstraints.maxInputs >= 1 && route.status !== 'unavailable');
-    return this.registry.listFormats().filter((format: RegistryFormat) =>
-      candidates.some((route: ConversionRouteDefinition) => route.to === format.id));
+    return this.registry.getFormatsByIds(candidates.map((route: ConversionRouteDefinition): string => route.to));
   }
 
   routes(sourceId: string, targetId: string, qualityMode?: QualityMode,
@@ -62,8 +61,7 @@ export class ConversionPlannerService {
     if (this.registry.isBlocked(extension)) {
       throw new BridgeError('PERMISSION_DENIED', 'DRM_BLOCKED');
     }
-    const source = this.registry.listFormats().find((item: RegistryFormat) =>
-      item.id === this.registry.normalizeFormat(sourceId));
+    const source = this.registry.getFormat(sourceId);
     if (!source || !source.extensions.includes(extension)) {
       throw new BridgeError('INVALID_REQUEST', 'DEMO_EXTENSION_MISMATCH');
     }
@@ -71,7 +69,7 @@ export class ConversionPlannerService {
   }
 
   resultLabel(name: string, targetId: string): string {
-    const target = this.registry.listFormats().find((item: RegistryFormat) => item.id === this.registry.normalizeFormat(targetId));
+    const target = this.registry.getFormat(targetId);
     if (!target) { throw new BridgeError('UNSUPPORTED_FORMAT', 'TARGET_NOT_REGISTERED'); }
     const base = name.substring(0, name.lastIndexOf('.'));
     return `${base}.${target.extensions[0]}（演示名称，未生成文件）`;
@@ -80,6 +78,7 @@ export class ConversionPlannerService {
 
 export class ConversionPlanner {
   private static service: ConversionPlannerService | null = null;
+  /** @deprecated Compatibility only. Obtain the owned instance from ServiceContainer or inject it. */
   static shared(): ConversionPlannerService { return ConversionPlanner.service ?? new ConversionPlannerService(); }
   static useDefault(service: ConversionPlannerService): void { ConversionPlanner.service = service; }
   static targets(sourceId: string): RegistryFormat[] { return ConversionPlanner.shared().targets(sourceId); }

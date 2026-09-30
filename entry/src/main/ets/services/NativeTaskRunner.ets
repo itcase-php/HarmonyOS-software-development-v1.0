@@ -1,3 +1,4 @@
+import { ConversionSnapshot } from '../models/ConversionSnapshot';
 import { ErrorHandler } from '../common/ErrorHandler';
 import { ConvertRequest, ConvertResult, ControlAck, PlanStep, ProgressEvent } from '../models/NativeProtocol';
 import { registryMetadata } from '../generated/RegistryData';
@@ -40,7 +41,7 @@ export class NativeTaskRunnerService implements NativeTaskRunnerPort {
     }
     // ConvertRequest is a JSON DTO (no handles/functions/classes). Deep snapshot also
     // covers optional engine options; callers cannot mutate an enqueued request.
-    return JSON.parse(JSON.stringify(request)) as ConvertRequest;
+    return ConversionSnapshot.copyConvertRequest(request);
   }
 
   private sameSteps(a: PlanStep[], b: PlanStep[]): boolean {
@@ -112,6 +113,7 @@ export class NativeTaskRunnerService implements NativeTaskRunnerPort {
 
 export class NativeTaskRunner {
   private static service: NativeTaskRunnerPort | null = null;
+  /** @deprecated Compatibility only. Obtain the owned instance from ServiceContainer or inject it. */
   static shared(): NativeTaskRunnerPort { return NativeTaskRunner.service ?? new NativeTaskRunnerService(); }
   static useDefault(service: NativeTaskRunnerPort): void { NativeTaskRunner.service = service; }
   static prepare(request: ConvertRequest, approved: boolean): ConvertRequest { return NativeTaskRunner.shared().prepare(request, approved); }

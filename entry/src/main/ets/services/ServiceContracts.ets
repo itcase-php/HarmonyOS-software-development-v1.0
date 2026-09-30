@@ -9,6 +9,9 @@ export interface FormatRegistryPort {
   initialize(resources: BundledResourceReader): Promise<void>;
   verifyBundledResources(resources: BundledResourceReader): Promise<void>;
   listFormats(category?: string): RegistryFormat[];
+  getFormat(id: string): RegistryFormat | undefined;
+  getFormatsByCategory(category: string): RegistryFormat[];
+  getFormatsByIds(ids: string[]): RegistryFormat[];
   listPlannedRoutes(): ConversionRouteDefinition[];
   normalizeFormat(id: string): string;
   isBlocked(format: string): boolean;

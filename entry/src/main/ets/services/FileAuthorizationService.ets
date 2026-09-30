@@ -1,3 +1,4 @@
+import { SessionSnapshot } from '../models/SessionSnapshot';
 import { common } from '@kit.AbilityKit';
 import { AuthorizedFile, FileAuthorizationPlatform, PickedFile, SessionContext } from '../models/SessionModels';
 import { registryMetadata } from '../generated/RegistryData';
@@ -66,12 +67,12 @@ export class FileAuthorizationManager implements FileAuthorizationPort {
     return record;
   }
   getSession(sessionId: string): SessionContext {
-    return JSON.parse(JSON.stringify(this.owned(sessionId).context)) as SessionContext;
+    return SessionSnapshot.copySessionContext(this.owned(sessionId).context);
   }
   activeSessions(): SessionContext[] {
     const result: SessionContext[] = [];
     for (const record of this.sessions.values()) {
-      result.push(JSON.parse(JSON.stringify(record.context)) as SessionContext);
+      result.push(SessionSnapshot.copySessionContext(record.context));
     }
     return result;
   }
@@ -96,8 +97,8 @@ export class FileAuthorizationManager implements FileAuthorizationPort {
         if (!Number.isSafeInteger(file.fileSize) || file.fileSize <= 0) { throw new BridgeError('INVALID_REQUEST', 'FILE_EMPTY_OR_INVALID'); }
         if (file.fileSize > registryMetadata.defaultBudget.maxInputBytes) { throw new BridgeError('RESOURCE_LIMIT_EXCEEDED', 'FILE_TOO_LARGE'); }
       }
-      for (const file of picked) { this.grants.set(file.uri, JSON.parse(JSON.stringify(file)) as PickedFile); }
-      return JSON.parse(JSON.stringify(picked)) as PickedFile[];
+      for (const file of picked) { this.grants.set(file.uri, SessionSnapshot.copyPickedFile(file)); }
+      return picked.map((file: PickedFile): PickedFile => SessionSnapshot.copyPickedFile(file));
     } catch (error) { throw fileAuthorizationError(error, 'FILE_PICK_FAILED'); }
   }
 
@@ -114,7 +115,7 @@ export class FileAuthorizationManager implements FileAuthorizationPort {
       const context: SessionContext = { sessionId: id, workspaceRef: workspace, createdAt: this.platform.now(), inputFiles: [] };
       this.sessions.set(id, new OwnedSession(context));
       this.scheduleExpiry();
-      return JSON.parse(JSON.stringify(context)) as SessionContext;
+      return SessionSnapshot.copySessionContext(context);
     } catch (error) {
       if (workspace.length > 0) { await this.platform.removeDirectory(workspace); }
       throw fileAuthorizationError(error, 'WORKSPACE_CREATE_FAILED');
@@ -175,7 +176,7 @@ export class FileAuthorizationManager implements FileAuthorizationPort {
         warnings: mimeId !== null && mimeId !== formatId ? ['FORMAT_MIME_MISMATCH'] : [] };
       record.context.inputFiles.push(authorized);
       this.grants.delete(file.uri);
-      return JSON.parse(JSON.stringify(authorized)) as AuthorizedFile;
+      return SessionSnapshot.copyAuthorizedFile(authorized);
     } catch (error) {
       if (destination.length > 0) { await this.platform.unlink(destination); }
       throw fileAuthorizationError(error, 'FILE_COPY_FAILED');
@@ -287,6 +288,7 @@ export class FileAuthorizationService extends FileAuthorizationManager {
     FileAuthorizationService.manager = new FileAuthorizationManager(platform);
   }
   static useDefault(manager: FileAuthorizationManager): void { FileAuthorizationService.manager = manager; }
+  /** @deprecated Static facade compatibility only. Inject the service owned by ServiceContainer. */
   private static current(): FileAuthorizationManager {
     if (!FileAuthorizationService.manager) { throw new BridgeError('UNSUPPORTED_FEATURE', 'FILE_PICKER_UNAVAILABLE'); }
     return FileAuthorizationService.manager;

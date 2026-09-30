@@ -1,0 +1,54 @@
+> hvigor [32mUP-TO-DATE :entry:ohosTest@PreBuild...  [39m
+> hvigor [32mFinished :entry:ohosTest@CreateModuleInfo... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@GenerateMetadata...  [39m
+> hvigor [32mFinished :entry:ohosTest@ConfigureCmake... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@MergeProfile...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@CreateBuildProfile...  [39m
+> hvigor [32mFinished :entry:ohosTest@PreCheckSyscap... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@GenerateOhosTestTemplate...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@GeneratePkgContextInfo...  [39m
+> hvigor [32mFinished :entry:ohosTest@GeneratePkgSdkInfo... after 6 ms [39m
+> hvigor [32mFinished :entry:ohosTest@ProcessIntegratedHsp... after 2 ms [39m
+> hvigor [32mFinished :entry:ohosTest@BuildNativeWithCmake... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@MakePackInfo...  [39m
+> hvigor [32mFinished :entry:ohosTest@SyscapTransform... after 5 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@ProcessProfile...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@ProcessRouterMap...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@ProcessShareConfig...  [39m
+> hvigor [32mFinished :entry:ohosTest@ProcessStartupConfig... after 3 ms [39m
+> hvigor [32mFinished :entry:ohosTest@BuildNativeWithNinja... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@ProcessResource...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@GenerateLoaderJson...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@ProcessLibs...  [39m
+> hvigor WARN: Warning: 'start_window_background' conflict, first declared.
+at D:\HarmonyOS\harmonyOS\entry\src\main\resources\base\element\color.json
+but declared again.
+at D:\HarmonyOS\harmonyOS\entry\.test\default\intermediates\src\ohosTest\resources\base\element\color.json
+
+> hvigor [32mFinished :entry:ohosTest@CompileResource... after 379 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@DoNativeStrip...  [39m
+> hvigor [32mFinished :entry:ohosTest@OhosTestBuildJS... after 4 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@CacheNativeLibs...  [39m
+> hvigor WARN: WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/FormatRegistry.ets:72:38
+ The system capacity of this api 'createMd' is not supported on all devices
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/FormatRegistry.ets:73:20
+ The system capacity of this api 'update' is not supported on all devices
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/FormatRegistry.ets:74:35
+ The system capacity of this api 'digest' is not supported on all devices
+
+
+> hvigor [32mFinished :entry:ohosTest@OhosTestCompileArkTS... after 9 s 189 ms [39m
+> hvigor [32mFinished :entry:ohosTest@OhosTestCopyMockConfigJson... after 4 ms [39m
+> hvigor [32mFinished :entry:ohosTest@GeneratePkgModuleJson... after 6 ms [39m
+> hvigor [32mFinished :entry:ohosTest@ProcessCompiledResources... after 1 ms [39m
+> hvigor [32mFinished :entry:ohosTest@PackageHap... after 559 ms [39m
+> hvigor [32mFinished :entry:ohosTest@PackingCheck... after 5 ms [39m
+> hvigor WARN: No signingConfig found for product default
+> hvigor [32mFinished :entry:ohosTest@SignHap... after 2 ms [39m
+> hvigor [32mFinished :entry:ohosTest@CollectDebugSymbol... after 3 ms [39m
+> hvigor [32mFinished :entry:assembleHap... after 1 ms [39m
+> hvigor [32mBUILD SUCCESSFUL in 18 s 92 ms [39m
+
+35 tasks in total: 20 executed, 15 up-to-date

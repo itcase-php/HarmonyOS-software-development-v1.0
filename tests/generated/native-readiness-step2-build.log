@@ -1,0 +1,55 @@
+> hvigor [32mUP-TO-DATE :entry:default@PreBuild...  [39m
+> hvigor [32mFinished :entry:default@CreateModuleInfo... after 2 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@GenerateMetadata...  [39m
+> hvigor [32mFinished :entry:default@ConfigureCmake... after 25 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@MergeProfile...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@CreateBuildProfile...  [39m
+> hvigor [32mFinished :entry:default@PreCheckSyscap... after 1 ms [39m
+> hvigor [32mFinished :entry:default@GeneratePkgSdkInfo... after 9 ms [39m
+> hvigor [32mFinished :entry:default@ProcessIntegratedHsp... after 1 ms [39m
+> hvigor [32mFinished :entry:default@BuildNativeWithCmake... after 46 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@MakePackInfo...  [39m
+> hvigor [32mFinished :entry:default@SyscapTransform... after 16 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@GeneratePkgContextInfo...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessProfile...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessRouterMap...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessShareConfig...  [39m
+> hvigor [32mFinished :entry:default@ProcessStartupConfig... after 5 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessResource...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@GenerateLoaderJson...  [39m
+> hvigor [32mFinished :entry:default@CompileResource... after 377 ms [39m
+> hvigor [32mFinished :entry:default@BuildJS... after 8 ms [39m
+> hvigor WARN: When performing compilation for the x86_64 architecture:
+clang++: warning: argument unused during compilation: '--gcc-toolchain=D:/DevEco Studio2026/DevEco Studio/sdk/default/hms/native/BiSheng' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '--gcc-toolchain=D:/DevEco Studio2026/DevEco Studio/sdk/default/hms/native/BiSheng' [-Wunused-command-line-argument]
+
+> hvigor WARN: When performing compilation for the arm64-v8a architecture:
+clang++: warning: argument unused during compilation: '--gcc-toolchain=D:/DevEco Studio2026/DevEco Studio/sdk/default/hms/native/BiSheng' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '--gcc-toolchain=D:/DevEco Studio2026/DevEco Studio/sdk/default/hms/native/BiSheng' [-Wunused-command-line-argument]
+
+> hvigor [32mFinished :entry:default@BuildNativeWithNinja... after 1 s 366 ms [39m
+> hvigor [32mFinished :entry:default@ProcessLibs... after 101 ms [39m
+> hvigor [32mFinished :entry:default@DoNativeStrip... after 135 ms [39m
+> hvigor [32mFinished :entry:default@CacheNativeLibs... after 16 ms [39m
+> hvigor WARN: WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/FormatRegistry.ets:72:38
+ The system capacity of this api 'createMd' is not supported on all devices
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/FormatRegistry.ets:73:20
+ The system capacity of this api 'update' is not supported on all devices
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/FormatRegistry.ets:74:35
+ The system capacity of this api 'digest' is not supported on all devices
+
+
+> hvigor [32mFinished :entry:default@CompileArkTS... after 10 s 137 ms [39m
+> hvigor [32mFinished :entry:default@GeneratePkgModuleJson... after 5 ms [39m
+> hvigor [32mFinished :entry:default@ProcessCompiledResources... after 2 ms [39m
+> hvigor [32mFinished :entry:default@PackageHap... after 607 ms [39m
+> hvigor [32mFinished :entry:default@PackingCheck... after 8 ms [39m
+> hvigor WARN: No signingConfig found for product default
+> hvigor [32mFinished :entry:default@SignHap... after 3 ms [39m
+> hvigor [32mFinished :entry:default@CollectDebugSymbol... after 2 ms [39m
+> hvigor [32mFinished :entry:assembleHap... after 1 ms [39m
+> hvigor [32mBUILD SUCCESSFUL in 19 s 455 ms [39m
+
+33 tasks in total: 22 executed, 11 up-to-date

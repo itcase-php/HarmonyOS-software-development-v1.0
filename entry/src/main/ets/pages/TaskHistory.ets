@@ -1,3 +1,4 @@
+import { ServiceContainer } from '../services/ServiceContainer';
 import { DemoTask, taskStatusLabel, taskStatusColor, isActiveTask } from '../models/InteractionModels';
 import { TaskStore } from '../viewmodel/TaskStore';
 import { UiFeedback } from '../common/UiFeedback';
@@ -11,8 +12,9 @@ import { FidelityPolicy } from '../viewmodel/FidelityPolicy';
 @Preview
 @Component
 struct TaskHistory {
+  private services: ServiceContainer = ServiceContainer.current();
   @State tasks: DemoTask[] = [];
-  private store: TaskStore = TaskStore.shared();
+  private store: TaskStore = this.services.tasks;
   private token: number = -1;
 
   aboutToAppear(): void {

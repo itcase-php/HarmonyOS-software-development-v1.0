@@ -1,0 +1,346 @@
+{
+  "scope": "byte_preservation_not_runtime_acceptance",
+  "date": "2026-09-30",
+  "result": "passed",
+  "baseCommit": "e58878fb0d4d19429748b892cfa3716691fa2343",
+  "checkedFiles": 56,
+  "protectedBehaviour": "18 formats, 43 routes, fidelity interfaces, page routes, placeholders",
+  "records": [
+    {
+      "path": "build-profile.json5",
+      "bytes": 795,
+      "sha256": "039c3444a0ac1fcc88b43f712477db04413e18a915ddc90d496c04907e3f644e",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/README.md",
+      "bytes": 4325,
+      "sha256": "2f0da2925aaa4fb32cd3a714279e3098ffc3f31b8ad9036ada37070e594ffaec",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/V1.0初步功能开发方案.md",
+      "bytes": 79804,
+      "sha256": "9c397821e91c82023483f0d7930eee8cfd9ba197b810d0eada7bc3e3a89afb49",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/contracts/converter.h",
+      "bytes": 11474,
+      "sha256": "7ae85fa80670570458fbfb25162d281ebffed8e0cc476bd5c5cf26abb2fee2ae",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/contracts/native_bridge.d.ts",
+      "bytes": 9454,
+      "sha256": "b557f768c2e3ca21755a68c775b81402dafa0b59f9f5eda0adb83daa99e1bf92",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/docs/AI_CODING_RULES.md",
+      "bytes": 1986,
+      "sha256": "a4ce3cdfdbfad38d182a5df277450c8522c3b9f18101d854dd928eb42f0e82fc",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/docs/ARCHITECTURE.md",
+      "bytes": 31969,
+      "sha256": "649fc397dbb1b1887ff60bdf00ff28d1a427799af85683d034cefdf754761887",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/docs/CONVERSION_MATRIX.md",
+      "bytes": 7706,
+      "sha256": "91e9a504aa0bf50e5d690aca18509ca20cb01089958fb9953b260ec83129cea8",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/docs/ERROR_CODES.md",
+      "bytes": 4166,
+      "sha256": "2d83eec66a53a071cac7861584fb7d85fb7506713fe49ff345ab97f2b9849d0f",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/docs/FIDELITY_POLICY.md",
+      "bytes": 2324,
+      "sha256": "ba13de6c50a4936f0ecde486edfd322addd53e5ffccaa61438e21101eb9e92cd",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/docs/PRIVACY.md",
+      "bytes": 5851,
+      "sha256": "6df7805fc1cece70b12e2dae9106f11d894f779f83166e71633ccf57df60e0bf",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/docs/RELEASE_CHECKLIST.md",
+      "bytes": 2075,
+      "sha256": "84ef1b73b27f17cd3ee5292b914f245a758dddc2ebbc7be35b20e91ecc142747",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/docs/VALIDATION.md",
+      "bytes": 2268,
+      "sha256": "e8633204a9fa1ee7c3d11c27db0a8d778379f7dc7bca442346e4cde4877c16fe",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/shared/format-registry/conversion-matrix.json",
+      "bytes": 42386,
+      "sha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/shared/format-registry/formats.json",
+      "bytes": 10330,
+      "sha256": "55d416083a65f2cc13a64a17aec06fb23def491534186d013cf5b88ceb8d4f10",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/shared/format-registry/schema/conversion-matrix.schema.json",
+      "bytes": 6607,
+      "sha256": "36817b25df95486f6488e5a6d591d36634e377e1da3a12d8a338b4d63ff84a7e",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/shared/format-registry/schema/formats.schema.json",
+      "bytes": 9421,
+      "sha256": "1f24bb08af531a4bf39c1440ad54077170aba312e3edd63ff439c20eeeb39838",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/tests/check-design.cjs",
+      "bytes": 13430,
+      "sha256": "3b125c8b83cb7d6b37e0bda9c0ab9da427543c8176ba8a93fd382f3b5733dee5",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/tests/contract-header-check.cpp",
+      "bytes": 118,
+      "sha256": "53a47983cedbc18b04bc4dc12bb041c44eb9a9e5beb8574893ff801ca4bc2417",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/tests/generated/design-check-report.json",
+      "bytes": 323,
+      "sha256": "0e4befedc1a4586720aed387adad83b048b9911e7e70ddf43d778b02dc09a2cd",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/tests/generated/matrix-cases.json",
+      "bytes": 87222,
+      "sha256": "4dd045b854d11c049ddcc4f06482f5febd2b30e7547e93adec9ff02ddac6c227",
+      "byteIdentical": true
+    },
+    {
+      "path": "docs/migration-source/tools/assemble-docs.cjs",
+      "bytes": 2649,
+      "sha256": "d3a2a9dee06110339e4bc8e3184e436d0efc07cc8cbe4cd271a13c59870ab4b3",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/cpp/core/converter.h",
+      "bytes": 11474,
+      "sha256": "7ae85fa80670570458fbfb25162d281ebffed8e0cc476bd5c5cf26abb2fee2ae",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/cpp/core/missing_converter.h",
+      "bytes": 1162,
+      "sha256": "91bd88acb7c0331646497b07093e3c7ea48b4924491898f74588364ed509e89b",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/cpp/engines/image/image_converter.cpp",
+      "bytes": 167,
+      "sha256": "f80401ce34340e30cb8d51d0eb1211555df5235a281d4e5a3ec3502ab171d326",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/cpp/engines/media/media_converter.cpp",
+      "bytes": 167,
+      "sha256": "abaa692ff7ab55a0f61193d7fb9b1b533017897b9636e1d838e64d849177343d",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/cpp/engines/ocr/ocr_converter.cpp",
+      "bytes": 163,
+      "sha256": "da87409efe9795adc394fb77b407bee502bc008caffcd88c10f09a2fb030ec72",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/cpp/engines/office/office_converter.cpp",
+      "bytes": 169,
+      "sha256": "8c730f4a7c5d2acc68fb39b0067d778f0b6591a03dc81da9017fc951166062ba",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/cpp/engines/pdf/pdf_converter.cpp",
+      "bytes": 163,
+      "sha256": "b8038801113b8fd358adde5cf60dc6657fa4c15d7d32d00f9ba5c284a844cd9c",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/cpp/types/libentry/Index.d.ts",
+      "bytes": 373,
+      "sha256": "7fb7dd261bb76c65d7f99be71a3c679f1fc79a1b16516df8309bd0da7e6396c6",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/cpp/types/libentry/Protocol.d.ts",
+      "bytes": 9488,
+      "sha256": "c3252f80348ee94232bfe3f14b8c4a1645236c2e503a2f1f4458cc75e304ebfe",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/cpp/types/libentry/oh-package.json5",
+      "bytes": 140,
+      "sha256": "028b2aeb3416ad46e258ee82b1e19d51468547f14e45d8f689ca2692e2e6645e",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/components/QualitySelector.ets",
+      "bytes": 1464,
+      "sha256": "19d84e84f5ff570e3f558818ea85234e4a7e2c6830becb05a2b7282e8235cb28",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/generated/ErrorCatalog.ets",
+      "bytes": 636,
+      "sha256": "846490289b148f8497d087230ad48b2d69634c9da6e8a4f37fe3eda18fc4fe0a",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/generated/RegistryData.ets",
+      "bytes": 3581,
+      "sha256": "48ae4d6f2503737b72e687da9c954a50b92cff3b0156b5dc8e9feaca3f2ce5a3",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/generated/catalogue/Image.ets",
+      "bytes": 9341,
+      "sha256": "3890916367013326ec4510ac54a00e523168ec332f38f0259617290c2629691b",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/generated/catalogue/Media.ets",
+      "bytes": 9342,
+      "sha256": "64612cee11d25af923372b3e4a8936b0bf581842e13e3dd143d39c05ae88da45",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/generated/catalogue/Office.ets",
+      "bytes": 10226,
+      "sha256": "49c515a321efb88a7d90e995a235872e133ab3acd33ac084960a7bd081ada452",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/generated/catalogue/Pdf.ets",
+      "bytes": 10182,
+      "sha256": "09ba13a83ef5b92a1bef89fb41b4d642c76ac6f94a1c800b3246a21c8f2f71fa",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/generated/catalogue/Text.ets",
+      "bytes": 9018,
+      "sha256": "35c3aaf76fc6f8001234e1a81cdf58ae1af4ed07b0cb534d5052c00cdcc57c18",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/models/FidelityReportSnapshot.ets",
+      "bytes": 1063,
+      "sha256": "34f82d0b5379b6936a141204f6a385ece2efeec54849b6921b8e19369cf49b9f",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/models/NativeProtocol.ets",
+      "bytes": 9416,
+      "sha256": "2a47dbe12f5cac8cc84654a27f6769d82cc3baea9d9b6c3751fd661e4db800e0",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/models/SessionModels.ets",
+      "bytes": 1073,
+      "sha256": "12ca6048bdb90b4b4021251d3ad26a80bd76de8fe01f025da53002513c76bf3c",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/pages/ConverterPage.ets",
+      "bytes": 6179,
+      "sha256": "7e3df48d4975fc41ac93acdc13bbaa1c42cee5cce289c806ac866f4d8440c866",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/DemoFidelityReport.ets",
+      "bytes": 1797,
+      "sha256": "465cfda10101cdc5ec6e4ef7b37d602b28ff654c0e91a914ea8aa25d85e4abcb",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/FidelityPolicy.ets",
+      "bytes": 2814,
+      "sha256": "cb421f1caa632aa52b53a4628580da13d7ef5982ff7fc4fc34ef6ac95594d678",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/ets/viewmodel/NativeFidelityReport.ets",
+      "bytes": 2845,
+      "sha256": "14d008e29ea54a4ce955c2c7889574c32f101ebb436c77ddefb787c701ea80f7",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/module.json5",
+      "bytes": 1313,
+      "sha256": "6f133d67a9044bdc6d559536057c3bbe81caef6d2934810bfc59ea151dac9020",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/resources/base/profile/main_pages.json",
+      "bytes": 142,
+      "sha256": "fcd90af2e07c793faea4c8e373d3f30643bb10d03f9bfbcf0f251ee071a05cea",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/resources/rawfile/format-registry/conversion-matrix.json",
+      "bytes": 42386,
+      "sha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/resources/rawfile/format-registry/formats.json",
+      "bytes": 10330,
+      "sha256": "55d416083a65f2cc13a64a17aec06fb23def491534186d013cf5b88ceb8d4f10",
+      "byteIdentical": true
+    },
+    {
+      "path": "entry/src/main/resources/rawfile/format-registry/manifest.json",
+      "bytes": 1399,
+      "sha256": "17d3ffcd3bd630bf245cc8341bea49c0cc95f595494efce9434cf6b50ee72c23",
+      "byteIdentical": true
+    },
+    {
+      "path": "shared/format-registry/conversion-matrix.json",
+      "bytes": 42386,
+      "sha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270",
+      "byteIdentical": true
+    },
+    {
+      "path": "shared/format-registry/formats.json",
+      "bytes": 10330,
+      "sha256": "55d416083a65f2cc13a64a17aec06fb23def491534186d013cf5b88ceb8d4f10",
+      "byteIdentical": true
+    },
+    {
+      "path": "shared/format-registry/schema/conversion-matrix.schema.json",
+      "bytes": 6607,
+      "sha256": "36817b25df95486f6488e5a6d591d36634e377e1da3a12d8a338b4d63ff84a7e",
+      "byteIdentical": true
+    },
+    {
+      "path": "shared/format-registry/schema/formats.schema.json",
+      "bytes": 9421,
+      "sha256": "1f24bb08af531a4bf39c1440ad54077170aba312e3edd63ff439c20eeeb39838",
+      "byteIdentical": true
+    }
+  ]
+}

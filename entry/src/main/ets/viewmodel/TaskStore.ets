@@ -1,3 +1,4 @@
+import { ConversionSnapshot } from '../models/ConversionSnapshot';
 import { TaskStoreDependencies, TaskDependencies } from '../services/TaskDependencies';
 import { TaskStorePort } from '../services/ServiceContracts';
 import { ErrorHandler } from '../common/ErrorHandler';
@@ -50,6 +51,7 @@ export class TaskStore implements TaskStorePort {
 
   static useDefault(store: TaskStore): void { TaskStore.instance = store; }
 
+  /** @deprecated Compatibility only. Obtain the owned instance from ServiceContainer or inject it. */
   static shared(): TaskStore {
     // A recreated UIAbility may reuse the same JS process after onDestroy().
     // Do not reopen while the previous Native dispatcher still owns resources.
@@ -204,9 +206,13 @@ export class TaskStore implements TaskStorePort {
   private ensureCapacity(): void {
     if (this.closing) { throw new BridgeError('TASK_INTERRUPTED', 'TASK_STORE_CLOSED'); }
     if (this.tasks.length >= this.historyLimit) {
-      const lastFinished = this.tasks.slice().reverse().find((task: DemoTask) => !isActiveTask(task.status));
+      let lastFinished: DemoTask | undefined = undefined;
+      for (let index: number = this.tasks.length - 1; index >= 0; index--) {
+        if (!isActiveTask(this.tasks[index].status)) { lastFinished = this.tasks[index]; break; }
+      }
       if (!lastFinished) { throw new BridgeError('TASK_BUSY', 'DEMO_HISTORY_LIMIT'); }
-      this.tasks = this.tasks.filter((task: DemoTask) => task.id !== lastFinished.id);
+      const evictedId: string = lastFinished.id;
+      this.tasks = this.tasks.filter((task: DemoTask) => task.id !== evictedId);
       this.timings.delete(lastFinished.id); this.queueOrder.delete(lastFinished.id);
       this.releaseResult(lastFinished.id);
     }
@@ -338,14 +344,14 @@ if (task.progress === 100) {
       if (!oldest) { break; }
       this.releaseResult(oldest);
     }
-    this.nativeResults.set(id, JSON.parse(JSON.stringify(result)) as ConvertResult);
+    this.nativeResults.set(id, ConversionSnapshot.copyConvertResult(result));
   }
 
   nativeResultSnapshot(id: string): ConvertResult | undefined {
     const result: ConvertResult | undefined = this.nativeResults.get(id);
     if (!result) { return undefined; }
     this.nativeResults.delete(id); this.nativeResults.set(id, result);
-    return JSON.parse(JSON.stringify(result)) as ConvertResult;
+    return ConversionSnapshot.copyConvertResult(result);
   }
 
   private releaseResult(id: string): void {

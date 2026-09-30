@@ -1,0 +1,13 @@
+Test project D:/HarmonyOS/harmonyOS/tests/native/jpeg-pdf-clean-build
+    Start 1: prototype_streams
+1/4 Test #1: prototype_streams ................   Passed    0.21 sec
+    Start 2: prototype_ir
+2/4 Test #2: prototype_ir .....................   Passed    0.01 sec
+    Start 3: prototype_budgets
+3/4 Test #3: prototype_budgets ................   Passed    0.01 sec
+    Start 4: prototype_payload
+4/4 Test #4: prototype_payload ................   Passed    0.01 sec
+
+100% tests passed out of 4
+
+Total Test time (real) =   0.34 sec

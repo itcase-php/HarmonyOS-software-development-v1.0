@@ -1,6 +1,6 @@
 # HarmonyOS软件开发v2.0
 
-基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。已完成交互流程、完整目录规划、保真度参数管道、核心测试、rawfile 校验、调度防重入及相关国际化。已接入真实文件选择、受控副本和真实提交入口；本次按批准方案拆分转换页、观察 VM 与可注入服务，优化索引、错误诊断和资源清理，保留原功能。
+基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。已完成交互流程、完整目录规划、保真度参数管道、核心测试、rawfile 校验、调度防重入及相关国际化。已接入真实文件选择、受控副本和真实提交入口；转换页、观察 VM 与可注入服务已拆分。本轮补齐异常消息、显式 DTO 副本、查询/工厂索引和 C++/NAPI 主机测试，并验证独立 JPEG→PDF 主机原型。已通过的应用功能保持；生产真实链路接入另审。
 
 公共仓库：<https://github.com/itcase-php/HarmonyOS-software-development-v1.0>。仓库地址使用英文字符，软件展示标题保留“HarmonyOS软件开发v1.0”。许可证为 [MIT](LICENSE)。按交付要求，另提供同内容的 [READMES.md](READMES.md)。
 
@@ -18,7 +18,8 @@
 | 演示任务 | 2/3.5/6 秒活动时长，单并发 FIFO、暂停、恢复、取消与会话历史；退出应用不持久化 |
 | 文件输入 | Stage Picker、最多 10 文件管理、单文件 100 MiB/会话 300 MiB、分块副本与 SHA-256、信息卡片/移除/清理；真实提交保持单文件，设备验收待执行 |
 | 报告 | 演示报告展开查看；Native 报告读取接口与上下文/指标校验已预留 |
-| 原生层 | 13 个 Native 接口、统一错误码、IR/资源预算契约及五类引擎占位 |
+| 原生层 | 13 个 Native 接口、统一错误码、验证视图/资源预算契约及五类引擎占位；完整 IR 与真实保真校验未实现 |
+| 独立实验 | JPEG→PDF 主机原型能为受限 JPEG 子集生成单页 PDF，4 项 C++ 与 15 项外部解析/渲染检查通过；未集成应用或公布真实路线 |
 | 国际化与无障碍 | 保真度相关组件、路线提示和报告的中英文资源及主要控件读屏标注；格式浏览器文案已覆盖，其他旧页面尚未全部国际化 |
 
 **当前真实可用转换路线为 0。** 未选择真实文件时，原演示不读取文件、不生成转换结果。新入口可通过 Picker 授权并复制文件，但 C++ initializeSession/registerWorkspace 仍占位，真实提交如实记录失败，不回退为演示成功。输入推断不是内容/保护验证；原 Native 门禁保持。真实会话/引擎、输出导出、持久化、后台调度及设备验收仍待开发。
@@ -47,6 +48,7 @@ entry/src/ohosTest/            设备测试入口
 shared/format-registry/       格式、路线、Schema 与错误码配置
 tools/                       配置生成及产物检查
 tests/                       宿主逻辑、设计和迁移检查及验证记录
+prototypes/jpeg-pdf/          独立主机实验，不进入应用包
 docs/                        设计、操作、实现边界及原交付溯源
 hvigor/                      Hvigor 工程配置
 ```
@@ -68,6 +70,7 @@ ohpm install
 ```powershell
 $env:HDM_TYPESCRIPT_PATH = 'C:/DevEco Studio/tools/arktsdoc/node_modules/typescript/lib/typescript.js'
 node tests/check-interactions.cjs
+node tests/check-copy-safety.cjs
 node tests/check-fidelity.cjs
 node tests/check-refactor.cjs
 node tests/check-hypium-host.cjs
@@ -78,12 +81,15 @@ node tests/check-design.cjs
 node tests/check-migration.cjs
 ```
 
-最新记录中，173 项宿主检查通过（交互 15、保真 13、原重构 12、Hypium 源码 61、审计/目录 16、输入管理 35、架构 21）。应用及 ohosTest 编译、HAP 检查通过；最新日志为 tests/generated/architecture-step9-build.log 和 architecture-test-hap-build.log，汇总见 architecture-validation-report.json。转换页四个观察 VM/六个组件、实例服务、分类工厂和索引已实现；保留 100 条历史及跨页运行，闲置未提交会话默认 30 分钟 TTL。原任务方法实现已获批重构，旧输入阶段的哈希仅为历史基线；原 18/43 配置、Native 协议、C++ 和路由保持。**宿主 SDK/Native 使用替身，这些检查不等于真机 Picker、真实转换、设备 Hypium、Previewer 点击、实际响应式刷新或读屏验收**。hdc 无连接设备，独立编辑器工具不可用，SDK 能力及未签名警告仍有记录。
+最新记录中，205 项 ArkTS 宿主检查、13 项 C++/mock NAPI CTest、独立原型 4 项 C++ 和 15 项 PDF 集成检查通过。应用及 ohosTest 编译、双 ABI HAP 检查通过，汇总见 [本轮验证记录](docs/VALIDATION-NATIVE-READINESS.md)。转换页四个观察 VM/六个组件、实例服务、分类工厂和索引已实现；保留 100 条历史及跨页运行，闲置未提交会话默认 30 分钟 TTL。原 18/43 配置、Native 协议、应用占位引擎和路由保持。**宿主 SDK/Native 使用替身，原型仅为独立主机实验；这些检查不等于真机 Picker、应用真实转换、设备 Hypium、Previewer 点击、实际响应式刷新或读屏验收**。hdc 无连接设备，独立编辑器工具不可用，SDK 能力及未签名警告仍有记录。
 
 设备安装仍需通过 DevEco 使用合法调试签名；根工程 signingConfigs 当前为空，构建生成未签名包。不要提交自己的私钥、密码或个人签名配置。
 
 ## 开发文档
 
+- [本轮兼容优化与隔离原型验证](docs/VALIDATION-NATIVE-READINESS.md)
+- [独立 JPEG→PDF 原型说明](prototypes/jpeg-pdf/README.md)
+- [生产真实链路待审核范围](spec/changes/native-readiness-and-copy-safety/implementation-review.md)
 - [文件授权与输入管理](docs/文件授权与输入管理说明.md)
 - [目录作用与修改方法](docs/工程目录分析与修改指南.md)
 - [交互功能与使用说明](docs/交互功能与使用说明.md)

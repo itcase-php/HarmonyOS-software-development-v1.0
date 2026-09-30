@@ -1,6 +1,6 @@
 # 项目架构与进度分析
 
-本次批准范围内输入管理已实现，宿主与编译验证通过；下文状态已更新，设备/预览验收仍待执行。输入与架构变更分别见 changes/file-authorization-input-management/tasks.md、changes/deep-architecture-refactor/tasks.md。
+批准范围内输入管理与架构拆分已实现，宿主与编译验证通过；设备/预览验收仍待执行。本轮异常、副本与索引兼容优化已验证，205 项 ArkTS 宿主检查、13 项 C++/mock NAPI 测试通过。用户批准的独立 JPEG→PDF 原型另有 4 项 C++ 和 15 项外部 PDF 集成检查通过；生产 Native 真实链路仍等待另审。输入、架构与原生就绪变更分别见 changes/file-authorization-input-management/tasks.md、changes/deep-architecture-refactor/tasks.md、changes/native-readiness-and-copy-safety/tasks.md。
 
 更新日期：2026-09-30
 
@@ -19,7 +19,7 @@ entry/src/main/ets/
 ├── components/      # ActionCard, FoundationCard, StatusBadge, FormatTag, PageHeader, QualitySelector, FidelityReportCard, FidelitySettingsCard
 ├── viewmodel/       # FoundationViewModel, TaskStore, ConversionPlanner, FidelityPolicy, DemoFidelityReport, NativeFidelityReport, FidelitySettingsVM
 ├── services/        # NativeBridge, FormatRegistry, RawfileResources, NativeTaskRunner, FormatDetector, FileAuthorizationService, HarmonyFilePlatform, AuthorizedInputTask
-├── models/          # NativeProtocol, RegistryTypes, InteractionModels, SessionModels
+├── models/          # NativeProtocol, RegistryTypes, InteractionModels, SessionModels 与显式快照副本
 ├── generated/       # RegistryData, ErrorCatalog
 ├── common/          # BridgeError, UiFeedback, RegistryUi, FidelityText
 └── entryability/    # EntryAbility
@@ -28,7 +28,8 @@ entry/src/main/cpp/
 ├── napi/            # native_bridge.cpp（13 API，异步调度）
 ├── core/            # converter.h, engine_registry, missing_converter
 ├── engines/         # pdf, office, media, image, ocr（全部为 MissingConverter 占位）
-└── generated/       # registry_metadata.h
+├── generated/       # registry_metadata.h
+└── tests/           # 独立主机 CTest；mock NAPI 不入设备包
 ```
 
 ## 已完成功能
@@ -51,7 +52,7 @@ entry/src/main/cpp/
 | 优先级 | 模块 | 当前状态 | 影响 |
 |--------|------|----------|------|
 | **P0** | 文件授权与输入管理 | 🔶 实现及宿主/编译完成，设备待验收 | Picker、受控副本/摘要、卡片/移除、真实提交入口；Native 会话/工作区仍占位 |
-| **P0** | 真实转换引擎 | ❌ 全部占位 | 0 条真实可用路线，不生成任何文件 |
+| **P0** | 应用真实转换引擎 | ❌ 全部占位；仅有隔离主机原型 | 0 条真实可用路线，应用不生成转换文件 |
 | **P1** | 输出验证与导出 | ❌ 未开始 | 无法保存转换结果 |
 | **P1** | 任务持久化 | ❌ 未开始 | 退出应用任务丢失 |
 | **P2** | 后台调度服务 | ❌ 未开始 | 长任务无法后台执行 |
@@ -75,7 +76,7 @@ NativeBridge.getCapabilities() 返回 engines=[] routes=[]，因此 availableRou
 
 ## 测试覆盖
 
-- 15 项交互测试 + 13 项保真测试 + 12 项重构测试 + 61 项 Hypium 源码 + 16 项审计 + 35 项输入管理 + 21 项架构 = **173 项宿主检查通过**
+- 原有 173 项 + 32 项副本/索引 = **205 项 ArkTS 宿主检查通过**；13 项 C++/mock NAPI CTest、隔离原型 4 项 C++ 和 15 项 PDF 集成检查另外通过
 - 覆盖 18×18 格式组合 + 15,552 组质量/意图/等级选择
 - **缺失**：真机 Hypium、Previewer UI、读屏、真实引擎端到端
 

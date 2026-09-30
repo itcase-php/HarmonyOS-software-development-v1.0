@@ -164,8 +164,9 @@ async function main(){
  });
  await test('Native result cache preserves recency and releases only the oldest result at its bound',async()=>{
   const h=host(),store=h.store,released=[];store.services.runner={releaseOutputs:async result=>released.push(result.taskId)};
-  for(let i=0;i<100;i++)store.saveNativeResult('r'+i,{taskId:'r'+i,outputs:[]});
-  assert.equal(store.nativeResultSnapshot('r0').taskId,'r0');store.saveNativeResult('r100',{taskId:'r100',outputs:[]});await flush();
+  const result=id=>({schemaVersion:1,taskId:id,attemptId:'a',status:'success',warnings:[],outputs:[],validation:{state:'not_evaluated',validatorVersion:'fixture',evidenceRefs:[]},engines:[],elapsedMs:0,nativePeakBytes:0,tempPeakBytes:0});
+  for(let i=0;i<100;i++)store.saveNativeResult('r'+i,result('r'+i));
+  assert.equal(store.nativeResultSnapshot('r0').taskId,'r0');store.saveNativeResult('r100',result('r100'));await flush();
   assert.equal(store.nativeResultSnapshot('r1'),undefined);assert.equal(store.nativeResults.size,100);assert.deepEqual(released,['r1']);
  });
  await test('Six preview components have bounded local state and the page supplies four observed VMs',()=>{

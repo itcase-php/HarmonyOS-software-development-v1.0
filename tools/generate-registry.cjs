@@ -63,14 +63,15 @@ for (const {id,name} of creators) {
     `std::unique_ptr<IConverter> ${name}() { return std::make_unique<MissingConverter>(${JSON.stringify(id)}); }\n}\n`);
 }
 write('entry/src/main/cpp/core/engine_registry.cpp',
-  '// Generated factory table. Real adapters keep their engineId and factory signature.\n'+
-  '#include "engine_registry.h"\nnamespace hdm {\n'+
+  '// Generated indexed factory table. Real adapters keep their engineId and factory signature.\n'+
+  '#include "engine_registry.h"\n#include <unordered_map>\nnamespace hdm {\n'+
   creators.map(x=>`std::unique_ptr<IConverter> ${x.name}();`).join('\n')+'\n'+
-  'struct Registration { const char* id; std::unique_ptr<IConverter> (*create)(); };\n'+
-  'const Registration registrations[] = {\n'+creators.map(x=>`    {${JSON.stringify(x.id)}, ${x.name}},`).join('\n')+'\n};\n'+
   'std::unique_ptr<IConverter> CreateConverter(const std::string& engineId) {\n'+
-  '    for (const auto& entry : registrations) if (engineId == entry.id) return entry.create();\n'+
-  '    return nullptr;\n}\n}\n');
+  '    using Factory = std::unique_ptr<IConverter> (*)();\n'+
+  '    static const std::unordered_map<std::string, Factory> registrations = {\n'+
+  creators.map(x=>`        {${JSON.stringify(x.id)}, ${x.name}},`).join('\n')+'\n    };\n'+
+  '    const auto entry = registrations.find(engineId);\n'+
+  '    return entry == registrations.end() ? nullptr : entry->second();\n}\n}\n');
 write('entry/src/main/cpp/generated/engine_sources.cmake',
   '# Generated list; generator never overwrites an existing adapter implementation.\nset(HDM_ENGINE_SOURCES\n'+
   creators.map(x=>`    engines/${x.id}/${x.id}_converter.cpp`).join('\n')+'\n)\n');

@@ -1,0 +1,99 @@
+{
+  "scope": "isolated_host_prototype_with_independent_pdf_parser_and_renderer",
+  "result": "passed",
+  "source": "Pillow generated fixtures",
+  "parser": "pypdf strict",
+  "renderer": "Poppler pdftoppm",
+  "testedCases": 15,
+  "cases": [
+    {
+      "case": "rgb",
+      "result": "passed",
+      "pdfBytes": 18223,
+      "inputBytes": 17491,
+      "meanAbsoluteRenderedDifference": 4.00166,
+      "embeddedJpegIdentical": true,
+      "pages": 1,
+      "trackedAllocationPeak": 131072
+    },
+    {
+      "case": "gray_300dpi",
+      "result": "passed",
+      "pdfBytes": 7465,
+      "inputBytes": 6738,
+      "meanAbsoluteRenderedDifference": 2.15801,
+      "embeddedJpegIdentical": true,
+      "pages": 1,
+      "trackedAllocationPeak": 131072
+    },
+    {
+      "case": "invalid_magic",
+      "result": "passed",
+      "code": "FILE_CORRUPTED"
+    },
+    {
+      "case": "truncated",
+      "result": "passed",
+      "code": "FILE_CORRUPTED"
+    },
+    {
+      "case": "trailing_data_rejected",
+      "result": "passed",
+      "code": "FILE_CORRUPTED"
+    },
+    {
+      "case": "progressive_rejected",
+      "result": "passed",
+      "code": "UNSUPPORTED_FEATURE"
+    },
+    {
+      "case": "exif_orientation_rejected",
+      "result": "passed",
+      "code": "UNSUPPORTED_FEATURE"
+    },
+    {
+      "case": "icc_rejected",
+      "result": "passed",
+      "code": "UNSUPPORTED_FEATURE"
+    },
+    {
+      "case": "cmyk_rejected",
+      "result": "passed",
+      "code": "UNSUPPORTED_FEATURE"
+    },
+    {
+      "case": "pixel_limit",
+      "result": "passed",
+      "code": "RESOURCE_LIMIT_EXCEEDED"
+    },
+    {
+      "case": "large_multichunk",
+      "result": "passed",
+      "inputBytes": 859730,
+      "trackedAllocationPeak": 131072,
+      "embeddedJpegIdentical": true
+    },
+    {
+      "case": "decoder_memory_limit",
+      "result": "passed",
+      "code": "RESOURCE_LIMIT_EXCEEDED"
+    },
+    {
+      "case": "temp_limit",
+      "result": "passed",
+      "code": "RESOURCE_LIMIT_EXCEEDED"
+    },
+    {
+      "case": "cancel",
+      "result": "passed",
+      "code": "CONVERSION_CANCELLED"
+    },
+    {
+      "case": "no_overwrite",
+      "result": "passed"
+    }
+  ],
+  "applicationIntegrated": false,
+  "deviceExecution": "not_executed",
+  "realRoutesAvailable": 0
+}

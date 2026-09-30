@@ -1,4 +1,5 @@
 #include "native_bridge.h"
+#include "bridge_problem.h"
 #include "../core/converter.h"
 #include "../generated/registry_metadata.h"
 #include <atomic>
@@ -10,11 +11,6 @@
 
 namespace hdm {
 namespace {
-struct BridgeProblem : std::exception {
-    ErrorCode code;
-    const char* reason;
-    BridgeProblem(ErrorCode value, const char* detail) : code(value), reason(detail) {}
-};
 void Check(napi_status status) {
     if (status != napi_ok) throw BridgeProblem(ErrorCode::InternalError, "NAPI_CALL_FAILED");
 }
@@ -97,7 +93,7 @@ napi_value MakeError(napi_env env, ErrorCode code, const char* reason) {
 template <class Fn> napi_value Boundary(napi_env env, Fn fn) noexcept {
     try { return fn(); }
     catch (const BridgeProblem& error) {
-        try { Check(napi_throw(env, MakeError(env, error.code, error.reason))); }
+        try { Check(napi_throw(env, MakeError(env, error.code, error.what()))); }
         catch (...) { (void)napi_throw_error(env, "INTERNAL_ERROR", "Native boundary failure"); }
     }
     catch (const std::bad_alloc&) {

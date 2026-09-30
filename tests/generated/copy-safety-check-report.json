@@ -1,0 +1,137 @@
+{
+  "scope": "real_ArkTS_logic_with_host_SDK_adapters",
+  "result": "passed",
+  "testedCases": 32,
+  "cases": [
+    {
+      "name": "SessionSnapshot.copyPickedFile covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "SessionSnapshot.copyAuthorizedFile covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "SessionSnapshot.copySessionContext covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyAppError covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyConversionWarning covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyArtifact covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyValidation covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyEngineStamp covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyConvertResult covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyMetric covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyFidelityReport covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyPageRange covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyPdfOptions covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyImageOptions covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyOfficeOptions covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyAudioOptions covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyOcrOptions covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyConvertOptions covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyPreparedInput covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyPlanStep covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyApprovedPlan covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyResourceBudget covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "ConversionSnapshot.copyConvertRequest covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "RegistrySnapshotCopy.copyOptionValue covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "RegistrySnapshotCopy.copyRegistryFormat covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "RegistrySnapshotCopy.copyConversionRouteDefinition covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "RegistrySnapshotCopy.copyInputConstraints covers schema fields, optional presence and nested ownership",
+      "result": "passed"
+    },
+    {
+      "name": "Registry preserves full catalogue order, aliases, categories and copy isolation",
+      "result": "passed"
+    },
+    {
+      "name": "Warm ID and planner lookup copy only selected formats and never copy the full list",
+      "result": "passed"
+    },
+    {
+      "name": "Cold category loading copies once; verified install atomically rebuilds the lookup revision",
+      "result": "passed"
+    },
+    {
+      "name": "History eviction scans backwards without slice/reverse and protects the oldest active item",
+      "result": "passed"
+    },
+    {
+      "name": "Production ownership snapshots no longer serialize and compatibility APIs remain",
+      "result": "passed"
+    }
+  ],
+  "schemaCoverage": "derived_from_type_declarations_including_optional_fields",
+  "deviceExecution": "not_executed"
+}

@@ -1,0 +1,31 @@
+Test project D:/HarmonyOS/harmonyOS/tests/native/build
+      Start  1: core_errors
+ 1/13 Test  #1: core_errors ......................   Passed    0.16 sec
+      Start  2: core_factories
+ 2/13 Test  #2: core_factories ...................   Passed    0.02 sec
+      Start  3: core_missing
+ 3/13 Test  #3: core_missing .....................   Passed    0.02 sec
+      Start  4: core_lease
+ 4/13 Test  #4: core_lease .......................   Passed    0.01 sec
+      Start  5: core_exception
+ 5/13 Test  #5: core_exception ...................   Passed    0.02 sec
+      Start  6: napi_exports
+ 6/13 Test  #6: napi_exports .....................   Passed    0.12 sec
+      Start  7: napi_schema
+ 7/13 Test  #7: napi_schema ......................   Passed    0.03 sec
+      Start  8: napi_unsupported
+ 8/13 Test  #8: napi_unsupported .................   Passed    0.02 sec
+      Start  9: napi_missing
+ 9/13 Test  #9: napi_missing .....................   Passed    0.01 sec
+      Start 10: napi_controls
+10/13 Test #10: napi_controls ....................   Passed    0.01 sec
+      Start 11: napi_queue
+11/13 Test #11: napi_queue .......................   Passed    0.01 sec
+      Start 12: napi_completion
+12/13 Test #12: napi_completion ..................   Passed    0.01 sec
+      Start 13: napi_boundary
+13/13 Test #13: napi_boundary ....................   Passed    0.01 sec
+
+100% tests passed out of 13
+
+Total Test time (real) =   0.49 sec

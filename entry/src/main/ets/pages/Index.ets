@@ -1,3 +1,4 @@
+import { ServiceContainer } from '../services/ServiceContainer';
 import { ErrorHandler } from '../common/ErrorHandler';
 import { common } from '@kit.AbilityKit';
 import { BridgeError } from '../common/BridgeError';
@@ -15,15 +16,16 @@ import { FoundationViewModel } from '../viewmodel/FoundationViewModel';
 @Preview
 @Component
 struct Index {
+  private services: ServiceContainer = ServiceContainer.current();
   @State nativeState: string = '正在检测原生连接，交互演示可用';
   @State availableCount: number = 0;
   @State capabilityLabel: string = '检查中';
   @State checking: boolean = false;
-  @State formatCount: number = FormatRegistry.listFormats().length;
-  @State routeCount: number = FormatRegistry.listPlannedRoutes().length;
+  @State formatCount: number = this.services.registry.listFormats().length;
+  @State routeCount: number = this.services.registry.listPlannedRoutes().length;
   @State tasks: DemoTask[] = [];
-  private viewModel: FoundationViewModel = new FoundationViewModel();
-  private store: TaskStore = TaskStore.shared();
+  private viewModel: FoundationViewModel = new FoundationViewModel(this.services.registry, this.services.native);
+  private store: TaskStore = this.services.tasks;
   private token: number = -1;
   private active: boolean = false;
 
@@ -58,9 +60,9 @@ struct Index {
       if (!context) { throw new BridgeError('CONFIG_INVALID', 'REGISTRY_CONTEXT_UNAVAILABLE'); }
       const capabilities = await this.viewModel.inspect(context.resourceManager);
       if (this.active) {
-        this.formatCount = FormatRegistry.listFormats().length;
-        this.routeCount = FormatRegistry.listPlannedRoutes().length;
-        this.availableCount = FormatRegistry.availableRoutes(capabilities).length;
+        this.formatCount = this.services.registry.listFormats().length;
+        this.routeCount = this.services.registry.listPlannedRoutes().length;
+        this.availableCount = this.services.registry.availableRoutes(capabilities).length;
         if (this.availableCount > 0) {
           this.capabilityLabel = 'Native 已连接';
           this.nativeState = `${capabilities.abi} · 本地处理 · ${this.availableCount} 条真实可执行路线`;
@@ -73,8 +75,8 @@ struct Index {
     } catch (error) {
       if (this.active) {
         const failure: BridgeError = ErrorHandler.catchBridge(error, 'Index');
-        this.formatCount = FormatRegistry.listFormats().length;
-        this.routeCount = FormatRegistry.listPlannedRoutes().length;
+        this.formatCount = this.services.registry.listFormats().length;
+        this.routeCount = this.services.registry.listPlannedRoutes().length;
         this.availableCount = 0;
         this.capabilityLabel = '演示可用';
         this.nativeState = `原生暂不可用（${failure.code ?? 'INTERNAL_ERROR'}），${this.formatCount} 种格式、${this.routeCount} 条规划路线与演示流程仍可使用`;

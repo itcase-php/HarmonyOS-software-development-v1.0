@@ -243,6 +243,7 @@ class PlatformNativeLoader implements NativeModuleLoader {
 // Compatibility entry point; all operational state belongs to an injectable instance.
 export class NativeBridge {
   private static defaultService: NativeBridgePort = new NativeBridgeService();
+  /** @deprecated Compatibility only. Obtain the owned instance from ServiceContainer or inject it. */
   static shared(): NativeBridgePort { return NativeBridge.defaultService; }
   static useDefault(service: NativeBridgePort): void { NativeBridge.defaultService = service; }
   static isNativeAvailable(): boolean { return NativeBridge.shared().isNativeAvailable(); }
