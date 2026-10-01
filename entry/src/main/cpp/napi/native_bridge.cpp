@@ -1,4 +1,7 @@
 #include "native_bridge.h"
+#ifdef HDM_PRODUCTION_NATIVE
+#include "production_napi.h"
+#endif
 #include "bridge_problem.h"
 #include "../core/converter.h"
 #include "../generated/registry_metadata.h"
@@ -131,7 +134,7 @@ napi_value CapabilityResult(napi_env env) {
     PutText(env, result, "abi", "unverified");
 #endif
     PutText(env, result, "configVersion", kConfigVersion);
-    // Placeholders are linked, but no real engine is available.
+    // The experimental image engine is linked, but no route has release evidence.
     Put(env, result, "engines", Array(env));
     Put(env, result, "routes", Array(env));
     return result;
@@ -267,6 +270,21 @@ napi_value Release(napi_env env, napi_callback_info) {
 napi_value RegisterNativeBridge(napi_env env, napi_value exports) {
     return Boundary(env, [&] {
         napi_property_descriptor descriptors[] = {
+#ifdef HDM_PRODUCTION_NATIVE
+            {"initializeSession", nullptr, ProductionInitialize, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"registerWorkspace", nullptr, ProductionRegister, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"getCapabilities", nullptr, GetCapabilities, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"probeInputs", nullptr, ProductionProbe, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"execute", nullptr, ProductionExecute, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"subscribeProgress", nullptr, ProductionSubscribe, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"unsubscribeProgress", nullptr, ProductionUnsubscribe, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"cancel", nullptr, ProductionCancel, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"pause", nullptr, ProductionPause, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"resume", nullptr, ProductionResume, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"releaseTask", nullptr, ProductionReleaseTask, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"releaseArtifact", nullptr, ProductionReleaseArtifact, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"shutdown", nullptr, ProductionShutdown, nullptr, nullptr, nullptr, napi_default, nullptr}
+#else
             {"initializeSession", nullptr, Unsupported, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"registerWorkspace", nullptr, Unsupported, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"getCapabilities", nullptr, GetCapabilities, nullptr, nullptr, nullptr, napi_default, nullptr},
@@ -280,6 +298,7 @@ napi_value RegisterNativeBridge(napi_env env, napi_value exports) {
             {"releaseTask", nullptr, Release, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"releaseArtifact", nullptr, Release, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"shutdown", nullptr, Release, nullptr, nullptr, nullptr, napi_default, nullptr}
+#endif
         };
         Check(napi_define_properties(env, exports, sizeof(descriptors) / sizeof(descriptors[0]), descriptors));
         return exports;

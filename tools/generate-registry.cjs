@@ -11,6 +11,9 @@ const formatsBytes = fs.readFileSync(path.join(source,'formats.json'));
 const matrixBytes = fs.readFileSync(path.join(source,'conversion-matrix.json'));
 const formats = JSON.parse(formatsBytes);
 const matrix = JSON.parse(matrixBytes);
+const jpegPdfRoute = matrix.routes.find(route => route.from.length === 1 && route.from[0] === 'jpeg' &&
+  route.to === 'pdf' && route.steps.length === 1 && route.steps[0].executorEngineId === 'image');
+if (!jpegPdfRoute) throw new Error('JPEG to PDF route missing from authored matrix');
 const sha = data => crypto.createHash('sha256').update(data).digest('hex');
 function write(relative, text) {
   const file = path.join(root,relative);
@@ -51,7 +54,11 @@ write('entry/src/main/cpp/generated/registry_metadata.h',
   `inline constexpr std::uint32_t kSchemaVersion = ${formats.schemaVersion};\n`+
   `inline constexpr const char* kConfigVersion = ${JSON.stringify(formats.configVersion)};\n`+
   `inline constexpr const char* kFormatsHash = ${JSON.stringify(metadata.formatsSha256)};\n`+
-  `inline constexpr const char* kMatrixHash = ${JSON.stringify(metadata.matrixSha256)};\n}\n`);
+  `inline constexpr const char* kMatrixHash = ${JSON.stringify(metadata.matrixSha256)};\n`+
+  `inline constexpr const char* kSecurityPolicyVersion = ${JSON.stringify(formats.securityPolicy.version)};\n`+
+  `inline constexpr const char* kJpegPdfRouteId = ${JSON.stringify(jpegPdfRoute.id)};\n`+
+  `inline constexpr const char* kJpegPdfRouteStatus = ${JSON.stringify(jpegPdfRoute.status)};\n`+
+  `inline constexpr const char* kJpegPdfValidationProfile = ${JSON.stringify(jpegPdfRoute.validationProfileId)};\n}\n`);
 for (const [name,bytes] of [['formats.json',formatsBytes],['conversion-matrix.json',matrixBytes]])
   write(`entry/src/main/resources/rawfile/format-registry/${name}`,bytes);
 write('entry/src/main/resources/rawfile/format-registry/manifest.json',JSON.stringify(metadata,null,2)+'\n');
