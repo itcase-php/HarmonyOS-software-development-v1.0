@@ -13,6 +13,11 @@
 #include <fstream>
 #include <random>
 #include <system_error>
+#ifdef _WIN32
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
 
 namespace hdm::production {
 namespace {
@@ -233,7 +238,7 @@ ConvertResult Runtime::Execute(const ConvertRequest& request) {
         result.tempPeakBytes=context.result->candidate.tempPeak;
         {
             std::lock_guard<std::mutex> lock(mutex_);
-            if (!artifacts_.emplace(internalRef,ArtifactState{finalPath,request.taskId,request.attemptId}).second)
+            if (!artifacts_.emplace(internalRef,ArtifactState{finalPath,request.taskId,request.attemptId,pdfHash,pdfBytes}).second)
                 throw BridgeProblem(ErrorCode::TaskBusy,"NATIVE_ARTIFACT_EXISTS");
         }
         cleanup.committed=true;
@@ -277,6 +282,47 @@ void Runtime::ReleaseArtifact(const std::string& ref) {
     std::error_code ec; fs::remove(artifact->second.path,ec);
     if (ec) throw BridgeProblem(ErrorCode::IoError,"NATIVE_ARTIFACT_RELEASE");
     artifacts_.erase(artifact);
+}
+std::uint64_t Runtime::CopyArtifactToFd(const std::string& ref, int fd,
+                                       const std::string& sha256, std::uint64_t byteSize) {
+    if (fd<0 || ref.rfind("artifact:",0)!=0 || sha256.size()!=64 || byteSize==0 || byteSize>kMaximumTemp)
+        throw BridgeProblem(ErrorCode::InvalidRequest,"NATIVE_EXPORT_ARGUMENTS");
+    // Keep the artifact owned until the copy ends, so release/shutdown cannot remove it mid-transfer.
+    std::lock_guard<std::mutex> lock(mutex_);
+    const auto found=artifacts_.find(ref);
+    if (found==artifacts_.end()) throw BridgeProblem(ErrorCode::InputNotFound,"NATIVE_ARTIFACT_MISSING");
+    const auto& artifact=found->second;
+    if (artifact.sha256!=sha256 || artifact.byteSize!=byteSize || !SafeFile(artifact.path))
+        throw BridgeProblem(ErrorCode::OutputValidationFailed,"NATIVE_ARTIFACT_METADATA");
+    std::uint64_t verifiedBytes{};
+    if (DigestFile(artifact.path,kMaximumTemp,verifiedBytes)!=sha256 || verifiedBytes!=byteSize)
+        throw BridgeProblem(ErrorCode::OutputValidationFailed,"NATIVE_ARTIFACT_CHANGED");
+    std::ifstream input(artifact.path,std::ios::binary);
+    if (!input) throw BridgeProblem(ErrorCode::IoError,"NATIVE_EXPORT_READ");
+    std::array<char,64*1024> buffer{};
+    std::uint64_t copied{};
+    Sha256 copiedHash;
+    while (input) {
+        input.read(buffer.data(),buffer.size());
+        const auto got=input.gcount();
+        if (got<0 || static_cast<std::uint64_t>(got)>byteSize-copied)
+            throw BridgeProblem(ErrorCode::OutputValidationFailed,"NATIVE_ARTIFACT_CHANGED");
+        copiedHash.Update(buffer.data(),static_cast<std::size_t>(got));
+        std::streamsize offset{};
+        while (offset<got) {
+#ifdef _WIN32
+            const int written=_write(fd,buffer.data()+offset,static_cast<unsigned int>(got-offset));
+#else
+            const auto written=write(fd,buffer.data()+offset,static_cast<std::size_t>(got-offset));
+#endif
+            if (written<=0) throw BridgeProblem(ErrorCode::IoError,"NATIVE_EXPORT_WRITE");
+            offset+=written;
+        }
+        copied+=static_cast<std::uint64_t>(got);
+    }
+    if (!input.eof() || copied!=byteSize || copiedHash.FinalHex()!=sha256)
+        throw BridgeProblem(ErrorCode::OutputValidationFailed,"NATIVE_EXPORT_INCOMPLETE");
+    return copied;
 }
 void Runtime::Shutdown() {
     std::vector<fs::path> paths;

@@ -51,7 +51,7 @@ template <typename Fn> napi_value Boundary(napi_env env,Fn fn) noexcept {
     return nullptr;
 }
 napi_value Arg(napi_env env,napi_callback_info info,std::size_t expected,std::size_t index=0) {
-    std::size_t count=3; napi_value args[3]{};
+    std::size_t count=4; napi_value args[4]{};
     Check(napi_get_cb_info(env,info,&count,args,nullptr,nullptr));
     if (count!=expected || index>=count) throw BridgeProblem(ErrorCode::InvalidRequest,"NATIVE_ARGUMENTS");
     return args[index];
@@ -206,12 +206,13 @@ ConvertRequest ParseConvert(napi_env env,napi_value value) {
     return request;
 }
 
-enum class Kind { Initialize,Register,Probe,Execute,Cancel,Pause,Resume,ReleaseTask,ReleaseArtifact,Shutdown };
+enum class Kind { Initialize,Register,Probe,Execute,Cancel,Pause,Resume,ReleaseTask,ReleaseArtifact,CopyArtifact,Shutdown };
 struct Work {
     napi_async_work handle{}; napi_deferred deferred{};
     Kind kind{}; ErrorCode error{ErrorCode::Ok}; const char* reason{"NATIVE_WORK_FAILED"};
     SessionInit init; WorkspaceGrant grant; ProbeRequest probe; ConvertRequest convert;
     std::string first,second,textResult;
+    int destinationFd{-1}; std::uint64_t exportBytes{}, copiedBytes{};
     production::ProbeResult probeResult; ConvertResult convertResult; ControlAck controlResult;
 };
 void Run(napi_env,void* data) noexcept {
@@ -238,6 +239,8 @@ void Run(napi_env,void* data) noexcept {
             case Kind::Resume: work.controlResult=runtime.Control(work.first,work.second,"resume"); break;
             case Kind::ReleaseTask: runtime.ReleaseTask(work.first,work.second); break;
             case Kind::ReleaseArtifact: runtime.ReleaseArtifact(work.first); break;
+            case Kind::CopyArtifact:
+                work.copiedBytes=runtime.CopyArtifactToFd(work.first,work.destinationFd,work.second,work.exportBytes); break;
             case Kind::Shutdown: runtime.Shutdown(); break;
         }
     } catch (const BridgeProblem& failure) { work.error=failure.code; work.reason="NATIVE_WORK_REJECTED"; }
@@ -360,6 +363,8 @@ void Complete(napi_env env,napi_status status,void* data) noexcept {
                     value=SerializeResult(env,work->convertResult); break;
                 case Kind::Cancel: case Kind::Pause: case Kind::Resume:
                     value=SerializeControl(env,work->controlResult); break;
+                case Kind::CopyArtifact:
+                    Check(napi_create_double(env,static_cast<double>(work->copiedBytes),&value)); break;
                 default: Check(napi_get_undefined(env,&value)); break;
             }
             Check(napi_resolve_deferred(env,work->deferred,value));
@@ -474,6 +479,17 @@ napi_value ProductionReleaseArtifact(napi_env env,napi_callback_info info) {
     return Boundary(env,[&] {
         auto work=std::make_unique<Work>(); work->kind=Kind::ReleaseArtifact;
         work->first=String(env,Arg(env,info,1)); return Queue(env,std::move(work));
+    });
+}
+napi_value ProductionCopyArtifact(napi_env env,napi_callback_info info) {
+    return Boundary(env,[&] {
+        const auto ref=String(env,Arg(env,info,4,0));
+        const auto fd=Unsigned(env,Arg(env,info,4,1),static_cast<std::uint64_t>(std::numeric_limits<int>::max()));
+        const auto sha256=String(env,Arg(env,info,4,2));
+        const auto bytes=Unsigned(env,Arg(env,info,4,3),512ULL*1024*1024);
+        auto work=std::make_unique<Work>(); work->kind=Kind::CopyArtifact;
+        work->first=ref; work->second=sha256; work->destinationFd=static_cast<int>(fd); work->exportBytes=bytes;
+        return Queue(env,std::move(work));
     });
 }
 napi_value ProductionShutdown(napi_env env,napi_callback_info info) {

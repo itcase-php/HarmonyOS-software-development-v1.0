@@ -25,11 +25,13 @@ public:
     ControlAck Control(const std::string& taskId, const std::string& attemptId, const char* action);
     void ReleaseTask(const std::string& taskId, const std::string& attemptId);
     void ReleaseArtifact(const std::string& ref);
+    std::uint64_t CopyArtifactToFd(const std::string& ref, int fd,
+                                   const std::string& sha256, std::uint64_t byteSize);
     void Shutdown();
     bool HasSession(const std::string& sessionId) const;
 private:
     struct Session { std::filesystem::path root; std::unordered_map<std::string, Grant> grants; };
-    struct ArtifactState { std::filesystem::path path; std::string taskId, attemptId; };
+    struct ArtifactState { std::filesystem::path path; std::string taskId, attemptId, sha256; std::uint64_t byteSize; };
     Grant GetGrant(const std::string& sessionId, const std::string& workspaceRef) const;
     mutable std::mutex mutex_;
     std::unordered_map<std::string, Session> sessions_;

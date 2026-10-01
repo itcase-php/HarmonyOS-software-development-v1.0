@@ -322,6 +322,7 @@ napi_value RegisterNativeBridge(napi_env env, napi_value exports) {
             {"resume", nullptr, ProductionResume, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"releaseTask", nullptr, ProductionReleaseTask, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"releaseArtifact", nullptr, ProductionReleaseArtifact, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"copyArtifactToFd", nullptr, ProductionCopyArtifact, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"shutdown", nullptr, ProductionShutdown, nullptr, nullptr, nullptr, napi_default, nullptr}
 #else
             {"initializeSession", nullptr, Unsupported, nullptr, nullptr, nullptr, napi_default, nullptr},
@@ -336,6 +337,7 @@ napi_value RegisterNativeBridge(napi_env env, napi_value exports) {
             {"resume", nullptr, Control, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"releaseTask", nullptr, Release, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"releaseArtifact", nullptr, Release, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"copyArtifactToFd", nullptr, Unsupported, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"shutdown", nullptr, Release, nullptr, nullptr, nullptr, napi_default, nullptr}
 #endif
         };

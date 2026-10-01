@@ -12,5 +12,6 @@ napi_value ProductionPause(napi_env, napi_callback_info);
 napi_value ProductionResume(napi_env, napi_callback_info);
 napi_value ProductionReleaseTask(napi_env, napi_callback_info);
 napi_value ProductionReleaseArtifact(napi_env, napi_callback_info);
+napi_value ProductionCopyArtifact(napi_env, napi_callback_info);
 napi_value ProductionShutdown(napi_env, napi_callback_info);
 } // namespace hdm

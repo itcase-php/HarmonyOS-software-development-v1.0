@@ -7,7 +7,7 @@ import { BridgeError } from '../common/BridgeError';
 import { FidelityPolicy } from './FidelityPolicy';
 import { DemoFidelityReport } from './DemoFidelityReport';
 import { NativeFidelityReport } from './NativeFidelityReport';
-import { ConvertRequest, ConvertResult, ProgressEvent } from '../models/NativeProtocol';
+import { ConvertRequest, ConvertResult, ProgressEvent, ExportRecord, ExportState, Artifact } from '../models/NativeProtocol';
 import { AuthorizedFile, SessionContext } from '../models/SessionModels';
 
 class SystemTaskRuntime implements TaskRuntime {
@@ -34,6 +34,8 @@ export class TaskStore implements TaskStorePort {
   private listenerSequence: number = 0;
   private nativeRequests: Map<string, ConvertRequest> = new Map<string, ConvertRequest>();
   private nativeResults: Map<string, ConvertResult> = new Map<string, ConvertResult>();
+  private exportRecords: Map<string, ExportRecord[]> = new Map<string, ExportRecord[]>();
+  private exporting: Set<string> = new Set<string>();
   private nativeRunningId: string = '';
   private nativeIdle: Promise<void> | null = null;
   private resolveNativeIdle: () => void = () => {};
@@ -208,7 +210,9 @@ export class TaskStore implements TaskStorePort {
     if (this.tasks.length >= this.historyLimit) {
       let lastFinished: DemoTask | undefined = undefined;
       for (let index: number = this.tasks.length - 1; index >= 0; index--) {
-        if (!isActiveTask(this.tasks[index].status)) { lastFinished = this.tasks[index]; break; }
+        if (!isActiveTask(this.tasks[index].status) && !this.exporting.has(this.tasks[index].id)) {
+          lastFinished = this.tasks[index]; break;
+        }
       }
       if (!lastFinished) { throw new BridgeError('TASK_BUSY', 'DEMO_HISTORY_LIMIT'); }
       const evictedId: string = lastFinished.id;
@@ -354,9 +358,86 @@ if (task.progress === 100) {
     return ConversionSnapshot.copyConvertResult(result);
   }
 
+  exportSnapshot(id: string): ExportRecord[] {
+    return (this.exportRecords.get(id) ?? []).map((record: ExportRecord) => {
+      const copy: ExportRecord = { artifactId: record.artifactId, state: record.state };
+      if (record.error) { copy.error = record.error; }
+      return copy;
+    });
+  }
+
+  hasDeliverable(id: string): boolean {
+    const result: ConvertResult | undefined = this.nativeResults.get(id);
+    return !this.exporting.has(id) && !!result && result.status === 'success' &&
+      result.validation.state === 'passed' && result.outputs.some((item: Artifact) =>
+        item.role === 'primary' && item.formatId === 'pdf');
+  }
+
+  beginExport(id: string): Artifact {
+    const output: Artifact = this.requireDeliverable(id);
+    this.exporting.add(id);
+    this.setExportRecord(id, output.artifactId, 'exporting');
+    const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === id);
+    if (task) { task.resultLabel = '正在保存 PDF…'; }
+    this.notify();
+    return output;
+  }
+
+  private requireDeliverable(id: string): Artifact {
+    const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === id);
+    const result: ConvertResult | undefined = this.nativeResults.get(id);
+    const output: Artifact | undefined = result?.outputs.find((item: Artifact) =>
+      item.role === 'primary' && item.formatId === 'pdf');
+    if (this.closing || !task || task.mode !== 'native' || task.status !== 'completed' ||
+      !result || result.status !== 'success' || result.validation.state !== 'passed' || !output || this.exporting.has(id)) {
+      throw new BridgeError('INVALID_REQUEST', 'PDF_EXPORT_UNAVAILABLE');
+    }
+    const copy: Artifact = { artifactId: output.artifactId, role: output.role,
+      formatId: output.formatId, internalRef: output.internalRef,
+      byteSize: output.byteSize, sha256: output.sha256 };
+    if (output.pageIndex !== undefined) { copy.pageIndex = output.pageIndex; }
+    return copy;
+  }
+
+  beginShare(id: string): Artifact {
+    const output: Artifact = this.requireDeliverable(id);
+    this.exporting.add(id);
+    const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === id);
+    if (task) { task.resultLabel = '正在准备 PDF 分享…'; }
+    this.notify();
+    return output;
+  }
+
+  finishShare(id: string, succeeded: boolean): void {
+    this.exporting.delete(id);
+    const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === id);
+    if (task) { task.resultLabel = succeeded ? '已打开 PDF 分享面板' : '分享未启动，可重试'; }
+    this.notify();
+  }
+
+  finishExport(id: string, artifactId: string, state: ExportState): void {
+    this.exporting.delete(id);
+    this.setExportRecord(id, artifactId, state);
+    const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === id);
+    if (task) {
+      task.resultLabel = state === 'exported' ? 'PDF 已保存到所选位置' :
+        state === 'cancelled' ? '已取消保存，内部 PDF 仍可重试' : '保存失败，可重试';
+    }
+    this.notify();
+  }
+
+  private setExportRecord(id: string, artifactId: string, state: ExportState): void {
+    const records: ExportRecord[] = this.exportRecords.get(id) ?? [];
+    const index: number = records.findIndex((record: ExportRecord) => record.artifactId === artifactId);
+    const record: ExportRecord = { artifactId: artifactId, state: state };
+    if (index < 0) { records.push(record); } else { records[index] = record; }
+    this.exportRecords.set(id, records);
+  }
+
   private releaseResult(id: string): void {
     const result = this.nativeResults.get(id);
     if (result) { this.nativeResults.delete(id); this.services.runner.releaseOutputs(result); }
+    this.exportRecords.delete(id);
   }
 
   pause(id: string): boolean {
@@ -400,8 +481,12 @@ if (task.progress === 100) {
 
   clearFinished(): number {
     const before = this.tasks.length;
-    for (const task of this.tasks) { if (!isActiveTask(task.status)) { this.releaseResult(task.id); this.queueOrder.delete(task.id); } }
-    this.tasks = this.tasks.filter((task: DemoTask) => isActiveTask(task.status));
+    for (const task of this.tasks) {
+      if (!isActiveTask(task.status) && !this.exporting.has(task.id)) {
+        this.releaseResult(task.id); this.queueOrder.delete(task.id);
+      }
+    }
+    this.tasks = this.tasks.filter((task: DemoTask) => isActiveTask(task.status) || this.exporting.has(task.id));
     this.notify();
     return before - this.tasks.length;
   }

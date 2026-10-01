@@ -200,6 +200,15 @@ export class NativeBridgeService implements NativeBridgePort {
     return this.call<void>((native) => native.releaseArtifact(ref));
   }
 
+  async copyArtifactToFd(ref: string, destinationFd: number, sha256: string, byteSize: number): Promise<number> {
+    this.requireText(ref);
+    if (!Number.isSafeInteger(destinationFd) || destinationFd < 0 ||
+      !/^[a-f0-9]{64}$/.test(sha256) || !Number.isSafeInteger(byteSize) || byteSize <= 0) {
+      throw new BridgeError('INVALID_REQUEST', 'ARTIFACT_EXPORT_ARGUMENTS');
+    }
+    return this.call<number>((native) => native.copyArtifactToFd(ref, destinationFd, sha256, byteSize));
+  }
+
   async shutdown(): Promise<void> {
     return this.call<void>((native) => native.shutdown());
   }
@@ -259,5 +268,8 @@ export class NativeBridge {
   static resume(taskId: string, attemptId: string): Promise<protocol.ControlAck> { return NativeBridge.shared().resume(taskId, attemptId); }
   static releaseTask(taskId: string, attemptId: string): Promise<void> { return NativeBridge.shared().releaseTask(taskId, attemptId); }
   static releaseArtifact(ref: string): Promise<void> { return NativeBridge.shared().releaseArtifact(ref); }
+  static copyArtifactToFd(ref: string, destinationFd: number, sha256: string, byteSize: number): Promise<number> {
+    return NativeBridge.shared().copyArtifactToFd(ref, destinationFd, sha256, byteSize);
+  }
   static shutdown(): Promise<void> { return NativeBridge.shared().shutdown(); }
 }

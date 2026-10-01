@@ -177,6 +177,7 @@ HDM_NAPI_TEST_STUB(ProductionPause)
 HDM_NAPI_TEST_STUB(ProductionResume)
 HDM_NAPI_TEST_STUB(ProductionReleaseTask)
 HDM_NAPI_TEST_STUB(ProductionReleaseArtifact)
+HDM_NAPI_TEST_STUB(ProductionCopyArtifact)
 HDM_NAPI_TEST_STUB(ProductionShutdown)
 #undef HDM_NAPI_TEST_STUB
 }
@@ -221,9 +222,9 @@ struct Fixture {
 void Exports() {
     Fixture f;
     const std::set<std::string> expected{"initializeSession", "registerWorkspace", "getCapabilities", "probeInputs",
-        "execute", "subscribeProgress", "unsubscribeProgress", "cancel", "pause", "resume", "releaseTask", "releaseArtifact", "shutdown"};
+        "execute", "subscribeProgress", "unsubscribeProgress", "cancel", "pause", "resume", "releaseTask", "releaseArtifact", "copyArtifactToFd", "shutdown"};
     std::set<std::string> actual; for (const auto& entry : f.env.methods) actual.insert(entry.first);
-    Require(actual == expected, "13 API contract changed");
+    Require(actual == expected, "14 API contract changed");
     auto promise = f.call("getCapabilities", {f.request()});
     Require(promise->deferred->state == MockDeferred::Pending, "work resolved before completion");
     f.flush(); auto result = promise->deferred->result;

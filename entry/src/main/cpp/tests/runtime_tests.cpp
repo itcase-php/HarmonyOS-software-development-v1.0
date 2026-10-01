@@ -1,5 +1,6 @@
 #include "../production/runtime.h"
 #include "../production/sha256.h"
+#include "../napi/bridge_problem.h"
 #include "../generated/registry_metadata.h"
 #include <array>
 #include <chrono>
@@ -7,6 +8,12 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <fcntl.h>
+#ifdef _WIN32
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
 
 namespace {
 namespace fs=std::filesystem;
@@ -75,6 +82,27 @@ int main(int argc,char** argv) {
         const auto output=fixture.workspace/"outputs"/(result.outputs[0].artifactId+".pdf");
         Require(fs::exists(output) && fs::file_size(output)==result.outputs[0].byteSize &&
             Digest(output)==result.outputs[0].sha256,"committed PDF mismatch");
+        const auto exported=fixture.root/"export.pdf";
+#ifdef _WIN32
+        const int fd=_open(exported.string().c_str(),_O_CREAT|_O_TRUNC|_O_WRONLY|_O_BINARY,_S_IREAD|_S_IWRITE);
+#else
+        const int fd=open(exported.string().c_str(),O_CREAT|O_TRUNC|O_WRONLY,0600);
+#endif
+        Require(fd>=0,"export descriptor open failed");
+        const auto copied=fixture.runtime.CopyArtifactToFd(result.outputs[0].internalRef,fd,
+            result.outputs[0].sha256,result.outputs[0].byteSize);
+#ifdef _WIN32
+        _close(fd);
+#else
+        close(fd);
+#endif
+        Require(copied==result.outputs[0].byteSize && Digest(exported)==result.outputs[0].sha256,
+            "verified export copy failed");
+        bool rejected=false;
+        try { fixture.runtime.CopyArtifactToFd(result.outputs[0].internalRef,-1,
+            result.outputs[0].sha256,result.outputs[0].byteSize); }
+        catch (const hdm::BridgeProblem&) { rejected=true; }
+        Require(rejected,"invalid export descriptor accepted");
         if (argc==3) fs::copy_file(output,argv[2],fs::copy_options::overwrite_existing);
         auto forged=fixture.Request(); forged.plan.steps[0].inputFormatIds={"png"};
         Require(fixture.runtime.Execute(forged).status==hdm::ResultState::Failed,
