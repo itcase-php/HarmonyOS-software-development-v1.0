@@ -274,5 +274,6 @@ export interface NativeModule {
   resume(taskId: string, attemptId: string): Promise<ControlAck>;
   releaseTask(taskId: string, attemptId: string): Promise<void>;
   releaseArtifact(internalRef: string): Promise<void>;
+  copyArtifactToFd(internalRef: string, destinationFd: number, sha256: string, byteSize: number): Promise<number>;
   shutdown(): Promise<void>;
 }

@@ -1,4 +1,8 @@
 #include "native_bridge.h"
+#ifdef HDM_PRODUCTION_NATIVE
+#include "production_napi.h"
+#include "../core/engine_registry.h"
+#endif
 #include "bridge_problem.h"
 #include "../core/converter.h"
 #include "../generated/registry_metadata.h"
@@ -25,6 +29,14 @@ napi_value Object(napi_env env) {
 napi_value Array(napi_env env) {
     napi_value value{}; Check(napi_create_array(env, &value)); return value;
 }
+#ifdef HDM_PRODUCTION_NATIVE
+napi_value StringArray(napi_env env, const std::vector<std::string>& values) {
+    auto result = Array(env);
+    for (std::uint32_t i = 0; i < values.size(); ++i)
+        Check(napi_set_element(env, result, i, Text(env, values[i])));
+    return result;
+}
+#endif
 void Put(napi_env env, napi_value object, const char* key, napi_value value) {
     Check(napi_set_named_property(env, object, key, value));
 }
@@ -131,9 +143,39 @@ napi_value CapabilityResult(napi_env env) {
     PutText(env, result, "abi", "unverified");
 #endif
     PutText(env, result, "configVersion", kConfigVersion);
-    // Placeholders are linked, but no real engine is available.
-    Put(env, result, "engines", Array(env));
-    Put(env, result, "routes", Array(env));
+    auto engines = Array(env);
+    auto routes = Array(env);
+#ifdef HDM_PRODUCTION_NATIVE
+    // Describe the linked subset without publishing an executable engine or route.
+    // A missing/broken factory simply leaves the diagnostic arrays empty.
+    if (std::string(kJpegPdfRouteStatus) == "planned") {
+        ConverterCapabilities caps;
+        bool linked = false;
+        try {
+            auto converter = CreateConverter("image");
+            if (converter) {
+                caps = converter->Describe();
+                linked = caps.engine.engineId == "image" && !caps.decoderIds.empty() &&
+                    !caps.encoderIds.empty() && !caps.inputSubsetIds.empty();
+            }
+        } catch (...) { linked = false; }
+        if (linked) {
+            auto route = Object(env);
+            PutText(env, route, "routeId", kJpegPdfRouteId);
+            PutText(env, route, "availability", "planned");
+            PutText(env, route, "reason", "NATIVE_ROUTE_PLANNED");
+            PutBool(env, route, "supportsPause", caps.supportsPause);
+            PutBool(env, route, "supportsCheckpoint", caps.supportsCheckpoint);
+            Put(env, route, "decoderIds", StringArray(env, caps.decoderIds));
+            Put(env, route, "encoderIds", StringArray(env, caps.encoderIds));
+            PutText(env, route, "inputSubsetId", caps.inputSubsetIds.front());
+            PutText(env, route, "validationProfileId", kJpegPdfValidationProfile);
+            Check(napi_set_element(env, routes, 0, route));
+        }
+    }
+#endif
+    Put(env, result, "engines", engines);
+    Put(env, result, "routes", routes);
     return result;
 }
 napi_value MissingResult(napi_env env, const Work& work) {
@@ -267,6 +309,22 @@ napi_value Release(napi_env env, napi_callback_info) {
 napi_value RegisterNativeBridge(napi_env env, napi_value exports) {
     return Boundary(env, [&] {
         napi_property_descriptor descriptors[] = {
+#ifdef HDM_PRODUCTION_NATIVE
+            {"initializeSession", nullptr, ProductionInitialize, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"registerWorkspace", nullptr, ProductionRegister, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"getCapabilities", nullptr, GetCapabilities, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"probeInputs", nullptr, ProductionProbe, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"execute", nullptr, ProductionExecute, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"subscribeProgress", nullptr, ProductionSubscribe, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"unsubscribeProgress", nullptr, ProductionUnsubscribe, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"cancel", nullptr, ProductionCancel, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"pause", nullptr, ProductionPause, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"resume", nullptr, ProductionResume, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"releaseTask", nullptr, ProductionReleaseTask, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"releaseArtifact", nullptr, ProductionReleaseArtifact, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"copyArtifactToFd", nullptr, ProductionCopyArtifact, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"shutdown", nullptr, ProductionShutdown, nullptr, nullptr, nullptr, napi_default, nullptr}
+#else
             {"initializeSession", nullptr, Unsupported, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"registerWorkspace", nullptr, Unsupported, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"getCapabilities", nullptr, GetCapabilities, nullptr, nullptr, nullptr, napi_default, nullptr},
@@ -279,7 +337,9 @@ napi_value RegisterNativeBridge(napi_env env, napi_value exports) {
             {"resume", nullptr, Control, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"releaseTask", nullptr, Release, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"releaseArtifact", nullptr, Release, nullptr, nullptr, nullptr, napi_default, nullptr},
+            {"copyArtifactToFd", nullptr, Unsupported, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"shutdown", nullptr, Release, nullptr, nullptr, nullptr, napi_default, nullptr}
+#endif
         };
         Check(napi_define_properties(env, exports, sizeof(descriptors) / sizeof(descriptors[0]), descriptors));
         return exports;

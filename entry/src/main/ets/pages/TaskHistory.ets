@@ -7,6 +7,8 @@ import { StatusBadge } from '../components/StatusBadge';
 import { FormatTag } from '../components/FormatTag';
 import { FidelityReportCard } from '../components/FidelityReportCard';
 import { FidelityPolicy } from '../viewmodel/FidelityPolicy';
+import { common } from '@kit.AbilityKit';
+import { ArtifactDelivery } from '../services/ArtifactDelivery';
 
 @Entry
 @Preview
@@ -15,6 +17,7 @@ struct TaskHistory {
   private services: ServiceContainer = ServiceContainer.current();
   @State tasks: DemoTask[] = [];
   private store: TaskStore = this.services.tasks;
+  private delivery: ArtifactDelivery = new ArtifactDelivery(this.store, this.services.native);
   private token: number = -1;
 
   aboutToAppear(): void {
@@ -33,6 +36,21 @@ struct TaskHistory {
   private clear(): void {
     const count = this.store.clearFinished();
     UiFeedback.toast(this.getUIContext(), `已清除 ${count} 条结束记录，活动任务保留`);
+  }
+
+  private async savePdf(id: string): Promise<void> {
+    try {
+      const context: common.UIAbilityContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      const saved: boolean = await this.delivery.save(id, context);
+      UiFeedback.toast(this.getUIContext(), saved ? 'PDF 已保存' : '已取消保存');
+    } catch (error) { UiFeedback.toast(this.getUIContext(), 'PDF 保存失败，请重试'); }
+  }
+
+  private async sharePdf(id: string): Promise<void> {
+    try {
+      const context: common.UIAbilityContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      await this.delivery.share(id, context);
+    } catch (error) { UiFeedback.toast(this.getUIContext(), '分享面板未能打开，请重试'); }
   }
 
   build() {
@@ -90,15 +108,27 @@ struct TaskHistory {
             if (task.status === 'completed' && task.fidelityReport) {
               FidelityReportCard({ report: task.fidelityReport, mode: task.mode })
             }
+            if (task.mode === 'native' && task.status === 'completed' && task.targetFormat === 'pdf' &&
+              this.store.hasDeliverable(task.id)) {
+              Row({ space: 10 }) {
+                Button('保存 PDF').fontSize(13).accessibilityText('保存 PDF 到所选位置')
+                  .onClick(() => { this.savePdf(task.id); })
+                Button('分享 PDF').fontSize(13).accessibilityText('分享 PDF').id(`share-${task.id}`)
+                  .onClick(() => { this.sharePdf(task.id); })
+              }
+            }
             if (task.mode === 'native' && task.status === 'completed' && !task.fidelityReport) {
               Text($r('app.string.report_missing')).fontSize(13).fontColor($r('app.color.palette_526077'))
             }
             if (task.error.length > 0) { Text(task.error).fontSize(13).fontColor($r('app.color.palette_c53030')) }
             Text(task.mode === 'demo' ? '演示记录 · 未生成真实文件' :
-              task.status === 'completed' ? 'Native 任务记录 · 内部输出尚未导出' : 'Native 任务记录 · 未生成可用输出')
+              task.status === 'completed' ?
+                this.store.exportSnapshot(task.id).some((record) => record.state === 'exported') ?
+                  'Native 任务记录 · PDF 已保存' : 'Native 任务记录 · 内部输出可保存或分享' :
+                'Native 任务记录 · 未生成可用输出')
               .fontSize(12).fontColor($r('app.color.palette_526077'))
           }.width('100%').padding(16).backgroundColor($r('app.color.palette_ffffff')).borderRadius(16).alignItems(HorizontalAlign.Start)
-        }, (task: DemoTask) => `${task.id}-${task.status}-${task.progress}-${task.elapsedMs}`)
+        }, (task: DemoTask) => `${task.id}-${task.status}-${task.progress}-${task.elapsedMs}-${task.resultLabel}`)
       }.padding(24).width('100%').constraintSize({ maxWidth: 720 }).alignItems(HorizontalAlign.Start)
     }.height('100%').width('100%').backgroundColor($r('app.color.palette_f2f5fa'))
   }

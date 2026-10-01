@@ -32,6 +32,7 @@ export interface NativeBridgePort {
   resume(taskId: string, attemptId: string): Promise<protocol.ControlAck>;
   releaseTask(taskId: string, attemptId: string): Promise<void>;
   releaseArtifact(ref: string): Promise<void>;
+  copyArtifactToFd(ref: string, destinationFd: number, sha256: string, byteSize: number): Promise<number>;
   shutdown(): Promise<void>;
 }
 export interface NativeModuleLoader { load(): Promise<NativeModule>; }

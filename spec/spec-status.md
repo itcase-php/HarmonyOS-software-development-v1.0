@@ -1,6 +1,6 @@
 # SDD 状态追踪
 
-更新日期：2026-09-30
+更新日期：2026-10-01
 
 ## 当前变更
 
@@ -10,6 +10,7 @@
 
 | deep-architecture-refactor | implemented_pending_device_validation | 2026-09-30 | 批准兼容方案已实现，173 项宿主检查及应用/测试编译通过；保持 18/43 和原演示，设备/预览验收待执行 |
 | native-readiness-and-copy-safety | compatible_and_isolated_prototype_verified_native_integration_pending_review | 2026-09-30 | 兼容优化及 205 项 ArkTS/13 项 C++ 检查、隔离 JPEG→PDF 原型 4 项 C++/15 项独立 PDF 检查完成；应用/测试编译通过；生产 Native 接入另审 |
+| jpeg-pdf-production | implemented_pending_device_validation | 2026-10-01 | 用户批准分阶段接入且暂不激活；受限转换核心进入双 ABI Native 构建，主机运行时、独立 PDF 解析/渲染、应用和 ohosTest 编译通过；路线保持 planned，可诊断但可用能力为 0，设备和发布证据待审核 |
 
 ## 状态说明
 
