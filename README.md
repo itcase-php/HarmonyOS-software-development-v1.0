@@ -1,6 +1,6 @@
 # HarmonyOS软件开发v2.0
 
-基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。已完成交互流程、完整目录规划、保真度参数管道、真实文件授权副本和提交入口。JPEG→PDF 的受限单图转换器已接入生产 C++ 构建，并通过主机测试与双 ABI 编译；该路线继续保持 `planned`，Native 能力列表为空，应用内尚不能执行真实转换。设备和发布证据通过后再单独审核激活。
+基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。已完成交互流程、完整目录规划、保真度参数管道、真实文件授权副本和提交入口。JPEG→PDF 的受限单图转换器已接入生产 C++ 构建，并通过主机测试与双 ABI 编译；该路线继续保持 `planned`，Native 只报告规划中的路线诊断，应用内尚不能执行真实转换。设备和发布证据通过后再单独审核激活。
 
 公共仓库：<https://github.com/itcase-php/HarmonyOS-software-development-v1.0>。仓库地址使用英文字符，软件展示标题保留“HarmonyOS软件开发v1.0”。许可证为 [MIT](LICENSE)。按交付要求，另提供同内容的 [READMES.md](READMES.md)。
 
@@ -22,7 +22,7 @@
 | JPEG→PDF | 隔离原型源已进入 `libentry.so` 的 Native 构建，仅支持单张 8 位 Baseline SOF0 灰度或三分量 JPEG；主机运行时、独立 PDF 解析/渲染通过。`jpeg-pdf` 仍为 `planned`，NAPI 执行与能力发布受闸门拦截 |
 | 国际化与无障碍 | 保真度相关组件、路线提示和报告的中英文资源及主要控件读屏标注；格式浏览器文案已覆盖，其他旧页面尚未全部国际化 |
 
-**当前真实可用转换路线为 0。** 未选择真实文件时，原演示不读取文件、不生成转换结果。新入口可通过 Picker 授权并复制文件，Native 会话和受限 JPEG 探测已有实现；由于配置仍为 `planned` 且能力列表为空，真实提交不会启动转换。输出导出、持久化、后台调度、安全加固和设备验收仍待开发。详见[分阶段验证记录](docs/VALIDATION-JPEG-PDF-PRODUCTION.md)。
+**当前真实可用转换路线为 0。** 未选择真实文件时，原演示不读取文件、不生成转换结果。新入口可通过 Picker 授权并复制文件，Native 会话和受限 JPEG 探测已有实现；能力查询可诊断 `jpeg-pdf` 为 `planned`，但共享配置和 Native 执行门禁仍阻止真实提交。输出导出、持久化、后台调度、安全加固和设备验收仍待开发。详见[分阶段验证记录](docs/VALIDATION-JPEG-PDF-PRODUCTION.md)。
 
 ## 工程结构
 
@@ -81,13 +81,14 @@ node tests/check-design.cjs
 node tests/check-migration.cjs
 ```
 
-本阶段 ArkTS 宿主脚本全部通过，MSVC 主机 CTest 21/21、独立 PDF 集成检查 15/15 通过；应用及 ohosTest 编译、双 ABI HAP 与第三方许可文件打包通过。详见[分阶段验证记录](docs/VALIDATION-JPEG-PDF-PRODUCTION.md)。原 18/43 配置和 ArkTS 协议保持。**这些检查不等于真机 Picker、应用真实转换、设备 Hypium、Previewer 点击、读屏或发布验收**。`hdc` 无连接设备，构建包未签名。
+本阶段 ArkTS 宿主脚本全部通过，MSVC 主机 CTest 22/22、独立 PDF 集成检查 15/15 通过；应用及 ohosTest 编译、双 ABI HAP 与第三方许可文件打包通过。详见[分阶段验证记录](docs/VALIDATION-JPEG-PDF-PRODUCTION.md)。原 18/43 配置和 ArkTS 协议保持。**这些检查不等于真机 Picker、应用真实转换、设备 Hypium、Previewer 点击、读屏或发布验收**。`hdc` 无连接设备，构建包未签名。
 
 设备安装仍需通过 DevEco 使用合法调试签名；根工程 signingConfigs 当前为空，构建生成未签名包。不要提交自己的私钥、密码或个人签名配置。
 
 ## 开发文档
 
 - [JPEG→PDF 生产接入分阶段验证](docs/VALIDATION-JPEG-PDF-PRODUCTION.md)
+- [能力矩阵诊断与路线门禁复核](spec/changes/jpeg-pdf-production/capability-review.md)
 - [本次已批准的修改范围](spec/changes/jpeg-pdf-production/approval-request.md)
 - [本轮兼容优化与隔离原型验证](docs/VALIDATION-NATIVE-READINESS.md)
 - [独立 JPEG→PDF 原型说明](prototypes/jpeg-pdf/README.md)

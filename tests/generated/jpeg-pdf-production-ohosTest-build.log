@@ -11,23 +11,18 @@
 > hvigor Finished :entry:ohosTest@ProcessIntegratedHsp... after 1 ms
 > hvigor Finished :entry:ohosTest@BuildNativeWithCmake... after 1 ms
 > hvigor UP-TO-DATE :entry:ohosTest@MakePackInfo...
-> hvigor Finished :entry:ohosTest@SyscapTransform... after 3 ms
+> hvigor Finished :entry:ohosTest@SyscapTransform... after 2 ms
 > hvigor UP-TO-DATE :entry:ohosTest@ProcessProfile...
 > hvigor UP-TO-DATE :entry:ohosTest@ProcessRouterMap...
 > hvigor UP-TO-DATE :entry:ohosTest@ProcessShareConfig...
-> hvigor Finished :entry:ohosTest@ProcessStartupConfig... after 3 ms
+> hvigor Finished :entry:ohosTest@ProcessStartupConfig... after 2 ms
 > hvigor Finished :entry:ohosTest@BuildNativeWithNinja... after 1 ms
 > hvigor UP-TO-DATE :entry:ohosTest@ProcessResource...
 > hvigor UP-TO-DATE :entry:ohosTest@GenerateLoaderJson...
 > hvigor UP-TO-DATE :entry:ohosTest@ProcessLibs...
-> hvigor WARN: Warning: 'start_window_background' conflict, first declared.
-at D:\HarmonyOS\harmonyOS\entry\src\main\resources\base\element\color.json
-but declared again.
-at D:\HarmonyOS\harmonyOS\entry\.test\default\intermediates\src\ohosTest\resources\base\element\color.json
-
-> hvigor Finished :entry:ohosTest@CompileResource... after 338 ms
+> hvigor UP-TO-DATE :entry:ohosTest@CompileResource...
 > hvigor UP-TO-DATE :entry:ohosTest@DoNativeStrip...
-> hvigor Finished :entry:ohosTest@OhosTestBuildJS... after 3 ms
+> hvigor Finished :entry:ohosTest@OhosTestBuildJS... after 2 ms
 > hvigor UP-TO-DATE :entry:ohosTest@CacheNativeLibs...
 > hvigor WARN: WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/FormatRegistry.ets:72:38
  The system capacity of this api 'createMd' is not supported on all devices
@@ -39,16 +34,16 @@ WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/Format
  The system capacity of this api 'digest' is not supported on all devices
 
 
-> hvigor Finished :entry:ohosTest@OhosTestCompileArkTS... after 6 s 162 ms
-> hvigor Finished :entry:ohosTest@OhosTestCopyMockConfigJson... after 4 ms
-> hvigor Finished :entry:ohosTest@GeneratePkgModuleJson... after 6 ms
+> hvigor Finished :entry:ohosTest@OhosTestCompileArkTS... after 4 s 935 ms
+> hvigor Finished :entry:ohosTest@OhosTestCopyMockConfigJson... after 3 ms
+> hvigor UP-TO-DATE :entry:ohosTest@GeneratePkgModuleJson...
 > hvigor Finished :entry:ohosTest@ProcessCompiledResources... after 1 ms
-> hvigor Finished :entry:ohosTest@PackageHap... after 518 ms
-> hvigor Finished :entry:ohosTest@PackingCheck... after 10 ms
+> hvigor Finished :entry:ohosTest@PackageHap... after 416 ms
+> hvigor Finished :entry:ohosTest@PackingCheck... after 4 ms
 > hvigor WARN: No signingConfig found for product default
-> hvigor Finished :entry:ohosTest@SignHap... after 4 ms
-> hvigor Finished :entry:ohosTest@CollectDebugSymbol... after 3 ms
+> hvigor Finished :entry:ohosTest@SignHap... after 2 ms
+> hvigor Finished :entry:ohosTest@CollectDebugSymbol... after 1 ms
 > hvigor Finished :entry:assembleHap... after 1 ms
-> hvigor BUILD SUCCESSFUL in 13 s 528 ms
+> hvigor BUILD SUCCESSFUL in 10 s 782 ms
 
-35 tasks in total: 20 executed, 15 up-to-date
+35 tasks in total: 18 executed, 17 up-to-date

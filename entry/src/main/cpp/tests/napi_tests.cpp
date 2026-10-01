@@ -1,6 +1,7 @@
 #include "../napi/native_bridge.h"
 #include "../generated/registry_metadata.h"
 #include <algorithm>
+#include <cstdint>
 #include <cstring>
 #include <iostream>
 #include <limits>
@@ -18,6 +19,7 @@ struct MockValue {
     double number{};
     bool boolean{}, array{};
     std::map<std::string, napi_value> fields;
+    std::vector<napi_value> elements;
     napi_deferred deferred{};
 };
 struct MockInfo { std::vector<napi_value> args; };
@@ -66,6 +68,12 @@ napi_status napi_get_boolean(napi_env env, bool boolean, napi_value* result) {
 }
 napi_status napi_set_named_property(napi_env env, napi_value object, const char* key, napi_value value) {
     CHECK_API(napi_set_named_property); object->fields[key] = value; return napi_ok;
+}
+napi_status napi_set_element(napi_env env, napi_value array, std::uint32_t index, napi_value value) {
+    CHECK_API(napi_set_element);
+    if (!array->array || index > 100) return napi_generic_failure;
+    if (array->elements.size() <= index) array->elements.resize(index + 1);
+    array->elements[index] = value; return napi_ok;
 }
 napi_status napi_has_named_property(napi_env env, napi_value object, const char* key, bool* result) {
     CHECK_API(napi_has_named_property); *result = object->fields.count(key) != 0; return napi_ok;
@@ -155,6 +163,25 @@ napi_status napi_define_properties(napi_env env, napi_value, size_t count, const
 }
 #undef CHECK_API
 
+#ifdef HDM_PRODUCTION_NATIVE
+namespace hdm {
+#define HDM_NAPI_TEST_STUB(name) napi_value name(napi_env, napi_callback_info) { return nullptr; }
+HDM_NAPI_TEST_STUB(ProductionInitialize)
+HDM_NAPI_TEST_STUB(ProductionRegister)
+HDM_NAPI_TEST_STUB(ProductionProbe)
+HDM_NAPI_TEST_STUB(ProductionExecute)
+HDM_NAPI_TEST_STUB(ProductionSubscribe)
+HDM_NAPI_TEST_STUB(ProductionUnsubscribe)
+HDM_NAPI_TEST_STUB(ProductionCancel)
+HDM_NAPI_TEST_STUB(ProductionPause)
+HDM_NAPI_TEST_STUB(ProductionResume)
+HDM_NAPI_TEST_STUB(ProductionReleaseTask)
+HDM_NAPI_TEST_STUB(ProductionReleaseArtifact)
+HDM_NAPI_TEST_STUB(ProductionShutdown)
+#undef HDM_NAPI_TEST_STUB
+}
+#endif
+
 namespace {
 void Require(bool value, const char* reason) { if (!value) throw std::runtime_error(reason); }
 std::string Field(napi_value value, const char* key) { return value->fields.at(key)->text; }
@@ -202,7 +229,31 @@ void Exports() {
     f.flush(); auto result = promise->deferred->result;
     Require(promise->deferred->state == MockDeferred::Resolved, "capabilities rejected");
     Require(result->fields.at("offlineOnly")->boolean, "offline mode changed");
+#ifdef HDM_PRODUCTION_NATIVE
+    auto engines = result->fields.at("engines");
+    auto routes = result->fields.at("routes");
+    Require(engines->array && engines->elements.empty(), "unreleased engine published");
+    Require(routes->array && routes->elements.size() == 1, "planned route diagnostic missing");
+    auto route = routes->elements[0];
+    Require(Field(route, "routeId") == hdm::kJpegPdfRouteId &&
+        Field(route, "availability") == "planned" &&
+        Field(route, "reason") == "NATIVE_ROUTE_PLANNED" &&
+        Field(route, "validationProfileId") == hdm::kJpegPdfValidationProfile,
+        "route diagnostic identity changed");
+    Require(route->fields.count("releaseEvidenceId") == 0 &&
+        route->fields.count("from") == 0 &&
+        !route->fields.at("supportsPause")->boolean &&
+        route->fields.at("decoderIds")->elements.size() == 1 &&
+        route->fields.at("encoderIds")->elements.size() == 1,
+        "planned diagnostic advertised release capability");
+    Require(route->fields.at("decoderIds")->elements[0]->text ==
+        "jpeg-baseline-sof0-gray-rgb-jfif-v1" &&
+        route->fields.at("encoderIds")->elements[0]->text == "pdf-dct-single-page-v1" &&
+        Field(route, "inputSubsetId") == "jpeg-baseline-sof0-jfif-v1",
+        "linked subset diagnostic changed");
+#else
     for (const char* field : {"engines", "routes"}) Require(result->fields.at(field)->array && result->fields.at(field)->fields.empty(), "placeholder available");
+#endif
 }
 void Schema() {
     for (const auto& item : std::vector<std::pair<double, std::string>>{{2, "SCHEMA_VERSION"}, {1.5, "SCHEMA_RANGE"},

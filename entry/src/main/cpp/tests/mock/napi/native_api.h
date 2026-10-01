@@ -1,6 +1,7 @@
 #pragma once
 // Deliberately limited host model. This is not the HarmonyOS SDK or an ABI shim.
 #include <cstddef>
+#include <cstdint>
 struct MockEnv;
 struct MockValue;
 struct MockInfo;
@@ -33,6 +34,7 @@ napi_status napi_create_array(napi_env, napi_value*);
 napi_status napi_create_double(napi_env, double, napi_value*);
 napi_status napi_get_boolean(napi_env, bool, napi_value*);
 napi_status napi_set_named_property(napi_env, napi_value, const char*, napi_value);
+napi_status napi_set_element(napi_env, napi_value, std::uint32_t, napi_value);
 napi_status napi_has_named_property(napi_env, napi_value, const char*, bool*);
 napi_status napi_get_named_property(napi_env, napi_value, const char*, napi_value*);
 napi_status napi_get_cb_info(napi_env, napi_callback_info, size_t*, napi_value*, napi_value*, void**);
