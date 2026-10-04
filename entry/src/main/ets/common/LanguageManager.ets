@@ -10,6 +10,13 @@ interface LanguageListener { token: number; callback: () => void; }
 // AppStorage drives ArkUI; PersistentStorage retains the user's choice across launches.
 // A resource-only fallback also works when Previewer has no host ResourceManager.
 export class LanguageManager {
+  // Index references once; do not allocate tuple arrays or scan the catalog while rendering.
+  private static readonly catalogMap: Map<string, LanguageEntry> = LanguageManager.indexCatalog();
+  private static indexCatalog(): Map<string, LanguageEntry> {
+    const index: Map<string, LanguageEntry> = new Map();
+    for (const entry of languageCatalog) { index.set(entry.name, entry); }
+    return index;
+  }
   private static initialized: boolean = false;
   private static context: common.Context | undefined = undefined;
   private static ready: boolean = false;
@@ -82,7 +89,7 @@ export class LanguageManager {
           typeof value === 'string' || typeof value === 'number') as (string | number)[];
       }
     }
-    const entry = languageCatalog.find((item: LanguageEntry) => item.name === name);
+    const entry = LanguageManager.catalogMap.get(name);
     // Already formatted labels and user filenames pass through unchanged.
     if (!entry && typeof resource === 'string') { return resource; }
     try {
@@ -113,17 +120,17 @@ export class LanguageManager {
   }
   static formatName(id: string, fallback: string): string {
     const key = 'format_' + id;
-    return languageCatalog.some((item: LanguageEntry) => item.name === key) ? LanguageManager.getString(key) : fallback;
+    return LanguageManager.catalogMap.has(key) ? LanguageManager.getString(key) : fallback;
   }
   static stage(key: string, args: (string | number)[], language: AppLanguage = LanguageManager.currentLanguage): string {
     const translated = key === 'native_stage' ? args.map((value: string | number): string | number =>
-      typeof value === 'string' ? languageCatalog.some((item: LanguageEntry) => item.name === value) ?
+      typeof value === 'string' ? LanguageManager.catalogMap.has(value) ?
         LanguageManager.getString(value, [], language) : value.replace('native_', '') : value) : args;
     return LanguageManager.getString(key, translated, language);
   }
   static detail(value: string): string {
     const key = 'degradation_' + value;
-    return languageCatalog.some((item: LanguageEntry) => item.name === key) ? LanguageManager.getString(key) :
+    return LanguageManager.catalogMap.has(key) ? LanguageManager.getString(key) :
       LanguageManager.getString(value);
   }
 }

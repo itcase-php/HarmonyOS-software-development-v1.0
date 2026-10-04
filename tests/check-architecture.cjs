@@ -28,7 +28,7 @@ async function main(){
  });
  await test('Every FidelityPolicy enum switch rejects invalid boundary values while preserving valid durations',()=>{
   const {FidelityPolicy}=host().load('./viewmodel/FidelityPolicy');
-  for(const method of ['tierRank','tierLabel','intentLabel','qualityLabel','durationMs'])
+  for(const method of ['tierRank','durationMs'])
    assert.throws(()=>FidelityPolicy[method]('invalid'),error=>error.code==='INVALID_REQUEST');
   assert.deepEqual(['fast','balanced','high_fidelity'].map(mode=>FidelityPolicy.durationMs(mode)),[2000,3500,6000]);
  });

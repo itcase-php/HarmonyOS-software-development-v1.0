@@ -88,6 +88,8 @@ node tests/check-migration.cjs
 
 ## 语言切换验证
 
+用户审核的三项整理已完成：资源 Map 索引、PageHeader 去除重复翻译、删除旧 FidelityPolicy 标签方法。语言切换机制保持；性能与内存取舍、setLanguage 风险和验证情况见 [语言优化说明](docs/LANGUAGE-OPTIMIZATION.md)。
+
 ```powershell
 node tools/generate-language-catalog.cjs --check
 node tests/check-runtime-language.cjs

@@ -12,6 +12,11 @@
     "Pending preview confirmation rebuilds in the new language without submission"
   ],
   "protectedBaseline": "04e6886f5e1ada231970fc07430b4a51004f3826",
+  "approvedPolicyCleanup": [
+    "tierLabel",
+    "intentLabel",
+    "qualityLabel"
+  ],
   "result": "passed",
   "actualPreviewer": "not_executed",
   "actualDevice": "not_executed",

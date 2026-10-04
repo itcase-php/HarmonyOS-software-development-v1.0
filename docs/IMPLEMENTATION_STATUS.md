@@ -4,6 +4,8 @@
 
 ## 2026-10-04 运行时语言增量
 
+用户审核后的三项整理已实施：资源目录建立一次 Map 索引、PageHeader 直接显示已译标题、FidelityPolicy 删除无应用调用的三个中文标签方法。语言机制和业务策略保留；语言 8 项、架构 21 项、Hypium 宿主 61 项和应用编译通过。最新边界及 setLanguage 真机风险见 [语言优化复核](LANGUAGE-OPTIMIZATION.md)。
+
 首页帮助按钮旁新增 EN/中切换。五页、组件、任务状态/阶段/结果、保真报告、提示与无障碍文字通过 LanguageManager 读取；AppStorage 驱动刷新，PersistentStorage 保存选择；329 个 base/en_US 资源键一致，预览回退目录由同一资源生成。任务仍只保留会话历史，语言刷新不更改任务调度、已选路线、用户文件名或降级同意。
 
 本轮应用编译零错误；语言 8 项、交互 15 项、重构 12 项、架构 21 项和 Hypium 宿主 61 项通过。历史 input-management/fidelity 脚本因本轮开始前已有的 NativeProtocol 哈希变化失败，未修改这些历史基线；下表中的过去“全部通过”是历史阶段记录。Previewer、编辑器诊断及设备重启未验收。详见 [语言说明](RUNTIME-LANGUAGE.md) 与 [实施审阅说明](../spec/changes/runtime-language/implementation-review.md)。C++/NAPI、共享配置、NativeBridge、NativeProtocol、FidelityText、权限和原保存分享服务相对本轮开始提交均无 diff，真实可用路线仍为 0。

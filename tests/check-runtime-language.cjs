@@ -151,12 +151,30 @@ const protectedPaths = ['entry/src/main/cpp', 'shared/format-registry', 'entry/s
   'entry/src/main/ets/services/NativeBridge.ets', 'entry/src/main/ets/services/ArtifactDelivery.ets',
   'entry/src/main/ets/services/NativeTaskRunner.ets', 'entry/src/main/ets/models/NativeProtocol.ets',
   'entry/src/main/ets/common/FidelityText.ets', 'entry/src/main/ets/generated/RegistryData.ets',
-  'entry/src/main/ets/viewmodel/FidelityPolicy.ets', 'entry/src/main/module.json5', 'build-profile.json5',
+  'entry/src/main/module.json5', 'build-profile.json5',
   'entry/src/main/resources/base/profile/main_pages.json', 'docs/migration-source'];
 assert.equal(execFileSync('git', ['diff', '--name-only', preLanguage, '--', ...protectedPaths],
   { cwd: root, encoding: 'utf8' }).trim(), '', 'Protected conversion/permission contracts changed');
+// User-approved removal of presentation helpers is the only allowed policy change.
+const ts = require(process.env.HDM_TYPESCRIPT_PATH ||
+  'D:/DevEco Studio2026/DevEco Studio/tools/arktsdoc/node_modules/typescript/lib/typescript.js');
+const policyPath = 'entry/src/main/ets/viewmodel/FidelityPolicy.ets';
+const priorPolicy = execFileSync('git', ['show', preLanguage + ':' + policyPath], { cwd: root, encoding: 'utf8' });
+const priorAst = ts.createSourceFile('FidelityPolicy.ts', priorPolicy, ts.ScriptTarget.Latest, true);
+const priorClass = priorAst.statements.find(item => ts.isClassDeclaration(item));
+const legacyLabels = new Set(['tierLabel', 'intentLabel', 'qualityLabel']);
+let expectedPolicy = priorPolicy;
+for (const member of [...priorClass.members].reverse()) {
+  if (ts.isMethodDeclaration(member) && legacyLabels.has(member.name.getText(priorAst))) {
+    expectedPolicy = expectedPolicy.slice(0, member.getFullStart()) + expectedPolicy.slice(member.end);
+  }
+}
+expectedPolicy = expectedPolicy.replace('FidelityTier, Intent, QualityMode', 'FidelityTier, QualityMode');
+assert.equal(fs.readFileSync(path.join(root, policyPath), 'utf8').replace(/\r\n/g, '\n'),
+  expectedPolicy.replace(/\r\n/g, '\n'), 'Policy changes exceed the approved label-helper removal');
 const report = { scope: 'Runtime language logic with host SDK/storage adapters', resourceCount: zh.length,
-  checks, protectedBaseline: preLanguage, result: 'passed', actualPreviewer: 'not_executed', actualDevice: 'not_executed',
+  checks, protectedBaseline: preLanguage, approvedPolicyCleanup: [...legacyLabels], result: 'passed',
+  actualPreviewer: 'not_executed', actualDevice: 'not_executed',
   actualRestartPersistence: 'not_executed', editorDiagnostics: 'tool_unavailable' };
 fs.writeFileSync(path.join(root, 'tests/generated/runtime-language-check-report.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify(report, null, 2));

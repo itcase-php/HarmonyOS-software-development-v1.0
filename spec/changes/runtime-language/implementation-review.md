@@ -2,6 +2,8 @@
 
 开发依据：用户提供的运行时中英文切换提示词。状态为 `implemented_pending_user_review_and_device_validation`。本轮代码提交到已有草稿 PR #1，供用户审核，不合并或发布。
 
+后续用户审核已明确要求资源索引、PageHeader 重复翻译和 FidelityPolicy 旧标签方法三项整理，已按此范围实施；以下清单保留原语言开发阶段记录。最新策略变化仅删除三个旧展示方法，业务方法由限定差异检查保护；setLanguage 机制未修改。最新审阅边界和设备风险见 [三项优化说明](../../../docs/LANGUAGE-OPTIMIZATION.md)。
+
 ## 已开发内容的具体调整
 
 | 文件/范围 | 调整内容 | 对既有行为的影响 |
