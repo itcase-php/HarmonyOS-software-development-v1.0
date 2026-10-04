@@ -72,7 +72,7 @@ export class ConversionPlannerService {
     const target = this.registry.getFormat(targetId);
     if (!target) { throw new BridgeError('UNSUPPORTED_FORMAT', 'TARGET_NOT_REGISTERED'); }
     const base = name.substring(0, name.lastIndexOf('.'));
-    return `${base}.${target.extensions[0]}（演示名称，未生成文件）`;
+    return `${base}.${target.extensions[0]}`;
   }
 }
 

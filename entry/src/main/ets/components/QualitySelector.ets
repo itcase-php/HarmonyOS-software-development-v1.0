@@ -1,8 +1,14 @@
+import { LanguageManager, AppLanguage } from '../common/LanguageManager';
 import { QualityMode } from '../models/NativeProtocol';
 interface QualityOption { value: QualityMode; label: Resource; }
 
 @Component
 export struct QualitySelector {
+  @StorageLink('appLanguage') language: AppLanguage = LanguageManager.currentLanguage;
+  private tr(resource: ResourceStr, args: (string | number)[] = []): string {
+    return LanguageManager.getString(resource, args, this.language);
+  }
+
   @Prop mode: QualityMode = 'balanced';
   @Prop interactive: boolean = true;
   onSelectMode: (mode: QualityMode) => void = () => {};
@@ -14,15 +20,15 @@ export struct QualitySelector {
   build() {
     Row({ space: 6 }) {
       ForEach(this.choices, (choice: QualityOption) => {
-        Button(choice.label).layoutWeight(1).fontSize(14).type(ButtonType.Normal).borderRadius(10)
+        Button(this.tr(choice.label)).layoutWeight(1).fontSize(14).type(ButtonType.Normal).borderRadius(10)
           .labelStyle({ maxLines: 1, minFontSize: 11, maxFontSize: 14,
             heightAdaptivePolicy: TextHeightAdaptivePolicy.MIN_FONT_SIZE_FIRST })
           .backgroundColor(this.mode === choice.value ? $r('app.color.palette_007aff') : $r('app.color.palette_e5ecf5'))
           .fontColor(this.mode === choice.value ? $r('app.color.palette_ffffff') : $r('app.color.palette_172b4d'))
           .enabled(this.interactive).onClick(() => { this.onSelectMode(choice.value); })
-          .accessibilityText(choice.label)
-          .accessibilityDescription(this.mode === choice.value ? $r('app.string.a11y_quality_selected') : $r('app.string.a11y_quality'))
-      }, (choice: QualityOption) => choice.value)
+          .accessibilityText(this.tr(choice.label))
+          .accessibilityDescription(this.mode === choice.value ? this.tr($r('app.string.a11y_quality_selected')) : this.tr($r('app.string.a11y_quality')))
+      }, (choice: QualityOption) => `${choice.value}-${this.language}`)
     }.width('100%')
   }
 }

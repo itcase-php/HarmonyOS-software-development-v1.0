@@ -94,7 +94,7 @@ export class TaskStore implements TaskStorePort {
     const task = new DemoTask();
     task.id = `demo-${now}-${++this.sequence}`; task.fileName = source;
     task.sourceFormat = this.services.registry.normalizeFormat(sourceId); task.targetFormat = route.to; task.routeId = routeId;
-    task.stage = '等待演示'; task.createdAtMs = now;
+    task.stage = 'stage_demo_wait'; task.createdAtMs = now;
     task.qualityMode = selection.qualityMode; task.intent = selection.requestedIntent;
     task.requestedIntent = selection.requestedIntent; task.requestedTier = selection.requestedTier;
     this.tasks.unshift(task); this.queueTask(task);
@@ -116,7 +116,7 @@ export class TaskStore implements TaskStorePort {
     task.sourceFormat = prepared.inputs[0].sourceFormatId; task.targetFormat = prepared.targetFormatId;
     task.routeId = prepared.plan.routeId; task.qualityMode = prepared.qualityMode;
     task.intent = prepared.intent; task.requestedIntent = prepared.intent; task.requestedTier = prepared.plan.minimumTier;
-    task.createdAtMs = this.runtime.now(); task.stage = '等待 Native 能力校验';
+    task.createdAtMs = this.runtime.now(); task.stage = 'stage_native_wait';
     this.tasks.unshift(task); this.queueTask(task); this.nativeRequests.set(task.id, prepared);
     this.startTimer(); this.notify();
     return task.clone();
@@ -153,7 +153,7 @@ export class TaskStore implements TaskStorePort {
       task.fileName = authorizedFiles[0].originalName; task.sourceFormat = sourceId; task.targetFormat = targetId;
       task.routeId = routeId; task.qualityMode = selection.qualityMode; task.intent = selection.requestedIntent;
       task.requestedIntent = selection.requestedIntent; task.requestedTier = selection.requestedTier;
-      task.status = 'failed'; task.stage = '真实输入提交失败'; task.createdAtMs = this.runtime.now();
+      task.status = 'failed'; task.stage = 'stage_input_failed'; task.createdAtMs = this.runtime.now();
       task.error = `${failure.code}:${failure.reason}`;
       this.tasks.unshift(task); this.notify(); return task.clone();
     } finally {
@@ -241,18 +241,19 @@ timing.activeMs += Math.max(0, now - timing.lastTickMs);
 timing.lastTickMs = Math.max(timing.lastTickMs, now);
 task.elapsedMs = timing.activeMs;
 task.progress = Math.min(100, Math.floor(timing.activeMs / FidelityPolicy.durationMs(task.qualityMode) * 100));
-if (task.progress < 15) { task.stage = '① 模拟准备'; }
-      else if (task.progress < 65) { task.stage = '② 模拟转换'; }
-      else if (task.progress < 85) { task.stage = '③ 模拟校验'; }
-      else if (task.progress < 95) { task.stage = '④ 模拟提交'; }
-      else { task.stage = '⑤ 模拟清理'; }
+if (task.progress < 15) { task.stage = 'stage_demo_prepare'; }
+      else if (task.progress < 65) { task.stage = 'stage_demo_convert'; }
+      else if (task.progress < 85) { task.stage = 'stage_demo_validate'; }
+      else if (task.progress < 95) { task.stage = 'stage_demo_commit'; }
+      else { task.stage = 'stage_demo_cleanup'; }
 if (task.progress >= 85 && !task.fidelityReport) {
         task.fidelityReport = DemoFidelityReport.create(task, timing.plannedTier, timing.allowedDegradations);
       }
 if (task.progress === 100) {
         task.status = 'completed';
-        task.stage = '演示完成 · 无真实输出';
-        task.resultLabel = this.services.planner.resultLabel(task.fileName, task.targetFormat);
+        task.stage = 'stage_demo_complete';
+        task.resultLabel = 'demo_result';
+        task.resultArgs = [this.services.planner.resultLabel(task.fileName, task.targetFormat)];
         task.achievedTier = task.fidelityReport ? task.fidelityReport.achievedTier : undefined;
         this.timings.delete(task.id);
       }
@@ -266,7 +267,7 @@ if (task.progress === 100) {
         waiting.status = 'running'; this.runningTask = waiting;
         const timing: DemoTaskTiming | undefined = this.timings.get(waiting.id);
         if (timing) { timing.lastTickMs = now; }
-        waiting.stage = waiting.mode === 'demo' ? '① 模拟准备' : 'Native 能力校验与输入探测';
+        waiting.stage = waiting.mode === 'demo' ? 'stage_demo_prepare' : 'stage_native_probe';
         if (waiting.mode === 'native') { this.dispatchNative(waiting); }
       }
     }
@@ -298,7 +299,8 @@ if (task.progress === 100) {
     if (event.fraction !== undefined && Number.isFinite(event.fraction)) {
       task.progress = Math.max(task.progress, Math.min(99, Math.max(0, Math.floor(event.fraction * 100))));
     }
-    task.stage = `Native · ${event.stage}`;
+    task.stage = 'native_stage';
+    task.stageArgs = ['native_' + event.stage];
     // advance() publishes at the same 200 ms cadence as the demo lane.
   }
 
@@ -316,19 +318,20 @@ if (task.progress === 100) {
       if (result.status === 'success') {
         task.fidelityReport = NativeFidelityReport.read(task, result);
         task.achievedTier = task.fidelityReport?.achievedTier;
-        task.progress = 100; task.status = 'completed'; task.stage = 'Native 转换完成 · 输出待导出';
-        task.resultLabel = `${result.outputs.length} 个已验证的内部输出，尚未导出到用户目录`;
+        task.progress = 100; task.status = 'completed'; task.stage = 'stage_native_complete';
+        task.resultLabel = 'result_internal_count';
+        task.resultArgs = [result.outputs.length];
         this.saveNativeResult(task.id, result); retained = true;
       } else {
         task.status = result.status === 'cancelled' ? 'cancelled' : 'failed';
-        task.stage = result.status === 'cancelled' ? 'Native 已取消' : 'Native 转换失败';
+        task.stage = result.status === 'cancelled' ? 'stage_native_cancelled' : 'stage_native_failed';
         task.error = result.error ? `${result.error.code}:${result.error.reason}` : '';
       }
       task.elapsedMs = result.elapsedMs;
     } catch (error) {
       if (task.status === 'running') {
         const failure: BridgeError = ErrorHandler.catchBridge(error, 'TaskStore');
-        task.status = 'failed'; task.stage = 'Native 任务未完成';
+        task.status = 'failed'; task.stage = 'stage_native_unfinished';
         task.error = `${failure.code || 'INTERNAL_ERROR'}:${failure.reason || 'NATIVE_TASK_FAILED'}`;
         task.fidelityReport = undefined; task.achievedTier = undefined;
       }
@@ -378,7 +381,7 @@ if (task.progress === 100) {
     this.exporting.add(id);
     this.setExportRecord(id, output.artifactId, 'exporting');
     const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === id);
-    if (task) { task.resultLabel = '正在保存 PDF…'; }
+    if (task) { task.resultLabel = 'result_saving'; }
     this.notify();
     return output;
   }
@@ -403,7 +406,7 @@ if (task.progress === 100) {
     const output: Artifact = this.requireDeliverable(id);
     this.exporting.add(id);
     const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === id);
-    if (task) { task.resultLabel = '正在准备 PDF 分享…'; }
+    if (task) { task.resultLabel = 'result_sharing'; }
     this.notify();
     return output;
   }
@@ -411,7 +414,7 @@ if (task.progress === 100) {
   finishShare(id: string, succeeded: boolean): void {
     this.exporting.delete(id);
     const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === id);
-    if (task) { task.resultLabel = succeeded ? '已打开 PDF 分享面板' : '分享未启动，可重试'; }
+    if (task) { task.resultLabel = succeeded ? 'result_share_open' : 'result_share_retry'; }
     this.notify();
   }
 
@@ -420,8 +423,8 @@ if (task.progress === 100) {
     this.setExportRecord(id, artifactId, state);
     const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === id);
     if (task) {
-      task.resultLabel = state === 'exported' ? 'PDF 已保存到所选位置' :
-        state === 'cancelled' ? '已取消保存，内部 PDF 仍可重试' : '保存失败，可重试';
+      task.resultLabel = state === 'exported' ? 'result_saved' :
+        state === 'cancelled' ? 'result_cancelled' : 'result_failed';
     }
     this.notify();
   }
@@ -445,7 +448,7 @@ if (task.progress === 100) {
     if (!task || task.mode === 'native' || task.status !== 'running') { return false; }
     this.advance(this.runtime.now());
     if (task.status !== 'running') { return false; }
-    task.status = 'paused'; task.stage = '演示已暂停'; this.runningTask = null;
+    task.status = 'paused'; task.stage = 'stage_demo_paused'; this.runningTask = null;
     this.advance(this.runtime.now());
     return true;
   }
@@ -453,7 +456,7 @@ if (task.progress === 100) {
   resume(id: string): boolean {
     const task = this.tasks.find((item: DemoTask) => item.id === id);
     if (!task || task.mode === 'native' || task.status !== 'paused') { return false; }
-    task.status = 'queued'; task.stage = '等待继续演示'; this.queueTask(task);
+    task.status = 'queued'; task.stage = 'stage_demo_resume'; this.queueTask(task);
     this.advance(this.runtime.now()); this.startTimer();
     return true;
   }
@@ -461,11 +464,11 @@ if (task.progress === 100) {
   cancel(id: string): boolean {
     const task = this.tasks.find((item: DemoTask) => item.id === id);
     if (!task || !isActiveTask(task.status)) { return false; }
-    task.status = 'cancelled'; task.stage = '演示已取消';
+    task.status = 'cancelled'; task.stage = 'stage_demo_cancelled';
     this.queuedTasks = this.queuedTasks.filter((item: DemoTask) => item.id !== id);
     if (this.runningTask?.id === id) { this.runningTask = null; }
     if (task.mode === 'native') {
-      task.stage = '已请求取消 Native 任务';
+      task.stage = 'stage_native_cancel_request';
       const request = this.nativeRequests.get(task.id);
       if (request && this.nativeRunningId === task.id) {
         this.services.runner.cancel(request).catch((error: Error) => {
@@ -513,7 +516,7 @@ if (task.progress === 100) {
     for (const task of this.tasks) {
       if (isActiveTask(task.status)) {
         if (task.mode === 'native') { this.cancel(task.id); }
-        task.status = 'cancelled'; task.stage = '应用退出，任务取消';
+        task.status = 'cancelled'; task.stage = 'stage_shutdown';
         task.fidelityReport = undefined; task.achievedTier = undefined;
       }
     }

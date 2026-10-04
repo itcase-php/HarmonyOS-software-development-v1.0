@@ -3,12 +3,14 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { ServiceContainer } from '../services/ServiceContainer';
 import { ErrorHandler } from '../common/ErrorHandler';
+import { LanguageManager } from '../common/LanguageManager';
 
 const DOMAIN = 0x0000;
 
 export default class EntryAbility extends UIAbility {
   private services: ServiceContainer | null = null;
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+    LanguageManager.bind(this.context);
     try { this.services = ServiceContainer.initialize(this.context); }
     catch (error) { ErrorHandler.catchBridge(error, 'EntryAbility.create'); }
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onCreate');
@@ -30,6 +32,7 @@ export default class EntryAbility extends UIAbility {
         return;
       }
       hilog.info(DOMAIN, 'testTag', 'Succeeded in loading the content.');
+      LanguageManager.windowReady();
     });
 
     try {

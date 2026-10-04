@@ -2,7 +2,7 @@ import { ConverterUiPort, ConverterDialog } from '../viewmodel/ConverterUiPort';
 import { FidelityTier, Intent, QualityMode } from '../models/NativeProtocol';
 import { ConverterNavigationParams } from '../models/InteractionModels';
 import { FormatRegistryPort } from '../services/ServiceContracts';
-import { FidelityText } from './FidelityText';
+import { LanguageManager } from './LanguageManager';
 import { UiFeedback } from './UiFeedback';
 import { RawfileResources } from '../services/RawfileResources';
 import { ErrorHandler } from './ErrorHandler';
@@ -10,11 +10,11 @@ import { FidelityPolicy } from '../viewmodel/FidelityPolicy';
 
 export class ArkUiConverterUi implements ConverterUiPort {
   private context: UIContext;
-  constructor(context: UIContext) { this.context = context; }
-  read(resource: Resource, args: (string | number)[] = []): string { return FidelityText.read(this.context, resource, args); }
-  tier(tier: FidelityTier): string { return FidelityText.tier(this.context, tier); }
-  intent(intent: Intent): string { return FidelityText.intent(this.context, intent); }
-  quality(mode: QualityMode): string { return FidelityText.quality(this.context, mode); }
+  constructor(context: UIContext) { this.context = context; LanguageManager.bind(context.getHostContext()); }
+  read(resource: ResourceStr, args: (string | number)[] = []): string { return LanguageManager.getString(resource, args); }
+  tier(tier: FidelityTier): string { return LanguageManager.tier(tier); }
+  intent(intent: Intent): string { return LanguageManager.intent(intent); }
+  quality(mode: QualityMode): string { return LanguageManager.quality(mode); }
   toast(message: string): void { UiFeedback.toast(this.context, message); }
   showAlertDialog(dialog: ConverterDialog): void { this.context.showAlertDialog(dialog); }
   navigationParams(): ConverterNavigationParams {

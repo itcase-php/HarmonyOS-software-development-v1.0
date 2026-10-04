@@ -1,0 +1,70 @@
+{"context":"TaskStore","code":"ENGINE_MISSING","reason":"NATIVE_ROUTE_UNAVAILABLE","traceId":"53ec2110-f7a7-46c6-90a8-44492d47a3da"}
+{"context":"TaskStore","code":"ENGINE_MISSING","reason":"NATIVE_ENGINE_UNAVAILABLE","traceId":"ee4ea6c7-b891-4c30-9fdf-bdb2d786ee86"}
+{"context":"TaskStore","code":"PERMISSION_DENIED","reason":"NATIVE_INPUT_NOT_VERIFIED","traceId":"6c56211f-3ff2-4516-a4c3-17c02f48ca12"}
+{"context":"TaskStore","code":"PERMISSION_DENIED","reason":"NATIVE_INPUT_NOT_VERIFIED","traceId":"78a67eac-c45c-40dd-9f03-4179dd63a030"}
+{"context":"TaskStore","code":"PERMISSION_DENIED","reason":"NATIVE_INPUT_NOT_VERIFIED","traceId":"52924ab7-1f33-4891-ac09-988bf3b91df3"}
+{"context":"TaskStore","code":"PERMISSION_DENIED","reason":"NATIVE_INPUT_NOT_VERIFIED","traceId":"091611f9-5377-4b9c-b5cb-cb83d29b54e1"}
+{"context":"TaskStore","code":"PERMISSION_DENIED","reason":"NATIVE_INPUT_NOT_VERIFIED","traceId":"61309c15-f469-45b8-8789-b53fa380268c"}
+{"context":"TaskStore","code":"PROTOCOL_INCOMPATIBLE","reason":"NATIVE_REPORT_OPTIONS","traceId":"4df48846-a266-4d07-9bb2-d9910bfc41f2"}
+{"context":"TaskStore","code":"OUTPUT_VALIDATION_FAILED","reason":"NATIVE_FIDELITY_BELOW_MINIMUM","traceId":"c1cfcf05-b681-494c-9f16-cc45e5c25204"}
+{"context":"TaskStore","code":"PROTOCOL_INCOMPATIBLE","reason":"NATIVE_REPORT_METRICS","traceId":"f4e6ff6a-a3e7-404d-b594-88f09302fd6a"}
+{"context":"TaskStore","code":"PROTOCOL_INCOMPATIBLE","reason":"NATIVE_REPORT_METRICS","traceId":"4edfc2ec-77d7-49de-a700-31dfe05d5095"}
+{
+  "scope": "refactor_logic_with_mock_native_not_real_engine",
+  "result": "passed",
+  "testedCases": 12,
+  "cases": [
+    {
+      "name": "Model clone copies every present data field and isolates nested report arrays",
+      "result": "passed"
+    },
+    {
+      "name": "Native task cannot enter the simulated report factory",
+      "result": "passed"
+    },
+    {
+      "name": "A recreated application session gets a usable store after shutdown",
+      "result": "passed"
+    },
+    {
+      "name": "Planned capability blocks Native before probe/execute with no demo report",
+      "result": "passed"
+    },
+    {
+      "name": "Missing executors and protected/unverified probes cannot execute",
+      "result": "passed"
+    },
+    {
+      "name": "Native request snapshot, single dispatch and monotonic progress are preserved",
+      "result": "passed"
+    },
+    {
+      "name": "Missing Native report stays missing and does not fabricate an achieved tier",
+      "result": "passed"
+    },
+    {
+      "name": "Invalid Native fidelity options or below-minimum grade fail and release outputs",
+      "result": "passed"
+    },
+    {
+      "name": "Native cancellation holds scheduler slot until cleanup and ignores late success",
+      "result": "passed"
+    },
+    {
+      "name": "Shutdown during Native work cannot start queued tasks or resurrect late results",
+      "result": "passed"
+    },
+    {
+      "name": "Tampered approved plan is rejected before enqueue or Native load",
+      "result": "passed"
+    },
+    {
+      "name": "UI resource keys are present in base and English catalogs with matching placeholders",
+      "result": "passed"
+    }
+  ],
+  "nativeCalls": "mocked_exports_only",
+  "realConversion": "not_executed",
+  "deviceExecution": "not_executed",
+  "previewerExecution": "not_executed"
+}

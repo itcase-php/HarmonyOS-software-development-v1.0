@@ -81,10 +81,14 @@ export class DemoTask {
   fidelityReport: FidelityReport | undefined = undefined;
   status: DemoTaskStatus = 'queued';
   progress: number = 0;
+  // Resource key, with detached parameters; never a cached translated sentence.
   stage: string = '';
+  stageArgs: (string | number)[] = [];
   createdAtMs: number = 0;
   elapsedMs: number = 0;
+  // Result resource key; filenames and counts are stored separately as parameters.
   resultLabel: string = '';
+  resultArgs: (string | number)[] = [];
   error: string = '';
 
   clone(): DemoTask {
@@ -95,8 +99,10 @@ export class DemoTask {
     copy.requestedTier = this.requestedTier; copy.achievedTier = this.achievedTier;
     copy.fidelityReport = this.fidelityReport ? FidelityReportSnapshot.copy(this.fidelityReport) : undefined;
     copy.status = this.status; copy.progress = this.progress; copy.stage = this.stage;
+    copy.stageArgs = this.stageArgs.slice();
     copy.createdAtMs = this.createdAtMs; copy.elapsedMs = this.elapsedMs;
     copy.resultLabel = this.resultLabel; copy.error = this.error;
+    copy.resultArgs = this.resultArgs.slice();
     return copy;
   }
 }
@@ -122,12 +128,12 @@ export interface CategoryChoice { id: string; label: Resource; }
 
 export function taskStatusLabel(status: DemoTaskStatus, mode: ExecutionMode = 'demo'): string {
   switch (status) {
-    case 'queued': return '排队中';
-    case 'running': return mode === 'demo' ? '演示中' : '转换中';
-    case 'paused': return '已暂停';
-    case 'cancelled': return '已取消';
-    case 'completed': return mode === 'demo' ? '演示完成' : '转换完成';
-    case 'failed': return '失败';
+    case 'queued': return 'task_queued';
+    case 'running': return mode === 'demo' ? 'task_demo_running' : 'task_native_running';
+    case 'paused': return 'task_paused';
+    case 'cancelled': return 'task_cancelled';
+    case 'completed': return mode === 'demo' ? 'task_demo_completed' : 'task_native_completed';
+    case 'failed': return 'task_failed';
   }
 }
 

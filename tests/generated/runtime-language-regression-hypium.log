@@ -1,0 +1,339 @@
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"b1cdbf8c-7138-455b-85d2-4501ecb9e1f6"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"10e29cf4-bb63-40e2-957e-93a5de7d7dff"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"6c7b128b-0327-4465-be7d-d65a85875370"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"64c277ac-7c5b-4d6e-9311-4297759aee67"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"a22f5f62-e6f1-47ab-8af2-0bd61344efd9"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"5933fe9c-113e-426d-ad07-2efec4ea0961"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"92259dd9-0f0a-4a69-b8ed-159c5e17d8ad"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"6dc59624-bd4c-4f18-9579-8476d106ffde"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"b708f441-6ae0-4ee2-be8e-9e9657ff2201"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"ca428cd5-9180-40cd-bd5f-1df96deeedab"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"8ff4dbf8-fce4-420d-8713-98f93f03068f"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"a00f13df-8aea-487a-b54d-d790907ea40c"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"8a069f5a-92cb-41f8-abfb-5dd84e0fa1cd"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"a12b9216-6640-4061-983e-6d965b6afe41"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"a9425620-2bce-4fdb-8237-d7bd3583a48a"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"912df44d-7d60-4145-a785-48226f674c04"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"6143e871-a6b2-4789-bac2-2f59384eea03"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"145296a3-e044-4ba3-b52e-dafef5cf0901"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"36816780-dff5-4939-b97e-d4c74e39f8e4"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"4fdaea1a-d6e7-43d9-8746-4a6d1a3c80b5"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"98a72f73-e5c4-4555-84e7-80f99e42f079"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"868011a8-35b4-4fd9-b9f9-ead7bdabee50"}
+{
+  "scope": "hypium_test_source_executed_with_host_adapter",
+  "result": "passed",
+  "suiteCount": 9,
+  "testedCases": 61,
+  "cases": [
+    {
+      "suite": "ConversionCore",
+      "name": "qualityDurations",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionCore",
+      "name": "matchingTierAndIntent",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionCore",
+      "name": "tierAboveRouteIsRejected",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionCore",
+      "name": "intentMismatchIsRejected",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionCore",
+      "name": "invalidEnumFromBoundaryIsRejected",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionCore",
+      "name": "targetAliasesAndUnknownInput",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionCore",
+      "name": "plannerKeepsIntentAndMinimum",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionCore",
+      "name": "advanceReportsAtCommitAndCompletes",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionCore",
+      "name": "advancePromotesOnlyNextFifoTask",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionCore",
+      "name": "cancelCannotBecomeCompleted",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionCore",
+      "name": "pauseFreezesAdvanceAndResumeCompletes",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionCore",
+      "name": "cloneIsolatesNestedReport",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "orders extreme standard and compatible tiers",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "uses the three documented demo durations",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "accepts matching intent and a minimum at or below the planned tier",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "rejects an invalid quality value from a boundary",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "rejects an invalid requested tier",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "rejects a mismatched or unknown intent",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "rejects a requested tier above the route even in high fidelity mode",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "accepts empty degradation arrays without changing them",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityPolicy",
+      "name": "rejects an invalid planned tier rather than comparing undefined ranks",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "returns exactly the single-input planned targets for PDF",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "normalizes dotted uppercase IDs extensions and migration aliases",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "returns no targets for unknown or protected extensions",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "returns matching routes and no routes for unsupported pairs",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "keeps best route ordering within the requested intent",
+      "result": "passed"
+    },
+    {
+      "suite": "ConversionPlanner",
+      "name": "does not lower the minimum tier or change intent to find a route",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "returns a queued zero-progress task before the first 50 ms tick",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "advances elapsed time and progress monotonically until completion",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "completes three queued tasks in FIFO order with one timer",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "stops timers while paused and resumes without counting paused time",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "keeps cancellation terminal across later ticks and resume attempts",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "clears finished history while retaining queued running and paused tasks",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "isolates task fields and nested reports in returned snapshots",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "ignores reentrant observer advances and remains usable after an observer throws",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "does not count the same timestamp twice or move the clock backwards",
+      "result": "passed"
+    },
+    {
+      "suite": "TaskStore",
+      "name": "allows queued work to continue when the running demo is paused",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "creates the documented report structure without measured metrics",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "makes the layout metric inapplicable for content-only intent",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "marks the layout metric estimated for layout-preserved intent",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "uses 0.98 0.90 and 0.76 only as tier-specific demo examples",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "copies degradation input and preserves selection metadata",
+      "result": "passed"
+    },
+    {
+      "suite": "DemoFidelityReport",
+      "name": "rejects native tasks instead of inventing real metrics",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityReportSnapshot",
+      "name": "isolates metric values and nested evidence arrays",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityReportSnapshot",
+      "name": "isolates degradations fonts limitations and report evidence",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelityReportSnapshot",
+      "name": "copies empty containers and optional page counts",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "accepts exactly the generated rawfile documents",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "rejects a nonempty modified formats document",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "rejects a nonempty modified matrix document",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "rejects empty or oversized documents before decoding",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "normalizes resource read failures and keeps the current snapshot intact",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatRegistry",
+      "name": "returns deep snapshots so callers cannot alter future planning",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelitySettingsVM",
+      "name": "starts with a complete balanced selection and no executable route",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelitySettingsVM",
+      "name": "copies selection presentation and interactivity together",
+      "result": "passed"
+    },
+    {
+      "suite": "FidelitySettingsVM",
+      "name": "isolates option arrays and individual SelectOption values",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "covers every extension in the complete approved catalogue",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "covers registered MIME values including case and parameters",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "normalizes jpg through the registered jpeg extension",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "prefers the extension when MIME disagrees",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "uses MIME when no registered extension exists",
+      "result": "passed"
+    },
+    {
+      "suite": "FormatDetector",
+      "name": "does not invent unsupported formats or treat a trailing dot as an extension",
+      "result": "passed"
+    }
+  ],
+  "rawfileVerification": "actual_ArkTS_loader_with_host_crypto_and_resource_adapters",
+  "actualHypiumRunner": "not_executed",
+  "deviceExecution": "not_executed",
+  "previewerExecution": "not_executed"
+}

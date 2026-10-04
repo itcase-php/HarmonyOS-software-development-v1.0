@@ -1,0 +1,76 @@
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"d9ed65d1-8e3b-4c15-9b32-eb778cf09c2b"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"969ca065-19bd-4a4c-9bc0-3f694e1c2ea3"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"0b694f38-60fd-4a41-bb65-a123624af27f"}
+{"context":"TaskStore.observer","code":"INTERNAL_ERROR","traceId":"e2140eda-b6c5-40d0-89b8-a00f67966bbc"}
+{"context":"NativeBridge.load","code":"INTERNAL_ERROR","traceId":"38340410-f85b-42b7-ad29-9ba2cca75dcb"}
+{"context":"NativeBridge.call","code":"INTERNAL_ERROR","traceId":"9ee59d03-6d88-44bc-aa52-7912c51c2fb6"}
+{
+  "scope": "host_non_ui_logic_and_route_contracts",
+  "result": "passed",
+  "cases": [
+    {
+      "name": "Every selectable target is backed by a single-input planned route; priorities ascend",
+      "result": "passed"
+    },
+    {
+      "name": "File names reject paths, blocked extensions, missing suffixes and source mismatch",
+      "result": "passed"
+    },
+    {
+      "name": "Unsupported route is rejected before creating a task",
+      "result": "passed"
+    },
+    {
+      "name": "Degradation routes require approval in the store as well as the page",
+      "result": "passed"
+    },
+    {
+      "name": "FIFO queue permits one running task and a single timer",
+      "result": "passed"
+    },
+    {
+      "name": "Five stages are monotonic and completion is explicitly demo-only",
+      "result": "passed"
+    },
+    {
+      "name": "Pause freezes progress; resume excludes paused wall time",
+      "result": "passed"
+    },
+    {
+      "name": "Cancellation near completion cannot later become completed",
+      "result": "passed"
+    },
+    {
+      "name": "History cleanup retains running and paused tasks",
+      "result": "passed"
+    },
+    {
+      "name": "Observers receive independent snapshots and unsubscribe cleanly",
+      "result": "passed"
+    },
+    {
+      "name": "History is bounded; new tasks evict finished records only",
+      "result": "passed"
+    },
+    {
+      "name": "Native load failure stays unavailable and can be retried",
+      "result": "passed"
+    },
+    {
+      "name": "Native requests block traversal/budget errors and empty or mismatched successful output",
+      "result": "passed"
+    },
+    {
+      "name": "Capability detection times out if preview platform does not settle its promise",
+      "result": "passed"
+    },
+    {
+      "name": "All five pages are registered and task views invalidate on status/progress changes",
+      "result": "passed"
+    }
+  ],
+  "testedCases": 15,
+  "deviceExecution": "not_executed",
+  "previewerExecution": "not_executed",
+  "realConversion": "not_executed"
+}

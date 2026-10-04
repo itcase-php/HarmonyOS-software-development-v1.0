@@ -1,0 +1,9 @@
+{"context":"Test","code":"IO_ERROR","reason":"FILE_COPY_FAILED","traceId":"13d506a2-81a8-4d26-9794-35ef9ffc8371"}
+{"context":"Test","code":"INTERNAL_ERROR","reason":"UNEXPECTED_FAILURE","traceId":"80b31a7e-74bb-4de6-9134-0ea8d8397c86"}
+{"context":"NativeBridge.load","code":"INTERNAL_ERROR","traceId":"5f8366e9-b1f0-40bf-94d1-d30a17d4eb6c"}
+{"context":"NativeBridge.call","code":"INTERNAL_ERROR","traceId":"d4cc1e5d-6281-4378-8731-b5f0b11146ec"}
+{"context":"Converter.confirmation","code":"INTERNAL_ERROR","traceId":"26757f67-4df1-46d2-8f14-a8ca06494602"}
+{"context":"Converter.confirmation","code":"INTERNAL_ERROR","traceId":"429bb3d7-e314-4f20-9b11-18926871c080"}
+{"context":"FileAuthorizationVM","code":"INTERNAL_ERROR","reason":"UNEXPECTED_FAILURE","traceId":"40d9d121-10b4-4bda-9b4e-288d5acd19e0"}
+{"context":"FileAuthorization.pending","code":"CONVERSION_CANCELLED","traceId":"1e6b1686-67da-490c-ad16-12e73cde9638"}
+{"result":"passed","testedCases":21}

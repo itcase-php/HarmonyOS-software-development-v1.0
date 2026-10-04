@@ -6,7 +6,7 @@
 
 使用 DevEco Studio 打开本仓库根目录，即包含 build-profile.json5 的目录；原开发目录为 `D:/HarmonyOS/harmonyOS`。不要打开其父目录或 `outputs`。
 
-已将 `outputs/harmony-doc-manager-v1-design` 的全部 21 个交付文件迁入正式 Stage + Native C++ 模板。当前有首页、格式浏览器、转换演示、任务记录、功能指南五个页面，支持搜索/分类/详情、格式与路线选择、保真度设置与确认、五阶段进度、排队/暂停/取消和历史清理。转换页与历史页可展开模拟保真度报告；演示不会生成实际文件。
+已将 `outputs/harmony-doc-manager-v1-design` 的全部 21 个交付文件迁入正式 Stage + Native C++ 模板。当前有首页、格式浏览器、转换演示、任务记录、功能指南五个页面，支持搜索/分类/详情、格式与路线选择、保真度设置与确认、五阶段进度、排队/暂停/取消和历史清理。转换页与历史页可展开模拟保真度报告；演示不会生成实际文件。首页帮助按钮旁新增 EN/中切换，可在运行时更新五页、组件与会话任务文字，并保存语言选择。
 
 ## 当前功能与边界
 
@@ -21,9 +21,9 @@
 | 原生层 | 14 个 Native 接口；会话、工作区、完整受限 JPEG 探测、转换候选、PDF 结构校验、受控 PDF 复制和清理已接入。image 引擎为实验实现，其他四类仍占位；完整通用 IR 和保真报告未实现 |
 | PDF 交付 | 对已验证 Native PDF 的文档选择器保存和 ShareKit 分享入口已接入；SaveButton 不适用于 PDF。路线仍为 planned，真实设备尚未验证保存或分享 |
 | JPEG→PDF | 隔离原型源已进入 `libentry.so` 的 Native 构建，仅支持单张 8 位 Baseline SOF0 灰度或三分量 JPEG；主机运行时、独立 PDF 解析/渲染通过。`jpeg-pdf` 仍为 `planned`，NAPI 执行与能力发布受闸门拦截 |
-| 国际化与无障碍 | 保真度相关组件、路线提示和报告的中英文资源及主要控件读屏标注；格式浏览器文案已覆盖，其他旧页面尚未全部国际化 |
+| 国际化与无障碍 | 首页 EN/中运行时切换、五页与组件/任务/报告/提示/读屏文案统一翻译；329 个双语资源键；语言使用 AppStorage + PersistentStorage 保留；实际 Previewer 和设备重启验收待执行 |
 
-**当前真实可用转换路线为 0。** 未选择真实文件时，原演示不读取文件、不生成转换结果。新入口可通过 Picker 授权并复制文件，Native 会话和受限 JPEG 探测已有实现；能力查询可诊断 `jpeg-pdf` 为 `planned`，但共享配置和 Native 执行门禁仍阻止真实提交。PDF 保存与分享代码已接入，只有将来产生通过校验的 Native PDF 后才会显示入口；持久化、后台调度、安全加固和设备验收仍待开发。详见[产物交付说明](docs/ARTIFACT-DELIVERY.md)与[分阶段验证记录](docs/VALIDATION-JPEG-PDF-PRODUCTION.md)。
+**当前真实可用转换路线为 0。** 未选择真实文件时，原演示不读取文件、不生成转换结果。新入口可通过 Picker 授权并复制文件，Native 会话和受限 JPEG 探测已有实现；能力查询可诊断 `jpeg-pdf` 为 `planned`，但共享配置和 Native 执行门禁仍阻止真实提交。PDF 保存与分享代码已接入，只有将来产生通过校验的 Native PDF 后才会显示入口；任务历史持久化、后台调度、安全加固和设备验收仍待开发。详见[产物交付说明](docs/ARTIFACT-DELIVERY.md)与[分阶段验证记录](docs/VALIDATION-JPEG-PDF-PRODUCTION.md)。
 
 ## 工程结构
 
@@ -86,7 +86,19 @@ node tests/check-migration.cjs
 
 设备安装仍需通过 DevEco 使用合法调试签名；根工程 signingConfigs 当前为空，构建生成未签名包。不要提交自己的私钥、密码或个人签名配置。
 
+## 语言切换验证
+
+```powershell
+node tools/generate-language-catalog.cjs --check
+node tests/check-runtime-language.cjs
+```
+
+语言逻辑 8 项、交互 15 项、重构 12 项、架构 21 项与 Hypium 宿主 61 项通过；应用包编译零错误。两个历史脚本仍在本轮未改的 NativeProtocol 旧哈希断言处失败，未更新旧基线掩盖失败。设备/Previewer/真实重启验收待执行，详见[语言说明](docs/RUNTIME-LANGUAGE.md)。
+
 ## 开发文档
+
+- [运行时中英文切换与验收](docs/RUNTIME-LANGUAGE.md)
+- [语言改造实施审阅说明](spec/changes/runtime-language/implementation-review.md)
 
 - [JPEG→PDF 生产接入分阶段验证](docs/VALIDATION-JPEG-PDF-PRODUCTION.md)
 - [能力矩阵诊断与路线门禁复核](spec/changes/jpeg-pdf-production/capability-review.md)

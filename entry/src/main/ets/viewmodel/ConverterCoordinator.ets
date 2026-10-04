@@ -1,3 +1,4 @@
+import { LanguageManager } from '../common/LanguageManager';
 import { DemoTask, DemoSubmission, FidelitySelection } from '../models/InteractionModels';
 import { ConversionRouteDefinition } from '../models/RegistryTypes';
 import { AuthorizedFile, SessionContext } from '../models/SessionModels';
@@ -22,6 +23,26 @@ export class ConverterCoordinator {
     status.setOnChange(() => { formats.syncInteractivity(); });
   }
   setUi(ui: ConverterUiPort): void { this.ui = ui; this.formats.setUi(ui); this.files.setUi(ui); this.status.setUi(ui); }
+  refreshLanguage(): void {
+    this.formats.refreshLanguage();
+    if (this.pendingSubmission && this.status.inlineConfirmationText.length > 0) {
+      this.status.inlineConfirmationText = this.demoMessage(this.pendingSubmission);
+    }
+    if (this.pendingRealSubmission && this.status.realConfirmationText.length > 0) {
+      this.status.realConfirmationText = this.realMessage(this.pendingRealSubmission);
+    }
+  }
+  private demoMessage(submission: DemoSubmission): string {
+    const route = this.formats.activeRoutes.find((item: ConversionRouteDefinition) => item.id === submission.routeId);
+    return LanguageManager.getString('demo_confirmation', [submission.fileName, submission.sourceId, submission.targetId,
+      this.formats.fidelity.qualitySummary, this.formats.fidelity.intentText, this.formats.fidelity.tierText,
+      this.formats.fidelity.routeDescription, submission.routeId,
+      route && route.allowedDegradations.length > 0 ? route.allowedDegradations.map((value: string) =>
+        LanguageManager.detail(value)).join(', ') : LanguageManager.getString('none')]);
+  }
+  private realMessage(submission: DemoSubmission): string {
+    return `${submission.fileName}\n${submission.sourceId} → ${submission.targetId}\n${this.formats.fidelity.selectionSummary}\n${this.formats.fidelity.intentText}\n${this.formats.fidelity.routeDescription}\n${submission.routeId}\n\n${this.status.inputText($r('app.string.input_native_boundary'))}`;
+  }
   appear(): void { this.files.appear(); this.status.observeTasks(); this.formats.loadFormats(); }
   show(): void { this.files.appear(); this.status.observeTasks(); }
   hide(force: boolean = false): void { this.status.detach(); this.cancelAuthorizedConfirmation(); this.files.hide(force); }
@@ -42,12 +63,12 @@ export class ConverterCoordinator {
         routeId: route.id, approved: this.formats.approved, fidelity: fidelity };
       this.status.errorText = '';
       this.status.confirming = true; this.status.signal();
-      const message = `文件：${name}\n格式：${this.formats.sourceId} → ${this.formats.targetId}\n质量：${this.formats.fidelity.qualitySummary}\n意图：${this.formats.fidelity.intentText}\n最低期望：${this.formats.fidelity.tierText}\n${this.formats.fidelity.routeDescription}\n路线：${route.id}\n降级配置：${route.allowedDegradations.join('、') || '无'}\n\n演示不会读取文件或产生真实保真结果。`;
+      const message = this.demoMessage(this.pendingSubmission);
       try {
         this.ui.showAlertDialog({
-          title: '确认保真度配置（演示）', message: message, autoCancel: true,
-          primaryButton: { value: '返回修改', action: () => { this.cancelConfirmation(); } },
-          secondaryButton: { value: '确认开始演示', action: () => { this.beginConfirmed(); } },
+          title: LanguageManager.getString('demo_confirm_title'), message: message, autoCancel: true,
+          primaryButton: { value: LanguageManager.getString('back_edit'), action: () => { this.cancelConfirmation(); } },
+          secondaryButton: { value: LanguageManager.getString('demo_confirm_start'), action: () => { this.beginConfirmed(); } },
           cancel: () => { this.cancelConfirmation(); }
         });
       } catch (error) { ErrorHandler.swallow('Converter.confirmation', error);
@@ -67,7 +88,7 @@ export class ConverterCoordinator {
       const task = this.store.enqueue(submission.fileName, submission.sourceId, submission.targetId,
         submission.routeId, submission.approved, submission.fidelity);
       this.status.taskId = task.id; this.status.receiveTasks(this.store.snapshot());
-      this.ui.toast( '已按确认的保真度配置开始演示');
+      this.ui.toast( LanguageManager.getString('demo_started'));
     } catch (error) { this.status.showError(error); }
   }
 
@@ -78,7 +99,7 @@ export class ConverterCoordinator {
       const file: AuthorizedFile = this.files.authorizedFiles[0];
       const route: ConversionRouteDefinition | undefined = this.formats.activeRoutes.find((item: ConversionRouteDefinition) => item.id === this.formats.routeId);
       if (!route || file.detectedFormatId !== this.formats.sourceId) {
-        this.status.errorText = this.status.inputText($r('app.string.input_source_mismatch')); return;
+        this.status.errorText = 'input_source_mismatch'; return;
       }
       const fidelity: FidelitySelection = this.formats.selection();
       FidelityPolicy.validate(route, fidelity);
@@ -86,7 +107,7 @@ export class ConverterCoordinator {
       this.pendingRealSubmission = { fileName: file.originalName, sourceId: this.formats.sourceId, targetId: this.formats.targetId,
         routeId: route.id, approved: this.formats.approved, fidelity: fidelity };
       this.status.confirming = true; this.status.signal();
-      const message: string = `${file.originalName}\n${this.formats.sourceId} → ${this.formats.targetId}\n${this.formats.fidelity.selectionSummary}\n${this.formats.fidelity.intentText}\n${this.formats.fidelity.routeDescription}\n${route.id}\n\n${this.status.inputText($r('app.string.input_native_boundary'))}`;
+      const message: string = this.realMessage(this.pendingRealSubmission);
       try {
         this.ui.showAlertDialog({ title: this.status.inputText($r('app.string.input_confirm_title')), message: message, autoCancel: true,
           primaryButton: { value: this.status.inputText($r('app.string.input_back_edit')), action: () => { this.cancelAuthorizedConfirmation(); } },

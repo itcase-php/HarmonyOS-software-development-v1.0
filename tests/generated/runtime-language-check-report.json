@@ -1,0 +1,20 @@
+{
+  "scope": "Runtime language logic with host SDK/storage adapters",
+  "resourceCount": 329,
+  "checks": [
+    "System default, resources and round-trip switch",
+    "Native stages, task status, report limitations and degradation labels follow the app language",
+    "Persistence across process adapters and system-language override",
+    "Listeners unsubscribe and same-language selection is inert",
+    "Override resource managers are cached per locale; application language waits for loaded window",
+    "Active and completed tasks retain keys, timing, names and detached arguments",
+    "Selector refresh preserves route, consent, user name, quality and error state",
+    "Pending preview confirmation rebuilds in the new language without submission"
+  ],
+  "protectedBaseline": "04e6886f5e1ada231970fc07430b4a51004f3826",
+  "result": "passed",
+  "actualPreviewer": "not_executed",
+  "actualDevice": "not_executed",
+  "actualRestartPersistence": "not_executed",
+  "editorDiagnostics": "tool_unavailable"
+}

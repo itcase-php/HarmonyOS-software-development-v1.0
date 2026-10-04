@@ -1,0 +1,17 @@
+AssertionError [ERR_ASSERTION]: entry/src/main/ets/models/NativeProtocol.ets
+    at D:\HarmonyOS\harmonyOS\tests\check-input-management.cjs:91:12
+    at test (D:\HarmonyOS\harmonyOS\tests\check-input-management.cjs:12:38)
+    at main (D:\HarmonyOS\harmonyOS\tests\check-input-management.cjs:77:8)
+    at Object.<anonymous> (D:\HarmonyOS\harmonyOS\tests\check-input-management.cjs:330:26)
+    at Module._compile (node:internal/modules/cjs/loader:1469:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1548:10)
+    at Module.load (node:internal/modules/cjs/loader:1288:32)
+    at Module._load (node:internal/modules/cjs/loader:1104:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'a48889500afe6575c74a7b7ab0b1ef9dba852c2274ad335ecd5eb34b8adfdfa1',
+  expected: '2a47dbe12f5cac8cc84654a27f6769d82cc3baea9d9b6c3751fd661e4db800e0',
+  operator: 'strictEqual'
+}

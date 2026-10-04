@@ -1,3 +1,4 @@
+import { LanguageManager } from '../common/LanguageManager';
 import { RegistryFormat, ConversionRouteDefinition } from '../models/RegistryTypes';
 import { FidelityTier, Intent, QualityMode } from '../models/NativeProtocol';
 import { ConverterNavigationParams, FidelitySelection, IntentChoice } from '../models/InteractionModels';
@@ -28,6 +29,32 @@ export class FormatSelectionVM {
     this.formats = registry.listFormats();
   }
   setUi(ui: ConverterUiPort): void { this.ui = ui; }
+  // Refresh presentation only; the chosen route, consent, filename and task remain intact.
+  refreshLanguage(): void {
+    this.sourceChoices = this.formats.map((format: RegistryFormat): SelectOption => ({
+      value: `${LanguageManager.formatName(format.id, format.displayName)} (${format.id})`
+    }));
+    this.targetChoices = this.targetFormats.map((format: RegistryFormat): SelectOption => ({
+      value: `${LanguageManager.formatName(format.id, format.displayName)} (${format.id})`
+    }));
+    this.supportedIntents = this.supportedIntents.map((choice: IntentChoice): IntentChoice => ({
+      value: choice.value, label: this.ui.intent(choice.value)
+    }));
+    this.fidelity.intentChoices = this.supportedIntents.map((choice: IntentChoice): SelectOption => ({ value: choice.label }));
+    this.fidelity.tierChoices = this.tiers.map((tier: FidelityTier): SelectOption => ({ value: this.ui.tier(tier) }));
+    this.fidelity.intentText = this.ui.intent(this.fidelity.requestedIntent);
+    this.fidelity.tierText = this.ui.tier(this.fidelity.requestedTier);
+    this.fidelity.qualitySummary = this.ui.read($r('app.string.quality_duration'),
+      [this.ui.quality(this.fidelity.qualityMode), (FidelityPolicy.durationMs(this.fidelity.qualityMode) / 1000).toString()]);
+    this.fidelity.selectionSummary = this.ui.read($r('app.string.fidelity_selection_summary'),
+      [this.fidelity.qualitySummary, this.fidelity.tierText]);
+    this.routeChoices = this.activeRoutes.map((route: ConversionRouteDefinition): SelectOption => ({
+      value: this.ui.read($r('app.string.route_choice'), [
+        this.ui.read(route.pathMode === 'direct' ? $r('app.string.path_direct') : $r('app.string.path_relay')),
+        this.ui.tier(route.fidelityTier), route.id])
+    }));
+    this.updateRouteText(this.activeRoutes.find((route: ConversionRouteDefinition) => route.id === this.routeId));
+  }
   syncInteractivity(): void {
     this.interactive = this.registryReady && !this.status.working && !this.status.confirming && !this.status.inputBusy;
     this.fidelity.interactive = this.interactive;
@@ -44,7 +71,7 @@ async loadFormats(): Promise<void> {
       this.initializeSelections();
     } catch (error) { ErrorHandler.swallow('FormatSelection.load', error);
       this.registryReady = false;
-      this.status.errorText = this.ui.read( $r('app.string.registry_error'));
+      this.status.errorText = 'registry_error';
       this.syncInteractivity();
     } finally { this.registryLoading = false; }
   }
@@ -52,7 +79,7 @@ async loadFormats(): Promise<void> {
 initializeSelections(): void {
     if (this.sourceId.length !== 0) { return; }
     this.sourceChoices = this.formats.map((format: RegistryFormat): SelectOption => ({
-      value: `${format.displayName} (${format.id})`
+      value: `${LanguageManager.formatName(format.id, format.displayName)} (${format.id})`
     }));
     this.fidelity.tierChoices = this.tiers.map((tier: FidelityTier): SelectOption => ({ value: this.ui.tier( tier) }));
     let source = this.formats.findIndex((format: RegistryFormat) => this.planner.targets(format.id).length > 0);
@@ -73,10 +100,10 @@ selectSource(index: number): void {
     const format = this.formats[index];
     if (!format) { return; }
     this.sourceIndex = index; this.sourceId = format.id;
-    this.fileName = `示例文档.${format.extensions[0]}`;
+    this.fileName = `example.${format.extensions[0]}`;
     this.targetFormats = this.planner.targets(this.sourceId);
     this.targetChoices = this.targetFormats.map((target: RegistryFormat): SelectOption => ({
-      value: `${target.displayName} (${target.id})`
+      value: `${LanguageManager.formatName(target.id, target.displayName)} (${target.id})`
     }));
     this.selectTarget(0);
   }
@@ -127,8 +154,12 @@ selectRoute(index: number): void {
     const route = this.activeRoutes[index];
     this.routeIndex = index; this.routeId = route ? route.id : '';
     this.approved = false;
+    if (route) { this.fidelity.requestedIntent = route.intent; }
+    this.updateRouteText(route);
+  }
+
+private updateRouteText(route: ConversionRouteDefinition | undefined): void {
     if (route) {
-      this.fidelity.requestedIntent = route.intent;
       this.fidelity.routeDescription = this.ui.read( $r('app.string.route_description'), [
         this.ui.tier( route.fidelityTier),
         this.ui.read( route.pathMode === 'direct' ? $r('app.string.path_direct') : $r('app.string.path_relay')),
@@ -161,8 +192,8 @@ selectQuality(mode: QualityMode): void {
 useExample(): void {
     const source = this.formats[this.sourceIndex];
     if (source) {
-      this.fileName = `示例文档.${source.extensions[0]}`;
-      this.status.errorText = ''; this.ui.toast( '已填入演示名称，不会读取设备文件');
+      this.fileName = `example.${source.extensions[0]}`;
+      this.status.errorText = ''; this.ui.toast( LanguageManager.getString('demo_example_filled'));
     }
   }
 

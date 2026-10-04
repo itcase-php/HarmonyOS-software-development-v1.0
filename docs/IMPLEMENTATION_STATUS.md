@@ -2,6 +2,12 @@
 
 更新日期：2026-10-01。本文描述当前工程；V1.0 方案和专题文档描述目标，不能认定全部实现。用户已批准[分阶段接入范围](../spec/changes/jpeg-pdf-production/approval-request.md)，JPEG→PDF 的受限核心进入生产 Native 构建，但路线暂不激活；当前阶段结果见[验证记录](VALIDATION-JPEG-PDF-PRODUCTION.md)。原目录恢复及审计记录保留作历史溯源。
 
+## 2026-10-04 运行时语言增量
+
+首页帮助按钮旁新增 EN/中切换。五页、组件、任务状态/阶段/结果、保真报告、提示与无障碍文字通过 LanguageManager 读取；AppStorage 驱动刷新，PersistentStorage 保存选择；329 个 base/en_US 资源键一致，预览回退目录由同一资源生成。任务仍只保留会话历史，语言刷新不更改任务调度、已选路线、用户文件名或降级同意。
+
+本轮应用编译零错误；语言 8 项、交互 15 项、重构 12 项、架构 21 项和 Hypium 宿主 61 项通过。历史 input-management/fidelity 脚本因本轮开始前已有的 NativeProtocol 哈希变化失败，未修改这些历史基线；下表中的过去“全部通过”是历史阶段记录。Previewer、编辑器诊断及设备重启未验收。详见 [语言说明](RUNTIME-LANGUAGE.md) 与 [实施审阅说明](../spec/changes/runtime-language/implementation-review.md)。C++/NAPI、共享配置、NativeBridge、NativeProtocol、FidelityText、权限和原保存分享服务相对本轮开始提交均无 diff，真实可用路线仍为 0。
+
 ## 已迁入并接入工程
 
 1.ArkTS 层：页面、组件、模型、格式注册、转换规划、任务管理、NativeBridge
@@ -18,7 +24,7 @@
 
 | 范围 | 实际状态 |
 | --- | --- |
-| 页面/组件 | 保留五页及原交互；ConverterPage 79 行、四个观察 VM、六个独立组件；FidelitySettingsVM 使用 @Observed/@ObjectLink，页面不再 clone 刷新。首页/历史页使用 ServiceContainer 的作用域实例。原国际化、读屏、完整目录与演示保持；系统 Picker 与实际 ArkUI 刷新待设备/预览验收 |
+| 页面/组件 | 保留五页及原交互；ConverterPage 组合四个观察 VM、六个独立组件；FidelitySettingsVM 使用 @Observed/@ObjectLink，页面不再 clone 刷新。首页/历史页使用 ServiceContainer 的作用域实例。原国际化、读屏、完整目录与演示保持；系统 Picker 与实际 ArkUI 刷新待设备/预览验收 |
 | 模型 | DemoTask.clone() 继续隔离任务及报告；FidelitySettingsVM.clone() 作为旧兼容接口保留。会话、目录、请求、结果改用逐字段自有副本，替代 12 处 JSON 序列化复制，类型字段覆盖和嵌套隔离有宿主测试。NativeProtocol、C++ DTO/IConverter 保持原样 |
 | 文件输入 | 新增 SessionModels、FormatDetector、CoreFileKit 平台适配器、FileAuthorizationService 和 AuthorizedInputTask；Picker 授权、256 KiB 分块副本、100/300 MiB 预算、SHA-256、串行复制、幂等清理与单文件真实确认/提交。C++ 会话/工作区和受限 JPEG 完整探测已接入，设备验收待执行 |
 | 格式注册 | 完整的 18 格式、43 规划路线从原 shared JSON 生成，启动和预览即刻可查询，资源加载失败不会缩减。rawfile 核对 SHA-256、schema/config 及数量后原子替换；并发调用共享加载，失败/五秒超时可重试，迟到数据不覆盖缓存，查询返回深复制。真实可用路径还要求资源校验成功、配置 available 状态和 Native 发布证据 |
