@@ -1,28 +1,28 @@
-> hvigor [32mUP-TO-DATE :entry:default@PreBuild...  [39m
-> hvigor [32mFinished :entry:default@CreateModuleInfo... after 1 ms [39m
-> hvigor [32mUP-TO-DATE :entry:default@GenerateMetadata...  [39m
-> hvigor [32mFinished :entry:default@ConfigureCmake... after 2 ms [39m
-> hvigor [32mUP-TO-DATE :entry:default@MergeProfile...  [39m
-> hvigor [32mUP-TO-DATE :entry:default@CreateBuildProfile...  [39m
-> hvigor [32mFinished :entry:default@PreCheckSyscap... after 1 ms [39m
-> hvigor [32mFinished :entry:default@GeneratePkgSdkInfo... after 2 ms [39m
-> hvigor [32mFinished :entry:default@ProcessIntegratedHsp... after 1 ms [39m
-> hvigor [32mFinished :entry:default@BuildNativeWithCmake... after 30 ms [39m
-> hvigor [32mUP-TO-DATE :entry:default@MakePackInfo...  [39m
-> hvigor [32mFinished :entry:default@SyscapTransform... after 2 ms [39m
-> hvigor [32mUP-TO-DATE :entry:default@GeneratePkgContextInfo...  [39m
-> hvigor [32mUP-TO-DATE :entry:default@ProcessProfile...  [39m
-> hvigor [32mUP-TO-DATE :entry:default@ProcessRouterMap...  [39m
-> hvigor [32mUP-TO-DATE :entry:default@ProcessShareConfig...  [39m
-> hvigor [32mFinished :entry:default@ProcessStartupConfig... after 3 ms [39m
-> hvigor [32mUP-TO-DATE :entry:default@ProcessResource...  [39m
-> hvigor [32mUP-TO-DATE :entry:default@GenerateLoaderJson...  [39m
-> hvigor [32mUP-TO-DATE :entry:default@CompileResource...  [39m
-> hvigor [32mFinished :entry:default@BuildJS... after 2 ms [39m
-> hvigor [32mFinished :entry:default@BuildNativeWithNinja... after 47 ms [39m
-> hvigor [32mUP-TO-DATE :entry:default@ProcessLibs...  [39m
-> hvigor [32mUP-TO-DATE :entry:default@DoNativeStrip...  [39m
-> hvigor [32mUP-TO-DATE :entry:default@CacheNativeLibs...  [39m
+> hvigor UP-TO-DATE :entry:default@PreBuild...
+> hvigor Finished :entry:default@CreateModuleInfo... after 1 ms
+> hvigor UP-TO-DATE :entry:default@GenerateMetadata...
+> hvigor Finished :entry:default@ConfigureCmake... after 2 ms
+> hvigor UP-TO-DATE :entry:default@MergeProfile...
+> hvigor UP-TO-DATE :entry:default@CreateBuildProfile...
+> hvigor Finished :entry:default@PreCheckSyscap... after 1 ms
+> hvigor Finished :entry:default@GeneratePkgSdkInfo... after 2 ms
+> hvigor Finished :entry:default@ProcessIntegratedHsp... after 1 ms
+> hvigor Finished :entry:default@BuildNativeWithCmake... after 30 ms
+> hvigor UP-TO-DATE :entry:default@MakePackInfo...
+> hvigor Finished :entry:default@SyscapTransform... after 2 ms
+> hvigor UP-TO-DATE :entry:default@GeneratePkgContextInfo...
+> hvigor UP-TO-DATE :entry:default@ProcessProfile...
+> hvigor UP-TO-DATE :entry:default@ProcessRouterMap...
+> hvigor UP-TO-DATE :entry:default@ProcessShareConfig...
+> hvigor Finished :entry:default@ProcessStartupConfig... after 3 ms
+> hvigor UP-TO-DATE :entry:default@ProcessResource...
+> hvigor UP-TO-DATE :entry:default@GenerateLoaderJson...
+> hvigor UP-TO-DATE :entry:default@CompileResource...
+> hvigor Finished :entry:default@BuildJS... after 2 ms
+> hvigor Finished :entry:default@BuildNativeWithNinja... after 47 ms
+> hvigor UP-TO-DATE :entry:default@ProcessLibs...
+> hvigor UP-TO-DATE :entry:default@DoNativeStrip...
+> hvigor UP-TO-DATE :entry:default@CacheNativeLibs...
 > hvigor WARN: WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/FormatRegistry.ets:72:38
  The system capacity of this api 'createMd' is not supported on all devices
 
@@ -51,15 +51,15 @@ WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/Artifa
  Function may throw exceptions. Special handling is required.
 
 
-> hvigor [32mFinished :entry:default@CompileArkTS... after 1 s 541 ms [39m
-> hvigor [32mUP-TO-DATE :entry:default@GeneratePkgModuleJson...  [39m
-> hvigor [32mFinished :entry:default@ProcessCompiledResources... after 1 ms [39m
-> hvigor [32mFinished :entry:default@PackageHap... after 441 ms [39m
-> hvigor [32mFinished :entry:default@PackingCheck... after 4 ms [39m
+> hvigor Finished :entry:default@CompileArkTS... after 1 s 541 ms
+> hvigor UP-TO-DATE :entry:default@GeneratePkgModuleJson...
+> hvigor Finished :entry:default@ProcessCompiledResources... after 1 ms
+> hvigor Finished :entry:default@PackageHap... after 441 ms
+> hvigor Finished :entry:default@PackingCheck... after 4 ms
 > hvigor WARN: No signingConfig found for product default
-> hvigor [32mFinished :entry:default@SignHap... after 1 ms [39m
-> hvigor [32mFinished :entry:default@CollectDebugSymbol... after 1 ms [39m
-> hvigor [32mFinished :entry:assembleHap... after 1 ms [39m
-> hvigor [32mBUILD SUCCESSFUL in 2 s 315 ms [39m
+> hvigor Finished :entry:default@SignHap... after 1 ms
+> hvigor Finished :entry:default@CollectDebugSymbol... after 1 ms
+> hvigor Finished :entry:assembleHap... after 1 ms
+> hvigor BUILD SUCCESSFUL in 2 s 315 ms
 
 33 tasks in total: 17 executed, 16 up-to-date
