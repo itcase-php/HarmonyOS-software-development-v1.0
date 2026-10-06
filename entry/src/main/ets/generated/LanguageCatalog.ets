@@ -1645,5 +1645,55 @@ export const languageCatalog: LanguageEntry[] = [
     "name": "degradation_jpeg_reencode",
     "zh": "JPEG 重编码",
     "en": "JPEG re-encoding"
+  },
+  {
+    "name": "input_checking_capability",
+    "zh": "正在检查离线转换能力…",
+    "en": "Checking offline conversion capability…"
+  },
+  {
+    "name": "input_native_module_missing",
+    "zh": "原生模块加载失败。请重试；持续失败时重新安装匹配设备的应用版本。",
+    "en": "The native module could not load. Retry; if it persists, reinstall the app build for this device."
+  },
+  {
+    "name": "input_native_protocol_invalid",
+    "zh": "应用与原生模块的接口版本不一致。请安装配套版本后重试。",
+    "en": "The app and native module interfaces do not match. Install matching versions and retry."
+  },
+  {
+    "name": "input_engine_missing",
+    "zh": "此路线所需的离线引擎尚未接入。已保留文件，请更换路线或等待引擎验证完成。",
+    "en": "The offline engine required by this route is not integrated yet. Your imported file is retained; choose another route or wait for engine validation."
+  },
+  {
+    "name": "input_route_closed",
+    "zh": "此路线尚未通过开放条件。已保留文件，请更换路线或等待验收版本。",
+    "en": "This route has not passed its enablement checks. Your imported file is retained; choose another route or wait for an accepted build."
+  },
+  {
+    "name": "input_capability_timeout",
+    "zh": "能力检查超时。已保留文件，请点击重试。",
+    "en": "The capability check timed out. Your imported file is retained; retry the check."
+  },
+  {
+    "name": "input_selection_changed",
+    "zh": "文件或转换配置已变化，请重新检查并确认。",
+    "en": "The file or conversion settings changed. Check and confirm them again."
+  },
+  {
+    "name": "input_picker_failed",
+    "zh": "无法打开系统文件选择器或读取所选文件，请重新选择。",
+    "en": "The system file picker could not open or read the selection. Select the file again."
+  },
+  {
+    "name": "input_import_failed",
+    "zh": "文件导入失败或复制期间发生变化，请重新选择文件。",
+    "en": "The file could not be imported or changed while copying. Select the file again."
+  },
+  {
+    "name": "input_probe_failed",
+    "zh": "文件的真实格式或保护状态未通过检查。请使用未受保护且格式正确的文件。",
+    "en": "The actual file format or protection state did not pass verification. Use a valid unprotected file."
   }
 ];

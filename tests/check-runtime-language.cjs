@@ -151,10 +151,13 @@ const protectedPaths = ['entry/src/main/cpp', 'shared/format-registry', 'entry/s
   'entry/src/main/ets/services/NativeBridge.ets', 'entry/src/main/ets/services/ArtifactDelivery.ets',
   'entry/src/main/ets/services/NativeTaskRunner.ets', 'entry/src/main/ets/models/NativeProtocol.ets',
   'entry/src/main/ets/common/FidelityText.ets', 'entry/src/main/ets/generated/RegistryData.ets',
-  'entry/src/main/module.json5', 'build-profile.json5',
+  'entry/src/main/module.json5',
   'entry/src/main/resources/base/profile/main_pages.json', 'docs/migration-source'];
 assert.equal(execFileSync('git', ['diff', '--name-only', preLanguage, '--', ...protectedPaths],
   { cwd: root, encoding: 'utf8' }).trim(), '', 'Protected conversion/permission contracts changed');
+// Personal signing settings are local-only and intentionally excluded from commits.
+assert.equal(execFileSync('git', ['diff', '--name-only', preLanguage, 'HEAD', '--', 'build-profile.json5'],
+  { cwd: root, encoding: 'utf8' }).trim(), '', 'Committed build profile changed');
 // User-approved removal of presentation helpers is the only allowed policy change.
 const ts = require(process.env.HDM_TYPESCRIPT_PATH ||
   'D:/DevEco Studio2026/DevEco Studio/tools/arktsdoc/node_modules/typescript/lib/typescript.js');

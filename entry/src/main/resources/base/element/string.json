@@ -337,6 +337,16 @@
     {"name":"native_committing","value":"提交"},
     {"name":"native_cleaning","value":"清理"},
     {"name":"degradation_alpha_flatten","value":"透明通道平铺"},
-    {"name":"degradation_jpeg_reencode","value":"JPEG 重编码"}
+    {"name":"degradation_jpeg_reencode","value":"JPEG 重编码"},
+    {"name":"input_checking_capability","value":"正在检查离线转换能力…"},
+    {"name":"input_native_module_missing","value":"原生模块加载失败。请重试；持续失败时重新安装匹配设备的应用版本。"},
+    {"name":"input_native_protocol_invalid","value":"应用与原生模块的接口版本不一致。请安装配套版本后重试。"},
+    {"name":"input_engine_missing","value":"此路线所需的离线引擎尚未接入。已保留文件，请更换路线或等待引擎验证完成。"},
+    {"name":"input_route_closed","value":"此路线尚未通过开放条件。已保留文件，请更换路线或等待验收版本。"},
+    {"name":"input_capability_timeout","value":"能力检查超时。已保留文件，请点击重试。"},
+    {"name":"input_selection_changed","value":"文件或转换配置已变化，请重新检查并确认。"},
+    {"name":"input_picker_failed","value":"无法打开系统文件选择器或读取所选文件，请重新选择。"},
+    {"name":"input_import_failed","value":"文件导入失败或复制期间发生变化，请重新选择文件。"},
+    {"name":"input_probe_failed","value":"文件的真实格式或保护状态未通过检查。请使用未受保护且格式正确的文件。"}
   ]
 }

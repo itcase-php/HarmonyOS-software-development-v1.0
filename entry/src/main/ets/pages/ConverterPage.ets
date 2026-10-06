@@ -5,6 +5,7 @@ import { FidelityConfigVM } from '../viewmodel/FidelityConfigVM';
 import { FileAuthorizationVM } from '../viewmodel/FileAuthorizationVM';
 import { ConversionStatusVM } from '../viewmodel/ConversionStatusVM';
 import { ConverterCoordinator } from '../viewmodel/ConverterCoordinator';
+import { RealTaskPreflight } from '../services/RealTaskPreflight';
 import { ArkUiConverterUi } from '../common/ArkUiConverterUi';
 import { PageHeader } from '../components/PageHeader';
 import { StatusBadge } from '../components/StatusBadge';
@@ -30,7 +31,7 @@ struct ConverterPage {
   @State formats: FormatSelectionVM = new FormatSelectionVM(this.services.registry, this.services.dependencies.planner, this.fidelity, this.status);
   @State files: FileAuthorizationVM = new FileAuthorizationVM(this.services.files, this.status, this.formats);
   private coordinator: ConverterCoordinator = new ConverterCoordinator(this.formats, this.files, this.status,
-    this.services.tasks, this.services.dependencies.planner);
+    this.services.tasks, this.services.dependencies.planner, undefined, new RealTaskPreflight(this.services.registry, this.services.native));
   private languageToken: number = -1;
   aboutToAppear(): void {
     this.coordinator.setUi(new ArkUiConverterUi(this.getUIContext())); this.coordinator.appear();
@@ -66,7 +67,7 @@ struct ConverterPage {
           Text(this.tr('demo_input_notice')).fontSize(12).fontColor($r('app.color.palette_526077'))
           }
           ConversionErrorBanner({ model: this.status, formats: this.formats, onRetry: () => { this.coordinator.retry(); } })
-          Button(this.files.authorizedFiles.length > 0 ? this.status.inputText(this.tr($r('app.string.input_start_real'))) :
+          Button(this.status.checkingCapability ? this.tr('input_checking_capability') : this.files.authorizedFiles.length > 0 ? this.status.inputText(this.tr($r('app.string.input_start_real'))) :
             this.status.working ? this.tr('demo_running') : this.status.confirming ? this.tr('demo_confirming') : this.tr('demo_start_config'))
             .accessibilityText(this.files.authorizedFiles.length > 0 ? this.tr($r('app.string.input_start_real')) : this.tr($r('app.string.a11y_start')))
             .accessibilityDescription(this.fidelity.selectionSummary)

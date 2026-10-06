@@ -1,11 +1,13 @@
 import { common } from '@kit.AbilityKit';
 import { resourceManager } from '@kit.LocalizationKit';
 import { i18n } from '@kit.LocalizationKit';
+import { hilog } from '@kit.PerformanceAnalysisKit';
 import { languageCatalog, LanguageEntry } from '../generated/LanguageCatalog';
 import { FidelityTier, Intent, QualityMode } from '../models/NativeProtocol';
 
 export type AppLanguage = 'zh' | 'en';
 interface LanguageListener { token: number; callback: () => void; }
+interface ResourceReadFailure { code?: number; }
 
 // AppStorage drives ArkUI; PersistentStorage retains the user's choice across launches.
 // A resource-only fallback also works when Previewer has no host ResourceManager.
@@ -77,15 +79,17 @@ export class LanguageManager {
       LanguageManager.managers.set(language, manager); return manager;
     } catch (_) { return undefined; }
   }
-  static getString(resource: ResourceStr, args: (string | number)[] = [],
+  static getString(resource: ResourceStr, args?: (string | number)[],
     language: AppLanguage = LanguageManager.currentLanguage): string {
-    let name: string = ''; let values: (string | number)[] = args;
-    if (typeof resource === 'string') { name = resource.replace('app.string.', ''); }
+    let name: string = ''; let values: (string | number)[] = args ?? [];
+    if (typeof resource === 'string') { name = resource.replace(/^app\.string\./, ''); }
     else {
-      name = resource.params && typeof resource.params[0] === 'string' ?
-        (resource.params[0] as string).replace('app.string.', '') : '';
-      if (args.length === 0 && resource.params) {
-        values = resource.params.slice(1).filter((value: string | number) =>
+      const first: string | number | undefined = resource.params ? resource.params[0] as string | number : undefined;
+      // SDK Resource.params may contain the reference name, or only format arguments.
+      const hasName: boolean = typeof first === 'string' && /^app\.string\.[A-Za-z0-9_]+$/.test(first);
+      name = hasName ? (first as string).replace(/^app\.string\./, '') : '';
+      if (args === undefined && resource.params) {
+        values = resource.params.slice(hasName ? 1 : 0).filter((value: string | number) =>
           typeof value === 'string' || typeof value === 'number') as (string | number)[];
       }
     }
@@ -94,9 +98,23 @@ export class LanguageManager {
     if (!entry && typeof resource === 'string') { return resource; }
     try {
       const manager = LanguageManager.manager(language);
-      if (manager) { return typeof resource === 'string' ? manager.getStringByNameSync(name, ...values) :
-        manager.getStringSync(resource.id, ...values); }
-    } catch (_) {}
+      if (manager) {
+        if (typeof resource === 'string' || resource.id === -1 && name.length > 0) {
+          return manager.getStringByNameSync(name, ...values);
+        }
+        return manager.getStringSync(resource.id, ...values);
+      }
+    } catch (error) {
+      // Never log parameter values, which may contain user file names or text.
+      const code: number = (error as ResourceReadFailure).code ?? 0;
+      hilog.warn(0x0000, 'LanguageManager', 'resource id=%{public}d args=%{public}d code=%{public}d',
+        typeof resource === 'string' ? -1 : resource.id, values.length, code);
+    }
+    if (!entry) {
+      const id: number = typeof resource === 'string' ? -1 : resource.id;
+      hilog.warn(0x0000, 'LanguageManager', 'unresolved resource id=%{public}d args=%{public}d', id, values.length);
+      return `[resource:${id}]`;
+    }
     let index: number = 0;
     const template = entry ? language === 'zh' ? entry.zh : entry.en : name;
     return template.replace(/%%|%[sd]/g, (match: string): string => {

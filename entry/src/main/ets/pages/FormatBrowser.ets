@@ -77,7 +77,7 @@ struct FormatBrowser {
           Text(this.tr($r('app.string.registry_error'))).fontColor($r('app.color.palette_c53030'))
           Button(this.tr($r('app.string.registry_retry'))).onClick(() => { this.loadFormats(); })
         }
-        Text(this.tr($r('app.string.browser_count', this.filtered().length, this.formats.length))).fontSize(14).fontColor($r('app.color.palette_526077'))
+        Text(this.tr('browser_count', [this.filtered().length, this.formats.length])).fontSize(14).fontColor($r('app.color.palette_526077'))
         ForEach(this.filtered(), (format: RegistryFormat) => {
           Column({ space: 10 }) {
             Button({ type: ButtonType.Normal }) {
@@ -85,24 +85,22 @@ struct FormatBrowser {
                 FormatTag({ formatId: format.id })
                 Column({ space: 5 }) {
                   Text(LanguageManager.formatName(format.id, format.displayName)).fontSize(18).fontWeight(FontWeight.Medium).fontColor($r('app.color.palette_172b4d'))
-                  Text(this.tr($r('app.string.browser_operations_summary', this.categoryLabel(format.category),
-                    format.operations.includes('import') ? this.tr($r('app.string.browser_import')) : '',
-                    format.operations.includes('export') ? this.tr($r('app.string.browser_export')) : '')))
+                  Text(this.tr('browser_operations_summary', [this.categoryLabel(format.category), format.operations.includes('import') ? this.tr($r('app.string.browser_import')) : '', format.operations.includes('export') ? this.tr($r('app.string.browser_export')) : '']))
                     .fontSize(13).fontColor($r('app.color.palette_526077'))
                 }.layoutWeight(1).alignItems(HorizontalAlign.Start)
                 Text(this.expandedId === format.id ? this.tr($r('app.string.browser_collapse')) : this.tr($r('app.string.browser_details')))
                   .fontSize(13).fontColor($r('app.color.palette_007aff'))
               }.width('100%')
             }.backgroundColor($r('app.color.palette_ffffff')).width('100%').padding(0)
-              .accessibilityText(this.tr($r('app.string.browser_format_details', LanguageManager.formatName(format.id, format.displayName))))
+              .accessibilityText(this.tr('browser_format_details', [LanguageManager.formatName(format.id, format.displayName)]))
               .onClick(() => { this.expandedId = this.expandedId === format.id ? '' : format.id; })
             if (this.expandedId === format.id) {
               StatusBadge({ text: this.tr($r('app.string.browser_planned')) })
-              Text(this.tr($r('app.string.browser_id', format.id))).fontSize(14).fontColor($r('app.color.palette_172b4d'))
-              Text(this.tr($r('app.string.browser_extensions', format.extensions.map((extension: string) => '.' + extension).join(', '))))
+              Text(this.tr('browser_id', [format.id])).fontSize(14).fontColor($r('app.color.palette_172b4d'))
+              Text(this.tr('browser_extensions', [format.extensions.map((extension: string) => '.' + extension).join(', ')]))
                 .fontSize(14).fontColor($r('app.color.palette_172b4d'))
-              Text(this.tr($r('app.string.browser_mime', format.mimeTypes.join(', ')))).fontSize(13).fontColor($r('app.color.palette_526077'))
-              Text(this.tr($r('app.string.browser_operations', format.operations.map((value: string) => LanguageManager.operation(value)).join(' / ')))).fontSize(14).fontColor($r('app.color.palette_526077'))
+              Text(this.tr('browser_mime', [format.mimeTypes.join(', ')])).fontSize(13).fontColor($r('app.color.palette_526077'))
+              Text(this.tr('browser_operations', [format.operations.map((value: string) => LanguageManager.operation(value)).join(' / ')])).fontSize(14).fontColor($r('app.color.palette_526077'))
               Button(this.tr($r('app.string.browser_use'))).fontSize(14).backgroundColor($r('app.color.palette_007aff'))
                 .onClick(() => { UiFeedback.open(this.getUIContext(), 'pages/ConverterPage', { sourceFormatId: format.id }); })
             }
