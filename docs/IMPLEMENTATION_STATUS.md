@@ -1,5 +1,11 @@
 # 迁移结果与实现边界
 
+## 2026-10-06 真机修复与引擎验证增量
+
+已修复 Resource 格式参数与真实任务预检查。手机中英文格式详情、Picker导入/取消、引擎缺失的准确提示和输入保留通过；新增宿主11项、实际手机Hypium63/63、应用与ohosTest签名HAP构建、其他宿主及MSVC/Ninja CTest22/22通过。下文此前的“设备未验收”“未签名”是对应阶段的历史记录。
+
+隔离原型已用鸿蒙工具链编译 Tesseract5.5.1/Leptonica1.85.0 双ABI，并在arm64手机识别固定中英文样例；官方PDFKit两页解析、对象、渲染及扫描页→OCR连接通过。LibreOffice仍需专门移植，Office引擎、OOXML写出、结构重建与六方向产物验收未完成。主应用可用路线仍为0，没有借测试解除门禁。改动、实测边界和后续提案见 [真机入口与离线引擎](DEVICE-ENTRY-AND-OFFLINE-ENGINES.md)。
+
 更新日期：2026-10-01。本文描述当前工程；V1.0 方案和专题文档描述目标，不能认定全部实现。用户已批准[分阶段接入范围](../spec/changes/jpeg-pdf-production/approval-request.md)，JPEG→PDF 的受限核心进入生产 Native 构建，但路线暂不激活；当前阶段结果见[验证记录](VALIDATION-JPEG-PDF-PRODUCTION.md)。原目录恢复及审计记录保留作历史溯源。
 
 ## 2026-10-04 运行时语言增量
