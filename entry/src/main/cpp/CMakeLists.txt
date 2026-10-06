@@ -46,7 +46,7 @@ target_include_directories(hdm_jpeg_pdf PUBLIC ${HDM_PROTOTYPE_ROOT}/include
     PRIVATE ${HDM_PROTOTYPE_ROOT}/src "${hdm_jpeg_source_SOURCE_DIR}/src" "${HDM_JPEG_BINARY}")
 target_link_libraries(hdm_jpeg_pdf PUBLIC hdm_jpeg)
 target_compile_features(hdm_jpeg_pdf PUBLIC cxx_std_17)
-add_library(entry SHARED napi_init.cpp napi/native_bridge.cpp napi/production_napi.cpp core/engine_registry.cpp
+add_library(entry SHARED napi_init.cpp napi/native_bridge.cpp napi/production_napi.cpp napi/result_serializer.cpp core/engine_registry.cpp
     production/runtime.cpp production/sha256.cpp production/output_validator.cpp ${HDM_ENGINE_SOURCES})
 target_compile_features(entry PRIVATE cxx_std_17)
 target_compile_definitions(entry PRIVATE HDM_PRODUCTION_NATIVE=1)

@@ -1,4 +1,5 @@
 #include "../napi/native_bridge.h"
+#include "../napi/result_serializer.h"
 #include "../generated/registry_metadata.h"
 #include <algorithm>
 #include <cstdint>
@@ -327,6 +328,50 @@ void Completion() {
     Require(promise->deferred->state == MockDeferred::Rejected, "async failure left pending");
     Require(Field(promise->deferred->result, "reason") == "ASYNC_WORK_FAILED", "async status lost");
 }
+void Reports() {
+    Fixture fixture; hdm::ConvertResult input; input.schemaVersion=1;
+    input.taskId="task"; input.attemptId="attempt";
+    input.warnings.push_back({hdm::ErrorCode::FontMissing,"FONT_ABSENT","errors.FONT_MISSING",true,std::string("font-check")});
+    hdm::FidelityReport report; report.schemaVersion=1;
+    report.intent=hdm::Intent::LayoutPreserved; report.requestedTier=hdm::FidelityTier::Extreme;
+    report.sourcePageCount=0; report.outputPageCount=1;
+    report.metrics.push_back({"text", "ratio", "text-v1", hdm::MetricState::Measured, 0.0, 1.0, {"text-check"}});
+    report.metrics.push_back({"visual", "ratio", "visual-v1", hdm::MetricState::Unavailable, {}, {}, {}});
+    report.detectorVersion="report-v1"; report.fontSubstitutions={"source -> target"};
+    report.unsupportedFeatures={"animation"}; report.degradations={"static"}; report.evidenceRefs={"report-check"};
+    input.fidelity=report;
+    input.outputs.push_back({"artifact", "primary", "pdf", "artifact:ref", std::string(64,'a'), 10, 0});
+    hdm::Status failure; failure.code=hdm::ErrorCode::OutputValidationFailed;
+    failure.reason="PDF_STRUCTURE"; failure.module="pdf"; failure.stage=hdm::Stage::Validating;
+    failure.traceId="trace-42"; failure.messageKey="errors.OUTPUT_VALIDATION_FAILED";
+    failure.retryable=true; failure.detailKey="errors.pdf_structure"; input.error=failure;
+    const auto output=hdm::SerializeConvertResult(&fixture.env,input);
+    const auto error=output->fields.at("error");
+    Require(Field(error,"module")=="pdf" && Field(error,"stage")=="validating" &&
+        Field(error,"traceId")=="trace-42" && error->fields.at("retryable")->boolean &&
+        Field(error,"detailKey")=="errors.pdf_structure", "native error diagnostics were overwritten");
+    Require(output->fields.at("outputs")->elements[0]->fields.at("pageIndex")->number==0,
+        "zero output page index was lost");
+    const auto warnings=output->fields.at("warnings");
+    Require(warnings->elements.size()==1,"native warnings were lost");
+    const auto warning=warnings->elements[0];
+    Require(Field(warning,"code")=="FONT_MISSING" && Field(warning,"evidenceRef")=="font-check" &&
+        warning->fields.at("requiresManualReview")->boolean,"native warning evidence changed");
+    Require(output->fields.count("fidelity")==1,"native fidelity was lost");
+    const auto actual=output->fields.at("fidelity");
+    Require(Field(actual,"intent")=="layout_preserved" && Field(actual,"requestedTier")=="extreme" &&
+        actual->fields.count("achievedTier")==0,"native report invented a achieved tier");
+    Require(actual->fields.at("sourcePageCount")->number==0 && actual->fields.at("outputPageCount")->number==1,
+        "native report dropped zero page count");
+    const auto metrics=actual->fields.at("metrics");
+    Require(metrics->elements.size()==2 && metrics->elements[0]->fields.at("value")->number==0 &&
+        metrics->elements[0]->fields.at("denominator")->number==1 &&
+        metrics->elements[1]->fields.count("value")==0,"native report changed measurement state");
+    input.fidelity.reset(); input.warnings.clear();
+    const auto missing=hdm::SerializeConvertResult(&fixture.env,input);
+    Require(missing->fields.count("fidelity")==0 && missing->fields.at("warnings")->elements.empty(),
+        "missing evidence was fabricated");
+}
 void Boundary() {
     Fixture allocation; allocation.env.allocateNext = "napi_get_cb_info";
     Require(allocation.call("getCapabilities", {allocation.request()}) == nullptr, "bad_alloc escaped boundary");
@@ -340,7 +385,7 @@ int main(int argc, char** argv) {
     try {
         Require(argc == 2, "choose a test case"); const std::string name = argv[1];
         const std::map<std::string, void (*)()> cases{{"exports", Exports}, {"schema", Schema}, {"unsupported", Unsupported},
-            {"missing", Missing}, {"controls", Controls}, {"queue", Queue}, {"completion", Completion}, {"boundary", Boundary}};
+            {"missing", Missing}, {"controls", Controls}, {"queue", Queue}, {"completion", Completion}, {"boundary", Boundary}, {"reports", Reports}};
         cases.at(name)(); std::cout << "PASS " << name << '\n'; return 0;
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

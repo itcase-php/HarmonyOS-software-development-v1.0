@@ -31,16 +31,16 @@ add_test(NAME production_runtime COMMAND hdm_runtime_tests
     ${CMAKE_CURRENT_SOURCE_DIR}/fixtures/baseline.jpg)
 
 # Compile the actual production bridge against an explicit host-only NAPI model.
-add_executable(hdm_napi_tests napi_tests.cpp ../napi/native_bridge.cpp)
+add_executable(hdm_napi_tests napi_tests.cpp ../napi/native_bridge.cpp ../napi/result_serializer.cpp)
 target_include_directories(hdm_napi_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/mock)
 target_compile_features(hdm_napi_tests PRIVATE cxx_std_17)
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_compile_options(hdm_napi_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
-foreach(case exports schema unsupported missing controls queue completion boundary)
+foreach(case exports schema unsupported missing controls queue completion boundary reports)
     add_test(NAME napi_${case} COMMAND hdm_napi_tests ${case})
 endforeach()
-add_executable(hdm_capability_diagnostic_tests napi_tests.cpp ../napi/native_bridge.cpp
+add_executable(hdm_capability_diagnostic_tests napi_tests.cpp ../napi/native_bridge.cpp ../napi/result_serializer.cpp
     ../core/engine_registry.cpp ${HDM_ENGINE_SOURCES})
 target_include_directories(hdm_capability_diagnostic_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/mock)
 target_compile_definitions(hdm_capability_diagnostic_tests PRIVATE HDM_PRODUCTION_NATIVE=1)

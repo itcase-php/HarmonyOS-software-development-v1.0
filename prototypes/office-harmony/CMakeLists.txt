@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.18)
+project(hdm_office_toolchain_probe LANGUAGES CXX)
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "OHOS")
+    message(FATAL_ERROR "This probe requires the official OHOS toolchain")
+endif()
+add_library(hdm_office_toolchain_smoke SHARED toolchain-smoke.cpp)
+target_compile_features(hdm_office_toolchain_smoke PRIVATE cxx_std_17)
+target_compile_options(hdm_office_toolchain_smoke PRIVATE -Wall -Wextra -Werror -Wno-error=unused-command-line-argument)
