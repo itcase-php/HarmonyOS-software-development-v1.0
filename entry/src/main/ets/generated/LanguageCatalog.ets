@@ -583,8 +583,8 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "input_native_boundary",
-    "zh": "真实文件将使用受控临时副本。当前真实转换路线尚未开放，不会回退为演示或生成文件。一次转换提交一个文件。",
-    "en": "Real files use controlled temporary copies. Real conversion routes are not enabled yet. Failed real tasks do not become demos or generate files. Submit one file per conversion."
+    "zh": "真实文件使用受控临时副本，一次提交一个文件。提交前检查所选路线与引擎；检查失败时保留文件供重试。",
+    "en": "Real files use controlled temporary copies. Submit one file at a time. The selected route and engine are checked before submission; a failed check keeps the file for retry."
   },
   {
     "name": "input_confirm_title",
@@ -638,8 +638,8 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "input_real_mode",
-    "zh": "真实文件输入 · 路线尚未开放",
-    "en": "Real file input · Routes not enabled yet"
+    "zh": "真实文件输入 · 提交前检查路线",
+    "en": "Real file input · Route checked before submission"
   },
   {
     "name": "input_title",
@@ -668,8 +668,8 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "demo_fidelity_notice",
-    "zh": "真实转换路线尚未开放。保真设置与报告均用于交互演示，不是文件质量的测量结果。",
-    "en": "Real conversion routes are not enabled yet. Fidelity settings and reports illustrate the workflow; they do not measure file quality."
+    "zh": "演示任务的保真报告用于展示流程。真实任务仅展示引擎返回的检测证据；没有证据时不判定保真等级。",
+    "en": "Demo fidelity reports illustrate the workflow. Real tasks display only engine detection evidence; no fidelity grade is assigned without evidence."
   },
   {
     "name": "demo_input_title",
@@ -988,8 +988,8 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "home_gate_notice",
-    "zh": "演示模式不会生成真实文件。当前真实转换路线尚未开放。",
-    "en": "Demo mode does not generate real files. Real conversion routes are not enabled yet."
+    "zh": "演示模式不会生成真实文件。真实转换需通过所选路线与引擎的能力检查。",
+    "en": "Demo mode does not generate real files. Real conversion requires the selected route and engine to pass capability checks."
   },
   {
     "name": "home_version",

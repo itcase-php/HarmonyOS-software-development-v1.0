@@ -1,5 +1,6 @@
 #include "production_napi.h"
 #include "result_serializer.h"
+#include "../production/route_policy.h"
 #include "bridge_problem.h"
 #include "../production/runtime.h"
 #include "../generated/registry_metadata.h"
@@ -225,12 +226,12 @@ void Run(napi_env,void* data) noexcept {
             case Kind::Register: work.textResult=runtime.Register(work.grant); break;
             case Kind::Probe: work.probeResult=runtime.Probe(work.probe); break;
             case Kind::Execute:
-                if (std::string(kJpegPdfRouteStatus)!="available") {
+                if (!production::IsDebugRouteExecutable(work.convert.plan.routeId)) {
                     work.convertResult.schemaVersion=kSchemaVersion;
                     work.convertResult.taskId=work.convert.taskId;
                     work.convertResult.attemptId=work.convert.attemptId;
                     Status blocked; blocked.code=ErrorCode::EngineMissing;
-                    blocked.reason="NATIVE_ROUTE_PLANNED"; blocked.module="NativeBridge";
+                    blocked.reason="NATIVE_ROUTE_UNAVAILABLE"; blocked.module="NativeBridge";
                     blocked.messageKey="errors.ENGINE_MISSING";
                     work.convertResult.error=blocked;
                 } else work.convertResult=runtime.Execute(work.convert);

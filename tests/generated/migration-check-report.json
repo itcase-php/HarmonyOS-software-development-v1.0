@@ -3,25 +3,12 @@
   "result": "passed",
   "exactSourceSnapshots": 21,
   "originalOutputFilesChecked": 21,
-  "originalProjectFilesRetained": 46,
-  "originalProjectChanges": [
-    ".gitignore",
-    "build-profile.json5",
-    "entry/src/main/cpp/CMakeLists.txt",
-    "entry/src/main/cpp/napi_init.cpp",
-    "entry/src/main/cpp/types/libentry/Index.d.ts",
-    "entry/src/main/ets/entryability/EntryAbility.ets",
-    "entry/src/main/ets/pages/Index.ets",
-    "entry/src/main/resources/base/element/color.json",
-    "entry/src/main/resources/base/element/string.json",
-    "entry/src/main/resources/base/profile/backup_config.json",
-    "entry/src/main/resources/base/profile/main_pages.json",
-    "entry/src/ohosTest/ets/test/List.test.ets",
-    "entry/src/test/List.test.ets"
-  ],
-  "nativeMethodsPreserved": 13,
+  "originalProjectFilesRetained": null,
+  "originalProjectChanges": [],
+  "nativeMethodsPreserved": 14,
   "formats": 18,
-  "plannedRoutes": 43,
+  "plannedRoutes": 42,
+  "experimentalRoutes": 1,
   "availableRoutes": 0,
   "generatedProtocolEquivalent": true,
   "configCopiesByteIdentical": true,
@@ -39,8 +26,8 @@
       "source": "contracts/native_bridge.d.ts",
       "target": "entry/src/main/ets/models/NativeProtocol.ets",
       "sourceSha256": "b557f768c2e3ca21755a68c775b81402dafa0b59f9f5eda0adb83daa99e1bf92",
-      "currentTargetSha256": "2a47dbe12f5cac8cc84654a27f6769d82cc3baea9d9b6c3751fd661e4db800e0",
-      "changedSinceFirstImport": false
+      "currentTargetSha256": "a48889500afe6575c74a7b7ab0b1ef9dba852c2274ad335ecd5eb34b8adfdfa1",
+      "changedSinceFirstImport": true
     },
     {
       "source": "docs/AI_CODING_RULES.md",
@@ -109,8 +96,8 @@
       "source": "shared/format-registry/conversion-matrix.json",
       "target": "shared/format-registry/conversion-matrix.json",
       "sourceSha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270",
-      "currentTargetSha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270",
-      "changedSinceFirstImport": false
+      "currentTargetSha256": "6880fe28fee8e12537bff1324723bc195f051313fc96bec85e0ff62569b0d31f",
+      "changedSinceFirstImport": true
     },
     {
       "source": "shared/format-registry/formats.json",
@@ -137,7 +124,7 @@
       "source": "tests/check-design.cjs",
       "target": "tests/check-design.cjs",
       "sourceSha256": "3b125c8b83cb7d6b37e0bda9c0ab9da427543c8176ba8a93fd382f3b5733dee5",
-      "currentTargetSha256": "04668b2a669de50ee25af7ebd6b21d38048645f9d9e38b942f265b3e49dda16a",
+      "currentTargetSha256": "0a38001018657942625a473ea38363d1710ea86ea4673b6a1b289321e502f99a",
       "changedSinceFirstImport": true
     },
     {
@@ -151,7 +138,7 @@
       "source": "tests/generated/design-check-report.json",
       "target": "tests/generated/design-check-report.json",
       "sourceSha256": "0e4befedc1a4586720aed387adad83b048b9911e7e70ddf43d778b02dc09a2cd",
-      "currentTargetSha256": "82b38e99d24e26b245f3230931f0d3620253c0aaf74cd05b77736bb4203383eb",
+      "currentTargetSha256": "aa51ad32035bde3d781bd058da1ec1946c6a6f6dd473967bd0659f41af48a715",
       "changedSinceFirstImport": true
     },
     {

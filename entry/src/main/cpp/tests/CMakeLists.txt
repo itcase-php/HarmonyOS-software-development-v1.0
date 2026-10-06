@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(hdm_native_contract_tests LANGUAGES CXX)
 include(CTest)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../production/build_manifest.cmake)
+hdm_create_build_manifest("${CMAKE_CURRENT_SOURCE_DIR}/../../../../../")
 
 # An actual host executable; no HarmonyOS NAPI library or third-party fetch required.
 include(${CMAKE_CURRENT_SOURCE_DIR}/../generated/engine_sources.cmake)
@@ -47,3 +49,13 @@ target_compile_definitions(hdm_capability_diagnostic_tests PRIVATE HDM_PRODUCTIO
 target_compile_features(hdm_capability_diagnostic_tests PRIVATE cxx_std_17)
 target_link_libraries(hdm_capability_diagnostic_tests PRIVATE hdm_jpeg_pdf)
 add_test(NAME production_capability_diagnostic COMMAND hdm_capability_diagnostic_tests exports)
+add_executable(hdm_debug_capability_tests napi_tests.cpp ../napi/native_bridge.cpp ../napi/result_serializer.cpp
+    ../core/engine_registry.cpp ${HDM_ENGINE_SOURCES})
+target_include_directories(hdm_debug_capability_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/mock)
+target_compile_definitions(hdm_debug_capability_tests PRIVATE HDM_PRODUCTION_NATIVE=1 HDM_NATIVE_DEBUG=1)
+target_compile_features(hdm_debug_capability_tests PRIVATE cxx_std_17)
+target_link_libraries(hdm_debug_capability_tests PRIVATE hdm_jpeg_pdf)
+add_test(NAME production_debug_capability COMMAND hdm_debug_capability_tests exports)
+foreach(task_target hdm_core_tests hdm_runtime_tests hdm_capability_diagnostic_tests hdm_debug_capability_tests)
+    target_include_directories(${task_target} PRIVATE "${HDM_BUILD_MANIFEST_INCLUDE}")
+endforeach()

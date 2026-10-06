@@ -7,6 +7,8 @@ const root = path.resolve(__dirname, '..');
 const read = name => JSON.parse(fs.readFileSync(path.join(root, name), 'utf8'));
 const formats = read('shared/format-registry/formats.json');
 const matrix = read('shared/format-registry/conversion-matrix.json');
+const debugPolicy = read('shared/format-registry/debug-routes.json');
+assert.deepEqual(debugPolicy, {schemaVersion:1, routeIds:['jpeg-pdf']});
 const formatSchema = read('shared/format-registry/schema/formats.schema.json');
 const matrixSchema = read('shared/format-registry/schema/conversion-matrix.schema.json');
 
@@ -65,7 +67,8 @@ function validateGraph(f, m) {
   assert.equal(routes.size, m.routes.length, 'duplicate route ID');
   const tiers = { extreme: 0, standard: 1, compatible: 2 };
   for (const r of m.routes) {
-    assert.equal(r.status, 'planned', 'design data must never advertise available');
+    assert.equal(r.status, debugPolicy.routeIds.includes(r.id) ? 'experimental' : 'planned',
+      'only approved Debug routes may be experimental; no release availability');
     for (const s of r.from) assert.ok(ids.has(s) && ids.get(s).operations.includes('import'), 'source import');
     assert.ok(ids.has(r.to) && ids.get(r.to).operations.includes('export'), 'target export');
     assert.ok(r.inputConstraints.minInputs <= r.inputConstraints.maxInputs);
@@ -114,6 +117,7 @@ const mutations = [
   ['silent downgrade', (f, m) => { m.routes.find(r => r.id === 'png-pdf-compatible').requiresUserApproval = false; }],
   ['invalid metadata option', (f) => { f.formats[6].defaultOptions[0].booleanValue = true; }],
   ['false available', (f, m) => { m.routes[0].status = 'available'; }],
+  ['unapproved experimental', (f, m) => { m.routes[1].status = 'experimental'; }],
   ['protection enabled', (f) => { f.securityPolicy.allowDrm = true; }],
   ['relay broken', (f, m) => { m.routes.find(r => r.pathMode === 'relay').steps[1].inputFormatIds = ['png']; }],
   ['nonfinite budget', (f) => { f.resourceProfiles.default.maxNativeBytes = Infinity; }]

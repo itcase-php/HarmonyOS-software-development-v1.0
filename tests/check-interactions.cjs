@@ -42,6 +42,7 @@ function host(options = {}) {
     clearTimeout(id) { timeouts.delete(id); }});
   function load(relative, from=sourceRoot) {
     if (options.sdkModules && Object.prototype.hasOwnProperty.call(options.sdkModules,relative)) return options.sdkModules[relative];
+    if (relative === 'BuildProfile') return {__esModule:true,default:{DEBUG:options.debugBuild===true}};
     if (relative === '@kit.PerformanceAnalysisKit') return {hilog:{info:()=>{},warn:()=>{}}};
     if (relative === '@kit.CoreFileKit') return {};
     if (relative === '@kit.LocalizationKit') return {i18n:{System:{getSystemLanguage:()=>options.systemLanguage || 'zh-CN'}}};

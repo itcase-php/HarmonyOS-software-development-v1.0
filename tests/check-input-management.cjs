@@ -74,7 +74,7 @@ function sdkFixture(settings={}) {
  return {adapter,bytes,uri,destination,handles,outputs,closed,opens,reads:()=>reads,writes:()=>writes};
 }
 async function main(){
- await test('Approved task method surface and immutable format matrix and Native protocol remain intact',()=>{
+ await test('Approved task surface and Native protocol remain intact; matrix changes are limited to JPEG Debug status',()=>{
   const baseline=JSON.parse(fs.readFileSync(path.join(__dirname,'approved-input-baseline.json')));
   const ts=require(process.env.HDM_TYPESCRIPT_PATH||'D:/DevEco Studio2026/DevEco Studio/tools/arktsdoc/node_modules/typescript/lib/typescript.js');
   const source=fs.readFileSync(path.join(root,'entry/src/main/ets/viewmodel/TaskStore.ets'),'utf8');
@@ -91,8 +91,18 @@ async function main(){
    // Retain the historical baseline; pin that authorized protocol separately.
    const expected=name.endsWith('/NativeProtocol.ets')?
     'a48889500afe6575c74a7b7ab0b1ef9dba852c2274ad335ecd5eb34b8adfdfa1':hash;
-   if(name.startsWith('shared/')||name.endsWith('/NativeProtocol.ets'))
-    assert.equal(sha(fs.readFileSync(path.join(root,name),'utf8').replace(/\r\n/g,'\n')),expected,name);
+   if(name.startsWith('shared/')||name.endsWith('/NativeProtocol.ets')) {
+    let actual=fs.readFileSync(path.join(root,name),'utf8').replace(/\r\n/g,'\n');
+    if(name==='shared/format-registry/conversion-matrix.json') {
+     const matrix=JSON.parse(actual);
+     assert.equal(matrix.routes.find(route=>route.id==='jpeg-pdf').status,'experimental');
+     assert.equal(matrix.notes,'JPEG to PDF is experimental for explicit Debug testing only; other routes remain planned. Lower-fidelity relay requires explicit user approval and cannot satisfy a higher minimum tier.');
+     matrix.routes.find(route=>route.id==='jpeg-pdf').status='planned';
+     matrix.notes='Design only. All routes planned. Lower-fidelity relay requires explicit user approval and cannot satisfy a higher minimum tier.';
+     actual=JSON.stringify(matrix,null,2)+'\n';
+    }
+    assert.equal(sha(actual),expected,name);
+   }
   }
  });
  await test('Harmony adapter handles multiple chunks and partial writes without offsets or descriptor leaks',async()=>{

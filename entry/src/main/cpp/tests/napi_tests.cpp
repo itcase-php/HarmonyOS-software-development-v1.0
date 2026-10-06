@@ -1,5 +1,6 @@
 #include "../napi/native_bridge.h"
 #include "../napi/result_serializer.h"
+#include "../production/route_policy.h"
 #include "../generated/registry_metadata.h"
 #include <algorithm>
 #include <cstdint>
@@ -234,14 +235,26 @@ void Exports() {
 #ifdef HDM_PRODUCTION_NATIVE
     auto engines = result->fields.at("engines");
     auto routes = result->fields.at("routes");
-    Require(engines->array && engines->elements.empty(), "unreleased engine published");
-    Require(routes->array && routes->elements.size() == 1, "planned route diagnostic missing");
+    Require(engines->array && engines->elements.size()==1, "linked experimental engine missing");
+    const auto stamp = Field(engines->elements[0], "buildHash");
+    Require(Field(engines->elements[0], "engineId")=="image" && stamp.size()==64 &&
+        stamp!=std::string(64,'0') && stamp!=hdm::kMatrixHash, "engine build stamp is not a build manifest digest");
+    Require(routes->array && routes->elements.size() == 1, "experimental route diagnostic missing");
     auto route = routes->elements[0];
     Require(Field(route, "routeId") == hdm::kJpegPdfRouteId &&
-        Field(route, "availability") == "planned" &&
-        Field(route, "reason") == "NATIVE_ROUTE_PLANNED" &&
+        Field(route, "availability") == "experimental" &&
+        Field(route, "reason") == (hdm::production::IsDebugRouteExecutable(hdm::kJpegPdfRouteId) ?
+            "NATIVE_DEBUG_ROUTE_ENABLED" : "NATIVE_ROUTE_UNAVAILABLE") &&
         Field(route, "validationProfileId") == hdm::kJpegPdfValidationProfile,
         "route diagnostic identity changed");
+#ifdef HDM_NATIVE_DEBUG
+    Require(hdm::production::IsDebugRouteExecutable("jpeg-pdf"), "Debug JPEG whitelist blocked");
+#else
+    Require(!hdm::production::IsDebugRouteExecutable("jpeg-pdf"), "Release enabled experimental route");
+#endif
+    Require(!hdm::production::IsDebugRouteExecutable("docx-pdf") &&
+        !hdm::production::IsDebugRouteExecutable("pptx-pdf") &&
+        !hdm::production::IsDebugRouteExecutable("png-pdf"), "Debug enabled an unapproved route");
     Require(route->fields.count("releaseEvidenceId") == 0 &&
         route->fields.count("from") == 0 &&
         !route->fields.at("supportsPause")->boolean &&

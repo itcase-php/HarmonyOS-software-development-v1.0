@@ -1,6 +1,6 @@
 # HarmonyOS软件开发v2.0
 
-基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。已完成交互流程、完整目录规划、保真度参数管道、真实文件授权副本和提交入口。JPEG→PDF 的受限单图转换器已接入生产 C++ 构建，并通过主机测试与双 ABI 编译；该路线继续保持 `planned`，Native 只报告规划中的路线诊断，应用内尚不能执行真实转换。设备和发布证据通过后再单独审核激活。
+基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。已完成交互流程、完整目录规划、保真度参数管道、真实文件授权副本和提交入口。JPEG→PDF 的受限单图转换器已接入生产 C++ 构建，并通过主机测试与双 ABI 编译；该路线为 `experimental`，仅 Debug 白名单允许测试，Release 保持关闭。真实文件端到端设备验收尚未完成；DOCX/PPTX→PDF 仍缺 Office 后端。
 
 公共仓库：<https://github.com/itcase-php/HarmonyOS-software-development-v1.0>。仓库地址使用英文字符，软件展示标题保留“HarmonyOS软件开发v1.0”。许可证为 [MIT](LICENSE)。按交付要求，另提供同内容的 [READMES.md](READMES.md)。
 
@@ -19,11 +19,11 @@
 | 文件输入 | Stage Picker、最多 10 文件管理、单文件 100 MiB/会话 300 MiB、分块副本与 SHA-256、信息卡片/移除/清理；真实提交保持单文件，设备验收待执行 |
 | 报告 | 演示报告展开查看；Native 报告读取接口与上下文/指标校验已预留 |
 | 原生层 | 14 个 Native 接口；会话、工作区、完整受限 JPEG 探测、转换候选、PDF 结构校验、受控 PDF 复制和清理已接入。image 引擎为实验实现，其他四类仍占位；完整通用 IR 和保真报告未实现 |
-| PDF 交付 | 对已验证 Native PDF 的文档选择器保存和 ShareKit 分享入口已接入；SaveButton 不适用于 PDF。路线仍为 planned，真实设备尚未验证保存或分享 |
-| JPEG→PDF | 隔离原型源已进入 `libentry.so` 的 Native 构建，仅支持单张 8 位 Baseline SOF0 灰度或三分量 JPEG；主机运行时、独立 PDF 解析/渲染通过。`jpeg-pdf` 仍为 `planned`，NAPI 执行与能力发布受闸门拦截 |
+| PDF 交付 | 对已验证 Native PDF 的文档选择器保存和 ShareKit 分享入口已接入；SaveButton 不适用于 PDF。JPEG 路线可在 Debug 测试，真实设备保存、独立打开与分享待验收 |
+| JPEG→PDF | 隔离原型源已进入 `libentry.so` 的 Native 构建，仅支持单张 8 位 Baseline SOF0 灰度或三分量 JPEG；主机运行时、独立 PDF 解析/渲染通过。`jpeg-pdf` 为 `experimental`，Debug 需同时满足 ArkTS/Native 白名单、实际引擎、配置及输入校验；Release 拒绝执行 |
 | 国际化与无障碍 | 首页 EN/中运行时切换、五页与组件/任务/报告/提示/读屏文案统一翻译；329 个双语资源键；语言使用 AppStorage + PersistentStorage 保留；实际 Previewer 和设备重启验收待执行 |
 
-**当前真实可用转换路线为 0。** 未选择真实文件时，原演示不读取文件、不生成转换结果。新入口可通过 Picker 授权并复制文件，Native 会话和受限 JPEG 探测已有实现；能力查询可诊断 `jpeg-pdf` 为 `planned`，但共享配置和 Native 执行门禁仍阻止真实提交。PDF 保存与分享代码已接入，只有将来产生通过校验的 Native PDF 后才会显示入口；任务历史持久化、后台调度、安全加固和设备验收仍待开发。详见[产物交付说明](docs/ARTIFACT-DELIVERY.md)与[分阶段验证记录](docs/VALIDATION-JPEG-PDF-PRODUCTION.md)。
+**已验收的真实转换路线仍为 0；JPEG→PDF 已具备 Debug 测试资格。** 未选择真实文件时，原演示不读取文件、不生成转换结果。真实入口通过 Picker 授权、受控副本、Native 会话与深层探测执行；输出通过校验后才显示保存/分享入口。当前 1 条 experimental、42 条 planned、0 条 available，未制造发布证据。任务历史持久化、后台调度、安全加固和设备验收仍待开发。详见[本轮调试修复与验收说明](docs/JPEG-DEBUG-ROUTE-REPAIR.md)、[产物交付说明](docs/ARTIFACT-DELIVERY.md)与[历史阶段验证](docs/VALIDATION-JPEG-PDF-PRODUCTION.md)。
 
 ## 工程结构
 

@@ -2,6 +2,7 @@
 #ifdef HDM_PRODUCTION_NATIVE
 #include "production_napi.h"
 #include "../core/engine_registry.h"
+#include "../production/route_policy.h"
 #endif
 #include "bridge_problem.h"
 #include "../core/converter.h"
@@ -146,9 +147,8 @@ napi_value CapabilityResult(napi_env env) {
     auto engines = Array(env);
     auto routes = Array(env);
 #ifdef HDM_PRODUCTION_NATIVE
-    // Describe the linked subset without publishing an executable engine or route.
-    // A missing/broken factory simply leaves the diagnostic arrays empty.
-    if (std::string(kJpegPdfRouteStatus) == "planned") {
+    // A linked experimental engine is discoverable in both builds; only Debug can execute it.
+    if (std::string(kJpegPdfRouteStatus) == "planned" || std::string(kJpegPdfRouteStatus) == "experimental") {
         ConverterCapabilities caps;
         bool linked = false;
         try {
@@ -160,10 +160,16 @@ napi_value CapabilityResult(napi_env env) {
             }
         } catch (...) { linked = false; }
         if (linked) {
+            auto engine = Object(env);
+            PutText(env, engine, "engineId", caps.engine.engineId);
+            PutText(env, engine, "version", caps.engine.version);
+            PutText(env, engine, "buildHash", caps.engine.buildHash);
+            Check(napi_set_element(env, engines, 0, engine));
             auto route = Object(env);
             PutText(env, route, "routeId", kJpegPdfRouteId);
-            PutText(env, route, "availability", "planned");
-            PutText(env, route, "reason", "NATIVE_ROUTE_PLANNED");
+            PutText(env, route, "availability", kJpegPdfRouteStatus);
+            PutText(env, route, "reason", production::IsDebugRouteExecutable(kJpegPdfRouteId) ?
+                "NATIVE_DEBUG_ROUTE_ENABLED" : "NATIVE_ROUTE_UNAVAILABLE");
             PutBool(env, route, "supportsPause", caps.supportsPause);
             PutBool(env, route, "supportsCheckpoint", caps.supportsCheckpoint);
             Put(env, route, "decoderIds", StringArray(env, caps.decoderIds));

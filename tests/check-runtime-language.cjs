@@ -145,7 +145,7 @@ for (const name of ['Index', 'FormatBrowser', 'ConverterPage', 'TaskHistory', 'F
   assert.ok(source.includes("@StorageLink('appLanguage')"), name + ' reactive binding');
 }
 const matrix = JSON.parse(fs.readFileSync(path.join(root, 'shared/format-registry/conversion-matrix.json')));
-assert.equal(matrix.routes.find(route => route.id === 'jpeg-pdf').status, 'planned');
+assert.ok(matrix.routes.every(route => route.status === (route.id === 'jpeg-pdf' ? 'experimental' : 'planned')));
 const preLanguage = '04e6886f5e1ada231970fc07430b4a51004f3826';
 const protectedPaths = ['entry/src/main/cpp', 'shared/format-registry', 'entry/src/main/resources/rawfile',
   'entry/src/main/ets/services/NativeBridge.ets', 'entry/src/main/ets/services/ArtifactDelivery.ets',
@@ -153,8 +153,22 @@ const protectedPaths = ['entry/src/main/cpp', 'shared/format-registry', 'entry/s
   'entry/src/main/ets/common/FidelityText.ets', 'entry/src/main/ets/generated/RegistryData.ets',
   'entry/src/main/module.json5',
   'entry/src/main/resources/base/profile/main_pages.json', 'docs/migration-source'];
-assert.equal(execFileSync('git', ['diff', '--name-only', preLanguage, '--', ...protectedPaths],
-  { cwd: root, encoding: 'utf8' }).trim(), '', 'Protected conversion/permission contracts changed');
+// Keep the historical baseline; allow only the approved report serialization and JPEG Debug repair files.
+const approvedNativeRepair = new Set([
+  'entry/src/main/cpp/CMakeLists.txt', 'entry/src/main/cpp/engines/image/image_converter.cpp',
+  'entry/src/main/cpp/generated/registry_metadata.h', 'entry/src/main/cpp/napi/native_bridge.cpp',
+  'entry/src/main/cpp/napi/production_napi.cpp', 'entry/src/main/cpp/napi/result_serializer.cpp',
+  'entry/src/main/cpp/napi/result_serializer.h', 'entry/src/main/cpp/production/build_manifest.cmake',
+  'entry/src/main/cpp/production/route_policy.h', 'entry/src/main/cpp/tests/CMakeLists.txt',
+  'entry/src/main/cpp/tests/napi_tests.cpp', 'entry/src/main/ets/generated/RegistryData.ets',
+  'entry/src/main/resources/rawfile/format-registry/conversion-matrix.json',
+  'entry/src/main/resources/rawfile/format-registry/manifest.json',
+  'shared/format-registry/conversion-matrix.json', 'shared/format-registry/debug-routes.json'
+]);
+const protectedChanges = execFileSync('git', ['diff', '--name-only', preLanguage, '--', ...protectedPaths],
+  { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
+assert.deepEqual(protectedChanges.filter(name => !approvedNativeRepair.has(name)), [],
+  'Protected conversion/permission contracts changed beyond approved repairs');
 // Personal signing settings are local-only and intentionally excluded from commits.
 assert.equal(execFileSync('git', ['diff', '--name-only', preLanguage, 'HEAD', '--', 'build-profile.json5'],
   { cwd: root, encoding: 'utf8' }).trim(), '', 'Committed build profile changed');

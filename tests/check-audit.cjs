@@ -17,7 +17,7 @@ function cold(options={}) {
 }
 const capabilities=version=>({schemaVersion:1,offlineOnly:true,abi:'host-adapter',configVersion:version,engines:[],routes:[]});
 async function main() {
- await test('Generated metadata pins rawfile hashes counts and the unchanged planned matrix',()=>{
+ await test('Generated metadata pins rawfile hashes counts and the approved JPEG Debug matrix',()=>{
   const source=read('entry/src/main/ets/generated/RegistryData.ets');
   const metadata=JSON.parse(source.match(/export const registryMetadata: RegistryMetadata = ([\s\S]*?);\n/)[1]);
   assert.ok(source.split('\n').length<200);
@@ -29,9 +29,10 @@ async function main() {
   for(const [name,key] of [['formats.json','formatsSha256'],['conversion-matrix.json','matrixSha256']])
    assert.equal(crypto.createHash('sha256').update(bytes(name)).digest('hex'),metadata[key]);
   assert.equal(metadata.formatsCount,18);assert.equal(metadata.routesCount,43);
-  assert.ok(JSON.parse(Buffer.from(bytes('conversion-matrix.json')).toString()).routes.every(route=>route.status==='planned'));
+  assert.ok(JSON.parse(Buffer.from(bytes('conversion-matrix.json')).toString()).routes.every(
+   route=>route.status===(route.id==='jpeg-pdf'?'experimental':'planned')));
  });
- await test('Cold registry immediately exposes all 18 approved formats and 43 planned routes',()=>{
+ await test('Cold registry immediately exposes all 18 approved formats and 43 catalogue routes',()=>{
   const {h,registry}=cold();
   assert.deepEqual(JSON.parse(JSON.stringify(registry.listFormats())),JSON.parse(Buffer.from(bytes('formats.json')).toString()).formats);
   assert.deepEqual(JSON.parse(JSON.stringify(registry.listPlannedRoutes())),JSON.parse(Buffer.from(bytes('conversion-matrix.json')).toString()).routes);
