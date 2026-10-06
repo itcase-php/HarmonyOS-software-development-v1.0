@@ -30,7 +30,7 @@
       "sha256": "3f99698a13a8f656dd40159e7055f626d4679f1c06dbbb6df2ae72a6646d1230",
       "elfMachine": 183,
       "builtWith": "HarmonyOS HMS BiSheng Clang15.0.4",
-      "deviceLoad": "passed"
+      "deviceLoad": "not_executed_standalone_release_probe"
     },
     {
       "abi": "x86_64",
@@ -38,7 +38,7 @@
       "sha256": "ec745ebe4d162b187789ac2453c98b0fe45b20a67f5988d58fa429592343abd2",
       "elfMachine": 62,
       "builtWith": "HarmonyOS HMS BiSheng Clang15.0.4",
-      "deviceLoad": "not_executed"
+      "deviceLoad": "not_executed_standalone_release_probe"
     }
   ],
   "testHapBytes": 19358094,
@@ -121,5 +121,19 @@
   },
   "productionIntegration": false,
   "sixDirections": "not_implemented",
-  "releaseRoutesOpened": 0
+  "releaseRoutesOpened": 0,
+  "actualStagePackagedLibraries": [
+    {
+      "deviceLoad": "passed",
+      "sha256": "e6401e243ef66eb81c25e9e77ab5d0956018646d55391acdd0f20665c7dbfb4d",
+      "packageEntry": "libs/arm64-v8a/libhdm_ocr_probe.so",
+      "bytes": 4372032
+    },
+    {
+      "deviceLoad": "not_executed",
+      "sha256": "d92d948b3f4e04f71a7d490d3059ad2cd7bd4f26d060e401026391d70bb09b27",
+      "packageEntry": "libs/x86_64/libhdm_ocr_probe.so",
+      "bytes": 4760024
+    }
+  ]
 }
