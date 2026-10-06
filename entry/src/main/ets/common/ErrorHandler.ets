@@ -1,3 +1,4 @@
+import { LanguageManager } from './LanguageManager';
 import { BridgeError } from './BridgeError';
 import { AppError, ErrorCode } from '../models/NativeProtocol';
 
@@ -23,7 +24,7 @@ export class ErrorHandler {
     const failure: BridgeError = error instanceof BridgeError ? error : new BridgeError('INTERNAL_ERROR', 'OPTIONAL_ACTION_FAILED');
     console.debug(JSON.stringify({ context: context, code: failure.code, traceId: failure.traceId }));
   }
-  static toast(context: UIContext, error: Error, message: string = '操作失败，请重试'): void {
+  static toast(context: UIContext, error: Error, message: string = LanguageManager.getString('action_failed')): void {
     ErrorHandler.catchBridge(error, 'UserAction');
     try { context.getPromptAction().showToast({ message: message, duration: 2000 }); }
     catch (toastError) { ErrorHandler.swallow('Toast', toastError); }

@@ -1,4 +1,4 @@
-import { FidelityTier, Intent, QualityMode } from '../models/NativeProtocol';
+import { FidelityTier, QualityMode } from '../models/NativeProtocol';
 import { FidelitySelection } from '../models/InteractionModels';
 import { ConversionRouteDefinition } from '../models/RegistryTypes';
 import { BridgeError } from '../common/BridgeError';
@@ -6,22 +6,6 @@ import { BridgeError } from '../common/BridgeError';
 export class FidelityPolicy {
   static tierRank(tier: FidelityTier): number {
     switch (tier) { case 'extreme': return 3; case 'standard': return 2; case 'compatible': return 1;
-      default: throw new BridgeError('INVALID_REQUEST', 'FIDELITY_OPTIONS_INVALID'); }
-  }
-  static tierLabel(tier: FidelityTier): string {
-    switch (tier) { case 'extreme': return '极致保真'; case 'standard': return '标准保真'; case 'compatible': return '兼容保真';
-      default: throw new BridgeError('INVALID_REQUEST', 'FIDELITY_OPTIONS_INVALID'); }
-  }
-  static intentLabel(intent: Intent): string {
-    switch (intent) {
-      case 'layout_preserved': return '保留布局';
-      case 'structured_rebuild': return '结构化重建';
-      case 'content_only': return '仅提取内容';
-      default: throw new BridgeError('INVALID_REQUEST', 'FIDELITY_OPTIONS_INVALID');
-    }
-  }
-  static qualityLabel(mode: QualityMode): string {
-    switch (mode) { case 'fast': return '快速'; case 'balanced': return '均衡'; case 'high_fidelity': return '高保真';
       default: throw new BridgeError('INVALID_REQUEST', 'FIDELITY_OPTIONS_INVALID'); }
   }
   static durationMs(mode: QualityMode): number {

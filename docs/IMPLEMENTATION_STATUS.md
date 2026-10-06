@@ -1,6 +1,20 @@
 # 迁移结果与实现边界
 
-更新日期：2026-09-30。本文描述当前工程；V1.0 方案和专题文档描述目标，不能认定全部实现。本轮兼容优化和独立 JPEG→PDF 主机原型见[验证记录](VALIDATION-NATIVE-READINESS.md)；生产 Native 接入、通用 IR/保真范围[等待另审](../spec/changes/native-readiness-and-copy-safety/implementation-review.md)。原目录恢复及审计记录保留作历史溯源。
+## 2026-10-06 真机修复与引擎验证增量
+
+已修复 Resource 格式参数与真实任务预检查。手机中英文格式详情、Picker导入/取消、引擎缺失的准确提示和输入保留通过；新增宿主11项、实际手机Hypium63/63、应用与ohosTest签名HAP构建、其他宿主及MSVC/Ninja CTest22/22通过。下文此前的“设备未验收”“未签名”是对应阶段的历史记录。
+
+隔离原型已用鸿蒙工具链编译 Tesseract5.5.1/Leptonica1.85.0 双ABI，并在arm64手机识别固定中英文样例；官方PDFKit两页解析、对象、渲染及扫描页→OCR连接通过。LibreOffice仍需专门移植，Office引擎、OOXML写出、结构重建与六方向产物验收未完成。主应用可用路线仍为0，没有借测试解除门禁。改动、实测边界和后续提案见 [真机入口与离线引擎](DEVICE-ENTRY-AND-OFFLINE-ENGINES.md)。
+
+更新日期：2026-10-01。本文描述当前工程；V1.0 方案和专题文档描述目标，不能认定全部实现。用户已批准[分阶段接入范围](../spec/changes/jpeg-pdf-production/approval-request.md)，JPEG→PDF 的受限核心进入生产 Native 构建，但路线暂不激活；当前阶段结果见[验证记录](VALIDATION-JPEG-PDF-PRODUCTION.md)。原目录恢复及审计记录保留作历史溯源。
+
+## 2026-10-04 运行时语言增量
+
+用户审核后的三项整理已实施：资源目录建立一次 Map 索引、PageHeader 直接显示已译标题、FidelityPolicy 删除无应用调用的三个中文标签方法。语言机制和业务策略保留；语言 8 项、架构 21 项、Hypium 宿主 61 项和应用编译通过。最新边界及 setLanguage 真机风险见 [语言优化复核](LANGUAGE-OPTIMIZATION.md)。
+
+首页帮助按钮旁新增 EN/中切换。五页、组件、任务状态/阶段/结果、保真报告、提示与无障碍文字通过 LanguageManager 读取；AppStorage 驱动刷新，PersistentStorage 保存选择；329 个 base/en_US 资源键一致，预览回退目录由同一资源生成。任务仍只保留会话历史，语言刷新不更改任务调度、已选路线、用户文件名或降级同意。
+
+本轮应用编译零错误；语言 8 项、交互 15 项、重构 12 项、架构 21 项和 Hypium 宿主 61 项通过。历史 input-management/fidelity 脚本因本轮开始前已有的 NativeProtocol 哈希变化失败，未修改这些历史基线；下表中的过去“全部通过”是历史阶段记录。Previewer、编辑器诊断及设备重启未验收。详见 [语言说明](RUNTIME-LANGUAGE.md) 与 [实施审阅说明](../spec/changes/runtime-language/implementation-review.md)。C++/NAPI、共享配置、NativeBridge、NativeProtocol、FidelityText、权限和原保存分享服务相对本轮开始提交均无 diff，真实可用路线仍为 0。
 
 ## 已迁入并接入工程
 
@@ -18,28 +32,28 @@
 
 | 范围 | 实际状态 |
 | --- | --- |
-| 页面/组件 | 保留五页及原交互；ConverterPage 79 行、四个观察 VM、六个独立组件；FidelitySettingsVM 使用 @Observed/@ObjectLink，页面不再 clone 刷新。首页/历史页使用 ServiceContainer 的作用域实例。原国际化、读屏、完整目录与演示保持；系统 Picker 与实际 ArkUI 刷新待设备/预览验收 |
+| 页面/组件 | 保留五页及原交互；ConverterPage 组合四个观察 VM、六个独立组件；FidelitySettingsVM 使用 @Observed/@ObjectLink，页面不再 clone 刷新。首页/历史页使用 ServiceContainer 的作用域实例。原国际化、读屏、完整目录与演示保持；系统 Picker 与实际 ArkUI 刷新待设备/预览验收 |
 | 模型 | DemoTask.clone() 继续隔离任务及报告；FidelitySettingsVM.clone() 作为旧兼容接口保留。会话、目录、请求、结果改用逐字段自有副本，替代 12 处 JSON 序列化复制，类型字段覆盖和嵌套隔离有宿主测试。NativeProtocol、C++ DTO/IConverter 保持原样 |
-| 文件输入 | 新增 SessionModels、FormatDetector、CoreFileKit 平台适配器、FileAuthorizationService 和 AuthorizedInputTask；Picker 授权、256 KiB 分块副本、100/300 MiB 预算、SHA-256、串行复制、幂等清理与单文件真实确认/提交。C++ 会话占位如实失败；正常生命周期逻辑有宿主验证，真实设备验收待执行 |
+| 文件输入 | 新增 SessionModels、FormatDetector、CoreFileKit 平台适配器、FileAuthorizationService 和 AuthorizedInputTask；Picker 授权、256 KiB 分块副本、100/300 MiB 预算、SHA-256、串行复制、幂等清理与单文件真实确认/提交。C++ 会话/工作区和受限 JPEG 完整探测已接入，设备验收待执行 |
 | 格式注册 | 完整的 18 格式、43 规划路线从原 shared JSON 生成，启动和预览即刻可查询，资源加载失败不会缩减。rawfile 核对 SHA-256、schema/config 及数量后原子替换；并发调用共享加载，失败/五秒超时可重试，迟到数据不覆盖缓存，查询返回深复制。真实可用路径还要求资源校验成功、配置 available 状态和 Native 发布证据 |
-| 转换规划/任务管理 | 保留参数快照、2/3.5/6 秒活动时长、单并发 FIFO 与暂停/恢复/取消；enqueue 返回 queued/0%，首次 50ms 回调、后续 200ms 递归 setTimeout，advance 有 try/finally 防重入和时钟回拨保护。enqueueNative/NativeTaskRunner 沿用 NativeBridge.execute；保护门禁、进度序号、取消后迟到结果与释放仍接线。当前真实路线为 0；授权输入与单文件真实提交入口已实现，C++ 会话/工作区仍占位；Native 暂停、持久化和后台服务未实现 |
+| 转换规划/任务管理 | 保留参数快照、2/3.5/6 秒活动时长、单并发 FIFO 与暂停/恢复/取消；enqueue 返回 queued/0%，首次 50ms 回调、后续 200ms 递归 setTimeout，advance 有 try/finally 防重入和时钟回拨保护。enqueueNative/NativeTaskRunner 沿用 NativeBridge.execute；保护门禁、进度序号、取消后迟到结果与释放仍接线。当前真实路线为 0；Native 暂停、持久化和后台服务未实现 |
 | NativeBridge | 保留动态 so 导入、13 API 与 isNativeAvailable；原失败后重试已存在，审计补共享加载尝试身份检查，防止旧拒绝清空新重试。参数/结果校验保留，能力查询五秒超时；预览器缺少 Native 模块或应用资源上下文仍可使用完整目录及演示，检测或资源校验失败不会启用真实路线 |
-| C++ | 正式 entry 模块注册、异步 NAPI 调度和五领域 unavailable 适配器；BridgeProblem 覆写 what() 并拥有消息，工厂改为生成的哈希索引。目标级警告、C++17 初始化和 13 项核心/mock NAPI 主机 CTest；主机测试默认不入设备构建。保留原 add 示例导出，业务不使用它 |
-| 隔离 JPEG→PDF 原型 | 独立主机构建、固定块流、受限 JPEG 解码、图片 IR 与 PDF Writer；4 项 C++ 和 15 项外部 PDF 解析/渲染集成检查通过。未加入 entry/libentry.so，不改 Native 可用能力、已批准路线和占位引擎；详见[原型说明](../prototypes/jpeg-pdf/README.md) |
-| IR/资源/保真 | demo commit 生成模拟报告；native 仅从 ConvertResult.fidelity 读取并校验意图/等级/指标和证据，不生成示例填补缺失报告。两者共用深复制工具，界面按 mode 显示。流式 IR、资源监控、真实输出校验器尚未实现 |
+| C++ | 正式 entry 模块注册、异步 NAPI 调度；会话、工作区、受限 JPEG 深层探测、转换候选、输出结构验证、取消和清理已实现。image 工厂替换为实验实现，其他四类引擎仍占位。NAPI 按生成的 `planned` 状态拒绝执行，能力查询提供规划诊断而不发布可用引擎。主机 MSVC CTest 22 项通过，其中新增生产能力诊断 NAPI mock 检查；原 mock NAPI 8 项仍仅检查历史占位分支 |
+| JPEG→PDF 核心 | 独立原型的固定块流、受限 JPEG 解码、图片 IR 与 PDF Writer 已编入双 ABI `libentry.so`；15 项外部 PDF 解析/渲染集成检查及新增运行时宿主检查通过。当前仅支持单张 8 位 Baseline SOF0 灰度或三分量 JPEG；路线仍为 `planned`，未发布 releaseEvidenceId；详见[阶段验证](VALIDATION-JPEG-PDF-PRODUCTION.md) |
+| IR/资源/保真 | demo commit 生成模拟报告；native 仅从 ConvertResult.fidelity 读取并校验意图/等级/指标和证据，不生成示例填补缺失报告。两者共用深复制工具，界面按 mode 显示。JPEG→PDF 有专用流与固定结构输出校验；通用流式 IR、完整资源监控和真实保真报告尚未实现 |
 | 配置更新 | 构建生成、运行时打包 JSON 解码/哈希验证及首次加载的原子缓存已实现。配置数字签名、热更新、回滚和新版本快照切换仍待开发；摘要校验不等于签名验证 |
-| 测试 | 205 项 ArkTS 宿主检查、13 项 C++/mock NAPI CTest、独立原型 4 项 C++ 与 15 项 PDF 集成检查通过；应用/ohosTest 编译和双 ABI HAP 核验通过。9 个 Hypium 源码套件通过宿主适配器执行；目录回归覆盖 18×18 格式组合和 15,552 组质量/意图/最低等级选择。实际设备 Hypium、Previewer、读屏和应用真实引擎仍未执行 |
+| 测试 | ArkTS 宿主脚本全部通过；MSVC CTest 22/22、独立原型 15 项 PDF 集成检查通过。生产运行时单页 PDF 经 pypdf 严格解析、嵌入 JPEG 字节核对和 Poppler 渲染；应用/ohosTest 编译及双 ABI HAP 核验通过。实际设备 Hypium、Picker、Previewer、读屏和应用真实引擎仍未执行 |
 
 ## Native API 的当前行为
 
 | API | 当前行为 |
 | --- | --- |
-| getCapabilities | 校验请求/schema/configVersion/sessionId 类型，异步返回 schemaVersion、布尔 offlineOnly、编译 ABI、configVersion；engines/routes 为空，因此可执行路径为 0 |
-| initializeSession / registerWorkspace / probeInputs | 异步拒绝，UNSUPPORTED_FEATURE，MIGRATED_CONTRACT_NOT_IMPLEMENTED；未建立授权会话、工作目录或深层文件探测 |
-| execute | 在基础字段校验后异步返回 failed / ENGINE_MISSING；无输出、validation=not_evaluated，不读写输入文件 |
-| cancel / pause / resume | 对不存在的任务异步返回 not_found；不是已实现暂停或任务控制 |
-| subscribeProgress / unsubscribeProgress | 当前无执行引擎；前者抛 ENGINE_MISSING，后者返回 false |
-| releaseTask / releaseArtifact / shutdown | 当前无持久句柄，异步清理空操作；正式引擎接入时必须补齐所有权与活动任务同步 |
+| getCapabilities | 校验请求/schema/configVersion/sessionId 类型，异步返回 schemaVersion、布尔 offlineOnly、编译 ABI、configVersion；若实验 image 工厂可自述，则 routes 包含 `jpeg-pdf` 的 `planned` 诊断和实际解码/编码子集，engines 仍为空。可执行路径为 0；工厂缺失或自述失败时诊断数组为空 |
+| initializeSession / registerWorkspace / probeInputs | 异步建立会话、核验工作区；受限 JPEG 经过完整解码、字节数与 SHA-256 核对后才返回确定探测，否则为 unknown。设备路径及权限仍待验收 |
+| execute | NAPI 因 `jpeg-pdf=planned` 异步返回 failed / ENGINE_MISSING；内部 C++ 运行时能执行受限转换并提交经结构校验的 PDF，用于宿主验证。尚无应用可用路线 |
+| cancel / pause / resume | 已注册任务的 cancel 设取消标志，pause/resume 返回 unsupported；不存在任务返回 not_found |
+| subscribeProgress / unsubscribeProgress | 订阅 token 与清理已接线；路线未激活时不发真实执行进度 |
+| releaseTask / releaseArtifact / shutdown | 已接入任务取消、引用释放和产物清理；设备并发与文件系统竞态仍待验收 |
 
 能力查询用固定的非授权 bootstrap 标识，只用于工程检查，不能作为转换会话凭据。引擎缺失结果中的 nativePeakBytes/tempPeakBytes=0 表示当前没有引擎工作区/文件分配，未实现进程内存测量，不可用于性能验收。
 
@@ -71,6 +85,6 @@ AppScope bundleName、版本号、应用名称、已有 phone 设备声明、SDK
 
 ## 接入真实引擎的顺序
 
-ArkTS 文件授权与受控副本已完成宿主/编译验证，独立 JPEG→PDF 原型已通过主机验证。生产接入另审：先完成设备验收和 Native 会话/工作区、完整解码及路径/资源/保护校验，再把原型评估为首条真实链路。替换 `engines/image` / `engines/pdf` 适配器前须补齐输出验证、工作目录清理、Native 引用释放与性能测量。绑定层的能力查询和 execute 目前是明确的占位逻辑，首次启用真实转换前需完成调度器接线；引擎注册表已经可由配置生成，后续新增引擎无需手写格式分支。
+ArkTS 文件授权与受控副本已完成宿主/编译验证。JPEG→PDF 的受限核心已接入生产 C++、内部运行时和 NAPI；Native 会话/工作区、完整受限解码、输出结构校验及引用释放已有主机验证。路线仍为 `planned`，能力查询仅报告规划诊断，NAPI 执行被拦截。激活前还需设备 Picker/授权路径与权限验收、并发和取消竞态测试、文件系统路径竞态加固、真实输出导出、资源测量、合法签名及发布证据审核。其余引擎和通用转换仍待实现。
 
 只有真实转换、独立输出验证和发布证据通过后，才将对应配置 route 改为 available，并由 Native 公布相同能力。DRM/加密/签名深层阻断测试必须在该门禁之前完成；当前扩展名黑名单查询不是内容保护检测器。接入后禁止返回无效“成功”。

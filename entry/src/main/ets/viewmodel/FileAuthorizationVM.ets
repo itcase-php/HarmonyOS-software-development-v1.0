@@ -6,6 +6,7 @@ import { FormatSelectionVM } from './FormatSelectionVM';
 import { ConverterUiPort, PreviewConverterUi } from './ConverterUiPort';
 import { ErrorHandler } from '../common/ErrorHandler';
 import { BridgeError } from '../common/BridgeError';
+import { ConversionDiagnostics } from '../common/ConversionDiagnostics';
 import { withDeadline } from '../common/Deadline';
 
 export class AuthorizedFileDataSource implements IDataSource {
@@ -94,12 +95,14 @@ export class FileAuthorizationVM {
       owned = await this.files.createSession();
       if (!this.inputPageAlive || generation !== this.importGeneration) { await this.cleanup(owned); return; }
       this.sessionContext = owned;
+      ConversionDiagnostics.stage('FileAuthorization', 'import');
       for (const file of picked) {
         const authorized: AuthorizedFile = await this.files.copyToSandbox(file, owned.sessionId);
         if (!this.inputPageAlive || generation !== this.importGeneration) { await this.cleanup(owned); return; }
         this.setFiles(this.authorizedFiles.concat([authorized]));
       }
       this.sessionContext = this.files.getSession(owned.sessionId);
+      ConversionDiagnostics.stage('FileAuthorization', 'imported');
       this.formats.selectFormat(this.authorizedFiles[0].detectedFormatId); this.status.errorText = '';
     } catch (error) {
       if (owned) {

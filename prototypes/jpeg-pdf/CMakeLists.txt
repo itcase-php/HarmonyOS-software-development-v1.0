@@ -14,6 +14,11 @@ FetchContent_Declare(jpeg_source URL "${HDM_JPEG_ARCHIVE}"
     SOURCE_SUBDIR hdm_population_only)
 FetchContent_MakeAvailable(jpeg_source)
 set(jpeg_binary "${CMAKE_CURRENT_BINARY_DIR}/jpeg-build")
+if(MSVC)
+    set(hdm_jpeg_library "${jpeg_binary}/jpeg-static.lib")
+else()
+    set(hdm_jpeg_library "${jpeg_binary}/${CMAKE_STATIC_LIBRARY_PREFIX}jpeg${CMAKE_STATIC_LIBRARY_SUFFIX}")
+endif()
 if(CMAKE_HOST_SYSTEM_PROCESSOR)
     set(hdm_jpeg_processor "${CMAKE_HOST_SYSTEM_PROCESSOR}")
 elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -32,10 +37,10 @@ ExternalProject_Add(jpeg_build SOURCE_DIR "${jpeg_source_SOURCE_DIR}" BINARY_DIR
         -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
         -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_SYSTEM_PROCESSOR=${hdm_jpeg_processor} ${hdm_jpeg_toolchain}
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-    BUILD_BYPRODUCTS "${jpeg_binary}/${CMAKE_STATIC_LIBRARY_PREFIX}jpeg${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    BUILD_BYPRODUCTS "${hdm_jpeg_library}")
 add_library(hdm_jpeg STATIC IMPORTED)
 set_target_properties(hdm_jpeg PROPERTIES IMPORTED_LOCATION
-    "${jpeg_binary}/${CMAKE_STATIC_LIBRARY_PREFIX}jpeg${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    "${hdm_jpeg_library}")
 add_dependencies(hdm_jpeg jpeg_build)
 
 add_library(hdm_jpeg_pdf STATIC src/stream.cpp src/ir.cpp src/prototype.cpp src/jpeg_probe.c src/jpeg_memory.c)

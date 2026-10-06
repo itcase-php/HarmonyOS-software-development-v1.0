@@ -1,7 +1,7 @@
 import { FidelityTier, Intent, QualityMode } from '../models/NativeProtocol';
 import { ConverterNavigationParams } from '../models/InteractionModels';
 import { FormatRegistryPort } from '../services/ServiceContracts';
-import { FidelityPolicy } from './FidelityPolicy';
+import { LanguageManager } from '../common/LanguageManager';
 
 export interface ConverterDialogButton { value: string; action: () => void; }
 export interface ConverterDialog {
@@ -9,7 +9,7 @@ export interface ConverterDialog {
   primaryButton: ConverterDialogButton; secondaryButton: ConverterDialogButton; cancel: () => void;
 }
 export interface ConverterUiPort {
-  read(resource: Resource, args?: (string | number)[]): string;
+  read(resource: ResourceStr, args?: (string | number)[]): string;
   tier(tier: FidelityTier): string;
   intent(intent: Intent): string;
   quality(mode: QualityMode): string;
@@ -20,10 +20,10 @@ export interface ConverterUiPort {
 }
 
 export class PreviewConverterUi implements ConverterUiPort {
-  read(resource: Resource, args: (string | number)[] = []): string { return ''; }
-  tier(tier: FidelityTier): string { return FidelityPolicy.tierLabel(tier); }
-  intent(intent: Intent): string { return FidelityPolicy.intentLabel(intent); }
-  quality(mode: QualityMode): string { return FidelityPolicy.qualityLabel(mode); }
+  read(resource: ResourceStr, args: (string | number)[] = []): string { return LanguageManager.getString(resource, args); }
+  tier(tier: FidelityTier): string { return LanguageManager.tier(tier); }
+  intent(intent: Intent): string { return LanguageManager.intent(intent); }
+  quality(mode: QualityMode): string { return LanguageManager.quality(mode); }
   toast(message: string): void {}
   showAlertDialog(dialog: ConverterDialog): void { throw new Error('Use inline preview confirmation'); }
   navigationParams(): ConverterNavigationParams { return {}; }

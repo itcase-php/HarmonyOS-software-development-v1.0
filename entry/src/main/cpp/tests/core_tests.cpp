@@ -44,9 +44,21 @@ void Factories() {
     }
     for (const auto* id : {"", "IMAGE", "unknown", "../image"}) Require(!hdm::CreateConverter(id), "invalid factory id");
 }
+void Image() {
+    Context context;
+    auto engine=hdm::CreateConverter("image");
+    Require(engine && !engine->Describe().available, "image must stay gated before device evidence");
+    hdm::EngineInitContext init; init.hardLimits.maxInputBytes=104857600;
+    init.hardLimits.maxTempBytes=536870912; init.hardLimits.maxPixels=16000000;
+    init.hardLimits.timeoutMs=180000;
+    Require(engine->Initialize(init).IsOk(), "image initialization");
+    Require(engine->Validate({},context).code==hdm::ErrorCode::UnsupportedFormat,
+        "image must refuse unapproved request/context");
+    Require(!engine->CollectOutput(context).value, "image fabricated output");
+}
 void Missing() {
     Context context;
-    for (const auto* id : {"pdf", "office", "media", "image", "ocr"}) {
+    for (const auto* id : {"pdf", "office", "media", "ocr"}) {
         auto engine = hdm::CreateConverter(id);
         for (const auto& status : {engine->Initialize({}), engine->Validate({}, context), engine->Execute({}, context)}) {
             Require(status.code == hdm::ErrorCode::EngineMissing && !status.IsOk(), "placeholder success");
@@ -97,7 +109,8 @@ int main(int argc, char** argv) {
         Require(argc == 2, "test selection");
         const std::string name = argv[1];
         if (name == "errors") Errors(); else if (name == "factories") Factories();
-        else if (name == "missing") Missing(); else if (name == "lease") Lease();
+        else if (name == "missing") Missing(); else if (name == "image") Image();
+        else if (name == "lease") Lease();
         else if (name == "exception") Exception(); else throw std::runtime_error("unknown test");
         std::cout << "PASS " << name << '\n'; return 0;
     } catch (const std::exception& error) { std::cerr << "FAIL " << error.what() << '\n'; return 1; }

@@ -1,0 +1,18 @@
+{
+  "scope": "host SDK adapters",
+  "cases": [
+    "Resource args-only shape keeps its first ordinary string",
+    "Named and ID resources pass explicit independent args, including zero and empty text",
+    "Only an explicit resource reference is stripped, not a bare key used as a value",
+    "Known bilingual fallback and user names preserve percent, Chinese, parentheses and zeros",
+    "No formatted $r calls remain in app source",
+    "Real preflight rejects unverified config and route/source/target mismatch before querying Native",
+    "Real capabilities distinguish missing engine, bad stamp, closed route and missing evidence",
+    "Native load/protocol errors stay intact; timeout permits retry and cannot authorize a late result",
+    "Missing engine blocks confirmation and queue; retry keeps the imported input until explicit confirmation",
+    "Selection changes during preflight or after confirmation cannot submit stale approval",
+    "Timeout retries and navigation invalidate late capability results without creating tasks"
+  ],
+  "result": "passed",
+  "device": "not_executed"
+}

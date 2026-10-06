@@ -28,7 +28,7 @@ async function main(){
  });
  await test('Every FidelityPolicy enum switch rejects invalid boundary values while preserving valid durations',()=>{
   const {FidelityPolicy}=host().load('./viewmodel/FidelityPolicy');
-  for(const method of ['tierRank','tierLabel','intentLabel','qualityLabel','durationMs'])
+  for(const method of ['tierRank','durationMs'])
    assert.throws(()=>FidelityPolicy[method]('invalid'),error=>error.code==='INVALID_REQUEST');
   assert.deepEqual(['fast','balanced','high_fidelity'].map(mode=>FidelityPolicy.durationMs(mode)),[2000,3500,6000]);
  });
@@ -103,7 +103,7 @@ async function main(){
   await first.shutdown();assert.equal(first.files.isAvailable(),false);assert.equal(second.files.isAvailable(),true);
  });
 
- function converter(f,store=f.h.store){
+ function converter(f,store=f.h.store,preflight){
   const h=f.h,ui={read:key=>String(key.id),tier:t=>t,intent:i=>i,quality:q=>q,toast:()=>{},
     showAlertDialog(){throw new Error('preview');},navigationParams:()=>({}),ensureRegistry:async()=>{}};
   const status=new (h.load('./viewmodel/ConversionStatusVM').ConversionStatusVM)(store,ui);
@@ -111,7 +111,7 @@ async function main(){
   const planner=new (h.load('./viewmodel/ConversionPlanner').ConversionPlannerService)(h.load('./services/FormatRegistry').FormatRegistry.shared());
   const formats=new (h.load('./viewmodel/FormatSelectionVM').FormatSelectionVM)(h.load('./services/FormatRegistry').FormatRegistry.shared(),planner,fidelity,status,ui);
   const files=new (h.load('./viewmodel/FileAuthorizationVM').FileAuthorizationVM)(f.manager,status,formats,ui);
-  const coordinator=new (h.load('./viewmodel/ConverterCoordinator').ConverterCoordinator)(formats,files,status,store,planner,ui);
+  const coordinator=new (h.load('./viewmodel/ConverterCoordinator').ConverterCoordinator)(formats,files,status,store,planner,ui,preflight);
   coordinator.appear();return {status,fidelity,formats,files,coordinator};
  }
  await test('Independent converter VMs retain all formats, original route filters and quality ordering without cloning',async()=>{
@@ -132,8 +132,10 @@ async function main(){
  });
  await test('Submission throws clear UI authorization in finally and release the owned draft for retry',async()=>{
   const f=fixture(),store={...f.h.store, snapshot:()=>[],subscribe:()=>1,unsubscribe:()=>{},submitTask:async()=>{throw new Error('failure');}};
-  const c=converter(f,store);await flush();f.select(['report.pdf']);await c.files.pickSourceFiles();
-  c.formats.selectTarget(c.formats.targetFormats.findIndex(t=>t.id==='png'));c.coordinator.start();
+  // This case tests submission cleanup after an accepted preflight. Actual capability
+  // gates, failures and late results are exercised in check-device-entry.cjs.
+  const c=converter(f,store,{inspect:async()=>{}});await flush();f.select(['report.pdf']);await c.files.pickSourceFiles();
+  c.formats.selectTarget(c.formats.targetFormats.findIndex(t=>t.id==='png'));await c.coordinator.startAuthorized();
   assert.ok(c.status.realConfirmationText);await c.coordinator.beginAuthorized();
   assert.equal(c.files.authorizedFiles.length,0);assert.equal(c.files.sessionContext,null);assert.equal(c.files.fileSubmitting,false);
   assert.equal(f.manager.activeSessions().length,0);assert.ok(c.status.errorText);c.coordinator.hide(true);

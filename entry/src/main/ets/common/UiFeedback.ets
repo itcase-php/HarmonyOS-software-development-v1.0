@@ -1,3 +1,4 @@
+import { LanguageManager } from './LanguageManager';
 import { ConverterNavigationParams } from '../models/InteractionModels';
 import { ErrorHandler } from './ErrorHandler';
 
@@ -9,11 +10,11 @@ export class UiFeedback {
 
   static async open(context: UIContext, url: string, params?: ConverterNavigationParams): Promise<void> {
     try { await context.getRouter().pushUrl({ url: url, params: params }); }
-    catch (error) { ErrorHandler.toast(context, error, '页面跳转失败；预览时可单独选择对应页面查看'); }
+    catch (error) { ErrorHandler.toast(context, error, LanguageManager.getString('navigation_failed')); }
   }
 
   static back(context: UIContext): void {
     try { context.getRouter().back(); }
-    catch (error) { ErrorHandler.toast(context, error, '当前没有可返回的页面'); }
+    catch (error) { ErrorHandler.toast(context, error, LanguageManager.getString('navigation_no_back')); }
   }
 }

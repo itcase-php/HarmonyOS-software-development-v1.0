@@ -1,0 +1,81 @@
+> hvigor UP-TO-DATE :entry:default@PreBuild...
+> hvigor Finished :entry:default@CreateModuleInfo... after 1 ms
+> hvigor UP-TO-DATE :entry:default@GenerateMetadata...
+> hvigor Finished :entry:default@ConfigureCmake... after 17 ms
+> hvigor UP-TO-DATE :entry:default@MergeProfile...
+> hvigor UP-TO-DATE :entry:default@CreateBuildProfile...
+> hvigor Finished :entry:default@PreCheckSyscap... after 1 ms
+> hvigor Finished :entry:default@GeneratePkgSdkInfo... after 6 ms
+> hvigor Finished :entry:default@ProcessIntegratedHsp... after 1 ms
+> hvigor Finished :entry:default@BuildNativeWithCmake... after 41 ms
+> hvigor UP-TO-DATE :entry:default@MakePackInfo...
+> hvigor Finished :entry:default@SyscapTransform... after 16 ms
+> hvigor UP-TO-DATE :entry:default@GeneratePkgContextInfo...
+> hvigor UP-TO-DATE :entry:default@ProcessProfile...
+> hvigor UP-TO-DATE :entry:default@ProcessRouterMap...
+> hvigor UP-TO-DATE :entry:default@ProcessShareConfig...
+> hvigor Finished :entry:default@ProcessStartupConfig... after 4 ms
+> hvigor UP-TO-DATE :entry:default@ProcessResource...
+> hvigor UP-TO-DATE :entry:default@GenerateLoaderJson...
+> hvigor UP-TO-DATE :entry:default@CompileResource...
+> hvigor UP-TO-DATE :entry:default@CompileArkTS...
+> hvigor Finished :entry:default@BuildJS... after 3 ms
+> hvigor WARN: When performing compilation for the arm64-v8a architecture:
+clang++: warning: argument unused during compilation: '--gcc-toolchain=D:/DevEco Studio2026/DevEco Studio/sdk/default/hms/native/BiSheng' [-Wunused-command-line-argument]
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:268:12: warning: unused function 'Execute' [-Wunused-function]
+napi_value Execute(napi_env env, napi_callback_info info) {
+           ^
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:279:12: warning: unused function 'Unsupported' [-Wunused-function]
+napi_value Unsupported(napi_env env, napi_callback_info) {
+           ^
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:286:12: warning: unused function 'Control' [-Wunused-function]
+napi_value Control(napi_env env, napi_callback_info info) {
+           ^
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:296:12: warning: unused function 'Subscribe' [-Wunused-function]
+napi_value Subscribe(napi_env env, napi_callback_info) {
+           ^
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:301:12: warning: unused function 'Unsubscribe' [-Wunused-function]
+napi_value Unsubscribe(napi_env env, napi_callback_info) {
+           ^
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:304:12: warning: unused function 'Release' [-Wunused-function]
+napi_value Release(napi_env env, napi_callback_info) {
+           ^
+6 warnings generated.
+
+> hvigor WARN: When performing compilation for the x86_64 architecture:
+clang++: warning: argument unused during compilation: '--gcc-toolchain=D:/DevEco Studio2026/DevEco Studio/sdk/default/hms/native/BiSheng' [-Wunused-command-line-argument]
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:268:12: warning: unused function 'Execute' [-Wunused-function]
+napi_value Execute(napi_env env, napi_callback_info info) {
+           ^
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:279:12: warning: unused function 'Unsupported' [-Wunused-function]
+napi_value Unsupported(napi_env env, napi_callback_info) {
+           ^
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:286:12: warning: unused function 'Control' [-Wunused-function]
+napi_value Control(napi_env env, napi_callback_info info) {
+           ^
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:296:12: warning: unused function 'Subscribe' [-Wunused-function]
+napi_value Subscribe(napi_env env, napi_callback_info) {
+           ^
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:301:12: warning: unused function 'Unsubscribe' [-Wunused-function]
+napi_value Unsubscribe(napi_env env, napi_callback_info) {
+           ^
+D:/HarmonyOS/harmonyOS/entry/src/main/cpp/napi/native_bridge.cpp:304:12: warning: unused function 'Release' [-Wunused-function]
+napi_value Release(napi_env env, napi_callback_info) {
+           ^
+6 warnings generated.
+
+> hvigor Finished :entry:default@BuildNativeWithNinja... after 1 s 55 ms
+> hvigor Finished :entry:default@ProcessLibs... after 71 ms
+> hvigor Finished :entry:default@DoNativeStrip... after 528 ms
+> hvigor Finished :entry:default@CacheNativeLibs... after 9 ms
+> hvigor UP-TO-DATE :entry:default@GeneratePkgModuleJson...
+> hvigor Finished :entry:default@ProcessCompiledResources... after 1 ms
+> hvigor Finished :entry:default@PackageHap... after 440 ms
+> hvigor Finished :entry:default@PackingCheck... after 9 ms
+> hvigor WARN: No signingConfig found for product default
+> hvigor Finished :entry:default@SignHap... after 2 ms
+> hvigor Finished :entry:default@CollectDebugSymbol... after 2 ms
+> hvigor Finished :entry:assembleHap... after 1 ms
+> hvigor BUILD SUCCESSFUL in 5 s 969 ms
+
+33 tasks in total: 19 executed, 14 up-to-date

@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-06",
+  "scope": "actual_arm64_HarmonyOS_phone",
+  "compilerSdkApi": 26,
+  "deviceReportedApi": 24,
+  "deviceIdentity": "omitted",
+  "signedAppBuild": "passed_local_identity_not_published",
+  "signedOhosTestBuild": "passed",
+  "hypium": {
+    "total": 63,
+    "passed": 63,
+    "failed": 0,
+    "error": 0,
+    "includesActualResourceManager": true
+  },
+  "resourceShape": {
+    "paramsCount": 1,
+    "firstParamIsResourceName": false
+  },
+  "ui": {
+    "languageRoundTrip": "zh_en_zh_passed",
+    "chineseDetail": [
+      "ID：pdf",
+      "扩展名：.pdf",
+      "MIME：application/pdf",
+      "操作：导入 / 导出"
+    ],
+    "englishDetail": [
+      "ID: pdf",
+      "Extensions: .pdf",
+      "MIME: application/pdf",
+      "Operations: Import / Export"
+    ]
+  },
+  "input": {
+    "source": "synthetic_minimal_DOCX_no_user_data",
+    "systemPickerImport": "passed",
+    "systemPickerCancel": "passed",
+    "preflightMessage": "此路线所需的离线引擎尚未接入。已保留文件，请更换路线或等待引擎验证完成。",
+    "retainedAfterPreflight": true,
+    "failedTaskCreated": false,
+    "conversionConfirmationShown": false
+  },
+  "notValidated": [
+    "device_reboot_persistence",
+    "all_file_providers",
+    "complete_accessibility",
+    "six_direction_conversion",
+    "real_output_save_share"
+  ],
+  "availableProductionRoutes": 0
+}

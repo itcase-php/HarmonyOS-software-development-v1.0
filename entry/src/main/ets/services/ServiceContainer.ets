@@ -3,6 +3,7 @@ import { FileAuthorizationPlatform, PickedFile } from '../models/SessionModels';
 import { TaskRuntime } from '../models/InteractionModels';
 import { SystemRuntime, withDeadline } from '../common/Deadline';
 import { BridgeError } from '../common/BridgeError';
+import { ConversionDiagnostics } from '../common/ConversionDiagnostics';
 import { FormatRegistryService, FormatRegistry } from './FormatRegistry';
 import { NativeBridgeService, NativeBridge } from './NativeBridge';
 import { FileAuthorizationService, FileAuthorizationManager } from './FileAuthorizationService';
@@ -54,6 +55,7 @@ export class ServiceContainer {
   static initialize(context: common.UIAbilityContext): ServiceContainer {
     const registry: FormatRegistryService = new FormatRegistryService();
     const scope: ServiceContainer = new ServiceContainer(registry, new NativeBridgeService(), new HarmonyFilePlatform(context, registry));
+    ConversionDiagnostics.stage('ServiceContainer', 'initialize', '', scope.files.isAvailable() ? 'HARMONY_PICKER_READY' : 'HARMONY_PICKER_UNAVAILABLE');
     ServiceContainer.currentScope = scope;
     FormatRegistry.useDefault(scope.registry); NativeBridge.useDefault(scope.native);
     FileAuthorizationService.useDefault(scope.files); TaskStore.useDefault(scope.tasks);

@@ -8,6 +8,7 @@ import { util } from '@kit.ArkTS';
 import { fileIo, fileUri, hash, picker, statfs } from '@kit.CoreFileKit';
 import { FileAuthorizationPlatform, PickedFile } from '../models/SessionModels';
 import { BridgeError } from '../common/BridgeError';
+import { ConversionDiagnostics } from '../common/ConversionDiagnostics';
 
 interface FilePlatformFailure { code?: number; }
 
@@ -30,10 +31,15 @@ export class HarmonyFilePlatform implements FileAuthorizationPlatform {
   }
   isAvailable(): boolean {
     try {
-      if (this.context.cacheDir.length === 0 || !canIUse('SystemCapability.FileManagement.UserFileService') ||
-        !canIUse('SystemCapability.FileManagement.File.FileIO')) { return false; }
+      const pickerCapability: boolean = canIUse('SystemCapability.FileManagement.UserFileService');
+      const ioCapability: boolean = canIUse('SystemCapability.FileManagement.File.FileIO');
+      ConversionDiagnostics.stage('HarmonyFilePlatform', 'capability', '',
+        `picker=${pickerCapability},io=${ioCapability},cache=${this.context.cacheDir.length > 0}`);
+      if (this.context.cacheDir.length === 0 || !pickerCapability || !ioCapability) { return false; }
       const documentPicker: picker.DocumentViewPicker = new picker.DocumentViewPicker(this.context);
-      return typeof documentPicker.select === 'function';
+      const selectable: boolean = typeof documentPicker.select === 'function';
+      ConversionDiagnostics.stage('HarmonyFilePlatform', 'construct', '', selectable ? 'OK' : 'SELECT_MISSING');
+      return selectable;
     } catch (error) { ErrorHandler.swallow('HarmonyFilePlatform.fallback', error); return false; }
   }
   cacheDir(): string { return this.context.cacheDir; }
@@ -44,7 +50,9 @@ export class HarmonyFilePlatform implements FileAuthorizationPlatform {
     try {
       const options: picker.DocumentSelectOptions = { maxSelectNumber: maxCount, fileSuffixFilters: [] };
       const documentPicker: picker.DocumentViewPicker = new picker.DocumentViewPicker(this.context);
+      ConversionDiagnostics.stage('HarmonyFilePlatform', 'select');
       const uris: string[] = await documentPicker.select(options);
+      ConversionDiagnostics.stage('HarmonyFilePlatform', uris.length === 0 ? 'cancelled' : 'selected');
       const files: PickedFile[] = [];
       if (uris.length > maxCount) { throw new BridgeError('INVALID_REQUEST', 'FILE_SELECTION_LIMIT'); }
       for (const uri of uris) {
@@ -59,6 +67,7 @@ export class HarmonyFilePlatform implements FileAuthorizationPlatform {
           const file: PickedFile = { uri: uri, fileName: name, fileSize: stat.size,
             mimeType: format && format.mimeTypes.length > 0 ? format.mimeTypes[0] : '' };
           files.push(file);
+          ConversionDiagnostics.stage('HarmonyFilePlatform', 'input_opened');
         } finally { await fileIo.close(source); }
       }
       return files;

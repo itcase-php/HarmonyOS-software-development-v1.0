@@ -19,7 +19,7 @@ export class DemoFidelityReport {
     ];
     return { schemaVersion: 1, intent: task.requestedIntent, requestedTier: task.requestedTier,
       achievedTier: plannedTier, metrics: metrics, fontSubstitutions: [],
-      unsupportedFeatures: ['演示未解析实际文件，复杂元素与字体支持情况未检测'],
+      unsupportedFeatures: ['report_demo_limitation'],
       degradations: allowedDegradations.slice(), requiresManualReview: true,
       detectorVersion: 'demo-fidelity-v1', evidenceRefs: [] };
   }

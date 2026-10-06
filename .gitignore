@@ -32,6 +32,8 @@
 *.app
 /output/pdf/
 /tmp/pdfs/
+# Isolated engine builds include local signing configuration; never publish them.
+/tmp/offline-engines/
 /tests/native/
 
 # OS/editor temporary files

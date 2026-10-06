@@ -1,3 +1,4 @@
+import { LanguageManager, AppLanguage } from '../common/LanguageManager';
 import { ServiceContainer } from '../services/ServiceContainer';
 import { ErrorHandler } from '../common/ErrorHandler';
 import { common } from '@kit.AbilityKit';
@@ -11,25 +12,33 @@ import { TaskStore } from '../viewmodel/TaskStore';
 import { registryMetadata } from '../generated/RegistryData';
 import { FormatRegistry } from '../services/FormatRegistry';
 import { FoundationViewModel } from '../viewmodel/FoundationViewModel';
+import { LanguageToggle } from '../components/LanguageToggle';
 
 @Entry
 @Preview
 @Component
 struct Index {
+  @StorageLink('appLanguage') language: AppLanguage = LanguageManager.currentLanguage;
+  private tr(resource: ResourceStr, args: (string | number)[] = []): string {
+    return LanguageManager.getString(resource, args, this.language);
+  }
+
   private services: ServiceContainer = ServiceContainer.current();
-  @State nativeState: string = '正在检测原生连接，交互演示可用';
+  @State nativeState: string = 'home_checking';
   @State availableCount: number = 0;
-  @State capabilityLabel: string = '检查中';
+  @State capabilityLabel: string = 'checking';
   @State checking: boolean = false;
   @State formatCount: number = this.services.registry.listFormats().length;
   @State routeCount: number = this.services.registry.listPlannedRoutes().length;
   @State tasks: DemoTask[] = [];
+  @State nativeArgs: (string | number)[] = [];
   private viewModel: FoundationViewModel = new FoundationViewModel(this.services.registry, this.services.native);
   private store: TaskStore = this.services.tasks;
   private token: number = -1;
   private active: boolean = false;
 
   aboutToAppear(): void {
+    LanguageManager.bind(this.getUIContext().getHostContext());
     this.observeTasks();
     this.inspect(false);
   }
@@ -64,13 +73,13 @@ struct Index {
         this.routeCount = this.services.registry.listPlannedRoutes().length;
         this.availableCount = this.services.registry.availableRoutes(capabilities).length;
         if (this.availableCount > 0) {
-          this.capabilityLabel = 'Native 已连接';
-          this.nativeState = `${capabilities.abi} · 本地处理 · ${this.availableCount} 条真实可执行路线`;
+          this.capabilityLabel = 'native_connected';
+          this.nativeState = 'home_native'; this.nativeArgs = [capabilities.abi, this.availableCount];
         } else {
-          this.capabilityLabel = '演示可用';
-          this.nativeState = `格式配置已加载 · 演示模式 · ${this.formatCount} 种格式 · ${this.routeCount} 条转换路线`;
+          this.capabilityLabel = 'demo_available';
+          this.nativeState = 'home_demo'; this.nativeArgs = [this.formatCount, this.routeCount];
         }
-        if (feedback) { UiFeedback.toast(this.getUIContext(), '能力检测完成，交互演示可继续使用'); }
+        if (feedback) { UiFeedback.toast(this.getUIContext(), this.tr('home_checked')); }
       }
     } catch (error) {
       if (this.active) {
@@ -78,10 +87,10 @@ struct Index {
         this.formatCount = this.services.registry.listFormats().length;
         this.routeCount = this.services.registry.listPlannedRoutes().length;
         this.availableCount = 0;
-        this.capabilityLabel = '演示可用';
-        this.nativeState = `原生暂不可用（${failure.code ?? 'INTERNAL_ERROR'}），${this.formatCount} 种格式、${this.routeCount} 条规划路线与演示流程仍可使用`;
+        this.capabilityLabel = 'demo_available';
+        this.nativeState = 'home_native_unavailable'; this.nativeArgs = [failure.code ?? 'INTERNAL_ERROR', this.formatCount, this.routeCount];
         if (feedback) {
-          UiFeedback.toast(this.getUIContext(), '当前可使用完整格式目录与演示功能，原生转换暂不可用');
+          UiFeedback.toast(this.getUIContext(), this.tr('home_fallback'));
         }
       }
     } finally { this.checking = false; }
@@ -91,34 +100,36 @@ struct Index {
     Scroll() {
       Column({ space: 12 }) {
         Row({ space: 8 }) {
-          Text('文档转换工具箱').fontSize(28).fontWeight(FontWeight.Bold).fontColor($r('app.color.palette_172b4d')).layoutWeight(1)
+          Text(this.tr('home_title')).fontSize(28).fontWeight(FontWeight.Bold).fontColor($r('app.color.palette_172b4d')).layoutWeight(1)
           Button('?').fontSize(20).fontWeight(FontWeight.Bold).fontColor($r('app.color.palette_007aff')).width(40).height(40)
             .type(ButtonType.Circle).backgroundColor($r('app.color.palette_edf4ff'))
+            .accessibilityText(this.tr('help_a11y'))
             .onClick(() => { UiFeedback.open(this.getUIContext(), 'pages/FeatureGuide'); })
+          LanguageToggle()
         }.width('100%')
-        StatusBadge({ text: this.capabilityLabel, color: $r('app.color.palette_007aff') })
-        Text('浏览格式、体验流程、管理任务').fontSize(16).fontColor($r('app.color.palette_526077'))
+        StatusBadge({ text: this.tr(this.capabilityLabel), color: $r('app.color.palette_007aff') })
+        Text(this.tr('home_subtitle')).fontSize(16).fontColor($r('app.color.palette_526077'))
         Row({ space: 12 }) {
-          ActionCard({ title: '格式浏览器', symbol: '文', description: '搜索、筛选与格式详情',
+          ActionCard({ title: this.tr('browser_title_short'), symbol: this.tr('browser_symbol'), description: this.tr('home_browser_description'),
             onAction: () => { UiFeedback.open(this.getUIContext(), 'pages/FormatBrowser'); } }).layoutWeight(1)
-          ActionCard({ title: '转换执行器', symbol: '⇄', description: '选择格式并体验五阶段演示',
+          ActionCard({ title: this.tr('converter_title'), symbol: '⇄', description: this.tr('home_converter_description'),
             onAction: () => { UiFeedback.open(this.getUIContext(), 'pages/ConverterPage'); } }).layoutWeight(1)
         }.width('100%')
         Row({ space: 12 }) {
-          ActionCard({ title: '任务记录', symbol: '≡', description: '查看、暂停、取消或清理记录',
+          ActionCard({ title: this.tr('history_title'), symbol: '≡', description: this.tr('home_history_description'),
             onAction: () => { UiFeedback.open(this.getUIContext(), 'pages/TaskHistory'); } }).layoutWeight(1)
-          ActionCard({ title: '能力检测', symbol: '✓', description: '检测原生连接与真实能力', busy: this.checking,
+          ActionCard({ title: this.tr('home_capabilities'), symbol: '✓', description: this.tr('home_capabilities_description'), busy: this.checking,
             onAction: () => { this.inspect(true); } }).layoutWeight(1)
         }.width('100%')
         Row({ space: 12 }) {
-          FoundationCard({ label: '格式定义', value: `${this.formatCount}` }).layoutWeight(1)
-          FoundationCard({ label: '规划路线', value: `${this.routeCount}` }).layoutWeight(1)
+          FoundationCard({ label: this.tr('home_formats'), value: `${this.formatCount}` }).layoutWeight(1)
+          FoundationCard({ label: this.tr('home_routes'), value: `${this.routeCount}` }).layoutWeight(1)
         }.width('100%')
-        FoundationCard({ label: '本次会话任务 / 活动任务',
+        FoundationCard({ label: this.tr('home_tasks'),
           value: `${this.tasks.length} / ${this.tasks.filter((task: DemoTask) => isActiveTask(task.status)).length}` })
-        Text(this.nativeState).fontSize(14).fontColor($r('app.color.palette_172b4d'))
-        Text('演示模式不会生成真实文件。当前真实转换引擎尚未接入。').fontSize(14).fontColor($r('app.color.palette_526077'))
-        Text(`V1.0 交互开发版 · 配置 ${registryMetadata.configVersion}`).fontSize(12).fontColor($r('app.color.palette_526077'))
+        Text(this.tr(this.nativeState, this.nativeArgs)).fontSize(14).fontColor($r('app.color.palette_172b4d'))
+        Text(this.tr('home_gate_notice')).fontSize(14).fontColor($r('app.color.palette_526077'))
+        Text(this.tr('home_version', [registryMetadata.configVersion])).fontSize(12).fontColor($r('app.color.palette_526077'))
       }
       .alignItems(HorizontalAlign.Start)
       .padding(24)

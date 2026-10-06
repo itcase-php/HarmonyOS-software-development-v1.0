@@ -1,0 +1,139 @@
+{
+  "date": "2026-10-06",
+  "scope": "isolated_Stage_feasibility_not_production_conversion",
+  "dependencies": {
+    "leptonica": {
+      "version": "1.85.0",
+      "url": "https://codeload.github.com/DanBloomberg/leptonica/tar.gz/refs/tags/1.85.0",
+      "sha256": "c01376bce0379d4ea4bc2ec5d5cbddaa49e2f06f88242619ab8c059e21adf233",
+      "license": "BSD-2-Clause"
+    },
+    "tesseract": {
+      "version": "5.5.1",
+      "url": "https://codeload.github.com/tesseract-ocr/tesseract/tar.gz/refs/tags/5.5.1",
+      "sha256": "a7a3f2a7420cb6a6a94d80c24163e183cf1d2f1bed2df3bbc397c81808a57237",
+      "license": "Apache-2.0"
+    },
+    "models": {
+      "repository": "https://github.com/tesseract-ocr/tessdata_fast",
+      "commit": "87416418657359cb625c412a48b6e1d6d41c29bd",
+      "license": "Apache-2.0",
+      "licenseSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2",
+      "chi_sim": "a5fcb6f0db1e1d6d8522f39db4e848f05984669172e584e8d76b6b3141e1f730"
+    }
+  },
+  "libraries": [
+    {
+      "abi": "arm64-v8a",
+      "bytes": 5215392,
+      "sha256": "3f99698a13a8f656dd40159e7055f626d4679f1c06dbbb6df2ae72a6646d1230",
+      "elfMachine": 183,
+      "builtWith": "HarmonyOS HMS BiSheng Clang15.0.4",
+      "deviceLoad": "not_executed_standalone_release_probe"
+    },
+    {
+      "abi": "x86_64",
+      "bytes": 5355736,
+      "sha256": "ec745ebe4d162b187789ac2453c98b0fe45b20a67f5988d58fa429592343abd2",
+      "elfMachine": 62,
+      "builtWith": "HarmonyOS HMS BiSheng Clang15.0.4",
+      "deviceLoad": "not_executed_standalone_release_probe"
+    }
+  ],
+  "testHapBytes": 19358094,
+  "testHapHashNotPublished": "local_personal_signature",
+  "network": {
+    "internetPermission": false,
+    "modelsBundled": true,
+    "wholePhoneAirplaneModeTest": "not_executed"
+  },
+  "corpus": {
+    "privateFilesUsed": false,
+    "pgm": {
+      "width": 1400,
+      "height": 260,
+      "sha256": "e94776df51fe49d88d0520de165392f3f5d6cba706da3ecdecf981a67ff44864"
+    },
+    "pdf": {
+      "pages": 2,
+      "types": [
+        "text",
+        "scan"
+      ],
+      "sha256": "3da2df77a8603d9695f2f226ee30c8759b6bf72ec5fe7f4abb3cb594c561a98c"
+    }
+  },
+  "device": {
+    "reportedApi": 24,
+    "architecture": "arm64-v8a",
+    "directOcr": {
+      "elapsedMs": 201.828645,
+      "processPeakKiB": 120784,
+      "engineMeanConfidence": 92
+    },
+    "pdfKit": {
+      "pages": 2,
+      "textObjects": "Harmony PDFKit text 12345",
+      "renderSizes": [
+        "600x200",
+        "1400x260"
+      ],
+      "scanHasExtractedText": false,
+      "scanOcr": "passed"
+    },
+    "renderedScanOcr": {
+      "english": "Harmony offline OCR 12345",
+      "chinese": "鸿 蒙 离 线 文档 转换 67890",
+      "elapsedMs": 212.155208,
+      "processPeakKiB": 151488,
+      "engineMeanConfidence": 92
+    },
+    "repeatAfterPdf": {
+      "result": "passed",
+      "elapsedMs": 209.167187,
+      "processPeakKiB": 172976,
+      "engineMeanConfidence": 92,
+      "note": "process_lifetime_high_water_after_PDF_and_previous_OCR_not_incremental_engine_allocation"
+    }
+  },
+  "measurementLimits": [
+    "OCR_worker_only_excludes_PDF_render_model_copy",
+    "ru_maxrss_process_peak_includes_VM_ArkUI",
+    "no_full_document_accuracy_or_fidelity_score",
+    "no_native_memory_hard_limit_verified",
+    "no_300page_temp_space_or_font_package_measurement"
+  ],
+  "resolvedTestFailures": [
+    "shell_executable_permission_denied_used_signed_Stage_HAP",
+    "existing_cache_directory_recreation_fixed_with_access_check"
+  ],
+  "libreOffice": {
+    "commit": "6804c10b45d52787c1e865e3ad192d7dfc7d4862",
+    "configureAcSha256": "2da1d3c5933c9f3c5d589477284601322ff088a93cc4f01c8de6f510e577f64d",
+    "ohosPlatformBranch": "missing",
+    "unknownOsRejectLines": [
+      1306,
+      5914
+    ],
+    "evidenceLevel": "source_audit_not_full_target_build",
+    "targetLibrary": "not_built"
+  },
+  "productionIntegration": false,
+  "sixDirections": "not_implemented",
+  "releaseRoutesOpened": 0,
+  "actualStagePackagedLibraries": [
+    {
+      "deviceLoad": "passed",
+      "sha256": "e6401e243ef66eb81c25e9e77ab5d0956018646d55391acdd0f20665c7dbfb4d",
+      "packageEntry": "libs/arm64-v8a/libhdm_ocr_probe.so",
+      "bytes": 4372032
+    },
+    {
+      "deviceLoad": "not_executed",
+      "sha256": "d92d948b3f4e04f71a7d490d3059ad2cd7bd4f26d060e401026391d70bb09b27",
+      "packageEntry": "libs/x86_64/libhdm_ocr_probe.so",
+      "bytes": 4760024
+    }
+  ]
+}

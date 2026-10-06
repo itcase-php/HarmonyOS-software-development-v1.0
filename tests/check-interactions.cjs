@@ -23,8 +23,18 @@ function host(options = {}) {
   const timers = new Map();
   const timeouts = timers;
   const cache = new Map();
+  const languageState = options.languageState || new Map();
+  const persistedLanguage = options.persistedLanguage || new Map();
   class ClockDate extends Date { static now() { return clock; } }
-  const context = vm.createContext({Date:ClockDate,Map,Math,Number,Array,Error,Object,Promise,String,Uint8Array,console,Observed:target=>target,$r:name=>({id:name}),
+  const context = vm.createContext({Date:ClockDate,Map,Math,Number,Array,Error,Object,Promise,String,Uint8Array,console,Observed:target=>target,
+    $r:(name,...args)=>({id:name,params:[name,...args]}),
+    AppStorage:{get:key=>languageState.get(key),setOrCreate:(key,value)=>{
+      languageState.set(key,value);if(persistedLanguage.has(key))persistedLanguage.set(key,value);
+    }},
+    PersistentStorage:{persistProp:(key,value)=>{
+      if(!persistedLanguage.has(key))persistedLanguage.set(key,value);
+      languageState.set(key,persistedLanguage.get(key));
+    }},
     canIUse:()=>options.cryptoAvailable!==false,
     setInterval(callback) { timers.set(++intervalId,callback); return intervalId; },
     clearInterval(id) { timers.delete(id); },
@@ -32,7 +42,9 @@ function host(options = {}) {
     clearTimeout(id) { timeouts.delete(id); }});
   function load(relative, from=sourceRoot) {
     if (options.sdkModules && Object.prototype.hasOwnProperty.call(options.sdkModules,relative)) return options.sdkModules[relative];
+    if (relative === '@kit.PerformanceAnalysisKit') return {hilog:{info:()=>{},warn:()=>{}}};
     if (relative === '@kit.CoreFileKit') return {};
+    if (relative === '@kit.LocalizationKit') return {i18n:{System:{getSystemLanguage:()=>options.systemLanguage || 'zh-CN'}}};
     if (relative === '@ohos/hypium' && options.hypium) return options.hypium;
     if (relative === '@kit.ArkTS') return {util:{generateRandomUUID:()=>crypto.randomUUID(),TextDecoder:{create:(encoding,settings)=>{
       const decoder=new TextDecoder(encoding,settings);return {decodeToString:bytes=>decoder.decode(bytes)};
@@ -149,11 +161,13 @@ async function main() {
       h.step(moment-previousMoment); previousMoment=moment; h.store.advance(h.now());
       const task=h.store.snapshot()[0];
       assert.ok(task.progress>=previous); previous=task.progress;
-      assert.ok(task.stage.includes(labels[index]));
+      const {LanguageManager}=h.load('./common/LanguageManager');
+      assert.ok(LanguageManager.stage(task.stage,task.stageArgs).includes(labels[index]));
     });
     const done=h.store.snapshot()[0];
     assert.equal(done.mode,'demo'); assert.equal(done.status,'completed');
-    assert.equal(done.progress,100); assert.ok(done.resultLabel.includes('未生成文件'));
+    assert.equal(done.progress,100);
+    assert.ok(h.load('./common/LanguageManager').LanguageManager.getString(done.resultLabel,done.resultArgs).includes('未生成文件'));
     assert.equal(done.outputs,undefined); assert.equal(h.timers.size,0);
   });
   await test('Pause freezes progress; resume excludes paused wall time',()=>{

@@ -8,6 +8,7 @@ import fidelityReportSnapshotTest from './FidelityReportSnapshot.test';
 import formatRegistryTest from './FormatRegistry.test';
 import fidelitySettingsVMTest from './FidelitySettingsVM.test';
 import formatDetectorTest from './FormatDetector.test';
+import languageResourceTest from './LanguageResource.test';
 
 export default function testsuite() {
   abilityTest();
@@ -20,4 +21,5 @@ export default function testsuite() {
   formatRegistryTest();
   fidelitySettingsVMTest();
   formatDetectorTest();
+  languageResourceTest();
 }
