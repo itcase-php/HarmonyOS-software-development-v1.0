@@ -6,7 +6,8 @@ import pathlib
 import re
 import subprocess
 
-PIN = "6804c10b45d52787c1e865e3ad192d7dfc7d4862"
+upstream = json.loads(pathlib.Path(__file__).with_name("upstream.json").read_text())
+PIN = upstream["revision"]
 parser = argparse.ArgumentParser()
 parser.add_argument("source", type=pathlib.Path)
 parser.add_argument("sdk", type=pathlib.Path)
@@ -14,8 +15,11 @@ args = parser.parse_args()
 revision = subprocess.check_output(["git", "-C", str(args.source), "rev-parse", "HEAD"], text=True).strip()
 if revision != PIN:
     raise SystemExit("Expected the approved source revision")
-configure = (args.source / "configure.ac").read_bytes()
+configure = subprocess.check_output(["git", "-C", str(args.source), "show", "HEAD:configure.ac"])
 text = configure.decode().replace("\r\n", "\n")
+digest = hashlib.sha256(text.encode()).hexdigest()
+if digest != upstream["configureSha256Lf"]:
+    raise SystemExit("Upstream configure digest does not match the approved revision")
 guard = re.search(r'if test "\$CLANGVER" -ge (\d+); then.*?must be at least Clang (\d+)', text, re.S)
 if not guard:
     raise SystemExit("Cannot locate the upstream compiler prerequisite")
@@ -26,8 +30,8 @@ major, minor, patch = map(int, version.split("."))
 numeric = major * 10000 + min(minor, 99) * 100 + min(patch, 99)
 compatible = numeric >= int(guard.group(1))
 print(json.dumps({"scope": "upstream_compiler_prerequisite_only", "revision": revision,
-    "configureSha256Lf": hashlib.sha256(text.encode()).hexdigest(), "target": "aarch64-linux-ohos",
+    "configureSha256Lf": digest, "version": upstream["version"], "target": "aarch64-linux-ohos",
     "sdk": json.loads((args.sdk / "oh-uni-package.json").read_text()), "compilerVersion": version,
     "requiredClangMajor": int(guard.group(2)), "result": "passed" if compatible else "blocked",
-    "officeBuild": "not_completed", "officeDeviceConversion": "not_executed"}, indent=2))
+    "officeBuild": "not_checked", "officeDeviceConversion": "not_executed_by_this_check"}, indent=2))
 raise SystemExit(0 if compatible else 2)

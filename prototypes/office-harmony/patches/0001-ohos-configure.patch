@@ -1,0 +1,73 @@
+diff --git a/config.sub b/config.sub
+index baf1512b3..418ee971e 100644
+--- a/config.sub
++++ b/config.sub
+@@ -1716,7 +1716,7 @@ fi
+ # Now, validate our (potentially fixed-up) OS.
+ case $os in
+ 	# Sometimes we do "kernel-libc", so those need to count as OSes.
+-	musl* | newlib* | relibc* | uclibc*)
++	musl* | newlib* | relibc* | uclibc* | ohos*)
+ 		;;
+ 	# Likewise for "kernel-abi"
+ 	eabi* | gnueabi*)
+@@ -1779,7 +1779,7 @@ esac
+ # (given a valid OS), if there is a kernel.
+ case $kernel-$os in
+ 	linux-gnu* | linux-dietlibc* | linux-android* | linux-newlib* \
+-		   | linux-musl* | linux-relibc* | linux-uclibc* | linux-mlibc* )
++		   | linux-musl* | linux-relibc* | linux-uclibc* | linux-mlibc* | linux-ohos* )
+ 		;;
+ 	uclinux-uclibc* )
+ 		;;
+diff --git a/configure.ac b/configure.ac
+index 73b529c98..d32a4cebf 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1025,6 +1025,17 @@ solaris*)
+     fi
+     ;;
+ 
++# Initial OHOS port: use the POSIX/musl Linux gbuild rules with the
++# official OHOS compiler and sysroot. No desktop Linux libraries are used.
++linux-ohos*)
++    using_freetype_fontconfig=yes
++    using_x11=no
++    build_skia=no
++    test_openldap=no
++    test_webdav=no
++    _os=Linux
++    ;;
++
+ linux-gnu*|k*bsd*-gnu*|linux-musl*)
+     using_freetype_fontconfig=yes
+     using_x11=yes
+@@ -5550,7 +5561,7 @@ kfreebsd*)
+     esac
+     ;;
+ 
+-linux-gnu*|linux-musl*)
++linux-gnu*|linux-musl*|linux-ohos*)
+     COM=GCC
+     OS=LINUX
+     RTL_OS=Linux
+@@ -5676,6 +5687,10 @@ linux-gnu*|linux-musl*)
+         AC_MSG_ERROR([Unsupported host_cpu $host_cpu for host_os $host_os])
+         ;;
+     esac
++    if test "$host_os" = "linux-ohos"; then
++        RTL_OS=OHOS
++        PLATFORMID=ohos_$host_cpu
++    fi
+     ;;
+ 
+ linux-android*)
+@@ -5948,7 +5963,7 @@ fi
+ 
+ DISABLE_GUI=""
+ if test "$enable_gui" = "no"; then
+-    if test "$using_x11" != yes; then
++    if test "$using_x11" != yes -a "$host_os" != linux-ohos; then
+         AC_MSG_ERROR([$host_os operating system is not suitable to build LibreOffice with --disable-gui.])
+     fi
+     USING_X11=

@@ -1,0 +1,14 @@
+diff --git a/i18nutil/source/utility/paper.cxx b/i18nutil/source/utility/paper.cxx
+index ddad0b26d..ba5adbc25 100644
+--- a/i18nutil/source/utility/paper.cxx
++++ b/i18nutil/source/utility/paper.cxx
+@@ -230,7 +230,8 @@ PaperInfo PaperInfo::getSystemDefaultPaper()
+ 
+     OUString aLocaleStr = officecfg::Setup::L10N::ooSetupSystemLocale::get();
+ 
+-#ifdef UNX
++// OHOS uses the locale fallback instead of desktop paperconf/glibc discovery.
++#if defined(UNX) && !defined(__OHOS__)
+     // if set to "use system", get papersize from system
+     if (aLocaleStr.isEmpty())
+     {
