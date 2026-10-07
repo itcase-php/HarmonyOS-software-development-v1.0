@@ -26,7 +26,7 @@ bash prototypes/office-harmony/configure-ohos.sh \
 make -C "$OFFICE_BUILD" -j4 build
 ```
 
-三个变量由调用者设置为绝对路径；源码与输出应放在 WSL 文件系统，避免 Windows 盘上的大规模小文件 I/O。主机还需要 `autoconf-archive`、`autopoint` 来生成 fontconfig 的配置脚本。第三方依赖由固定上游下载清单校验 SHA-256。没有打包字体；字体授权、随包资源及缺失字体策略仍需完成。构建关闭 WebDAV/CMIS 连接器、Java/Python、GUI、数据库与 PDF 导入功能，保留 Writer/Impress 和 PDF 输出；含内嵌 PDF 的复杂 Office 文件需要另行验收。不据此宣称文档外链已通过安全验收。
+三个变量由调用者设置为绝对路径；源码与输出应放在 WSL 文件系统，避免 Windows 盘上的大规模小文件 I/O。主机还需要 `autoconf-archive`、`autopoint` 来生成 fontconfig 的配置脚本。第三方依赖由固定上游下载清单校验 SHA-256。没有打包字体；字体授权、随包资源及缺失字体策略仍需完成。构建关闭 WebDAV/CMIS 连接器、Java/Python、GUI、Firebird/PostgreSQL/MariaDB 驱动与 PDF 导入功能，保留文档表单需要的基础数据库连接工具、Writer/Impress 和 PDF 输出；含内嵌 PDF 的复杂 Office 文件需要另行验收。不据此宣称文档外链已通过安全验收。
 
 本轮详细状态见 [26.2.6.2 移植记录](../../docs/OFFICE-26.2-PORT.md)。
 

@@ -42,11 +42,11 @@ exec perl "$source_dir/autogen.sh" \
     --disable-gtk3 --disable-kf5 --disable-kf6 --disable-qt5 --disable-qt6 \
     --disable-skia --disable-cups --disable-dbus --disable-dconf \
     --disable-gstreamer-1-0 --disable-avmedia --disable-pdfium --disable-pdfimport \
-    --disable-database-connectivity --disable-firebird-sdbc --disable-postgresql-sdbc \
+    --disable-firebird-sdbc --disable-postgresql-sdbc \
     --disable-odk --disable-online-update --disable-xmlhelp \
     --disable-gpgmepp --disable-nss --without-gssapi --disable-libcmis --without-webdav --with-tls=openssl --enable-openssl --disable-opencl --disable-mariadb-sdbc \
     --disable-lpsolve --disable-coinmp --disable-extensions --with-galleries=no \
     --without-system-libs --without-system-fontconfig --without-system-freetype --without-myspell-dicts --without-fonts \
     --disable-mergelibs --disable-symbols --with-parallelism=4 \
     --with-locales='en zh' \
-    --with-build-platform-configure-options='--disable-gui --without-java --disable-python --disable-gtk3 --disable-kf5 --disable-kf6 --disable-qt5 --disable-qt6 --disable-skia --disable-cups --disable-dbus --disable-dconf --disable-gstreamer-1-0 --disable-avmedia --disable-pdfium --disable-pdfimport --disable-database-connectivity --disable-odk --disable-online-update --disable-xmlhelp --disable-gpgmepp --disable-nss --without-gssapi --disable-libcmis --without-webdav --with-tls=openssl --enable-openssl --disable-opencl --disable-mariadb-sdbc --disable-lpsolve --disable-coinmp --disable-extensions --with-galleries=no --without-system-libs --without-myspell-dicts --without-fonts --disable-symbols --with-parallelism=4 --with-system-fontconfig --with-system-freetype PKG_CONFIG_LIBDIR=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig PKG_CONFIG_SYSROOT_DIR=/'
+    --with-build-platform-configure-options='--disable-gui --without-java --disable-python --disable-gtk3 --disable-kf5 --disable-kf6 --disable-qt5 --disable-qt6 --disable-skia --disable-cups --disable-dbus --disable-dconf --disable-gstreamer-1-0 --disable-avmedia --disable-pdfium --disable-pdfimport --disable-firebird-sdbc --disable-postgresql-sdbc --disable-odk --disable-online-update --disable-xmlhelp --disable-gpgmepp --disable-nss --without-gssapi --disable-libcmis --without-webdav --with-tls=openssl --enable-openssl --disable-opencl --disable-mariadb-sdbc --disable-lpsolve --disable-coinmp --disable-extensions --with-galleries=no --without-system-libs --without-myspell-dicts --without-fonts --disable-symbols --with-parallelism=4 --with-system-fontconfig --with-system-freetype PKG_CONFIG_LIBDIR=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig PKG_CONFIG_SYSROOT_DIR=/'

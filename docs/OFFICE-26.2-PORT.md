@@ -30,6 +30,8 @@ SDK libc++ 还缺少 `stringstream::view()`。LOK 选择对象 JSON 的两处读
 
 完整构建中的 Calc 字符区间表使用 SDK 缺少的 `std::ranges::all_of/is_sorted`。已改为标准迭代器版本，保留原条件及编译期断言，不开放新的应用路线。
 
+`libsvxcore` 链接实际缺少 `dbtools` 符号。上游明确将 `--disable-database-connectivity` 标为尚在开发的选项，当前文档表单代码未完全隔离这些依赖；已撤销这项裁剪，恢复上游基础连接工具。Firebird/PostgreSQL/MariaDB 驱动仍关闭；不开放正式应用的数据库功能。
+
 新增独立 [LibreOfficeKit 验证程序](../prototypes/office-harmony/lok-probe/main.cpp)，执行真实初始化、加载、PDF 导出和资源释放。官方 SDK arm64 编译和链接成功；ELF64/AArch64，动态依赖为 `libc++_shared.so`、`libc.so`。它只在运行时加载引擎，因此这个结果不是引擎构建成功。主机侧参数错误返回 64、引擎目录不存在返回 2，并确认没有创建 PDF；没有运行真实转换。
 
 完整目标构建进行中。现有五页、18 种格式、43 条路线、JPEG Debug 白名单、Native 协议及 Office 工厂没有修改。Office 路线仍不可用。
