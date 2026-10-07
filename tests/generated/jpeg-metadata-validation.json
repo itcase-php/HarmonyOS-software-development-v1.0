@@ -1,0 +1,101 @@
+{
+  "scope": "JPEG_EXIF_ICC_compatibility_real_native_Debug_conversion",
+  "checkedAtUtc": "2026-10-07T11:58:59.926945+00:00",
+  "project": "D:/HarmonyOS/harmonyOS",
+  "beforeFix": "valid_EXIF_rejected_as_UNSUPPORTED_FEATURE",
+  "supported": [
+    "bounded_EXIF_orientation_1_to_8_and_resolution",
+    "bounded_RGB_GRAY_ICC_v2_v4"
+  ],
+  "stillRejected": [
+    "progressive_arithmetic_lossless_CMYK",
+    "XMP_unknown_APP_late_metadata",
+    "non_sRGB_EXIF_without_matching_ICC",
+    "oversized_or_invalid_metadata"
+  ],
+  "host": {
+    "passedGroups": [
+      "debug-routes",
+      "migration",
+      "audit",
+      "input-management",
+      "architecture",
+      "device-entry",
+      "fidelity",
+      "runtime-language",
+      "interactions",
+      "copy-safety",
+      "refactor",
+      "hypium-host"
+    ],
+    "nativeCTest": "25/25",
+    "independentMetadataCases": 30,
+    "existingPrototypeIntegrationCases": 15,
+    "suppliedAttachment": "host_conversion_and_render_passed"
+  },
+  "applicationBuild": {
+    "result": "passed",
+    "mode": "Debug",
+    "builds": [
+      {
+        "abi": "arm64-v8a",
+        "nativeDebug": true,
+        "sourceDigestsVerified": true,
+        "imageBuildManifestSha256": "c1d552552cf1640a8abc65b18d8e32e51bd758382b8d0b07186801aee017a4d3"
+      },
+      {
+        "abi": "x86_64",
+        "nativeDebug": true,
+        "sourceDigestsVerified": true,
+        "imageBuildManifestSha256": "d0aedea27a8e36657b38c1f3bfdc7808064c83922aa99d1c2543bd249ff55e04"
+      }
+    ],
+    "signedHapSha256": "514b118111ea34fa5d6fa483a55917e5aea5257ff562b2e61cd04fb4d325d11a",
+    "testFixturesAbsent": true
+  },
+  "ohosTestBuild": {
+    "result": "passed",
+    "signedHapSha256": "e532fcfa62ae6afa09bc2c1a0922d878c9a55727d748e65b480a60da0132397f",
+    "syntheticMetadataFixturePresent": true
+  },
+  "device": {
+    "hypiumPassed": 65,
+    "hypiumFailed": 0,
+    "hypiumErrors": 0,
+    "actualNativeConversion": [
+      "synthetic_baseline",
+      "synthetic_EXIF_6_with_ICC"
+    ],
+    "installationAndLaunch": "passed",
+    "runnerLogSha256": "be082a93b9d272ed9be09e4313ce1350f748cf7802160d5d12242c5c03389b8c"
+  },
+  "independentDevicePdf": {
+    "name": "device-metadata",
+    "result": "passed",
+    "jpegPayloadIdentical": true,
+    "iccBytesPreserved": 588,
+    "orientation": 6,
+    "renderedSize": [
+      16,
+      24
+    ],
+    "meanAbsoluteRenderedDifference": 1.6119791666666667,
+    "pdfSha256": "47335835fb32063bc25d7d31cb5fef45ee22faed7cd70e1fe93f0bfc786eb18b"
+  },
+  "preservedPolicies": [
+    "Debug_only",
+    "native_protocol",
+    "input_digest_and_grants",
+    "resource_limits",
+    "atomic_create_only_commit",
+    "personal_signing_configuration"
+  ],
+  "notTested": [
+    "original_image_named_inside_screenshot",
+    "user_attachment_on_device",
+    "system_Picker_save_share_UI",
+    "first_launch_offline",
+    "Release_acceptance"
+  ],
+  "officeRoutes": "not_integrated_not_opened"
+}

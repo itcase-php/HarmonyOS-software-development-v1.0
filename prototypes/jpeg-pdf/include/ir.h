@@ -17,6 +17,8 @@ struct ImageRef {
     std::uint64_t byteSize{};
     double widthPt{}, heightPt{};
     std::string styleId;
+    std::uint32_t orientation{1};
+    std::vector<unsigned char> iccProfile{};
 };
 struct PageNode { double widthPt{}, heightPt{}; std::vector<ImageRef> images; };
 struct DocumentIR { std::uint32_t version{1}; std::vector<PageNode> pages; std::vector<StyleRef> styles; };
@@ -34,6 +36,7 @@ struct IRBuilder {
 struct PdfCandidate {
     std::uint64_t bytes{}, imageOffset{}, imageBytes{}, trackedAllocationPeak{}, tempPeak{};
     bool payloadIdentical{};
+    std::uint32_t iccBytes{}, iccComponents{};
 };
 struct IRWriter {
     virtual ~IRWriter() = default;

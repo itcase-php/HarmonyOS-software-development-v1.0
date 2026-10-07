@@ -26,12 +26,13 @@ async function expectProbeFailure(native: NativeBridgeService, request: ProbeReq
 
 export default function jpegDebugSmokeTest() {
   describe('JpegDebugSmoke', () => {
-    it('converts the bundled baseline JPEG through the real Debug Native bridge', 0, async () => {
+    for (const fixtureName of ['jpeg-debug-baseline.jpg', 'jpeg-debug-exif-icc.jpg']) {
+    it('converts ' + fixtureName + ' through the real Debug Native bridge', 0, async () => {
       const ability = await abilityDelegatorRegistry.getAbilityDelegator().getCurrentTopAbility();
       const context = ability.context;
       const testContext = await application.createModuleContext(context, 'entry_test');
-      const fixture = await testContext.resourceManager.getRawFileContent('jpeg-debug-baseline.jpg');
-      expect(fixture.byteLength).assertEqual(634);
+      const fixture = await testContext.resourceManager.getRawFileContent(fixtureName);
+      if (fixtureName === 'jpeg-debug-baseline.jpg') { expect(fixture.byteLength).assertEqual(634); }
       const testRoot = context.cacheDir + '/jpeg-debug-smoke-' + Date.now().toString();
       const root = testRoot + '/cache';
       const workspaceId = '11111111111111111111111111111111';
@@ -58,7 +59,8 @@ export default function jpegDebugSmokeTest() {
         const workspaceRef = await native.registerWorkspace({ sessionId, taskId, attemptId,
           relativeDirectory: 'workspace/' + workspaceId });
         const input: PreparedInput = { fileId, sourceFormatId: 'jpeg', relativePath: 'inputs/' + fileId,
-          byteSize: fixture.byteLength, sha256: 'dc9e246d39d38fb43ce0b784dc1c14baf9a3997466bb4c0a2ba65a39851417b5' };
+          byteSize: fixture.byteLength,
+          sha256: (await hash.hash(root + '/workspace/' + workspaceId + '/inputs/' + fileId, 'sha256')).toLowerCase() };
         const probes = await native.probeInputs({ schemaVersion: 1, sessionId, workspaceRef,
           inputs: [input], resourceBudget: registryMetadata.defaultBudget });
         expect(probes.length).assertEqual(1);
@@ -66,15 +68,15 @@ export default function jpegDebugSmokeTest() {
         expect(probes[0].protection).assertEqual('none');
         expect(probes[0].needsDeepCheck).assertFalse();
         const inputPath = root + '/workspace/' + workspaceId + '/inputs/' + fileId;
-        const withExif = new Uint8Array(fixture.byteLength + 10);
-        withExif.set(fixture.subarray(0, 2));
-        withExif.set(new Uint8Array([255, 225, 0, 8, 69, 120, 105, 102, 0, 0]), 2);
-        withExif.set(fixture.subarray(2), 12);
+        const withUnknownSegment = new Uint8Array(fixture.byteLength + 10);
+        withUnknownSegment.set(fixture.subarray(0, 2));
+        withUnknownSegment.set(new Uint8Array([255, 227, 0, 8, 111, 112, 97, 113, 117, 101]), 2);
+        withUnknownSegment.set(fixture.subarray(2), 12);
         const metadataFile = fileIo.openSync(inputPath, fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
-        try { expect(fileIo.writeSync(metadataFile.fd, withExif.buffer)).assertEqual(withExif.byteLength); }
+        try { expect(fileIo.writeSync(metadataFile.fd, withUnknownSegment.buffer)).assertEqual(withUnknownSegment.byteLength); }
         finally { fileIo.closeSync(metadataFile); }
         const metadataInput: PreparedInput = { fileId, sourceFormatId: 'jpeg', relativePath: input.relativePath,
-          byteSize: withExif.byteLength, sha256: (await hash.hash(inputPath, 'sha256')).toLowerCase() };
+          byteSize: withUnknownSegment.byteLength, sha256: (await hash.hash(inputPath, 'sha256')).toLowerCase() };
         await expectProbeFailure(native, { schemaVersion: 1, sessionId, workspaceRef,
           inputs: [metadataInput], resourceBudget: registryMetadata.defaultBudget },
           'UNSUPPORTED_FEATURE', 'NATIVE_JPEG_METADATA_UNSUPPORTED');
@@ -121,8 +123,16 @@ export default function jpegDebugSmokeTest() {
           expect(fileIo.readSync(output.fd, bytes, { offset: 0, length: artifact.byteSize }))
             .assertEqual(artifact.byteSize);
           // Only the tiny, repository-owned synthetic fixture is logged, never a user document.
-          hilog.info(0x0000, 'JpegDebugSmoke', 'PDF_SHA256=%{public}s PDF_BASE64=%{public}s',
-            artifact.sha256, new util.Base64Helper().encodeToStringSync(new Uint8Array(bytes)));
+          const encoded = new util.Base64Helper().encodeToStringSync(new Uint8Array(bytes));
+          if (fixtureName === 'jpeg-debug-baseline.jpg') {
+            hilog.info(0x0000, 'JpegDebugSmoke', 'PDF_SHA256=%{public}s PDF_BASE64=%{public}s', artifact.sha256, encoded);
+          } else {
+            const total = Math.ceil(encoded.length / 1200);
+            for (let part = 0; part < total; part++) {
+              hilog.info(0x0000, 'JpegDebugSmoke', 'METADATA_PDF_SHA256=%{public}s PART=%{public}d/%{public}d BASE64=%{public}s',
+                artifact.sha256, part + 1, total, encoded.substring(part * 1200, (part + 1) * 1200));
+            }
+          }
         } finally { fileIo.closeSync(output); }
         await native.releaseArtifact(artifact.internalRef);
         await native.releaseTask(taskId, attemptId);
@@ -130,5 +140,6 @@ export default function jpegDebugSmokeTest() {
         try { await native.shutdown(); } finally { fileIo.rmdirSync(testRoot); }
       }
     });
+    }
   });
 }

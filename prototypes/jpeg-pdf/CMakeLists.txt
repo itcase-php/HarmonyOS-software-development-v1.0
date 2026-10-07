@@ -43,7 +43,7 @@ set_target_properties(hdm_jpeg PROPERTIES IMPORTED_LOCATION
     "${hdm_jpeg_library}")
 add_dependencies(hdm_jpeg jpeg_build)
 
-add_library(hdm_jpeg_pdf STATIC src/stream.cpp src/ir.cpp src/prototype.cpp src/jpeg_probe.c src/jpeg_memory.c)
+add_library(hdm_jpeg_pdf STATIC src/stream.cpp src/ir.cpp src/prototype.cpp src/jpeg_probe.c src/jpeg_memory.c src/jpeg_metadata.c)
 target_include_directories(hdm_jpeg_pdf PUBLIC include PRIVATE src "${jpeg_source_SOURCE_DIR}/src" "${jpeg_binary}")
 target_compile_features(hdm_jpeg_pdf PUBLIC cxx_std_17)
 target_link_libraries(hdm_jpeg_pdf PUBLIC hdm_jpeg)

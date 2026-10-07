@@ -1698,8 +1698,8 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "input_jpeg_metadata_unsupported",
-    "zh": "当前 JPEG 转换器不支持带 EXIF、ICC 等附加数据段的图片。这不表示图片损坏或受保护；此类图片尚待兼容。",
-    "en": "The current JPEG converter does not support extra segments such as EXIF or ICC. This does not mean the image is damaged or protected; compatibility is still pending."
+    "zh": "图片含当前不支持的附加数据段或元数据特征。标准 EXIF 方向与受支持的 RGB/灰度 ICC 配置已支持，其他特征仍待兼容。",
+    "en": "This image contains unsupported extra segments or metadata features. Standard EXIF orientation and supported RGB/grayscale ICC profiles are accepted; other features still need compatibility work."
   },
   {
     "name": "input_jpeg_encoding_unsupported",
@@ -1708,8 +1708,8 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "input_jpeg_color_unsupported",
-    "zh": "当前 JPEG 转换器仅支持灰度、RGB 或 YCbCr 图片，CMYK 等颜色模式尚不支持。",
-    "en": "The current JPEG converter supports grayscale, RGB and YCbCr images. CMYK and other color modes are not supported yet."
+    "zh": "图片的颜色配置尚不支持。CMYK、颜色配置不匹配，或非 sRGB EXIF 色彩标记缺少匹配 ICC 时，无法可靠转换。",
+    "en": "This color configuration is unsupported. CMYK, mismatched profiles, or non-sRGB EXIF color tags without a matching ICC profile cannot be converted reliably."
   },
   {
     "name": "input_jpeg_density_unsupported",

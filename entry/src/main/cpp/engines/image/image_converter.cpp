@@ -18,10 +18,10 @@ class ImageConverter final : public IConverter {
 public:
     ConverterCapabilities Describe() const override {
         ConverterCapabilities capabilities;
-        capabilities.engine={"image","1.0.0-experimental",kImageBuildHash};
-        capabilities.decoderIds={"jpeg-baseline-sof0-gray-rgb-jfif-v1"};
-        capabilities.encoderIds={"pdf-dct-single-page-v1"};
-        capabilities.inputSubsetIds={"jpeg-baseline-sof0-jfif-v1"};
+        capabilities.engine={"image","1.1.0-experimental",kImageBuildHash};
+        capabilities.decoderIds={"jpeg-baseline-sof0-gray-rgb-exif-icc-v2"};
+        capabilities.encoderIds={"pdf-dct-single-page-icc-v2"};
+        capabilities.inputSubsetIds={"jpeg-baseline-sof0-jfif-exif-icc-v2"};
         capabilities.available=production::IsDebugRouteExecutable(kJpegPdfRouteId);
         return capabilities;
     }

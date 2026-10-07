@@ -1,5 +1,6 @@
 #include "jpeg_probe.h"
 #include "jpeg_state.h"
+#include "jpeg_metadata.h"
 #include <jerror.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,7 +34,7 @@ static int baseline_header(const unsigned char* b, size_t n, HdmJpegInfo* info) 
         marker = b[p++];
         if (marker == 0xc0) return 0;
         if (marker == 0xda || marker == 0xd9 || marker == 0xd8) return HDM_CORRUPT;
-        if (marker >= 0xe1 && marker <= 0xef) { info->issue = HDM_JPEG_METADATA; return HDM_UNSUPPORTED; }
+        if (marker >= 0xe3 && marker <= 0xef) { info->issue = HDM_JPEG_METADATA; return HDM_UNSUPPORTED; }
         if ((marker >= 0xc1 && marker <= 0xcf && marker != 0xc4 && marker != 0xc8 && marker != 0xcc)) {
             info->issue = HDM_JPEG_ENCODING; return HDM_UNSUPPORTED;
         }
@@ -72,13 +73,14 @@ int hdm_probe_jpeg(HdmRead read, HdmCheck check, void* opaque, uint64_t memory_l
     JSAMPARRAY row;
     int result = 0;
     info->issue = HDM_JPEG_NONE;
-    if (memory_limit < sizeof(ProbeState) || memory_limit > SIZE_MAX) return HDM_LIMIT;
+    info->orientation = 1; info->icc_size = 0; info->exif_dpi_x = info->exif_dpi_y = 0;
+    if (memory_limit < sizeof(ProbeState)+sizeof(HdmJpegInfo) || memory_limit > SIZE_MAX) return HDM_LIMIT;
     state = (ProbeState*)calloc(1, sizeof(ProbeState));
     if (!state) return HDM_LIMIT;
     state->read = read; state->check = check; state->opaque = opaque; state->info = info;
     state->jpeg.err = jpeg_std_error(&state->error.base);
     state->error.base.error_exit = fail; state->error.base.emit_message = message;
-    state->error.limit = (size_t)memory_limit; state->error.live = state->error.peak = sizeof(ProbeState);
+    state->error.limit = (size_t)memory_limit; state->error.live = state->error.peak = sizeof(ProbeState)+sizeof(HdmJpegInfo);
     state->error.code = HDM_CORRUPT;
     hdm_allocator_link_anchor();
     if (setjmp(state->error.jump)) { result = state->error.code; goto cleanup; }
@@ -86,9 +88,11 @@ int hdm_probe_jpeg(HdmRead read, HdmCheck check, void* opaque, uint64_t memory_l
     state->source.init_source = init; state->source.fill_input_buffer = fill;
     state->source.skip_input_data = skip; state->source.resync_to_restart = jpeg_resync_to_restart;
     state->source.term_source = term; state->jpeg.src = &state->source;
-    /* Preserve the narrow JFIF subset. Other APP markers may alter rendering
-     * or carry rights/color metadata, so refuse them throughout the header. */
-    { int marker; for (marker = 1; marker <= 15; ++marker)
+    /* Save bounded EXIF/ICC headers with the budgeted libjpeg allocator.
+     * Unknown APP segments remain unsupported; JPEG bytes stay unchanged. */
+    jpeg_save_markers(&state->jpeg, JPEG_APP0+1, 65535);
+    jpeg_save_markers(&state->jpeg, JPEG_APP0+2, 65535);
+    { int marker; for (marker = 3; marker <= 15; ++marker)
         jpeg_set_marker_processor(&state->jpeg, JPEG_APP0 + marker, reject_marker); }
     if (jpeg_read_header(&state->jpeg, TRUE) != JPEG_HEADER_OK) fail((j_common_ptr)&state->jpeg);
     if (state->jpeg.progressive_mode || state->jpeg.arith_code || state->jpeg.data_precision != 8) {
@@ -105,6 +109,12 @@ int hdm_probe_jpeg(HdmRead read, HdmCheck check, void* opaque, uint64_t memory_l
     }
     info->width = state->jpeg.image_width; info->height = state->jpeg.image_height;
     info->components = state->jpeg.num_components;
+    state->error.code = hdm_jpeg_metadata(&state->jpeg,info);
+    if (state->error.code) fail((j_common_ptr)&state->jpeg);
+    state->error.code = HDM_CORRUPT;
+    /* Do not accept metadata appearing after the image header was checked. */
+    jpeg_set_marker_processor(&state->jpeg, JPEG_APP0+1, reject_marker);
+    jpeg_set_marker_processor(&state->jpeg, JPEG_APP0+2, reject_marker);
     if (state->jpeg.saw_JFIF_marker) {
         info->density_unit = state->jpeg.density_unit; info->density_x = state->jpeg.X_density; info->density_y = state->jpeg.Y_density;
         if (info->density_unit > 2 || !info->density_x || !info->density_y || (!info->density_unit && info->density_x != info->density_y)) {

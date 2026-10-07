@@ -262,9 +262,9 @@ void Exports() {
         route->fields.at("encoderIds")->elements.size() == 1,
         "planned diagnostic advertised release capability");
     Require(route->fields.at("decoderIds")->elements[0]->text ==
-        "jpeg-baseline-sof0-gray-rgb-jfif-v1" &&
-        route->fields.at("encoderIds")->elements[0]->text == "pdf-dct-single-page-v1" &&
-        Field(route, "inputSubsetId") == "jpeg-baseline-sof0-jfif-v1",
+        "jpeg-baseline-sof0-gray-rgb-exif-icc-v2" &&
+        route->fields.at("encoderIds")->elements[0]->text == "pdf-dct-single-page-icc-v2" &&
+        Field(route, "inputSubsetId") == "jpeg-baseline-sof0-jfif-exif-icc-v2",
         "linked subset diagnostic changed");
 #else
     for (const char* field : {"engines", "routes"}) Require(result->fields.at(field)->array && result->fields.at(field)->fields.empty(), "placeholder available");

@@ -132,7 +132,7 @@ int main(int argc,char** argv) {
         Fixture metadata(argv[1]);
         { std::ifstream source(argv[1],std::ios::binary);
           std::string bytes((std::istreambuf_iterator<char>(source)),std::istreambuf_iterator<char>());
-          bytes.insert(2,std::string("\xff\xe1\x00\x08" "Exif\0\0",10));
+          bytes.insert(2,std::string("\xff\xe3\x00\x08" "opaque",10));
           std::ofstream output(metadata.input,std::ios::binary|std::ios::trunc); output.write(bytes.data(),bytes.size()); }
         bool unsupportedMetadata=false;
         try { metadata.runtime.Probe(metadata.ProbeRequest()); }

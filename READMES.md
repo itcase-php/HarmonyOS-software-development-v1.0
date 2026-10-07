@@ -4,7 +4,7 @@
 
 公共仓库：<https://github.com/itcase-php/HarmonyOS-software-development-v1.0>。仓库地址使用英文字符，软件展示标题保留“HarmonyOS软件开发v1.0”。许可证为 [MIT](LICENSE)。按交付要求，另提供同内容的 [READMES.md](READMES.md)。
 
-2026-10-07：原工程已自动同步 JPEG Debug 修复并修复沙箱产物提交错误。真机 Hypium 64/64、合成 JPEG 的真实 Native 转换及独立 PDF 解析/渲染通过；系统 Picker、保存、阅读器、分享及 Office 转换仍待完成。详见[本轮原工程修复](docs/JPEG-DEBUG-LOCAL-SYNC.md)。
+2026-10-07：原工程已自动同步 JPEG Debug 修复，并支持受限的 EXIF 方向/分辨率与 ICC 配置。真机 Hypium 65/65、原生 CTest 25/25、主机专项 30 项通过；手机带 EXIF/ICC 样例的真实转换及独立 PDF 解析/渲染通过。系统 Picker、保存、阅读器、分享及 Office 转换仍待完成。详见[本轮兼容修复](docs/JPEG-METADATA-COMPATIBILITY.md)和[原工程同步记录](docs/JPEG-DEBUG-LOCAL-SYNC.md)。
 
 使用 DevEco Studio 打开本仓库根目录，即包含 build-profile.json5 的目录；原开发目录为 `D:/HarmonyOS/harmonyOS`。不要打开其父目录或 `outputs`。
 

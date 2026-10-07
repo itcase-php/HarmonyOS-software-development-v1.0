@@ -160,6 +160,8 @@ const approvedNativeRepair = new Set([
   'entry/src/main/cpp/napi/production_napi.cpp', 'entry/src/main/cpp/napi/result_serializer.cpp',
   'entry/src/main/cpp/napi/result_serializer.h', 'entry/src/main/cpp/production/build_manifest.cmake',
   'entry/src/main/cpp/production/route_policy.h', 'entry/src/main/cpp/production/runtime.cpp',
+  'entry/src/main/cpp/production/output_validator.cpp',
+  'entry/src/main/cpp/tests/output_validator_tests.cpp',
   'entry/src/main/cpp/tests/runtime_tests.cpp', 'entry/src/main/cpp/tests/CMakeLists.txt',
   'entry/src/main/cpp/tests/napi_tests.cpp', 'entry/src/main/ets/generated/RegistryData.ets',
   'entry/src/main/resources/rawfile/format-registry/conversion-matrix.json',

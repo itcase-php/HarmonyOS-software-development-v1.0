@@ -30,7 +30,10 @@ bool ValidateKnownPdf(prototype::IStream& pdf, const prototype::PdfCandidate& ca
         const auto length=pdf.Size();
         if (length!=candidate.bytes || candidate.imageBytes==0 || candidate.imageOffset>length ||
             candidate.imageBytes>length-candidate.imageOffset || length<250) return false;
-        if (Read(pdf,0,9)!="%PDF-1.4\n") return false;
+        const bool hasIcc=candidate.iccBytes!=0;
+        const std::size_t objectCount=hasIcc?7:6;
+        if (Read(pdf,0,9)!=(hasIcc?"%PDF-1.7\n":"%PDF-1.4\n") || candidate.iccBytes>65536 ||
+            (hasIcc && candidate.iccComponents!=1 && candidate.iccComponents!=3)) return false;
         const auto tailStart=length>128?length-128:0;
         const auto tail=Read(pdf,tailStart,static_cast<std::size_t>(length-tailStart));
         const auto marker=tail.rfind("startxref\n");
@@ -40,9 +43,9 @@ bool ValidateKnownPdf(prototype::IStream& pdf, const prototype::PdfCandidate& ca
         std::uint64_t xref{};
         if (!Decimal(tail.substr(marker+10,end-(marker+10)),xref) || xref>=length) return false;
         const auto header=Read(pdf,xref,29);
-        if (header!="xref\n0 6\n0000000000 65535 f \n") return false;
-        std::array<std::uint64_t,6> offsets{};
-        for (std::size_t i=1;i<offsets.size();++i) {
+        if (header!="xref\n0 "+std::to_string(objectCount)+"\n0000000000 65535 f \n") return false;
+        std::array<std::uint64_t,7> offsets{};
+        for (std::size_t i=1;i<objectCount;++i) {
             const auto line=Read(pdf,xref+29+(i-1)*20,20);
             if (line.size()!=20 || line.substr(10)!=" 00000 n \n" || !Decimal(line.substr(0,10),offsets[i]) ||
                 offsets[i]>=xref || (i>1 && offsets[i]<=offsets[i-1])) return false;
@@ -55,6 +58,14 @@ bool ValidateKnownPdf(prototype::IStream& pdf, const prototype::PdfCandidate& ca
         if (image.find("/Subtype /Image")==std::string::npos ||
             image.find("/Filter /DCTDecode")==std::string::npos ||
             image.find("/Length "+std::to_string(candidate.imageBytes)+" >>\nstream\n")==std::string::npos) return false;
+        if (hasIcc) {
+            if (image.find("/ColorSpace [/ICCBased 6 0 R]")==std::string::npos) return false;
+            const std::string prefix="6 0 obj\n<< /N "+std::to_string(candidate.iccComponents)+" /Length "+
+                std::to_string(candidate.iccBytes)+" >>\nstream\n";
+            if (Read(pdf,offsets[6],prefix.size())!=prefix ||
+                offsets[6]+prefix.size()+candidate.iccBytes+18!=xref ||
+                Read(pdf,offsets[6]+prefix.size()+candidate.iccBytes,18)!="\nendstream\nendobj\n") return false;
+        }
         return true;
     } catch (...) { return false; }
 }

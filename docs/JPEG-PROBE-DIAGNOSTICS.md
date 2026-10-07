@@ -2,6 +2,8 @@
 
 日期：2026-10-07。修复用户在 `D:\HarmonyOS\harmonyOS` 导入 JPG/JPEG 时收到笼统“真实格式或保护状态未通过检查”的问题。
 
+后续状态：该阶段只修复错误归因；现在已增加受限 EXIF/ICC 兼容，详见 [后续实现与实测](JPEG-METADATA-COMPATIBILITY.md)。下文保留该阶段的原始证据。
+
 ## 原因与修改
 
 原生探测把解码失败、尚不支持的 JPEG 特征、资源超限和副本校验失败都返回为 unknown protection。任务调度随后统一报告 `NATIVE_INPUT_NOT_VERIFIED`，界面因此错误地引导用户检查文件保护状态。用户没有提供同一图片，本轮不能确定其图片触发的是哪一条限制。

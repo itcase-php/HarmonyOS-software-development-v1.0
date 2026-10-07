@@ -24,13 +24,16 @@ add_test(NAME production_sha256 COMMAND hdm_sha256_tests)
 add_executable(hdm_output_validator_tests output_validator_tests.cpp ../production/output_validator.cpp)
 target_link_libraries(hdm_output_validator_tests PRIVATE hdm_jpeg_pdf)
 target_compile_features(hdm_output_validator_tests PRIVATE cxx_std_17)
-add_test(NAME production_output_validator COMMAND hdm_output_validator_tests)
+add_test(NAME production_output_validator COMMAND hdm_output_validator_tests
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../ohosTest/resources/rawfile/jpeg-debug-exif-icc.jpg)
 add_executable(hdm_runtime_tests runtime_tests.cpp ../production/runtime.cpp ../production/sha256.cpp
     ../production/output_validator.cpp ../core/engine_registry.cpp ${HDM_ENGINE_SOURCES})
 target_link_libraries(hdm_runtime_tests PRIVATE hdm_jpeg_pdf)
 target_compile_features(hdm_runtime_tests PRIVATE cxx_std_17)
 add_test(NAME production_runtime COMMAND hdm_runtime_tests
     ${CMAKE_CURRENT_SOURCE_DIR}/fixtures/baseline.jpg)
+add_test(NAME production_runtime_metadata COMMAND hdm_runtime_tests
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../ohosTest/resources/rawfile/jpeg-debug-exif-icc.jpg)
 
 # Compile the actual production bridge against an explicit host-only NAPI model.
 add_executable(hdm_napi_tests napi_tests.cpp ../napi/native_bridge.cpp ../napi/result_serializer.cpp)

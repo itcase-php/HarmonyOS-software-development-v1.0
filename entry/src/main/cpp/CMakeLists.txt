@@ -43,7 +43,7 @@ add_dependencies(hdm_jpeg hdm_jpeg_build)
 add_library(hdm_jpeg_pdf STATIC
     ${HDM_PROTOTYPE_ROOT}/src/stream.cpp ${HDM_PROTOTYPE_ROOT}/src/ir.cpp
     ${HDM_PROTOTYPE_ROOT}/src/prototype.cpp ${HDM_PROTOTYPE_ROOT}/src/jpeg_probe.c
-    ${HDM_PROTOTYPE_ROOT}/src/jpeg_memory.c)
+    ${HDM_PROTOTYPE_ROOT}/src/jpeg_memory.c ${HDM_PROTOTYPE_ROOT}/src/jpeg_metadata.c)
 target_include_directories(hdm_jpeg_pdf PUBLIC ${HDM_PROTOTYPE_ROOT}/include
     PRIVATE ${HDM_PROTOTYPE_ROOT}/src "${hdm_jpeg_source_SOURCE_DIR}/src" "${HDM_JPEG_BINARY}")
 target_link_libraries(hdm_jpeg_pdf PUBLIC hdm_jpeg)
