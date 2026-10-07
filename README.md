@@ -4,6 +4,8 @@
 
 公共仓库：<https://github.com/itcase-php/HarmonyOS-software-development-v1.0>。仓库地址使用英文字符，软件展示标题保留“HarmonyOS软件开发v1.0”。许可证为 [MIT](LICENSE)。按交付要求，另提供同内容的 [READMES.md](READMES.md)。
 
+2026-10-07：原工程已自动同步 JPEG Debug 修复并修复沙箱产物提交错误。真机 Hypium 64/64、合成 JPEG 的真实 Native 转换及独立 PDF 解析/渲染通过；系统 Picker、保存、阅读器、分享及 Office 转换仍待完成。详见[本轮原工程修复](docs/JPEG-DEBUG-LOCAL-SYNC.md)。
+
 使用 DevEco Studio 打开本仓库根目录，即包含 build-profile.json5 的目录；原开发目录为 `D:/HarmonyOS/harmonyOS`。不要打开其父目录或 `outputs`。
 
 已将 `outputs/harmony-doc-manager-v1-design` 的全部 21 个交付文件迁入正式 Stage + Native C++ 模板。当前有首页、格式浏览器、转换演示、任务记录、功能指南五个页面，支持搜索/分类/详情、格式与路线选择、保真度设置与确认、五阶段进度、排队/暂停/取消和历史清理。转换页与历史页可展开模拟保真度报告；演示不会生成实际文件。首页帮助按钮旁新增 EN/中切换，可在运行时更新五页、组件与会话任务文字，并保存语言选择。

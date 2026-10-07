@@ -13,6 +13,10 @@
 #include <fstream>
 #include <random>
 #include <system_error>
+#ifdef __OHOS__
+#include <cstdio>
+#include <fcntl.h>
+#endif
 #ifdef _WIN32
 #include <io.h>
 #else
@@ -226,8 +230,14 @@ ConvertResult Runtime::Execute(const ConvertRequest& request) {
         std::uint64_t pdfBytes{}; const auto pdfHash=DigestFile(candidatePath,kMaximumTemp,pdfBytes);
         if (pdfBytes!=candidateOutput.value->files[0].byteSize)
             throw BridgeProblem(ErrorCode::OutputValidationFailed,"NATIVE_OUTPUT_SIZE");
+#ifdef __OHOS__
+        // The app sandbox rejects hard links; commit atomically without replacing a file.
+        if (::renameat2(AT_FDCWD,candidatePath.c_str(),AT_FDCWD,finalPath.c_str(),RENAME_NOREPLACE)!=0)
+            throw BridgeProblem(ErrorCode::IoError,"NATIVE_OUTPUT_COMMIT");
+#else
         fs::create_hard_link(candidatePath,finalPath,ec);
         if (ec) throw BridgeProblem(ErrorCode::IoError,"NATIVE_OUTPUT_COMMIT");
+#endif
         const std::string artifactId=nonce;
         const std::string internalRef="artifact:"+nonce;
         result.outputs.push_back({artifactId,"primary","pdf",internalRef,pdfHash,pdfBytes,std::nullopt});

@@ -1,5 +1,9 @@
 # 迁移结果与实现边界
 
+## 2026-10-07 原工程自动同步与 JPEG 设备验证
+
+已将 JPEG Debug 修复同步到用户实际使用的原工程，保留签名与既有本地格式检测改动。真机复现并修复硬链接提交失败，OHOS 使用禁止覆盖的原子重命名；真机 Hypium 64/64 通过，包含合成 baseline JPEG 的真实 Native 转换与产物复制，独立 PDF 解析/渲染通过。系统选文件、保存、阅读器和分享交付仍待验收，Office 及其余路线未开放。详见[原工程修复记录](JPEG-DEBUG-LOCAL-SYNC.md)。
+
 ## 2026-10-07 JPEG 调试门禁修复
 
 用户批准先修复代码、暂不进行手机测试。JPEG→PDF 现在为 experimental，通过同源白名单与实际 BuildProfile/CMake Debug 模式接入正式预检查和 NAPI 执行；其余 42 条路线保持 planned，Release 继续拒绝。已同步全部配置摘要，使用真实引擎构建清单摘要，未填写发布证据。Native 宿主 24/24、新增 ArkTS 门禁 4 项、相关现行契约回归和双 ABI Debug/Release 构建通过；手机端转换、保存、独立打开和分享仍待验收。详细改动及旧历史保护脚本的失败记录见 [本轮修复说明](JPEG-DEBUG-ROUTE-REPAIR.md)。以下各阶段的原状态保留用于溯源。
