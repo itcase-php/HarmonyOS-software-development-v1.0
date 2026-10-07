@@ -1,0 +1,1199 @@
+{
+  "scope": "Office isolated HAP static packaging only",
+  "checkedAtUtc": "2026-10-07T15:18:37.623192+00:00",
+  "result": "passed",
+  "hapBytes": 387878763,
+  "hapSha256": "aa69aaa6c82bf47bf659fa4de995a2ad6e6f550a7b2b89402ad10c3abdb375f5",
+  "nativeLibraryCount": 236,
+  "allNativeLibraries": "ELF64 AArch64",
+  "unoResourcePathPatchPackaged": true,
+  "offlineResourcesUncompressedBytes": 163012146,
+  "internetPermissionDeclared": false,
+  "libraries": [
+    {
+      "name": "libs/arm64-v8a/libLanguageToollo.so",
+      "bytes": 158944,
+      "sha256": "5c3462c62352d19db952b1da7b23a18c3e612c73c5806199b7cc980f46449549"
+    },
+    {
+      "name": "libs/arm64-v8a/libPresentationMinimizerlo.so",
+      "bytes": 246952,
+      "sha256": "4e007b95a9f1ce0f3618f60d487a5312f4e40631e5b1389c7ddc41b1bdde5f5d"
+    },
+    {
+      "name": "libs/arm64-v8a/libabplo.so",
+      "bytes": 164760,
+      "sha256": "477db9f618abab71206077f3c25a2da2e1f8982539a1b4f64cb240e13d270044"
+    },
+    {
+      "name": "libs/arm64-v8a/libaffine_uno_uno.so",
+      "bytes": 14608,
+      "sha256": "d5fbcc55c496593a2cadc478dbd5ea257964db82e1b5f93422dff94675cb96fb"
+    },
+    {
+      "name": "libs/arm64-v8a/libanalysislo.so",
+      "bytes": 344096,
+      "sha256": "34f40ffe13703c420c45bf46f5bcd6ae98dcf6d3def177b9756b70a71146dabc"
+    },
+    {
+      "name": "libs/arm64-v8a/libanimcorelo.so",
+      "bytes": 187312,
+      "sha256": "9b8dad5740424b47b6bc9a590d3037093942c9149d9de5cec45a09aee568e78d"
+    },
+    {
+      "name": "libs/arm64-v8a/libavmedialo.so",
+      "bytes": 289824,
+      "sha256": "311b2dcb153b0291469053efd204408086274f98b0fbab027fc2ecb087f912a6"
+    },
+    {
+      "name": "libs/arm64-v8a/libbasctllo.so",
+      "bytes": 1849768,
+      "sha256": "6324ad59cac662a2314da8e9aa9384fe9be5135ab41e6d592565d4d93625df19"
+    },
+    {
+      "name": "libs/arm64-v8a/libbasegfxlo.so",
+      "bytes": 585776,
+      "sha256": "8eae9e3a1183bc9b5f99ca8c66b8a5c156f8240f0c6cc02bcfdf7005a57d392b"
+    },
+    {
+      "name": "libs/arm64-v8a/libbasprovlo.so",
+      "bytes": 146440,
+      "sha256": "9d37bb4e95a8dc1331a7f57701ba44cbbd69303fc51198335cd5e5cb23d2140d"
+    },
+    {
+      "name": "libs/arm64-v8a/libbiblo.so",
+      "bytes": 543336,
+      "sha256": "136b4b391af283c745f5c78e03477144df91bf8c3d1ecc6eaadd6e5fe2666eec"
+    },
+    {
+      "name": "libs/arm64-v8a/libbinaryurplo.so",
+      "bytes": 186120,
+      "sha256": "35d8f91294939b6fed6357ae315a64e7e400779fb2530bbf2bc1fa93a328d4d4"
+    },
+    {
+      "name": "libs/arm64-v8a/libbootstraplo.so",
+      "bytes": 472656,
+      "sha256": "52ab33387ba9dcb182e1a972dffb80a2a8675ff1c9519ff681f7f9c2e2386cf6"
+    },
+    {
+      "name": "libs/arm64-v8a/libc++_shared.so",
+      "bytes": 1262504,
+      "sha256": "965803c3fe53e02452e4c0479ad13c88f166c04207d27e3c531161a7c75a6c17"
+    },
+    {
+      "name": "libs/arm64-v8a/libcached1.so",
+      "bytes": 269280,
+      "sha256": "b972144f835bcaacc9c94b43a92d9d498f1a087daf8f83644e6b751cac79aa34"
+    },
+    {
+      "name": "libs/arm64-v8a/libcairo-lo.so.2",
+      "bytes": 1583512,
+      "sha256": "4b6eb214237f83bc53163ce83673f480bb7a1477210ff685a577a687c19ccf1c"
+    },
+    {
+      "name": "libs/arm64-v8a/libcairocanvaslo.so",
+      "bytes": 503824,
+      "sha256": "65d2bae226989932fe78f4bce29b0e9d6a4662160afdddc78fe0d3e196d40b26"
+    },
+    {
+      "name": "libs/arm64-v8a/libcalclo.so",
+      "bytes": 204928,
+      "sha256": "ccd9e4ccb008d38349b0c8be9f02838076cc3c0320677872ca5057349837be6c"
+    },
+    {
+      "name": "libs/arm64-v8a/libcanvasfactorylo.so",
+      "bytes": 53784,
+      "sha256": "15e472017c2197f99a0c70a19967bfb9aecdfcf53a54a9fd6acd963e9b53c1d0"
+    },
+    {
+      "name": "libs/arm64-v8a/libcanvastoolslo.so",
+      "bytes": 220296,
+      "sha256": "5674ab6ecb40d78e26c8466d506f824c1682814c10d9ca8bf829dc6bf5f797ba"
+    },
+    {
+      "name": "libs/arm64-v8a/libchart2apilo.so",
+      "bytes": 5464,
+      "sha256": "8e5b68c7f2a1a800cb71c6ee2f80c24890f57009260d4d7c288edb8232d04e1b"
+    },
+    {
+      "name": "libs/arm64-v8a/libchart2lo.so",
+      "bytes": 5638984,
+      "sha256": "7dbfffd2518b565094fde81e0e0382ce23c0c2ca9b284325e5214a05196a5f02"
+    },
+    {
+      "name": "libs/arm64-v8a/libcmdmaillo.so",
+      "bytes": 60368,
+      "sha256": "6974a7778b354cfddc072bcad18b502fc0b064b0d4cd99c87fbb23e7fa36d661"
+    },
+    {
+      "name": "libs/arm64-v8a/libcomphelper.so",
+      "bytes": 5014696,
+      "sha256": "3e94504df1b1f142287c67aed05a70d944ca616468e9a721bad3deb8a4883899"
+    },
+    {
+      "name": "libs/arm64-v8a/libconfigmgrlo.so",
+      "bytes": 606392,
+      "sha256": "68c98c47a9c95b7bc6d724d938c8fc312ed06e25f66fa8c5b416d18996176043"
+    },
+    {
+      "name": "libs/arm64-v8a/libcppcanvaslo.so",
+      "bytes": 265968,
+      "sha256": "a45233297df5dca84478c7889c615aa7803ad651bd5cad0f9d204ea800496826"
+    },
+    {
+      "name": "libs/arm64-v8a/libctllo.so",
+      "bytes": 250024,
+      "sha256": "22c2a2890cf2eeedce5812835ebe91d043742444c0cdc7d5d2a3232ce8e0becf"
+    },
+    {
+      "name": "libs/arm64-v8a/libcuilo.so",
+      "bytes": 5142704,
+      "sha256": "4fc12b0e082de2a76158b6f0ec131cdb34fb5aa40aa7b386629423f23e70c885"
+    },
+    {
+      "name": "libs/arm64-v8a/libcurl.so.4",
+      "bytes": 4704504,
+      "sha256": "3596e346c1d52e07df09cccdd2535c0b447fd219768da4a2e5a482f70727eb97"
+    },
+    {
+      "name": "libs/arm64-v8a/libdatelo.so",
+      "bytes": 66744,
+      "sha256": "d5b5f272387f35f56cb6ce65062b3d525c98b1028fa5abba7c53fcce88d7541e"
+    },
+    {
+      "name": "libs/arm64-v8a/libdbahsqllo.so",
+      "bytes": 82376,
+      "sha256": "5087d85e63671024942c5431f720c6d57c9a5dc40672f4c8dc2ae2922eedcc61"
+    },
+    {
+      "name": "libs/arm64-v8a/libdbalo.so",
+      "bytes": 2496560,
+      "sha256": "cce8f7e2e7b65a283027eaf493ed1f4d035df6fd12171a874520e56bd8c20db3"
+    },
+    {
+      "name": "libs/arm64-v8a/libdbaselo.so",
+      "bytes": 437672,
+      "sha256": "1ecb2d128c3ba2b341626657c103b428542bac8779ba9fb1b0adf1e7dce5e08a"
+    },
+    {
+      "name": "libs/arm64-v8a/libdbaxmllo.so",
+      "bytes": 325144,
+      "sha256": "fde3cd2b45b1bf5d4aee0112f674fb23105530416a89f045b4fb613aadf0cfab"
+    },
+    {
+      "name": "libs/arm64-v8a/libdbplo.so",
+      "bytes": 213992,
+      "sha256": "26203d65dbf1e0aa665598951d393a0985523a0cb32c1ad75ce57e36ef7f5953"
+    },
+    {
+      "name": "libs/arm64-v8a/libdbpool2.so",
+      "bytes": 126368,
+      "sha256": "8c83c6257ab76a94b64c5d46ef8629cc3035bf53942277a2211fceb71297e474"
+    },
+    {
+      "name": "libs/arm64-v8a/libdbtoolslo.so",
+      "bytes": 1641568,
+      "sha256": "78f82f021bc8decf53587fcf03ff2eaa9c8327338c67cd3a1d8d1789dc78171f"
+    },
+    {
+      "name": "libs/arm64-v8a/libdbulo.so",
+      "bytes": 4197160,
+      "sha256": "4ca0e554c105cf35728bac0774c7e3ec30c9330d348ac3660e87bc1c72a4217a"
+    },
+    {
+      "name": "libs/arm64-v8a/libdeployment.so",
+      "bytes": 704296,
+      "sha256": "be8bb9f67ec483bae39cb3fd9ce4090266efae00c443d691be7d6234b6929d72"
+    },
+    {
+      "name": "libs/arm64-v8a/libdeploymentgui.so",
+      "bytes": 354904,
+      "sha256": "dfe6e20d928d0efd7c4af3144fe3b041df538a44ee2116bf289464f19fe21ed6"
+    },
+    {
+      "name": "libs/arm64-v8a/libdeploymentmisclo.so",
+      "bytes": 198136,
+      "sha256": "ac8d159cc6446ff8a678586f5ad77129cf1f467f2417209f7a6afe94dd40cb1a"
+    },
+    {
+      "name": "libs/arm64-v8a/libdesktopbe1lo.so",
+      "bytes": 41688,
+      "sha256": "5db976e4c505d4899e5b9996866eb6c56cc4a6aca20179d0345749c0984c06f5"
+    },
+    {
+      "name": "libs/arm64-v8a/libdlgprovlo.so",
+      "bytes": 163024,
+      "sha256": "c8c09b0239fc1f56f54fb5320a8b3f9497bd3a431af5a917505b6025bb5e61da"
+    },
+    {
+      "name": "libs/arm64-v8a/libdocmodello.so",
+      "bytes": 133832,
+      "sha256": "c18579b7e73f445994a6ecaa27de9aa20fec562adcbe8db83658013d1d7fda48"
+    },
+    {
+      "name": "libs/arm64-v8a/libdrawinglayercorelo.so",
+      "bytes": 134160,
+      "sha256": "fd860e1cd95a0fb777fb9c622e9f4198fd0dae5ad459463bd196a3b930f37f9e"
+    },
+    {
+      "name": "libs/arm64-v8a/libdrawinglayerlo.so",
+      "bytes": 1513168,
+      "sha256": "1523e51f63fae9fbdf9198c4ca388b5d20f484f79e502afa28a827a5253259e2"
+    },
+    {
+      "name": "libs/arm64-v8a/libeditenglo.so",
+      "bytes": 2493456,
+      "sha256": "64a7907d5d6e2ef34b4fd808796d4bbce2fc9d46630651ba7449ec34b6b6bfab"
+    },
+    {
+      "name": "libs/arm64-v8a/libembobj.so",
+      "bytes": 401080,
+      "sha256": "2f596d55901f1770ad46dd0924c051e9ab852eb17950c12378e53e6f55866f32"
+    },
+    {
+      "name": "libs/arm64-v8a/libemboleobj.so",
+      "bytes": 228392,
+      "sha256": "9ac075c718622eb79959a02ae1e66d36e5060e74455bedbbe4c8d944574b99cf"
+    },
+    {
+      "name": "libs/arm64-v8a/libemfiolo.so",
+      "bytes": 169472,
+      "sha256": "a28e80a6e77e8907a82ed66b7897dd93c86c2d3b82e35cd880b2fdcb5b13fcec"
+    },
+    {
+      "name": "libs/arm64-v8a/libetonyek-0.1-lo.so.1",
+      "bytes": 2523792,
+      "sha256": "a72ec13ccabbd7b6d35ed55010200ffc67fbe7e17822aae2966bc232aca79aaa"
+    },
+    {
+      "name": "libs/arm64-v8a/libevtattlo.so",
+      "bytes": 77032,
+      "sha256": "af5fe177d3151e9abdc834bae59c83be6f13e11f4b4a6e30af8a3b73b2fea9a5"
+    },
+    {
+      "name": "libs/arm64-v8a/libexslt.so.0",
+      "bytes": 71000,
+      "sha256": "81e997c6566e529635ff764d8b446e211e24221e3353cdaa51e78545f43cbdae"
+    },
+    {
+      "name": "libs/arm64-v8a/libfilelo.so",
+      "bytes": 658056,
+      "sha256": "5a979f49fe8a0986f4e341cdee9747f47273a82b006b69477fa7ad73f1291c08"
+    },
+    {
+      "name": "libs/arm64-v8a/libfilterconfiglo.so",
+      "bytes": 338784,
+      "sha256": "14579917c5234b0c33b32e86bed6d0d44bb89fcf97f0456eeb6db99904dfb9c0"
+    },
+    {
+      "name": "libs/arm64-v8a/libflatlo.so",
+      "bytes": 300040,
+      "sha256": "0bf3e986f3ade6e540ad5ba2352f3213028c141040021a57e0635c6e5a0c6d09"
+    },
+    {
+      "name": "libs/arm64-v8a/libfontconfig-lo.so.1.16.1",
+      "bytes": 1045712,
+      "sha256": "a905ddf9c32221cf522281173ddc4988cde49636cb36babfc040db55dfd65e23"
+    },
+    {
+      "name": "libs/arm64-v8a/libforlo.so",
+      "bytes": 317984,
+      "sha256": "223c2db543b2a8c743096355ecd92db6f3adb6216f38bd651131740111f565f5"
+    },
+    {
+      "name": "libs/arm64-v8a/libforuilo.so",
+      "bytes": 145560,
+      "sha256": "fb45ca9a453861551569ec9d13fcc0d41f5ac3b81068693c1c0a59289512788d"
+    },
+    {
+      "name": "libs/arm64-v8a/libfps_officelo.so",
+      "bytes": 423368,
+      "sha256": "d4aa70c9e0a0774857dd9458f5678a4ebe1228c5b1b0f9a42ee4ab2065958a71"
+    },
+    {
+      "name": "libs/arm64-v8a/libfreebl3.so",
+      "bytes": 7560,
+      "sha256": "cc8e3307126cb892e50290d0d03df02f93ccf3d46d7e71b880417ff6760f18c5"
+    },
+    {
+      "name": "libs/arm64-v8a/libfreeblpriv3.so",
+      "bytes": 908648,
+      "sha256": "280c73f4428d2fc04fe9104cfd8cf463ecdf364368803d44e5b24634bf912473"
+    },
+    {
+      "name": "libs/arm64-v8a/libfrmlo.so",
+      "bytes": 2976752,
+      "sha256": "65be6c1a4c93be6cb6643d4098470ffb0cb4afe947a99d1cdf2983ddf68460f2"
+    },
+    {
+      "name": "libs/arm64-v8a/libfsstoragelo.so",
+      "bytes": 138992,
+      "sha256": "5833ecf17a889e4a744b2b8098cd08a142a730c44d0e5dc1363665c267582c65"
+    },
+    {
+      "name": "libs/arm64-v8a/libfwklo.so",
+      "bytes": 3737368,
+      "sha256": "0a761ecf55410d68d414b6855fbecf50c1d3fdb0848e6f2b0e964e066ac53cac"
+    },
+    {
+      "name": "libs/arm64-v8a/libgcc3_uno.so",
+      "bytes": 53416,
+      "sha256": "e85a3b169c26276bedaf92b2614d22c55c9d31dd9e8a7453614901007ed36230"
+    },
+    {
+      "name": "libs/arm64-v8a/libgraphicfilterlo.so",
+      "bytes": 45704,
+      "sha256": "f5aa99abc3a8bd8ebd2a39f955ee6203f7619ef8538e25c9bd0d90c27992cb41"
+    },
+    {
+      "name": "libs/arm64-v8a/libguesslanglo.so",
+      "bytes": 44984,
+      "sha256": "3129b09a51346762d3cc4702f516ed253e8ebf9f9afb6a4c9a49362fd491ba6b"
+    },
+    {
+      "name": "libs/arm64-v8a/libhwplo.so",
+      "bytes": 553424,
+      "sha256": "daf91fbd65dcb192f3b03b7844d992261eee3c30193515941e7197eb89eb3fa4"
+    },
+    {
+      "name": "libs/arm64-v8a/libhyphenlo.so",
+      "bytes": 106024,
+      "sha256": "dc324af3082ddcdf0f6de26a56319f3fb85a1ef62e092d71bdf6b9777ba7f734"
+    },
+    {
+      "name": "libs/arm64-v8a/libi18nlangtag.so",
+      "bytes": 133080,
+      "sha256": "a14c3987a62b24076bcfbff155e03417bca3c2a1f43d06f9a0edf04dfc21000d"
+    },
+    {
+      "name": "libs/arm64-v8a/libi18npoollo.so",
+      "bytes": 3319752,
+      "sha256": "d8cc0d4f6491be950038765296110e46c119dc1691f392dfe4f2875ad6998177"
+    },
+    {
+      "name": "libs/arm64-v8a/libi18nsearchlo.so",
+      "bytes": 72144,
+      "sha256": "4bca0085a54ceb8810a9f1f3635de4ec059c7f263e45322e03422f2b71994a5c"
+    },
+    {
+      "name": "libs/arm64-v8a/libi18nutil.so",
+      "bytes": 130152,
+      "sha256": "40175eddc11215916ff162e538fe5251d22cef4bc6ccb7ea3530c1c7242d0c82"
+    },
+    {
+      "name": "libs/arm64-v8a/libicglo.so",
+      "bytes": 123360,
+      "sha256": "a13b7d9eaa133d8f6777fbef9a250b0b3b4d624e21b0b69459461da91709ef11"
+    },
+    {
+      "name": "libs/arm64-v8a/libicudata.so.78",
+      "bytes": 33111456,
+      "sha256": "bf8fd3c15a3f8fb5496973e67555ff83bf58884ad4c8c9efd8934885105b6498"
+    },
+    {
+      "name": "libs/arm64-v8a/libicui18n.so.78",
+      "bytes": 3463184,
+      "sha256": "587d1cae48961c6d48edb6afaa60a4eedc52c794e41d66e0c7f655f8f78c9f58"
+    },
+    {
+      "name": "libs/arm64-v8a/libicuuc.so.78",
+      "bytes": 2103504,
+      "sha256": "a087943cca6e413780369af26d8239ef245f2a538f3dec4aa7bff5aa8370b92e"
+    },
+    {
+      "name": "libs/arm64-v8a/libintrospectionlo.so",
+      "bytes": 152816,
+      "sha256": "4e1bdc8a4cd42b9033a7c884508bc71f5da1f4b03b6fb046f0fd1d5850b2e268"
+    },
+    {
+      "name": "libs/arm64-v8a/libinvocadaptlo.so",
+      "bytes": 43008,
+      "sha256": "8fed2b6ee6debc306d3ddbd5d55b270570051b30a7f129d778a09143cfa96ec3"
+    },
+    {
+      "name": "libs/arm64-v8a/libinvocationlo.so",
+      "bytes": 104432,
+      "sha256": "2ed8ce2f11ad881a7a7e5525076074b8218f861cdb1d5f7adaf970836b8bbc7d"
+    },
+    {
+      "name": "libs/arm64-v8a/libiolo.so",
+      "bytes": 277144,
+      "sha256": "d07405255865bd8fbeacf1bc018a5aac81a1ed4d4a14ba8506dd5bda581cfd59"
+    },
+    {
+      "name": "libs/arm64-v8a/liblangtag-lo.so.1",
+      "bytes": 138032,
+      "sha256": "f92925780eb3c69b8159ec1f166bc0be1cd997b76f464d57b6b51a8548c95213"
+    },
+    {
+      "name": "libs/arm64-v8a/liblcms2.so.2",
+      "bytes": 352000,
+      "sha256": "ed400fcef4af5385b8cd4af3eb70e74a9bba4583a30cec6f060e6d2c907ab105"
+    },
+    {
+      "name": "libs/arm64-v8a/liblnglo.so",
+      "bytes": 695992,
+      "sha256": "a4e32f7cfcaf0fe0283d14b9764f008fde2feb60fdf50e1950447f528ed62de7"
+    },
+    {
+      "name": "libs/arm64-v8a/liblnthlo.so",
+      "bytes": 94192,
+      "sha256": "826c0ae0f85654a241dc0efce8e02a5657a69d670ee08875f0bf502b360e6859"
+    },
+    {
+      "name": "libs/arm64-v8a/liblocalebe1lo.so",
+      "bytes": 32608,
+      "sha256": "c521b219728af8a412a48cd5bd992ff3edfe42d8babfe69b868e7d3afcd612f8"
+    },
+    {
+      "name": "libs/arm64-v8a/liblocaledata_en.so",
+      "bytes": 424368,
+      "sha256": "8265124cfc42c681495aff9c610e86fea47409b42b1ed58098176728cfdb7849"
+    },
+    {
+      "name": "libs/arm64-v8a/liblocaledata_es.so",
+      "bytes": 425008,
+      "sha256": "111d6a42c45f5c63137bfee83d75b8f3aa6f9456b361248df711e04e636ec712"
+    },
+    {
+      "name": "libs/arm64-v8a/liblocaledata_euro.so",
+      "bytes": 2848328,
+      "sha256": "686438e5e533d16756030d85be0378c731f90156af4cc92becc19e4f1432883a"
+    },
+    {
+      "name": "libs/arm64-v8a/liblocaledata_others.so",
+      "bytes": 3913432,
+      "sha256": "0b0ce6cf85001e8192dae0bd63fb50ffd860252224f001fb81c4ad194ed47012"
+    },
+    {
+      "name": "libs/arm64-v8a/liblog_uno_uno.so",
+      "bytes": 10376,
+      "sha256": "a1490d2d8d1231db7b7c58373f700f515b8c75a7ad256c955c839205b0f138d9"
+    },
+    {
+      "name": "libs/arm64-v8a/libloglo.so",
+      "bytes": 130464,
+      "sha256": "a0d4469d67787a3a077bb31dcfb2e241bec3657f843a6bb5cadff5ab74a61998"
+    },
+    {
+      "name": "libs/arm64-v8a/liblwpftlo.so",
+      "bytes": 1192936,
+      "sha256": "2529670f77c0dd7fc933a0d7292b4bdc72474c1525970eb51c75557248c3a5f7"
+    },
+    {
+      "name": "libs/arm64-v8a/libmigrationoo2lo.so",
+      "bytes": 41216,
+      "sha256": "cebea1e947c1f15fc0bd1de6e66705f5486b09cc95462daef31813e4bd0fef69"
+    },
+    {
+      "name": "libs/arm64-v8a/libmigrationoo3lo.so",
+      "bytes": 55160,
+      "sha256": "619a7a85f5e2b69165146bff40e5fae874049a8337a7429292b5bda73d52de9b"
+    },
+    {
+      "name": "libs/arm64-v8a/libmozbootstraplo.so",
+      "bytes": 41184,
+      "sha256": "7e12f5f6744965fc7d02e9cc5758aa00396f005e7591e97dd7f9ab965d6908a8"
+    },
+    {
+      "name": "libs/arm64-v8a/libmsfilterlo.so",
+      "bytes": 828776,
+      "sha256": "fd11525711d3a606f1e5db7cf4854b51c71774dacc3de11aa4c9094fac3d983d"
+    },
+    {
+      "name": "libs/arm64-v8a/libmsformslo.so",
+      "bytes": 467584,
+      "sha256": "bd3e1dc064a3e875f61c8541e487c636ca978054ed91323504e66b7f3a078c90"
+    },
+    {
+      "name": "libs/arm64-v8a/libmswordlo.so",
+      "bytes": 2369744,
+      "sha256": "9ab25bbe63e99fc0a20c2192ae3ab04a801e5e55d3944bd1ccedfe96becda0c0"
+    },
+    {
+      "name": "libs/arm64-v8a/libmtfrendererlo.so",
+      "bytes": 35472,
+      "sha256": "c57ca032728b3dfe18f1f793d3ebc1f13356d1f35bc73c90237272a8c0d02ef4"
+    },
+    {
+      "name": "libs/arm64-v8a/libmwaw-0.3-lo.so.3",
+      "bytes": 5984792,
+      "sha256": "47290b0975e8fd00eda9363e9a2ea8909adaa9ac9a79264d8205e97d947cd023"
+    },
+    {
+      "name": "libs/arm64-v8a/libmysql_jdbclo.so",
+      "bytes": 222712,
+      "sha256": "14c621ef99daa33af0281947ff140dfb1033f30a45b4ccd70b8bfa9520a56f91"
+    },
+    {
+      "name": "libs/arm64-v8a/libnamingservicelo.so",
+      "bytes": 24832,
+      "sha256": "d28c626f4e881e74b66f325aaf9617ac3d94475f1f29adec3d88c57105a0f83b"
+    },
+    {
+      "name": "libs/arm64-v8a/libnspr4.so",
+      "bytes": 205048,
+      "sha256": "e6b313f42f054ea9bfb64dd58616a2e5338c9043ea3626e634bf09b3e436ac1c"
+    },
+    {
+      "name": "libs/arm64-v8a/libnss3.so",
+      "bytes": 984552,
+      "sha256": "002f0560aca3e3fc0a062fcaee63d68de1e06d96ea276d121891e98b6dce66eb"
+    },
+    {
+      "name": "libs/arm64-v8a/libnssckbi.so",
+      "bytes": 561616,
+      "sha256": "28eca60f5d69eedfac72d237fc46edc0891f3f73c5678352cd5f7c3ad0765783"
+    },
+    {
+      "name": "libs/arm64-v8a/libnssdbm3.so",
+      "bytes": 115312,
+      "sha256": "3eda44bbeb679e5c7754560fcd84198e2c34f40e4185566568a60c7817962b75"
+    },
+    {
+      "name": "libs/arm64-v8a/libnssutil3.so",
+      "bytes": 193704,
+      "sha256": "92e6ccd5dd8254d095cd46706a8182b11fe7d21d5bd27f3a1f27019de21be5f7"
+    },
+    {
+      "name": "libs/arm64-v8a/libnumbertextlo.so",
+      "bytes": 244840,
+      "sha256": "1e545022c9ea226b58427b144055775cbd449fd72299f7573b44204511847fe4"
+    },
+    {
+      "name": "libs/arm64-v8a/libodbclo.so",
+      "bytes": 503192,
+      "sha256": "d51910e7046dbf32c45966a70e7bff3ac4be5920ebb9084683f77f6449bb1e82"
+    },
+    {
+      "name": "libs/arm64-v8a/libodfflatxmllo.so",
+      "bytes": 37840,
+      "sha256": "e578171c321f05d7162ef10bfc4c817679468e5ec98b26eb1f6dc197adce93f6"
+    },
+    {
+      "name": "libs/arm64-v8a/libodfgen-0.1-lo.so.1",
+      "bytes": 842360,
+      "sha256": "ffe2211d79a5190942aae471dc0b5dae8e74028359570458d69b76805f86bf53"
+    },
+    {
+      "name": "libs/arm64-v8a/liboffacclo.so",
+      "bytes": 49664,
+      "sha256": "2810fb4c810e6b10eee90cf2a93f416c9fc64e0c4394ebcb74c067d2cf202272"
+    },
+    {
+      "name": "libs/arm64-v8a/liboffice_probe.so",
+      "bytes": 119664,
+      "sha256": "16b8f9aaed188c39b0e0f6f827def4d8aebb20d701178856ed95c3565ad85465"
+    },
+    {
+      "name": "libs/arm64-v8a/libooxlo.so",
+      "bytes": 4616184,
+      "sha256": "060a8c7ebf3aad47a7fcb1c436cb83868ce65a4f59d7ff6c411e692edf440223"
+    },
+    {
+      "name": "libs/arm64-v8a/liborcus-0.21.so.0",
+      "bytes": 1391784,
+      "sha256": "0b15081286f253b9a68e750e62791caff38ccf2f2c642bfd80e8b469685a1af7"
+    },
+    {
+      "name": "libs/arm64-v8a/liborcus-parser-0.21.so.0",
+      "bytes": 322744,
+      "sha256": "443ed6eb2352abd599c68c35133be650c8e0d1ddbeda53279879a221b5630174"
+    },
+    {
+      "name": "libs/arm64-v8a/libpackage2.so",
+      "bytes": 681840,
+      "sha256": "1154a43b581281540391f5bc6e8c693eb1a2c37eda66527d9dac725a8b3e18b3"
+    },
+    {
+      "name": "libs/arm64-v8a/libpasswordcontainerlo.so",
+      "bytes": 120920,
+      "sha256": "bb964038466837604d5b4551aa4e36c3712769bfa9c5cf040621730889df8e61"
+    },
+    {
+      "name": "libs/arm64-v8a/libpcrlo.so",
+      "bytes": 1421824,
+      "sha256": "75ce5e9a624312e2d657885152173c27789b19a3f813b32c738b9403d73ea291"
+    },
+    {
+      "name": "libs/arm64-v8a/libpdffilterlo.so",
+      "bytes": 371008,
+      "sha256": "51e0c19f35576cd0e421170b6b55ed6d185eb37ab80b7642daeed60d58158d1d"
+    },
+    {
+      "name": "libs/arm64-v8a/libpixman-1.so.0",
+      "bytes": 460864,
+      "sha256": "71b9f656e6423ebf82a4951f181e35af065a3a06668805ecacaaa7f5e2bb9ceb"
+    },
+    {
+      "name": "libs/arm64-v8a/libplc4.so",
+      "bytes": 15576,
+      "sha256": "966f010ed9aad23850e40398c58f312efdceec277b5863ff14096ce3a39ab512"
+    },
+    {
+      "name": "libs/arm64-v8a/libplds4.so",
+      "bytes": 11264,
+      "sha256": "308388af6d6eb251d0c5b7a602e6ef85007e8432cfd758d2e6b0adba7d4e36b8"
+    },
+    {
+      "name": "libs/arm64-v8a/libpricinglo.so",
+      "bytes": 76832,
+      "sha256": "1d4601cf444917f8e4c165ce5fab0e8b5a79d872fd0dcb53a2b1cfa24e6da340"
+    },
+    {
+      "name": "libs/arm64-v8a/libprotocolhandlerlo.so",
+      "bytes": 53200,
+      "sha256": "b989a86470f6410a86e4e2a88f96fabb398a4202d0278ab4c6b69afeebd44d87"
+    },
+    {
+      "name": "libs/arm64-v8a/libproxyfaclo.so",
+      "bytes": 29184,
+      "sha256": "48d59e4a0677ff49526e1f7cb851ac7534905d1f549c81de9cb71dc5c05f9021"
+    },
+    {
+      "name": "libs/arm64-v8a/libraptor2-lo.so.0",
+      "bytes": 301656,
+      "sha256": "b68d8975f17566572b4d1e594350b5fe5bd613beb410f63775602992181b3187"
+    },
+    {
+      "name": "libs/arm64-v8a/librasqal-lo.so.3",
+      "bytes": 422376,
+      "sha256": "ebc08d0eb2bd1610cc675d5151fce2c6c823611afb24172b34408734e55bb2c3"
+    },
+    {
+      "name": "libs/arm64-v8a/librdf-lo.so.0",
+      "bytes": 190264,
+      "sha256": "de8aca602d51675e47d17e53171ac2b51b186257532c5baf7854ce84694e1108"
+    },
+    {
+      "name": "libs/arm64-v8a/libreflectionlo.so",
+      "bytes": 180712,
+      "sha256": "32ff14d60ff74139dc4f1196a203e6cdc2c7921f05af76850e115ccc37f3eb0e"
+    },
+    {
+      "name": "libs/arm64-v8a/libreglo.so",
+      "bytes": 74656,
+      "sha256": "de1436ac56703d169e7e974255c418ec26ed1561d83486f48f175e210ee96446"
+    },
+    {
+      "name": "libs/arm64-v8a/librevenge-0.0-lo.so.0",
+      "bytes": 174952,
+      "sha256": "dcf9ce4c44b186b46cfebfcc90635dc9114947b3ea40bd6e5747fec1addb9405"
+    },
+    {
+      "name": "libs/arm64-v8a/librptlo.so",
+      "bytes": 1674112,
+      "sha256": "622a261fe729cf4f6f727583a4a154c60e6afb87396b1982a3fa93260e68a3bf"
+    },
+    {
+      "name": "libs/arm64-v8a/librptuilo.so",
+      "bytes": 1382992,
+      "sha256": "46b936743620a5e633c4a48b9f135d9bff1ba5cec3b2451b90892094f32b52e0"
+    },
+    {
+      "name": "libs/arm64-v8a/libsal_textenclo.so",
+      "bytes": 1502744,
+      "sha256": "b3ea4dbe07c485618ee2f85cee1dc01bfd7de1adf76da3db320f10bdb49abc1f"
+    },
+    {
+      "name": "libs/arm64-v8a/libsaxlo.so",
+      "bytes": 472592,
+      "sha256": "6bb56801d36955a77ba693b9e9ad26b127229af7f09b405c7f7437735997923a"
+    },
+    {
+      "name": "libs/arm64-v8a/libsblo.so",
+      "bytes": 1758032,
+      "sha256": "ceaf46fc3ca2fa470235a972a773488d0be9f920fdc5becaa424f7ad152804b0"
+    },
+    {
+      "name": "libs/arm64-v8a/libscdlo.so",
+      "bytes": 40576,
+      "sha256": "18f35afdfaadc33860536ee993c31d94bb92102304e1ccce7155f2d927a5f4aa"
+    },
+    {
+      "name": "libs/arm64-v8a/libscfiltlo.so",
+      "bytes": 4856784,
+      "sha256": "f56be6ee3154f30e3293fd5718fec645a9520544c766429674177f7fb65e6bc8"
+    },
+    {
+      "name": "libs/arm64-v8a/libsclo.so",
+      "bytes": 16522144,
+      "sha256": "27ffb3dc38ff4ad66eed6407426e16cc5dc3889d8e3dce5952399b5e7eb5cc87"
+    },
+    {
+      "name": "libs/arm64-v8a/libscnlo.so",
+      "bytes": 143000,
+      "sha256": "28d0e8241a2dfecee8f6fed6617a4634ca7285db4d03583e44778bcf1c5a6c60"
+    },
+    {
+      "name": "libs/arm64-v8a/libscriptframe.so",
+      "bytes": 203696,
+      "sha256": "2498b434c3835006ee712fcbb6d374ff79c60993d1a30db7379fcb5e76141554"
+    },
+    {
+      "name": "libs/arm64-v8a/libscuilo.so",
+      "bytes": 1240928,
+      "sha256": "1b72a555a039ee1e08ba1445ae40efcbc5a7cdb7a48dfa11269e60c2e7569062"
+    },
+    {
+      "name": "libs/arm64-v8a/libsdbc2.so",
+      "bytes": 69144,
+      "sha256": "e2762ec59a9d6ff01badf161bf0d9e4d33c8c8dddf28eb6714828f5744218a61"
+    },
+    {
+      "name": "libs/arm64-v8a/libsdbtlo.so",
+      "bytes": 90480,
+      "sha256": "70e0fc03feb5d5e8c69e9ebe3195601d7e6a27e1ae685fe57d74906eb8db17e3"
+    },
+    {
+      "name": "libs/arm64-v8a/libsddlo.so",
+      "bytes": 33256,
+      "sha256": "56303f4c681f834c3ac1082c78b2626875211d07dae6e4f3a16430b195acdb65"
+    },
+    {
+      "name": "libs/arm64-v8a/libsdlo.so",
+      "bytes": 8142408,
+      "sha256": "571f5f02081741dca9d69a5125fb446913bb9449e4a7ff603eab8f59b6ec83ef"
+    },
+    {
+      "name": "libs/arm64-v8a/libsduilo.so",
+      "bytes": 1656392,
+      "sha256": "107870142cc7bc5166d6fb022dbfc9ff38a5c49939d8bf293b91bfc25fab2e2a"
+    },
+    {
+      "name": "libs/arm64-v8a/libsfxlo.so",
+      "bytes": 6106536,
+      "sha256": "9c77bc9f4d6a10620add8e51005a83db9db5def8dcd690079b858368014e8cec"
+    },
+    {
+      "name": "libs/arm64-v8a/libsimplecanvaslo.so",
+      "bytes": 54272,
+      "sha256": "8def17a22bfb59285a864bec12cb2196d78b089d51f0777912161b5714d82fc1"
+    },
+    {
+      "name": "libs/arm64-v8a/libslideshowlo.so",
+      "bytes": 1614856,
+      "sha256": "d9cae4227ef70332f1f301a8b9ef868da9eb05c865320dd6d423d76147aa3de6"
+    },
+    {
+      "name": "libs/arm64-v8a/libsmdlo.so",
+      "bytes": 29080,
+      "sha256": "eeafd8b39d0a7225e7d1f252c09482649ed926ae1aae4250e7d79ec35edc45d4"
+    },
+    {
+      "name": "libs/arm64-v8a/libsmime3.so",
+      "bytes": 147200,
+      "sha256": "af294fe3a1ac0d2948924399a38e1bf7b8f408d93564f636631d6369ad68c2e7"
+    },
+    {
+      "name": "libs/arm64-v8a/libsmlo.so",
+      "bytes": 2652160,
+      "sha256": "1e4ff183dcbbb65fae4361fe4352bdc0cdbca524ca064ccdc0ebfc2f36ac29f8"
+    },
+    {
+      "name": "libs/arm64-v8a/libsofficeapp.so",
+      "bytes": 1032288,
+      "sha256": "35942cc0ecb650d204c3e6810902a225965022050e6b8c5e786311978609ce1b"
+    },
+    {
+      "name": "libs/arm64-v8a/libsoftokn3.so",
+      "bytes": 311848,
+      "sha256": "81fca197ec3d5314f956365128a4cb585f2629b367d27737bef6f10c4c1ea7a7"
+    },
+    {
+      "name": "libs/arm64-v8a/libsolverlo.so",
+      "bytes": 95256,
+      "sha256": "e1fea87e3fffa8e467e702088a9c16a1599bab3bee6055f69357bb418c789bd8"
+    },
+    {
+      "name": "libs/arm64-v8a/libsotlo.so",
+      "bytes": 473320,
+      "sha256": "deeb0f523ec831efc545fe72d61797df11e1aa643040961dc91d90bd2fbd9826"
+    },
+    {
+      "name": "libs/arm64-v8a/libspelllo.so",
+      "bytes": 787608,
+      "sha256": "5447034d66a3806faf739f0f25821fa8dcd5ac61e0e55fe6853e65c4ec6e7652"
+    },
+    {
+      "name": "libs/arm64-v8a/libsqlite3.so",
+      "bytes": 1057544,
+      "sha256": "8f6f5db0592acd3c2a0e872cca43a2c7cf8df7b06709a8a3c7af8eae79d2c292"
+    },
+    {
+      "name": "libs/arm64-v8a/libsrtrs1.so",
+      "bytes": 165248,
+      "sha256": "e9187463b49ede2ce1729abd1b170ae5c4f6e074f522c18cbb8fca359a3b42b6"
+    },
+    {
+      "name": "libs/arm64-v8a/libssl3.so",
+      "bytes": 337200,
+      "sha256": "97137f359685b3875e1d2f91745b22cd223f6ff385e0e524777032e0ba50ad0b"
+    },
+    {
+      "name": "libs/arm64-v8a/libstaroffice-0.0-lo.so.0",
+      "bytes": 2144080,
+      "sha256": "570dfc2f45d46e2d813a023acc350fb2979f5bb345f5438309ce64fbcded2da6"
+    },
+    {
+      "name": "libs/arm64-v8a/libstocserviceslo.so",
+      "bytes": 131192,
+      "sha256": "6f2e9d0920b4ce992d403ee48ee3425b19dd61313eb3479f4121a0cf82c916ae"
+    },
+    {
+      "name": "libs/arm64-v8a/libstoragefdlo.so",
+      "bytes": 69688,
+      "sha256": "257a53b1bed3d228997a71bd4cc4a774fe45a789a808fa08c417b5025f5726d9"
+    },
+    {
+      "name": "libs/arm64-v8a/libstorelo.so",
+      "bytes": 95744,
+      "sha256": "41f1c533f66b0a726f1cc965feea7b28ca1b8d9ee90ecddacad38b35e31b0e5b"
+    },
+    {
+      "name": "libs/arm64-v8a/libstringresourcelo.so",
+      "bytes": 167304,
+      "sha256": "bdca6c9db6a1b6b0ce4b2e97fc7b0dd20cd90cb1b95b9fe674dd280a9309ad55"
+    },
+    {
+      "name": "libs/arm64-v8a/libsvgfilterlo.so",
+      "bytes": 875232,
+      "sha256": "ee27bd939d46396250e64f59542b3a81a18606f6672ba1b0ff7ebc7cabea9197"
+    },
+    {
+      "name": "libs/arm64-v8a/libsvgiolo.so",
+      "bytes": 335888,
+      "sha256": "332bbc6ddaea59bf500022ed3693c8499e6b8a2ceade844e70b8ded2b702bf3b"
+    },
+    {
+      "name": "libs/arm64-v8a/libsvllo.so",
+      "bytes": 2998848,
+      "sha256": "0dcbb943ed5303f6df14bd4f01972308befa8e278d4822278f0f714a99c178f0"
+    },
+    {
+      "name": "libs/arm64-v8a/libsvtlo.so",
+      "bytes": 2414424,
+      "sha256": "90c62ffe435b30d7d265b889df1a8f8da94c921c93728ac854ac5917400d1c47"
+    },
+    {
+      "name": "libs/arm64-v8a/libsvxcorelo.so",
+      "bytes": 9395392,
+      "sha256": "af940e6b7849a8735f6405ad281ea7f0cdeaf0f1d42d374aaf9180dea1726236"
+    },
+    {
+      "name": "libs/arm64-v8a/libsvxlo.so",
+      "bytes": 4326720,
+      "sha256": "e9b2b1fd99d2d8b6bc79556d719c819930e78e4a7a81785e20e3f900205c948f"
+    },
+    {
+      "name": "libs/arm64-v8a/libsw_writerfilterlo.so",
+      "bytes": 3367408,
+      "sha256": "21484caf0c5f545f7f1f949a2cf4af53c7d4dbbb85d9a77ca4124d5ce1330577"
+    },
+    {
+      "name": "libs/arm64-v8a/libswdlo.so",
+      "bytes": 31784,
+      "sha256": "cdb7f1c5b768c6f488ccd3dd5e01c9c953b3f6b3efe235eeafbff95854dca3a9"
+    },
+    {
+      "name": "libs/arm64-v8a/libswlo.so",
+      "bytes": 18747800,
+      "sha256": "cfae01a9bd9cdec81fb17cd1463d79ec644c4f6975d1bc32c0875130838ac7d9"
+    },
+    {
+      "name": "libs/arm64-v8a/libswuilo.so",
+      "bytes": 3301424,
+      "sha256": "0454ea0fcbb595a14773972240e34c04c90229a36bbdea93aa25a4be69a1b0a0"
+    },
+    {
+      "name": "libs/arm64-v8a/libsysshlo.so",
+      "bytes": 35472,
+      "sha256": "6ad0f7808e97f4f71c143bddc3d697f5171de7ca4ffafd3c07c03100e7828302"
+    },
+    {
+      "name": "libs/arm64-v8a/libt602filterlo.so",
+      "bytes": 144688,
+      "sha256": "df33d6ca5dd8f8c7919e14b11c56a27c53c8c2fdad2dc6c21184535ca6c8e521"
+    },
+    {
+      "name": "libs/arm64-v8a/libtextconversiondlgslo.so",
+      "bytes": 57160,
+      "sha256": "3298821bbcc3f2c12dbc669591c1a2ba2253ab8a7f73e6151d817cd097f6deba"
+    },
+    {
+      "name": "libs/arm64-v8a/libtextfdlo.so",
+      "bytes": 39720,
+      "sha256": "730053b9844242d32161e3090633d3f291e654a76f2ad78efd08461fd28afea2"
+    },
+    {
+      "name": "libs/arm64-v8a/libtklo.so",
+      "bytes": 4513904,
+      "sha256": "81121222762bc96453937faf934fcc796e68c5c74b60723ac8f230aef37bab3e"
+    },
+    {
+      "name": "libs/arm64-v8a/libtllo.so",
+      "bytes": 495000,
+      "sha256": "e31970f4b339237a12e6b6aa515801e9f113e35029e3124435edb837f666ce12"
+    },
+    {
+      "name": "libs/arm64-v8a/libucb1.so",
+      "bytes": 444752,
+      "sha256": "12bbb2a6d5e9b364c5c99f79bd839c8ffb6a35e1b29b56334e31f65c89560c52"
+    },
+    {
+      "name": "libs/arm64-v8a/libucbhelper.so",
+      "bytes": 457576,
+      "sha256": "2cebfa06ce044c4d3b26886bcd62e4ac94ba15ac80508b51ffe9fa6500c06f68"
+    },
+    {
+      "name": "libs/arm64-v8a/libucpexpand1lo.so",
+      "bytes": 43536,
+      "sha256": "9a94eafaa5bf2253418f064b3e2ee4dd95b30495784c0c929a94de4fdaee49d6"
+    },
+    {
+      "name": "libs/arm64-v8a/libucpextlo.so",
+      "bytes": 95032,
+      "sha256": "590c96e8da69ea8860f3584c4f674718d463f158cb632af36958f6cddfb7cb63"
+    },
+    {
+      "name": "libs/arm64-v8a/libucpfile1.so",
+      "bytes": 391536,
+      "sha256": "d0d60ba52c95abade66961dc8724db6bfa6cfd4df23bf86c38b068dd68aedaeb"
+    },
+    {
+      "name": "libs/arm64-v8a/libucphier1.so",
+      "bytes": 249208,
+      "sha256": "02ba3a282979b91281a0ddfe7b2d6f64e63de92f26c65f9a2e53dbe94ad3f1fd"
+    },
+    {
+      "name": "libs/arm64-v8a/libucpimagelo.so",
+      "bytes": 44168,
+      "sha256": "d07df862c476ce14a0716bed44f33b9213c15705099583f01ac6a8d731ea932f"
+    },
+    {
+      "name": "libs/arm64-v8a/libucppkg1.so",
+      "bytes": 207424,
+      "sha256": "51cd3fcd3a95f9321af6b28cf6ee25ce69904677e0a0e93488350c6f00b1b4d2"
+    },
+    {
+      "name": "libs/arm64-v8a/libucptdoc1lo.so",
+      "bytes": 330880,
+      "sha256": "9106bcee67a8686261a5e0239a11a2411c503983081a377ee29e3ee744e72862"
+    },
+    {
+      "name": "libs/arm64-v8a/libuno_cppu.so.3",
+      "bytes": 176760,
+      "sha256": "6f951491e7a0aae7662102b6a48f15bda0ffe17054d6d427ca852cfbb4694b49"
+    },
+    {
+      "name": "libs/arm64-v8a/libuno_cppuhelpergcc3.so.3",
+      "bytes": 843952,
+      "sha256": "93c3eb1cae61ed7923537332602ca72c2ff157074674cdea3358bbd861117b7d"
+    },
+    {
+      "name": "libs/arm64-v8a/libuno_purpenvhelpergcc3.so.3",
+      "bytes": 20216,
+      "sha256": "696963f9b3ce612ea1b71ce9d0394360fbdd50eeb096050c0d0a757d5e0efffa"
+    },
+    {
+      "name": "libs/arm64-v8a/libuno_sal.so.3",
+      "bytes": 431032,
+      "sha256": "26e2777aa9ed06ffc704f9c98f4353fc2d91ce18eb88aa8a80e0bf09aa053571"
+    },
+    {
+      "name": "libs/arm64-v8a/libuno_salhelpergcc3.so.3",
+      "bytes": 30320,
+      "sha256": "b185455714c35063db40178d6e4de3412acc3da1eb9ff2a10f70e185303a5675"
+    },
+    {
+      "name": "libs/arm64-v8a/libunoidllo.so",
+      "bytes": 422800,
+      "sha256": "318a15d8b69f049c54beba4eeecae9608d056e525e8c0d447a407f18a3e64120"
+    },
+    {
+      "name": "libs/arm64-v8a/libunopkgapp.so",
+      "bytes": 126680,
+      "sha256": "f6aac18b76a5babdbb17b53ee708a9dbba3b582712615051bfdf85b3a8dfe764"
+    },
+    {
+      "name": "libs/arm64-v8a/libunordflo.so",
+      "bytes": 302784,
+      "sha256": "5625fd5a9e63c251f32ddbd639d773966b193744789cb1feede345ce6d2d7717"
+    },
+    {
+      "name": "libs/arm64-v8a/libunoxmllo.so",
+      "bytes": 449624,
+      "sha256": "242c002711239d0434e68f66e80bb3f5b5a42e5ead5df56fddcb5e453a2e07f0"
+    },
+    {
+      "name": "libs/arm64-v8a/libunsafe_uno_uno.so",
+      "bytes": 8560,
+      "sha256": "18fe13d209955962dc1d7f20a5e0c0f58495cf1e396f37b2ed07ef458b1f36b7"
+    },
+    {
+      "name": "libs/arm64-v8a/libupdatefeedlo.so",
+      "bytes": 87360,
+      "sha256": "3006b55b12260e9f94fc685bcb7c7bb650e097daa1d15b084b7e254968b25ea1"
+    },
+    {
+      "name": "libs/arm64-v8a/libutllo.so",
+      "bytes": 1467872,
+      "sha256": "67d88b76a9a98039fe21f39e93b080051327d38ceaf976810dde60d9423a965d"
+    },
+    {
+      "name": "libs/arm64-v8a/libuuilo.so",
+      "bytes": 290624,
+      "sha256": "c0a18df073ffdf98609ed01018c4d09b699a0dc91d8f5cd324c13c747e3c1663"
+    },
+    {
+      "name": "libs/arm64-v8a/libuuresolverlo.so",
+      "bytes": 30800,
+      "sha256": "30335173ae2ceb5062d133543f14b3ef261568baebc5a06b1801e02368be2e83"
+    },
+    {
+      "name": "libs/arm64-v8a/libvbaeventslo.so",
+      "bytes": 123576,
+      "sha256": "cd374583091434d886c9a1a3028baec5837fc2a34c6ab3056e1ea38e95ab3fb1"
+    },
+    {
+      "name": "libs/arm64-v8a/libvbahelperlo.so",
+      "bytes": 757696,
+      "sha256": "07f600f2441622a90d5ecc6dbc7473e58410e737038c4cd26ad169a0d8bdd62d"
+    },
+    {
+      "name": "libs/arm64-v8a/libvbaobjlo.so",
+      "bytes": 2062272,
+      "sha256": "28226996bf9dd7dbd54307ec71b7fef4086cb7ee8240e7c2feb42510d2a9fe85"
+    },
+    {
+      "name": "libs/arm64-v8a/libvbaswobjlo.so",
+      "bytes": 1883088,
+      "sha256": "f462e57ac1dbacf65e5f130cea4361154dfc40779bebb91bd704c00f75068eec"
+    },
+    {
+      "name": "libs/arm64-v8a/libvclcanvaslo.so",
+      "bytes": 510672,
+      "sha256": "9ff57e1b59f2cd3235cb6b9aeb7ed0c9de436996529a7c0c52be75d0bac2b881"
+    },
+    {
+      "name": "libs/arm64-v8a/libvcllo.so",
+      "bytes": 17281624,
+      "sha256": "acad3a04e68c637726a025d6c2df61a4ad4581fd80c7817880d9c2cbfdfc4e39"
+    },
+    {
+      "name": "libs/arm64-v8a/libwpd-0.10-lo.so.10",
+      "bytes": 760416,
+      "sha256": "ebf4d9e74efb5370c7bc70b916ac826381ab304973b65d9f983aea91d8281fb0"
+    },
+    {
+      "name": "libs/arm64-v8a/libwpftcalclo.so",
+      "bytes": 84792,
+      "sha256": "1cad70516a7ee932737f95b07901864ac764610faf4313e1163de1014e4414a0"
+    },
+    {
+      "name": "libs/arm64-v8a/libwpftdrawlo.so",
+      "bytes": 2527880,
+      "sha256": "5920fb6b3a69d68d3cb2326cfd5d09637a1a14102f0e8333a818c1c883bd528d"
+    },
+    {
+      "name": "libs/arm64-v8a/libwpftimpresslo.so",
+      "bytes": 65520,
+      "sha256": "7c30441c7af30bd1d78d70d7ee355ac58eb5f2ef8ae06ecb5c9fb85da2541afe"
+    },
+    {
+      "name": "libs/arm64-v8a/libwpftwriterlo.so",
+      "bytes": 1375096,
+      "sha256": "42d3a4469e70c4ac7b65f434181cbe870886150bd27c04ef45bc1ab2112a9cd8"
+    },
+    {
+      "name": "libs/arm64-v8a/libwpg-0.3-lo.so.3",
+      "bytes": 127624,
+      "sha256": "758a185aa8ffd9718de815d1ca1f9a9cb2a29db91c93a9b407ab3e8f12d3bab6"
+    },
+    {
+      "name": "libs/arm64-v8a/libwps-0.4-lo.so.4",
+      "bytes": 1781128,
+      "sha256": "ea7852e3773b7976cce63ef251fac6964bcd9339f239f3cc67d557c1b47c591f"
+    },
+    {
+      "name": "libs/arm64-v8a/libwriterlo.so",
+      "bytes": 182800,
+      "sha256": "c29cb14adaec517a3ab1614a045b427c1e1efd7a8e15ee74f2c5f6541799d659"
+    },
+    {
+      "name": "libs/arm64-v8a/libwriterperfectlo.so",
+      "bytes": 70424,
+      "sha256": "d1a38bbe21035b7175a016000af53541a3245cb9c3444bb4e6e022d8fd495e23"
+    },
+    {
+      "name": "libs/arm64-v8a/libxml2.so.16",
+      "bytes": 1157728,
+      "sha256": "971cca84cf0165cf1274941531678c25c0b2ddc732ee3331d4a816cadde5ab2d"
+    },
+    {
+      "name": "libs/arm64-v8a/libxmlfalo.so",
+      "bytes": 58600,
+      "sha256": "6d4e33edd6dae10f59b918bc70bcd7b18cea3f20cbc32a8f9d16076d2519a862"
+    },
+    {
+      "name": "libs/arm64-v8a/libxmlfdlo.so",
+      "bytes": 38288,
+      "sha256": "20cff89f91b4bf381d0f64ef0b8ea2233ac8d825bd1946c34040f91721e532cb"
+    },
+    {
+      "name": "libs/arm64-v8a/libxmlreaderlo.so",
+      "bytes": 42984,
+      "sha256": "fb122c5f76d2c21fe964aaf24af3b400c43d809bb5ca8aff7deba4d7aa2bdc60"
+    },
+    {
+      "name": "libs/arm64-v8a/libxmlscriptlo.so",
+      "bytes": 676528,
+      "sha256": "b530af6895834520c7a727b8dafc7901e430e60f8d9af5aa44d470aa01f11d7f"
+    },
+    {
+      "name": "libs/arm64-v8a/libxmlsecurity.so",
+      "bytes": 672920,
+      "sha256": "99e2adbd08ed218f41e2575881e37cdd7d9b7d3ff6e449eaa2b773d427aeac67"
+    },
+    {
+      "name": "libs/arm64-v8a/libxoflo.so",
+      "bytes": 344960,
+      "sha256": "373717ec86ec15e62eecee6c5f08f60d8354afee96d7971fc5e7b1a95ced4638"
+    },
+    {
+      "name": "libs/arm64-v8a/libxolo.so",
+      "bytes": 5016784,
+      "sha256": "14501b5f17faeb9c19d8aa66fcddbe992d711a6b3ed63eca25d5035172e59ce4"
+    },
+    {
+      "name": "libs/arm64-v8a/libxsec_xmlsec.so",
+      "bytes": 774872,
+      "sha256": "a682264de12957c5ea208ad569b2d44253145873aa42d0ad875feb65553088df"
+    },
+    {
+      "name": "libs/arm64-v8a/libxslt.so.1",
+      "bytes": 208952,
+      "sha256": "3a2a7ff900ab931f6f03d5fc07a3328740500d8a0150a30ee4068915cf142957"
+    },
+    {
+      "name": "libs/arm64-v8a/libxsltdlglo.so",
+      "bytes": 265408,
+      "sha256": "da4c748b6b6d9c12fe8ee068cadea94ca16a4263091ce6d9630cd73054e018f4"
+    },
+    {
+      "name": "libs/arm64-v8a/libxsltfilterlo.so",
+      "bytes": 137952,
+      "sha256": "5551e6b3cc5863f4b213ef00a133a442dacae9872223b55e266c85d4758e0d85"
+    },
+    {
+      "name": "libs/arm64-v8a/libxstor.so",
+      "bytes": 468232,
+      "sha256": "e0034a6b25f0e41b0b95be459d5dfac7b4f74bb7f09a2e203e4cec923b4c2520"
+    }
+  ],
+  "engineInitializationAfterPatch": "pending device",
+  "docxToPdf": "pending device",
+  "pptxToPdf": "pending device",
+  "pdfToEditableOffice": "not integrated",
+  "mainApplicationRouteAvailability": "unchanged"
+}

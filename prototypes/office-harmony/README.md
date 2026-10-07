@@ -6,6 +6,20 @@
 
 本轮独立 OHOS arm64 完整目标构建已通过；241 个 ELF 文件的架构、直接依赖文件名及 LOK 初始化导出符号检查通过。主机 SAL 回归与 LOK 失败路径检查通过。结果和未执行项目见 [验证报告](../../tests/generated/office-26.2-port-validation.json)。
 
+随后完成了独立 Stage 包、真实设备加载诊断、UNO 资源目录补丁及可编辑 OOXML 写出模块。初始化修复后的设备运行和真实转换仍待验证，最新边界见 [阶段记录](../../docs/OFFICE-STAGE-VALIDATION.md)。
+
+## 独立 Stage 复现
+
+先完成下述固定源码构建，新增 `0011-ohos-uno-resources.patch` 后增量执行 `make -j4 Library_cppuhelper`。`stage-runtime.sh` 从构建结果复制运行资源，只修改独立副本；它要求目标暂存目录不存在。若已有副本，仅刷新变更库并剥离该副本的调试信息，勿修改原始构建输出。
+
+1. 用项目 Python 环境运行 `generate-fixtures.py`，再运行 `generate-pdf-fixture.py FONT_PATH`；后者要求显式提供已授权的 DejaVuSans.ttf。
+2. Windows 运行 `create-stage-probe.ps1`，从本地主工程复制签名配置到忽略目录。它不输出签名字段；该生成工程不得提交。
+3. WSL 运行 `package-stage.py`，分开打包 ELF 库及配置/字体/过滤器资源。
+4. Windows 运行 `build-stage-probe.ps1`，只构建。仅连接设备并准备好测试时使用 `-Install`；它会替换 JPEG 主应用，测试后必须恢复主应用。
+5. 运行 `tests/check-office-stage.py` 检查包。`check-uno-resource-path.sh SOURCE BUILD OUTPUT` 回归实际资源路径代码；`tests/check-office-package.cjs`、`tests/check-office-package.py` 和 `dotnet run --project tests/office-package-validation -- tmp/offline-engines/package-tests` 分别验证 OOXML 写出及结构。
+
+这些检查不代替设备初始化、真实转换、资源占用和版式验收。探针无 INTERNET 权限声明，但完整文档安全行为仍需验证。
+
 ## 26.2.6.2 移植入口
 
 - 固定源码由 [upstream.json](upstream.json) 指定：标签 `libreoffice-26.2.6.2`，提交 `ad5cf9fd4989cacf0bca866ebefc0ec8926cb0b2`，同时记录原始 `configure.ac` 的 SHA-256。

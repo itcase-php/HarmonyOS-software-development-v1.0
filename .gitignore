@@ -35,6 +35,8 @@
 # Isolated engine builds include local signing configuration; never publish them.
 /tmp/offline-engines/
 /tests/native/
+/tests/office-package-validation/bin/
+/tests/office-package-validation/obj/
 
 # OS/editor temporary files
 Thumbs.db

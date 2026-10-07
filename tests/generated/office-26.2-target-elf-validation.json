@@ -1,6 +1,6 @@
 {
   "scope": "static_target_elf_and_direct_needed_file_resolution_only",
-  "checkedAtUtc": "2026-10-07T09:41:30.039995+00:00",
+  "checkedAtUtc": "2026-10-07T15:20:00.654909+00:00",
   "result": "passed",
   "missingRequiredLibraries": [],
   "libreofficekitHook2Exported": true,
@@ -4297,8 +4297,8 @@
     },
     {
       "name": "libuno_cppuhelpergcc3.so.3",
-      "bytes": 1362024,
-      "sha256": "d32c49cbbad0415386b2e4e3043ee8f711f4d9efa77a5eb6b5e588a368b8e69a",
+      "bytes": 1360672,
+      "sha256": "2f6699ffebc7c5e277bf07d35615a09019701eca7214b25439d848f0050d417e",
       "elfClass": 2,
       "machine": 183,
       "needed": [

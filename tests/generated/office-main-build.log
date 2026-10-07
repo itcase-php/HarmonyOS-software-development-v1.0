@@ -1,0 +1,49 @@
+> hvigor Finished :entry:default@PreBuild... after 123 ms
+> hvigor Finished :entry:default@CreateModuleInfo... after 1 ms
+> hvigor UP-TO-DATE :entry:default@GenerateMetadata...
+> hvigor Finished :entry:default@ConfigureCmake... after 10 ms
+> hvigor UP-TO-DATE :entry:default@MergeProfile...
+> hvigor UP-TO-DATE :entry:default@CreateBuildProfile...
+> hvigor Finished :entry:default@PreCheckSyscap... after 1 ms
+> hvigor Finished :entry:default@GeneratePkgSdkInfo... after 2 ms
+> hvigor Finished :entry:default@ProcessIntegratedHsp... after 1 ms
+> hvigor Finished :entry:default@BuildNativeWithCmake... after 43 ms
+> hvigor UP-TO-DATE :entry:default@MakePackInfo...
+> hvigor Finished :entry:default@SyscapTransform... after 9 ms
+> hvigor UP-TO-DATE :entry:default@GeneratePkgContextInfo...
+> hvigor UP-TO-DATE :entry:default@ProcessProfile...
+> hvigor UP-TO-DATE :entry:default@ProcessRouterMap...
+> hvigor UP-TO-DATE :entry:default@ProcessShareConfig...
+> hvigor Finished :entry:default@ProcessStartupConfig... after 8 ms
+> hvigor UP-TO-DATE :entry:default@ProcessResource...
+> hvigor UP-TO-DATE :entry:default@GenerateLoaderJson...
+> hvigor UP-TO-DATE :entry:default@CompileResource...
+> hvigor Finished :entry:default@BuildJS... after 2 ms
+> hvigor Finished :entry:default@BuildNativeWithNinja... after 808 ms
+> hvigor UP-TO-DATE :entry:default@ProcessLibs...
+> hvigor UP-TO-DATE :entry:default@DoNativeStrip...
+> hvigor UP-TO-DATE :entry:default@CacheNativeLibs...
+> hvigor WARN: WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/FormatRegistry.ets:74:38
+ The system capacity of this api 'createMd' is not supported on all devices
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/FormatRegistry.ets:75:20
+ The system capacity of this api 'update' is not supported on all devices
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/FormatRegistry.ets:76:35
+ The system capacity of this api 'digest' is not supported on all devices
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/entry/src/main/ets/services/ArtifactDelivery.ets:51:34
+ Function may throw exceptions. Special handling is required.
+
+
+> hvigor Finished :entry:default@CompileArkTS... after 7 s 616 ms
+> hvigor UP-TO-DATE :entry:default@GeneratePkgModuleJson...
+> hvigor Finished :entry:default@ProcessCompiledResources... after 1 ms
+> hvigor Finished :entry:default@PackageHap... after 563 ms
+> hvigor Finished :entry:default@PackingCheck... after 7 ms
+> hvigor Finished :entry:default@SignHap... after 1 s 713 ms
+> hvigor Finished :entry:default@CollectDebugSymbol... after 1 ms
+> hvigor Finished :entry:assembleHap... after 1 ms
+> hvigor BUILD SUCCESSFUL in 13 s 813 ms
+
+33 tasks in total: 18 executed, 15 up-to-date
