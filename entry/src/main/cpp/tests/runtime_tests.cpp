@@ -120,11 +120,45 @@ int main(int argc,char** argv) {
         fixture.runtime.ReleaseArtifact(result.outputs[0].internalRef);
         Fixture corrupt(argv[1]);
         { std::ofstream stream(corrupt.input,std::ios::binary|std::ios::trunc); stream<<"not a JPEG"; }
-        const auto bad=corrupt.runtime.Probe(corrupt.ProbeRequest());
-        Require(!bad.inputs[0].actualFormatId && bad.inputs[0].protection==hdm::ProtectionState::Unknown,
-            "spoofed JPEG accepted");
+        bool invalidJpeg=false;
+        try { corrupt.runtime.Probe(corrupt.ProbeRequest()); }
+        catch (const hdm::BridgeProblem& error) {
+            invalidJpeg=error.code==hdm::ErrorCode::FileCorrupted &&
+                std::string(error.what())=="NATIVE_JPEG_CORRUPTED";
+        }
+        Require(invalidJpeg,"spoofed JPEG did not report corruption");
         Require(corrupt.runtime.Execute(corrupt.Request()).status==hdm::ResultState::Failed,
             "spoofed JPEG converted");
+        Fixture metadata(argv[1]);
+        { std::ifstream source(argv[1],std::ios::binary);
+          std::string bytes((std::istreambuf_iterator<char>(source)),std::istreambuf_iterator<char>());
+          bytes.insert(2,std::string("\xff\xe1\x00\x08" "Exif\0\0",10));
+          std::ofstream output(metadata.input,std::ios::binary|std::ios::trunc); output.write(bytes.data(),bytes.size()); }
+        bool unsupportedMetadata=false;
+        try { metadata.runtime.Probe(metadata.ProbeRequest()); }
+        catch (const hdm::BridgeProblem& error) {
+            unsupportedMetadata=error.code==hdm::ErrorCode::UnsupportedFeature &&
+                std::string(error.what())=="NATIVE_JPEG_METADATA_UNSUPPORTED";
+        }
+        Require(unsupportedMetadata,"JPEG metadata was confused with protection failure");
+        Fixture limited(argv[1]);
+        auto limitedRequest=limited.ProbeRequest(); limitedRequest.resourceBudget.maxPixels=1;
+        bool pixelsExceeded=false;
+        try { limited.runtime.Probe(limitedRequest); }
+        catch (const hdm::BridgeProblem& error) {
+            pixelsExceeded=error.code==hdm::ErrorCode::ResourceLimitExceeded &&
+                std::string(error.what())=="NATIVE_JPEG_PIXEL_LIMIT";
+        }
+        Require(pixelsExceeded,"JPEG pixel limit was confused with protection failure");
+        Fixture changed(argv[1]);
+        auto changedRequest=changed.ProbeRequest(); changedRequest.inputs[0].sha256=std::string(64,'0');
+        bool digestMismatch=false;
+        try { changed.runtime.Probe(changedRequest); }
+        catch (const hdm::BridgeProblem& error) {
+            digestMismatch=error.code==hdm::ErrorCode::PermissionDenied &&
+                std::string(error.what())=="NATIVE_INPUT_DIGEST_MISMATCH";
+        }
+        Require(digestMismatch,"input digest mismatch was confused with protection failure");
         Fixture cancelled(argv[1]);
         Require(cancelled.runtime.Control(cancelled.taskId,cancelled.attemptId,"cancel").state==
             hdm::ControlAck::State::Accepted,"cancel not acknowledged");

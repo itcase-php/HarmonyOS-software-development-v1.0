@@ -1,4 +1,5 @@
 import base64
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -9,7 +10,11 @@ from PIL import Image, ImageChops, ImageStat
 from pypdf import PdfReader
 
 root = Path(__file__).resolve().parent.parent
-log = (root / 'tmp/jpeg-sync-smoke-hilog.log').read_text(encoding='utf-8-sig')
+parser = argparse.ArgumentParser()
+parser.add_argument('--log', default='tmp/jpeg-sync-smoke-hilog.log')
+parser.add_argument('--report', default='tests/generated/jpeg-local-sync-pdf-validation.json')
+args = parser.parse_args()
+log = (root / args.log).read_text(encoding='utf-8-sig')
 matches = re.findall(r'PDF_SHA256=([a-f0-9]{64}) PDF_BASE64=([A-Za-z0-9+/=]+)', log)
 assert matches, 'No device-generated PDF captured'
 expected_hash, encoded = matches[-1]
@@ -46,5 +51,5 @@ report = {
     'meanAbsoluteRenderedDifference': mean_difference,
     'systemPickerSaveShareAndUserDocuments': 'not_tested'
 }
-(root / 'tests/generated/jpeg-local-sync-pdf-validation.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8', newline='\n')
+(root / args.report).write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8', newline='\n')
 print(json.dumps(report, indent=2))

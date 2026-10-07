@@ -77,6 +77,32 @@ async function main() {
     await assert.rejects(runner.run(request, () => {}, () => true), e => e.reason === 'NATIVE_INPUT_NOT_VERIFIED');
     assert.equal(executions, 1);
     assert.equal(releases, 2);
+    const BridgeError = f.h.load('./common/BridgeError').BridgeError;
+    native.probeInputs = async () => { throw new BridgeError('UNSUPPORTED_FEATURE', 'NATIVE_JPEG_METADATA_UNSUPPORTED'); };
+    await assert.rejects(runner.run(request, () => {}, () => true),
+      e => e.code === 'UNSUPPORTED_FEATURE' && e.reason === 'NATIVE_JPEG_METADATA_UNSUPPORTED');
+    assert.equal(executions, 1);
+    assert.equal(releases, 3);
+  });
+  await test('JPEG probe errors reach distinct translated UI messages without claiming protection', () => {
+    const f = fixture(true);
+    const Status = f.h.load('./viewmodel/ConversionStatusVM').ConversionStatusVM;
+    const status = new Status();
+    const language = f.h.load('./common/LanguageManager').LanguageManager;
+    for (const lang of ['zh', 'en']) {
+      language.setLanguage(lang);
+      const reasons = ['METADATA_UNSUPPORTED', 'ENCODING_UNSUPPORTED', 'COLOR_UNSUPPORTED',
+        'DENSITY_UNSUPPORTED', 'HEADER_UNSUPPORTED', 'PIXEL_LIMIT', 'MEMORY_LIMIT', 'CORRUPTED'];
+      const messages = reasons.map(reason => status.inputFailure('NATIVE_JPEG_' + reason));
+      assert.equal(new Set(messages).size, reasons.length);
+      for (const message of messages) {
+        assert.ok(message.length > 12 && !message.startsWith('input_'));
+        assert.notEqual(message, status.inputFailure('NATIVE_INPUT_NOT_VERIFIED'));
+      }
+      assert.match(messages[0], /EXIF/);
+      assert.equal(status.inputFailure('NATIVE_INPUT_DIGEST_MISMATCH'), status.inputFailure('FILE_COPY_FAILED'));
+      assert.equal(status.inputFailure('NATIVE_INPUT_SIZE_MISMATCH'), status.inputFailure('FILE_COPY_FAILED'));
+    }
   });
   fs.writeFileSync(path.join(root, 'tests/generated/debug-routes-host-report.json'),
     JSON.stringify({ scope: 'host_logic_with_mock_native_not_device_conversion', passed: cases.length, cases,

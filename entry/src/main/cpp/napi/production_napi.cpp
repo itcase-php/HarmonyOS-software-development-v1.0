@@ -211,7 +211,7 @@ ConvertRequest ParseConvert(napi_env env,napi_value value) {
 enum class Kind { Initialize,Register,Probe,Execute,Cancel,Pause,Resume,ReleaseTask,ReleaseArtifact,CopyArtifact,Shutdown };
 struct Work {
     napi_async_work handle{}; napi_deferred deferred{};
-    Kind kind{}; ErrorCode error{ErrorCode::Ok}; const char* reason{"NATIVE_WORK_FAILED"};
+    Kind kind{}; ErrorCode error{ErrorCode::Ok}; std::string reason{"NATIVE_WORK_FAILED"};
     SessionInit init; WorkspaceGrant grant; ProbeRequest probe; ConvertRequest convert;
     std::string first,second,textResult;
     int destinationFd{-1}; std::uint64_t exportBytes{}, copiedBytes{};
@@ -245,7 +245,7 @@ void Run(napi_env,void* data) noexcept {
                 work.copiedBytes=runtime.CopyArtifactToFd(work.first,work.destinationFd,work.second,work.exportBytes); break;
             case Kind::Shutdown: runtime.Shutdown(); break;
         }
-    } catch (const BridgeProblem& failure) { work.error=failure.code; work.reason="NATIVE_WORK_REJECTED"; }
+    } catch (BridgeProblem& failure) { work.error=failure.code; work.reason=std::move(failure.reason); }
     catch (const std::bad_alloc&) { work.error=ErrorCode::ResourceLimitExceeded; work.reason="NATIVE_ALLOCATION_FAILED"; }
     catch (...) { work.error=ErrorCode::InternalError; work.reason="NATIVE_WORK_FAILED"; }
 }
@@ -318,7 +318,7 @@ void Complete(napi_env env,napi_status status,void* data) noexcept {
         if (status!=napi_ok || work->error!=ErrorCode::Ok) {
             Check(napi_reject_deferred(env,work->deferred,Error(env,
                 status!=napi_ok?ErrorCode::InternalError:work->error,
-                status!=napi_ok?"ASYNC_WORK_FAILED":work->reason)));
+                status!=napi_ok?"ASYNC_WORK_FAILED":work->reason.c_str())));
         } else {
             napi_value value{};
             switch (work->kind) {

@@ -1693,7 +1693,47 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "input_probe_failed",
-    "zh": "文件的真实格式或保护状态未通过检查。请使用未受保护且格式正确的文件。",
-    "en": "The actual file format or protection state did not pass verification. Use a valid unprotected file."
+    "zh": "无法确认该文件适用于当前转换器。请重新选择文件；持续失败时查看诊断记录。",
+    "en": "Compatibility with the current converter could not be verified. Select the file again; if it persists, check the diagnostic log."
+  },
+  {
+    "name": "input_jpeg_metadata_unsupported",
+    "zh": "当前 JPEG 转换器不支持带 EXIF、ICC 等附加数据段的图片。这不表示图片损坏或受保护；此类图片尚待兼容。",
+    "en": "The current JPEG converter does not support extra segments such as EXIF or ICC. This does not mean the image is damaged or protected; compatibility is still pending."
+  },
+  {
+    "name": "input_jpeg_encoding_unsupported",
+    "zh": "当前 JPEG 转换器仅支持 8 位基线编码，渐进式等编码尚不支持。",
+    "en": "The current JPEG converter supports only 8-bit baseline encoding. Progressive and other encodings are not supported yet."
+  },
+  {
+    "name": "input_jpeg_color_unsupported",
+    "zh": "当前 JPEG 转换器仅支持灰度、RGB 或 YCbCr 图片，CMYK 等颜色模式尚不支持。",
+    "en": "The current JPEG converter supports grayscale, RGB and YCbCr images. CMYK and other color modes are not supported yet."
+  },
+  {
+    "name": "input_jpeg_density_unsupported",
+    "zh": "图片的 JFIF 分辨率信息不在当前支持范围内，无法确认 PDF 页面尺寸。",
+    "en": "The image's JFIF resolution information is outside the supported range, so PDF page dimensions cannot be verified."
+  },
+  {
+    "name": "input_jpeg_header_unsupported",
+    "zh": "JPEG 文件头超出当前支持范围，无法完成检查。此类图片尚待兼容。",
+    "en": "The JPEG header is outside the supported range and cannot be checked. Compatibility with this image is still pending."
+  },
+  {
+    "name": "input_jpeg_pixel_limit",
+    "zh": "图片像素超过当前转换任务的上限（最多 1600 万像素）。请选择较小的图片。",
+    "en": "The image exceeds this task's pixel limit (at most 16 million pixels). Select a smaller image."
+  },
+  {
+    "name": "input_jpeg_memory_limit",
+    "zh": "图片检查所需内存超过当前任务预算。请选择较小的图片。",
+    "en": "Checking this image exceeds the task's memory budget. Select a smaller image."
+  },
+  {
+    "name": "input_jpeg_corrupted",
+    "zh": "JPEG 数据不完整或结构无效。请重新导出或选择完整的 JPEG 文件。",
+    "en": "The JPEG data is incomplete or structurally invalid. Export it again or select a complete JPEG file."
   }
 ];

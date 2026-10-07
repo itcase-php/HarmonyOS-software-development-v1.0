@@ -1,6 +1,6 @@
 import { abilityDelegatorRegistry } from '@kit.TestKit';
 import { application } from '@kit.AbilityKit';
-import { fileIo } from '@kit.CoreFileKit';
+import { fileIo, hash } from '@kit.CoreFileKit';
 import { util } from '@kit.ArkTS';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { describe, it, expect } from '@ohos/hypium';
@@ -8,7 +8,21 @@ import { NativeBridgeService } from '../../../main/ets/services/NativeBridge';
 import { FormatRegistryService } from '../../../main/ets/services/FormatRegistry';
 import { RawfileResources } from '../../../main/ets/services/RawfileResources';
 import { registryMetadata } from '../../../main/ets/generated/RegistryData';
-import { PreparedInput, ConvertRequest } from '../../../main/ets/models/NativeProtocol';
+import { PreparedInput, ConvertRequest, ProbeRequest, ErrorCode } from '../../../main/ets/models/NativeProtocol';
+import { BridgeError } from '../../../main/ets/common/BridgeError';
+
+async function expectProbeFailure(native: NativeBridgeService, request: ProbeRequest,
+  code: ErrorCode, reason: string): Promise<void> {
+  let rejected = false;
+  try { await native.probeInputs(request); }
+  catch (error) {
+    const failure = error as BridgeError;
+    expect(failure.code).assertEqual(code);
+    expect(failure.reason).assertEqual(reason);
+    rejected = true;
+  }
+  expect(rejected).assertTrue();
+}
 
 export default function jpegDebugSmokeTest() {
   describe('JpegDebugSmoke', () => {
@@ -51,6 +65,36 @@ export default function jpegDebugSmokeTest() {
         expect(probes[0].actualFormatId).assertEqual('jpeg');
         expect(probes[0].protection).assertEqual('none');
         expect(probes[0].needsDeepCheck).assertFalse();
+        const inputPath = root + '/workspace/' + workspaceId + '/inputs/' + fileId;
+        const withExif = new Uint8Array(fixture.byteLength + 10);
+        withExif.set(fixture.subarray(0, 2));
+        withExif.set(new Uint8Array([255, 225, 0, 8, 69, 120, 105, 102, 0, 0]), 2);
+        withExif.set(fixture.subarray(2), 12);
+        const metadataFile = fileIo.openSync(inputPath, fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+        try { expect(fileIo.writeSync(metadataFile.fd, withExif.buffer)).assertEqual(withExif.byteLength); }
+        finally { fileIo.closeSync(metadataFile); }
+        const metadataInput: PreparedInput = { fileId, sourceFormatId: 'jpeg', relativePath: input.relativePath,
+          byteSize: withExif.byteLength, sha256: (await hash.hash(inputPath, 'sha256')).toLowerCase() };
+        await expectProbeFailure(native, { schemaVersion: 1, sessionId, workspaceRef,
+          inputs: [metadataInput], resourceBudget: registryMetadata.defaultBudget },
+          'UNSUPPORTED_FEATURE', 'NATIVE_JPEG_METADATA_UNSUPPORTED');
+        const corruptFile = fileIo.openSync(inputPath, fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+        try { expect(fileIo.writeSync(corruptFile.fd, new Uint8Array([1, 2, 3, 4]).buffer)).assertEqual(4); }
+        finally { fileIo.closeSync(corruptFile); }
+        const corruptInput: PreparedInput = { fileId, sourceFormatId: 'jpeg', relativePath: input.relativePath,
+          byteSize: 4, sha256: (await hash.hash(inputPath, 'sha256')).toLowerCase() };
+        await expectProbeFailure(native, { schemaVersion: 1, sessionId, workspaceRef,
+          inputs: [corruptInput], resourceBudget: registryMetadata.defaultBudget },
+          'FILE_CORRUPTED', 'NATIVE_JPEG_CORRUPTED');
+        const restoredFile = fileIo.openSync(inputPath, fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+        try { expect(fileIo.writeSync(restoredFile.fd, fixture.buffer)).assertEqual(fixture.byteLength); }
+        finally { fileIo.closeSync(restoredFile); }
+        const changedInput: PreparedInput = { fileId, sourceFormatId: 'jpeg', relativePath: input.relativePath,
+          byteSize: fixture.byteLength, sha256: '0'.repeat(64) };
+        await expectProbeFailure(native, { schemaVersion: 1, sessionId, workspaceRef,
+          inputs: [changedInput], resourceBudget: registryMetadata.defaultBudget },
+          'PERMISSION_DENIED', 'NATIVE_INPUT_DIGEST_MISMATCH');
+        hilog.info(0x0000, 'JpegDebugSmoke', 'PROBE_DIAGNOSTICS=metadata,corruption,digest:passed');
         const request: ConvertRequest = { schemaVersion: 1, sessionId, taskId, attemptId, workspaceRef,
           operation: 'images_to_pdf', inputs: [input], targetFormatId: 'pdf', qualityMode: 'balanced',
           intent: route.intent, options: {}, resourceBudget: registryMetadata.defaultBudget,

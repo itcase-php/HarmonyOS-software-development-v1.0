@@ -95,17 +95,35 @@ InputProbe ProbeOne(const fs::path& directory, const PreparedInput& input, const
     if (!SafeDirectory(inputs) || !SafeFile(path)) return result;
     try {
         prototype::HostFile source(path.string(),false);
-        if (source.Size()!=input.byteSize) return result;
+        if (source.Size()!=input.byteSize) throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_INPUT_SIZE_MISMATCH");
         ProbeIO io{source,0,std::min<std::uint64_t>(budget.maxInputBytes,kMaximumInput),Sha256{}};
         HdmJpegInfo info{};
         const int code=hdm_probe_jpeg(ReadJpeg,CheckJpeg,&io,
             budget.maxNativeBytes,std::min<std::uint64_t>(budget.maxPixels,kMaximumPixels),&info);
-        if (code!=0 || io.bytes!=input.byteSize || io.hash.FinalHex()!=input.sha256) return result;
+        if (code==static_cast<int>(ErrorCode::FileCorrupted))
+            throw BridgeProblem(ErrorCode::FileCorrupted,"NATIVE_JPEG_CORRUPTED");
+        if (code==static_cast<int>(ErrorCode::ResourceLimitExceeded))
+            throw BridgeProblem(ErrorCode::ResourceLimitExceeded,info.issue==HDM_JPEG_PIXELS ? "NATIVE_JPEG_PIXEL_LIMIT" : "NATIVE_JPEG_MEMORY_LIMIT");
+        if (code==static_cast<int>(ErrorCode::UnsupportedFeature)) {
+            const char* reason="NATIVE_JPEG_SUBSET_UNSUPPORTED";
+            switch (info.issue) {
+                case HDM_JPEG_METADATA: reason="NATIVE_JPEG_METADATA_UNSUPPORTED"; break;
+                case HDM_JPEG_ENCODING: reason="NATIVE_JPEG_ENCODING_UNSUPPORTED"; break;
+                case HDM_JPEG_COLOR: reason="NATIVE_JPEG_COLOR_UNSUPPORTED"; break;
+                case HDM_JPEG_DENSITY: reason="NATIVE_JPEG_DENSITY_UNSUPPORTED"; break;
+                case HDM_JPEG_HEADER: reason="NATIVE_JPEG_HEADER_UNSUPPORTED"; break;
+            }
+            throw BridgeProblem(ErrorCode::UnsupportedFeature,reason);
+        }
+        if (code!=0) throw BridgeProblem(ErrorCode::IoError,"NATIVE_INPUT_READ_FAILED");
+        if (io.bytes!=input.byteSize) throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_INPUT_SIZE_MISMATCH");
+        if (io.hash.FinalHex()!=input.sha256) throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_INPUT_DIGEST_MISMATCH");
         result.actualFormatId="jpeg";
         result.protection=ProtectionState::None;
         result.pageCount=1;
         result.needsDeepCheck=false;
-    } catch (...) { return result; }
+    } catch (const BridgeProblem&) { throw; }
+    catch (...) { return result; }
     return result;
 }
 } // namespace

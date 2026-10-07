@@ -338,6 +338,14 @@
     {"name":"input_selection_changed","value":"The file or conversion settings changed. Check and confirm them again."},
     {"name":"input_picker_failed","value":"The system file picker could not open or read the selection. Select the file again."},
     {"name":"input_import_failed","value":"The file could not be imported or changed while copying. Select the file again."},
-    {"name":"input_probe_failed","value":"The actual file format or protection state did not pass verification. Use a valid unprotected file."}
+    {"name":"input_probe_failed","value":"Compatibility with the current converter could not be verified. Select the file again; if it persists, check the diagnostic log."},
+    {"name":"input_jpeg_metadata_unsupported","value":"The current JPEG converter does not support extra segments such as EXIF or ICC. This does not mean the image is damaged or protected; compatibility is still pending."},
+    {"name":"input_jpeg_encoding_unsupported","value":"The current JPEG converter supports only 8-bit baseline encoding. Progressive and other encodings are not supported yet."},
+    {"name":"input_jpeg_color_unsupported","value":"The current JPEG converter supports grayscale, RGB and YCbCr images. CMYK and other color modes are not supported yet."},
+    {"name":"input_jpeg_density_unsupported","value":"The image's JFIF resolution information is outside the supported range, so PDF page dimensions cannot be verified."},
+    {"name":"input_jpeg_header_unsupported","value":"The JPEG header is outside the supported range and cannot be checked. Compatibility with this image is still pending."},
+    {"name":"input_jpeg_pixel_limit","value":"The image exceeds this task's pixel limit (at most 16 million pixels). Select a smaller image."},
+    {"name":"input_jpeg_memory_limit","value":"Checking this image exceeds the task's memory budget. Select a smaller image."},
+    {"name":"input_jpeg_corrupted","value":"The JPEG data is incomplete or structurally invalid. Export it again or select a complete JPEG file."}
   ]
 }
