@@ -8,6 +8,8 @@
 
 随后完成了独立 Stage 包、真实设备加载诊断、UNO 资源目录补丁及可编辑 OOXML 写出模块。初始化修复后的设备运行和真实转换仍待验证，最新边界见 [阶段记录](../../docs/OFFICE-STAGE-VALIDATION.md)。
 
+反向路线新增受限 PDFKit 文字/图片读取与可编辑 DOCX/PPTX 写出调用，通过模拟 SDK 用例、独立文件解析、微软结构检查及真实 SDK 编译。尚未运行实际 PDFKit 转换、验证版式或接入主应用；完整输入保护探测仍待实现，Stage 仅处理已知的本地合成样例。
+
 ## 独立 Stage 复现
 
 先完成下述固定源码构建，新增 `0011-ohos-uno-resources.patch` 后增量执行 `make -j4 Library_cppuhelper`。`stage-runtime.sh` 从构建结果复制运行资源，只修改独立副本；它要求目标暂存目录不存在。若已有副本，仅刷新变更库并剥离该副本的调试信息，勿修改原始构建输出。
@@ -17,6 +19,7 @@
 3. WSL 运行 `package-stage.py`，分开打包 ELF 库及配置/字体/过滤器资源。
 4. Windows 运行 `build-stage-probe.ps1`，只构建。仅连接设备并准备好测试时使用 `-Install`；它会替换 JPEG 主应用，测试后必须恢复主应用。
 5. 运行 `tests/check-office-stage.py` 检查包。`check-uno-resource-path.sh SOURCE BUILD OUTPUT` 回归实际资源路径代码；`tests/check-office-package.cjs`、`tests/check-office-package.py` 和 `dotnet run --project tests/office-package-validation -- tmp/offline-engines/package-tests` 分别验证 OOXML 写出及结构。
+6. `tests/check-pdf-office.cjs` 运行反向转换的模拟 SDK 用例；`tests/check-pdf-office.py` 独立核对生成文件；`dotnet run --project tests/office-package-validation -- tmp/offline-engines/pdf-office-tests rebuilt` 检查其 OOXML 结构。
 
 这些检查不代替设备初始化、真实转换、资源占用和版式验收。探针无 INTERNET 权限声明，但完整文档安全行为仍需验证。
 

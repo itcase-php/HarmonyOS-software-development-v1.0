@@ -9,8 +9,8 @@ const output = path.resolve(__dirname, '../tmp/offline-engines/package-tests');
 fs.mkdirSync(output, { recursive: true });
 const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGMQsZkGAAFOAOdnZDkrAAAAAElFTkSuQmCC', 'base64');
 const text = { text: '\u4e2d\u6587 \ud83d\ude00 <&> 12345\nSecond line', x: 30, y: 40, width: 400, height: 60,
-  font: 'DejaVu Sans', size: 18, color: '123456' };
-const page = { width: 612, height: 792, texts: [text], images: [{ png: new Uint8Array(png), x: 50, y: 100, width: 20, height: 20 }] };
+  font: 'DejaVu Sans', size: 18, color: '123456', zIndex: 1 };
+const page = { width: 612, height: 792, texts: [text], images: [{ png: new Uint8Array(png), x: 50, y: 100, width: 20, height: 20, zIndex: 0 }] };
 function entries(bytes) {
   const buffer = Buffer.from(bytes), parts = new Map();
   let position = 0;
@@ -40,6 +40,8 @@ for (const format of ['docx', 'pptx']) {
   assert.deepEqual(media[0][1], png);
   assert.ok(format === 'docx' ? xml.includes('w:txbxContent') : xml.includes('p:txBody'));
   assert.ok(xml.includes(format === 'docx' ? '<w:br/>' : '<a:br/>'), 'line breaks must use editable OOXML breaks');
+  assert.ok(format === 'docx' ? xml.indexOf('<v:imagedata') < xml.indexOf('<w:txbxContent') :
+    xml.indexOf('<p:pic>') < xml.indexOf('<p:sp>'), 'background images must stay behind text');
   fs.writeFileSync(path.join(output, `editable.${format}`), bytes);
   assert.throws(() => OfficePackageWriter[format]([]), /OFFICE_PAGE_LIMIT/);
   assert.throws(() => OfficePackageWriter[format]([{ ...page, width: NaN }]), /OFFICE_PAGE_SIZE/);

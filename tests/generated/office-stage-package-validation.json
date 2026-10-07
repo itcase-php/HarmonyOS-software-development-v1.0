@@ -1,9 +1,9 @@
 {
   "scope": "Office isolated HAP static packaging only",
-  "checkedAtUtc": "2026-10-07T15:18:37.623192+00:00",
+  "checkedAtUtc": "2026-10-07T15:43:27.886667+00:00",
   "result": "passed",
-  "hapBytes": 387878763,
-  "hapSha256": "aa69aaa6c82bf47bf659fa4de995a2ad6e6f550a7b2b89402ad10c3abdb375f5",
+  "hapBytes": 387905769,
+  "hapSha256": "fadbfdddf307c392492e6e9ac51757fa776aac0e63dab01ea70cf6098c53e0e7",
   "nativeLibraryCount": 236,
   "allNativeLibraries": "ELF64 AArch64",
   "unoResourcePathPatchPackaged": true,

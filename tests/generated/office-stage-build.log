@@ -1,38 +1,44 @@
 > hvigor UP-TO-DATE :entry:default@PreBuild...
-> hvigor Finished :entry:default@CreateModuleInfo... after 2 ms
+> hvigor Finished :entry:default@CreateModuleInfo... after 1 ms
 > hvigor UP-TO-DATE :entry:default@GenerateMetadata...
-> hvigor Finished :entry:default@ConfigureCmake... after 16 ms
+> hvigor Finished :entry:default@ConfigureCmake... after 11 ms
 > hvigor UP-TO-DATE :entry:default@MergeProfile...
 > hvigor UP-TO-DATE :entry:default@CreateBuildProfile...
 > hvigor Finished :entry:default@PreCheckSyscap... after 1 ms
-> hvigor Finished :entry:default@GeneratePkgSdkInfo... after 4 ms
+> hvigor Finished :entry:default@GeneratePkgSdkInfo... after 2 ms
 > hvigor Finished :entry:default@ProcessIntegratedHsp... after 1 ms
-> hvigor Finished :entry:default@BuildNativeWithCmake... after 20 ms
+> hvigor Finished :entry:default@BuildNativeWithCmake... after 9 ms
 > hvigor UP-TO-DATE :entry:default@MakePackInfo...
-> hvigor Finished :entry:default@SyscapTransform... after 34 ms
+> hvigor Finished :entry:default@SyscapTransform... after 9 ms
 > hvigor UP-TO-DATE :entry:default@GeneratePkgContextInfo...
 > hvigor UP-TO-DATE :entry:default@ProcessProfile...
 > hvigor UP-TO-DATE :entry:default@ProcessRouterMap...
 > hvigor UP-TO-DATE :entry:default@ProcessShareConfig...
-> hvigor Finished :entry:default@ProcessStartupConfig... after 9 ms
+> hvigor Finished :entry:default@ProcessStartupConfig... after 8 ms
 > hvigor UP-TO-DATE :entry:default@ProcessResource...
 > hvigor UP-TO-DATE :entry:default@GenerateLoaderJson...
-> hvigor Finished :entry:default@CompileResource... after 1 s 97 ms
+> hvigor UP-TO-DATE :entry:default@CompileResource...
 > hvigor Finished :entry:default@BuildJS... after 2 ms
-> hvigor Finished :entry:default@BuildNativeWithNinja... after 311 ms
-> hvigor Finished :entry:default@ProcessLibs... after 565 ms
-> hvigor Finished :entry:default@DoNativeStrip... after 6 s 131 ms
-> hvigor Finished :entry:default@CacheNativeLibs... after 36 ms
+> hvigor Finished :entry:default@BuildNativeWithNinja... after 79 ms
+> hvigor UP-TO-DATE :entry:default@ProcessLibs...
+> hvigor UP-TO-DATE :entry:default@DoNativeStrip...
+> hvigor UP-TO-DATE :entry:default@CacheNativeLibs...
 > hvigor WARN: WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/entryability/EntryAbility.ets:4:64
  Function may throw exceptions. Special handling is required.
 
-WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfRebuildProbe.ets:27:33
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfOfficeConverter.ets:72:31
  Function may throw exceptions. Special handling is required.
 
-WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfRebuildProbe.ets:32:38
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfOfficeConverter.ets:121:44
+ 'packing' has been deprecated.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfRebuildProbe.ets:40:33
  Function may throw exceptions. Special handling is required.
 
-WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfRebuildProbe.ets:36:32
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfRebuildProbe.ets:45:38
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfRebuildProbe.ets:49:32
  Function may throw exceptions. Special handling is required.
 
 WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:6:19
@@ -56,21 +62,21 @@ WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-p
 WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:31:75
  Function may throw exceptions. Special handling is required.
 
-WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:71:24
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:72:24
  Function may throw exceptions. Special handling is required.
 
-WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:72:37
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:73:37
  Function may throw exceptions. Special handling is required.
 
 
-> hvigor Finished :entry:default@CompileArkTS... after 5 s 897 ms
-> hvigor Finished :entry:default@GeneratePkgModuleJson... after 3 ms
+> hvigor Finished :entry:default@CompileArkTS... after 3 s 965 ms
+> hvigor UP-TO-DATE :entry:default@GeneratePkgModuleJson...
 > hvigor Finished :entry:default@ProcessCompiledResources... after 1 ms
-> hvigor Finished :entry:default@PackageHap... after 1 s 460 ms
-> hvigor Finished :entry:default@PackingCheck... after 5 ms
-> hvigor Finished :entry:default@SignHap... after 3 s 858 ms
+> hvigor Finished :entry:default@PackageHap... after 1 s 290 ms
+> hvigor Finished :entry:default@PackingCheck... after 6 ms
+> hvigor Finished :entry:default@SignHap... after 3 s 471 ms
 > hvigor Finished :entry:default@CollectDebugSymbol... after 1 ms
 > hvigor Finished :entry:assembleHap... after 1 ms
-> hvigor BUILD SUCCESSFUL in 17 s 966 ms
+> hvigor BUILD SUCCESSFUL in 11 s 901 ms
 
-33 tasks in total: 22 executed, 11 up-to-date
+33 tasks in total: 17 executed, 16 up-to-date

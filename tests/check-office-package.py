@@ -51,10 +51,11 @@ for extension in ['docx', 'pptx']:
             assert deck.slide_width.pt == 612 and deck.slide_height.pt == 792
             assert [shape.text for slide in deck.slides for shape in slide.shapes if shape.has_text_frame] == [expected + '\vSecond line'] * 2
             # Editing actual text nodes and reopening proves the fixture contains text shapes.
-            deck.slides[0].shapes[0].text_frame.paragraphs[0].runs[0].text = 'Edited 98765'
+            editable_shape = next(shape for shape in deck.slides[0].shapes if shape.has_text_frame)
+            editable_shape.text_frame.paragraphs[0].runs[0].text = 'Edited 98765'
             edited = fixtures / 'edited.pptx'
             deck.save(edited)
-            assert 'Edited 98765' in Presentation(edited).slides[0].shapes[0].text
+            assert any('Edited 98765' in shape.text for shape in Presentation(edited).slides[0].shapes if shape.has_text_frame)
     results.append({'format': extension, 'zipCrc': 'passed', 'xmlAndRelationships': 'passed',
                     'editableTextObjects': 2, 'separateImages': 1, 'pagesOrSlides': 2})
 report = {'scope': 'OOXML host structure and editability only', 'result': 'passed', 'files': results,

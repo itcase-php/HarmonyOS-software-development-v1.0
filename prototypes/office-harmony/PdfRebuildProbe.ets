@@ -1,7 +1,7 @@
 import { pdfService } from '@kit.PDFKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { fileIo } from '@kit.CoreFileKit';
-import { OfficePackageWriter, OfficePage } from './OfficePackageWriter';
+import { PdfOfficeConverter } from './PdfOfficeConverter';
 
 export class PdfRebuildProbe {
   static async inspect(root: string): Promise<void> {
@@ -12,18 +12,31 @@ export class PdfRebuildProbe {
       }
       for (let index: number = 0; index < document.getPageCount(); index++) {
         const page = document.getPage(index);
+        let objects: pdfService.GraphicsObject[] = [];
         try {
           hilog.info(0, 'OfficeStageProbe', 'PDF_BOX=%{public}s', JSON.stringify(page.getBox(pdfService.BoxType.BOX_MEDIA)));
-          for (const object of page.getGraphicsObjects()) {
+          objects = page.getGraphicsObjects();
+          for (const object of objects) {
             hilog.info(0, 'OfficeStageProbe', 'PDF_OBJECT=%{public}s', JSON.stringify(object));
           }
-        } finally { page.release(); }
+        } finally {
+          try {
+            await Promise.allSettled(objects
+              .filter((object: pdfService.GraphicsObject) => object.type === pdfService.GraphicsObjectType.OBJECT_IMAGE)
+              .map((object: pdfService.GraphicsObject) => (object as pdfService.ImageObject).pixelMap.release()));
+          } finally { page.release(); }
+        }
       }
     } finally { document.releaseDocument(); }
-    const pages: OfficePage[] = [{ width: 612, height: 792, texts: [{ text: 'Editable package 12345',
-      x: 40, y: 50, width: 400, height: 30, font: 'DejaVu Sans', size: 20, color: '000000' }], images: [] }];
+    const deadline: number = Date.now() + 30000;
     for (const extension of ['docx', 'pptx']) {
-      const bytes = extension === 'docx' ? OfficePackageWriter.docx(pages) : OfficePackageWriter.pptx(pages);
+      const result = await PdfOfficeConverter.convert(root + '/editable-input.pdf', extension,
+        [{ pdfName: 'DejaVuSans', officeName: 'DejaVu Sans' }],
+        // Only this locally generated, known unsigned fixture is admitted by the probe.
+        { fileId: 'stage-fixture', actualFormatId: 'pdf', protection: 'none', needsDeepCheck: false }, () => {
+          if (Date.now() >= deadline) { throw new Error('PDF_REBUILD_TIMEOUT'); }
+        });
+      const bytes = result.bytes;
       const file = await fileIo.open(root + '/rebuilt.' + extension,
         fileIo.OpenMode.CREATE | fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
       try {
@@ -34,7 +47,9 @@ export class PdfRebuildProbe {
           written += count;
         }
       } finally { await fileIo.close(file); }
+      hilog.info(0, 'OfficeStageProbe', 'PDF_REBUILD_%{public}s pages=%{public}d text=%{public}d images=%{public}d bytes=%{public}d',
+        extension, result.sourcePages, result.textObjects, result.imageObjects, bytes.length);
     }
-    hilog.info(0, 'OfficeStageProbe', 'OOXML_DEVICE_WRITER_PASSED');
+    hilog.info(0, 'OfficeStageProbe', 'PDF_REBUILD_COMPLETED_REQUIRES_LAYOUT_REVIEW');
   }
 }

@@ -42,7 +42,8 @@ struct Index {
       await this.copy(context, 'layout.docx', root + '/layout.docx');
       await this.copy(context, 'layout.pptx', root + '/layout.pptx');
       await this.copy(context, 'editable-input.pdf', root + '/editable-input.pdf');
-      await PdfRebuildProbe.inspect(root);
+      try { await PdfRebuildProbe.inspect(root); }
+      catch (error) { hilog.error(0, 'OfficeStageProbe', 'PDF_REBUILD_FAILURE=%{public}s', String(error)); }
       const config = '<?xml version="1.0"?><fontconfig><dir>' + root + '/fonts</dir>' +
         '<dir>/system/fonts</dir><cachedir>' + root + '/font-cache</cachedir></fontconfig>';
       const configFile = await fileIo.open(root + '/fonts.conf', fileIo.OpenMode.CREATE | fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);

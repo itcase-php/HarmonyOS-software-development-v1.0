@@ -8,6 +8,7 @@ export interface OfficeText {
   font: string;
   size: number;
   color: string;
+  zIndex?: number;
 }
 export interface OfficeImage {
   png: Uint8Array;
@@ -15,9 +16,16 @@ export interface OfficeImage {
   y: number;
   width: number;
   height: number;
+  zIndex?: number;
 }
 export interface OfficePage { width: number; height: number; texts: OfficeText[]; images: OfficeImage[]; }
 interface PackageEntry { path: string; bytes: Uint8Array; }
+interface PackageShape { order: number; xml: string; }
+
+function stack(shapes: PackageShape[]): string {
+  return shapes.sort((left: PackageShape, right: PackageShape) => left.order - right.order)
+    .map((shape: PackageShape) => shape.xml).join('');
+}
 
 const MAX_BYTES: number = 16 * 1024 * 1024;
 const W: string = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
@@ -103,6 +111,9 @@ function check(pages: OfficePage[]): void {
     }
     objects += page.texts.length + page.images.length;
     for (const object of page.texts) {
+      if (object.zIndex !== undefined && (!Number.isInteger(object.zIndex) || object.zIndex < 0 || object.zIndex > 5000)) {
+        throw new Error('OFFICE_OBJECT_ORDER');
+      }
       if (object.text.length > 65536 || object.font.length === 0 || object.font.length > 128 ||
         !/^[a-fA-F0-9]{6}$/.test(object.color) || !Number.isFinite(object.size) || object.size <= 0 || object.size > 400) {
         throw new Error('OFFICE_TEXT_INVALID');
@@ -113,6 +124,9 @@ function check(pages: OfficePage[]): void {
         object.width === 0 || object.height === 0) { throw new Error('OFFICE_OBJECT_BOUNDS'); }
     }
     for (const object of page.images) {
+      if (object.zIndex !== undefined && (!Number.isInteger(object.zIndex) || object.zIndex < 0 || object.zIndex > 5000)) {
+        throw new Error('OFFICE_OBJECT_ORDER');
+      }
       if (![object.x, object.y, object.width, object.height].every((n: number) => Number.isFinite(n) && n >= 0 && n <= 14400) ||
         object.width === 0 || object.height === 0 || object.png.length < 24 ||
         ![137, 80, 78, 71, 13, 10, 26, 10].every((n: number, index: number) => object.png[index] === n)) {
@@ -137,19 +151,19 @@ export class OfficePackageWriter {
     let id: number = 0;
     for (let index: number = 0; index < pages.length; index++) {
       const page = pages[index];
-      let shapes: string = '';
+      const shapes: PackageShape[] = [];
       for (const text of page.texts) {
         const style = `position:absolute;margin-left:${text.x}pt;margin-top:${text.y}pt;width:${text.width}pt;height:${text.height}pt;mso-position-horizontal-relative:page;mso-position-vertical-relative:page`;
-        shapes += `<w:r><w:pict><v:shape id="text${++id}" style="${style}" stroked="f" filled="f"><v:textbox inset="0,0,0,0"><w:txbxContent><w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="${xml(text.font)}" w:hAnsi="${xml(text.font)}" w:eastAsia="${xml(text.font)}"/><w:color w:val="${text.color}"/><w:sz w:val="${Math.round(text.size * 2)}"/></w:rPr><w:t xml:space="preserve">${xml(text.text).replace(/\r\n?|\n/g, '</w:t><w:br/><w:t xml:space="preserve">')}</w:t></w:r></w:p></w:txbxContent></v:textbox></v:shape></w:pict></w:r>`;
+        shapes.push({ order: text.zIndex ?? id, xml: `<w:r><w:pict><v:shape id="text${++id}" style="${style}" stroked="f" filled="f"><v:textbox inset="0,0,0,0"><w:txbxContent><w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="${xml(text.font)}" w:hAnsi="${xml(text.font)}" w:eastAsia="${xml(text.font)}"/><w:color w:val="${text.color}"/><w:sz w:val="${Math.round(text.size * 2)}"/></w:rPr><w:t xml:space="preserve">${xml(text.text).replace(/\r\n?|\n/g, '</w:t><w:br/><w:t xml:space="preserve">')}</w:t></w:r></w:p></w:txbxContent></v:textbox></v:shape></w:pict></w:r>` });
       }
       for (const image of page.images) {
         const key: string = `image${++id}`;
         entries.push({ path: `word/media/${key}.png`, bytes: image.png });
         rels += relation(key, 'image', `media/${key}.png`);
-        shapes += `<w:r><w:pict><v:shape id="${key}" style="position:absolute;margin-left:${image.x}pt;margin-top:${image.y}pt;width:${image.width}pt;height:${image.height}pt;mso-position-horizontal-relative:page;mso-position-vertical-relative:page" stroked="f"><v:imagedata r:id="${key}"/></v:shape></w:pict></w:r>`;
+        shapes.push({ order: image.zIndex ?? id, xml: `<w:r><w:pict><v:shape id="${key}" style="position:absolute;margin-left:${image.x}pt;margin-top:${image.y}pt;width:${image.width}pt;height:${image.height}pt;mso-position-horizontal-relative:page;mso-position-vertical-relative:page" stroked="f"><v:imagedata r:id="${key}"/></v:shape></w:pict></w:r>` });
       }
       const section = `<w:sectPr><w:type w:val="nextPage"/><w:pgSz w:w="${Math.round(page.width * 20)}" w:h="${Math.round(page.height * 20)}"/><w:pgMar w:top="0" w:right="0" w:bottom="0" w:left="0" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr>`;
-      body += `<w:p>${shapes}</w:p>`;
+      body += `<w:p>${stack(shapes)}</w:p>`;
       body += index + 1 < pages.length ? `<w:p><w:pPr>${section}</w:pPr></w:p>` : section;
     }
     add('word/document.xml', `<w:document xmlns:w="${W}" xmlns:r="${R}" xmlns:v="urn:schemas-microsoft-com:vml"><w:body>${body}</w:body></w:document>`);
@@ -176,22 +190,22 @@ export class OfficePackageWriter {
       types += `<Override PartName="/ppt/slides/slide${number}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`;
       slides += `<p:sldId id="${256 + index}" r:id="slide${number}"/>`;
       rels += relation(`slide${number}`, 'slide', `slides/slide${number}.xml`);
-      let content: string = group;
+      const content: PackageShape[] = [];
       let slideRels: string = relation('layout', 'slideLayout', '../slideLayouts/slideLayout1.xml');
       let id: number = 1;
       for (const text of page.texts) {
         const properties = `<a:rPr sz="${Math.round(text.size * 100)}"><a:solidFill><a:srgbClr val="${text.color}"/></a:solidFill><a:latin typeface="${xml(text.font)}"/><a:ea typeface="${xml(text.font)}"/></a:rPr>`;
         const runs = text.text.split(/\r\n?|\n/).map((line: string) =>
           `<a:r>${properties}<a:t>${xml(line)}</a:t></a:r>`).join('<a:br/>');
-        content += `<p:sp><p:nvSpPr><p:cNvPr id="${++id}" name="Text ${id}"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="${Math.round(text.x * 12700)}" y="${Math.round(text.y * 12700)}"/><a:ext cx="${Math.round(text.width * 12700)}" cy="${Math.round(text.height * 12700)}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr><p:txBody><a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0"/><a:lstStyle/><a:p><a:pPr><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft></a:pPr>${runs}</a:p></p:txBody></p:sp>`;
+        content.push({ order: text.zIndex ?? id, xml: `<p:sp><p:nvSpPr><p:cNvPr id="${++id}" name="Text ${id}"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="${Math.round(text.x * 12700)}" y="${Math.round(text.y * 12700)}"/><a:ext cx="${Math.round(text.width * 12700)}" cy="${Math.round(text.height * 12700)}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr><p:txBody><a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0"/><a:lstStyle/><a:p><a:pPr><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft></a:pPr>${runs}</a:p></p:txBody></p:sp>` });
       }
       for (const image of page.images) {
         const key: string = `image${number}_${++id}`;
         entries.push({ path: `ppt/media/${key}.png`, bytes: image.png });
         slideRels += relation(key, 'image', `../media/${key}.png`);
-        content += `<p:pic><p:nvPicPr><p:cNvPr id="${id}" name="Image ${id}"/><p:cNvPicPr/><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="${key}"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="${Math.round(image.x * 12700)}" y="${Math.round(image.y * 12700)}"/><a:ext cx="${Math.round(image.width * 12700)}" cy="${Math.round(image.height * 12700)}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>`;
+        content.push({ order: image.zIndex ?? id, xml: `<p:pic><p:nvPicPr><p:cNvPr id="${id}" name="Image ${id}"/><p:cNvPicPr/><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="${key}"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="${Math.round(image.x * 12700)}" y="${Math.round(image.y * 12700)}"/><a:ext cx="${Math.round(image.width * 12700)}" cy="${Math.round(image.height * 12700)}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>` });
       }
-      add(`ppt/slides/slide${number}.xml`, `<p:sld xmlns:p="${P}" xmlns:a="${A}" xmlns:r="${R}"><p:cSld><p:spTree>${content}</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>`);
+      add(`ppt/slides/slide${number}.xml`, `<p:sld xmlns:p="${P}" xmlns:a="${A}" xmlns:r="${R}"><p:cSld><p:spTree>${group}${stack(content)}</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>`);
       add(`ppt/slides/_rels/slide${number}.xml.rels`, relationships(slideRels));
     }
     add('[Content_Types].xml', `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">${types}</Types>`);

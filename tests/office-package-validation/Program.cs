@@ -3,11 +3,11 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Validation;
 using System.Text.Json;
 
-if (args.Length != 1) throw new ArgumentException("Pass the generated package fixture directory");
+if (args.Length < 1 || args.Length > 2) throw new ArgumentException("Pass the generated package fixture directory and optional filename stem");
 var results = new List<object>();
 foreach (var extension in new[] { "docx", "pptx" })
 {
-    var file = Path.Combine(args[0], "editable." + extension);
+    var file = Path.Combine(args[0], (args.Length == 2 ? args[1] : "editable") + "." + extension);
     using OpenXmlPackage package = extension == "docx"
         ? WordprocessingDocument.Open(file, false)
         : PresentationDocument.Open(file, false);
