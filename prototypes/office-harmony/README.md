@@ -4,6 +4,8 @@
 
 本目录用于 Office 移植验证，不提供已验收的 OfficeConverter，不发布转换能力。DOCX/PPTX 真机转换尚未执行。
 
+本轮独立 OHOS arm64 完整目标构建已通过；241 个 ELF 文件的架构、直接依赖文件名及 LOK 初始化导出符号检查通过。主机 SAL 回归与 LOK 失败路径检查通过。结果和未执行项目见 [验证报告](../../tests/generated/office-26.2-port-validation.json)。
+
 ## 26.2.6.2 移植入口
 
 - 固定源码由 [upstream.json](upstream.json) 指定：标签 `libreoffice-26.2.6.2`，提交 `ad5cf9fd4989cacf0bca866ebefc0ec8926cb0b2`，同时记录原始 `configure.ac` 的 SHA-256。
@@ -14,6 +16,7 @@
 - [gettext 补丁](patches/0005-ohos-gettext-interop.patch) 排除 OHOS SDK 不提供的桌面 GTK/gettext 绑定调用，保留 Boost 消息加载；[默认纸张补丁](patches/0006-ohos-default-paper.patch) 使用已有的地区回退，跳过桌面 `paperconf` 和 glibc 查询，文件声明的页面尺寸不变。
 - [字符串流补丁](patches/0007-stream-buffer-access.patch) 用 `str()` 替代 SDK libc++ 缺少的 `stringstream::view()`，保持 LOK 选择对象 JSON 的内容。
 - [编译期算法补丁](patches/0008-constexpr-algorithms.patch) 用标准迭代器算法替代 SDK 未提供的 ranges 算法，保留 Calc 字符区间表的两条编译期校验。
+- [NSS 交叉构建补丁](patches/0009-nss-cross-tools.patch) 明确目标 CPU，防止按 WSL 主机选择 x86 汇编；NSPR 内部构建工具使用主机编译器，目标库保持官方 OHOS 编译器。
 - [configure-ohos.sh](configure-ohos.sh) 校验源码、应用补丁，隔离目标 pkg-config 路径，使用官方 `aarch64-linux-ohos`、sysroot 和 libc++。宿主构建工具使用单独的 build 配置，不能作为鸿蒙运行库。
 
 在 WSL 中使用独立、未修改的上游 checkout：
@@ -26,7 +29,9 @@ bash prototypes/office-harmony/configure-ohos.sh \
 make -C "$OFFICE_BUILD" -j4 build
 ```
 
-三个变量由调用者设置为绝对路径；源码与输出应放在 WSL 文件系统，避免 Windows 盘上的大规模小文件 I/O。主机还需要 `autoconf-archive`、`autopoint` 来生成 fontconfig 的配置脚本。第三方依赖由固定上游下载清单校验 SHA-256。没有打包字体；字体授权、随包资源及缺失字体策略仍需完成。构建关闭 WebDAV/CMIS 连接器、Java/Python、GUI、Firebird/PostgreSQL/MariaDB 驱动与 PDF 导入功能，保留文档表单需要的基础数据库连接工具、Writer/Impress 和 PDF 输出；含内嵌 PDF 的复杂 Office 文件需要另行验收。不据此宣称文档外链已通过安全验收。
+三个变量由调用者设置为绝对路径；源码与输出应放在 WSL 文件系统，避免 Windows 盘上的大规模小文件 I/O。主机还需要 `autoconf-archive`、`autopoint` 来生成 fontconfig 的配置脚本。第三方依赖由固定上游下载清单校验 SHA-256。尚未为鸿蒙应用打包和验收字体；上游输出保留默认 OpenSymbol，但没有配齐中文正文字体。字体授权、随包资源及缺失字体策略仍需完成。构建关闭 WebDAV/CMIS 连接器、Java/Python、GUI、Firebird/PostgreSQL/MariaDB 驱动与 PDF 导入功能，保留文档表单需要的基础数据库连接工具、Writer/Impress 和 PDF 输出；含内嵌 PDF 的复杂 Office 文件需要另行验收。不据此宣称文档外链已通过安全验收。
+
+XML 安全与幻灯片代码仍依赖 NSS 和媒体核心实现，因此保留这两项，关闭 GStreamer 播放后端。NSS 用 `--without-system-nss` 明确从源码构建，不能引用 Ubuntu 的运行库；这不等于签名或媒体运行能力已验收。
 
 本轮详细状态见 [26.2.6.2 移植记录](../../docs/OFFICE-26.2-PORT.md)。
 

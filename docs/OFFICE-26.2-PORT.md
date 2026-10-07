@@ -2,6 +2,8 @@
 
 日期：2026-10-07。用户已批准更换固定版本，且本轮没有手机，先推进构建和代码验证。最终目标仍为真实 DOCX/PPTX 在鸿蒙 arm64 手机上首次断网导出 PDF；本记录不能替代该验收。
 
+当前结果：独立 OHOS arm64 完整目标构建已通过，241 个 ELF 文件的架构与直接依赖文件名检查通过。引擎尚未在设备上初始化，未执行 DOCX/PPTX→PDF，正式 Office 路线仍不可用。
+
 ## 源码与工具链
 
 - 官方仓库：`https://github.com/LibreOffice/core.git`。
@@ -22,7 +24,7 @@
 
 本次独立构建关闭 PDF 导入，避免为 Word/PPT→PDF 的初步验证引入 Poppler ranges 兼容工作；PDF 导出保留。含内嵌 PDF 的文件尚无保真保证。fontconfig 配置脚本的 snprintf 宏缺失，且 `va_copy` 检测会运行目标程序，已加入配置生成步骤及基于 SDK C99 API 的交叉缓存。SDK 已编译、链接专用 C99 探针，但设备运行结果仍未知；不能把缓存值当成设备测试通过。
 
-已产出 SAL、ICU、libxml2 等基础目标库。2026-10-07 05:16 UTC 的 18 库快照均为 ELF64/AArch64，直接版本依赖未发现 glibc；这不是完整依赖闭包或可运行引擎的证明。
+完整构建以 `make -j10 PARALLELISM_OPTION=-j10 build` 成功返回 0。`instdir/program` 中的 241 个 ELF 文件均为 ELF64/AArch64，包括 `libsofficeapp.so`、`libswlo.so`、`libsdlo.so`、`libpdffilterlo.so`。主库导出 `libreofficekit_hook_2`；直接 `DT_NEEDED` 文件名均可在构建输出或固定 SDK 的 arm64 目录中找到，未发现传入的 glibc 版本依赖。这不验证运行时符号解析、加载器命名空间或 SDK 运行库的应用打包。
 
 OHOS SDK 不提供桌面 GTK/gettext 的两个绑定函数，已局部排除这段互操作调用，保留 Boost 消息加载。默认纸张发现也跳过桌面 `paperconf` 和 glibc `_NL_PAPER_*` 查询，沿用现有地区回退；不改变文档声明的页面尺寸。这两项仍须结合目标运行验证。
 
@@ -32,16 +34,21 @@ SDK libc++ 还缺少 `stringstream::view()`。LOK 选择对象 JSON 的两处读
 
 `libsvxcore` 链接实际缺少 `dbtools` 符号。上游明确将 `--disable-database-connectivity` 标为尚在开发的选项，当前文档表单代码未完全隔离这些依赖；已撤销这项裁剪，恢复上游基础连接工具。Firebird/PostgreSQL/MariaDB 驱动仍关闭；不开放正式应用的数据库功能。
 
+后续链接还发现 `libslideshow` 需要媒体基础类型、`libxmlsecurity` 需要 NSS 路径编译的实现。已恢复媒体核心及源码 NSS，继续关闭 GStreamer 后端。上游也明确将关闭 NSS 标为尚未完成的选项；当前不能依靠单独保留 OpenSSL 代替完整 XML 安全依赖。签名验证和安全行为仍待真实运行验收。
+
+NSS 首次构建按 WSL 主机选择了 x86 汇编，且把构建时执行的 NSPR `now` 工具编成了 arm64。新增 OHOS 局部补丁，在 make 命令行明确目标 CPU/OS，并让 NSPR 内部工具覆盖传递下来的目标编译器参数，使用独立的主机编译器。修复后的 `now` 确认为 ELF64/X86-64，主机执行通过；NSS 运行库纳入上述 AArch64 检查，未在设备执行。
+
 新增独立 [LibreOfficeKit 验证程序](../prototypes/office-harmony/lok-probe/main.cpp)，执行真实初始化、加载、PDF 导出和资源释放。官方 SDK arm64 编译和链接成功；ELF64/AArch64，动态依赖为 `libc++_shared.so`、`libc.so`。它只在运行时加载引擎，因此这个结果不是引擎构建成功。主机侧参数错误返回 64、引擎目录不存在返回 2，并确认没有创建 PDF；没有运行真实转换。
 
-完整目标构建进行中。现有五页、18 种格式、43 条路线、JPEG Debug 白名单、Native 协议及 Office 工厂没有修改。Office 路线仍不可用。
+完整记录见 [构建与代码验证报告](../tests/generated/office-26.2-port-validation.json) 和 [目标 ELF 清单](../tests/generated/office-26.2-target-elf-validation.json)，包含源码/补丁/产物 SHA-256 及未执行项目。输出保留在 WSL `/home/tx/.cache/hdm-office/26.2.6.2/build-arm64/instdir`；没有提交二进制。
+
+上游构建输出包含默认 OpenSymbol 字体，尚未配齐中文正文字体或完成应用字体打包、授权清单及缺失字体策略。现有五页、18 种格式、43 条路线、JPEG Debug 白名单、Native 协议及 Office 工厂没有修改。Office 路线仍不可用。
 
 ## 待完成验收
 
-1. 完整构建 Writer/Impress/PDF 输出所需目标库，核对 ELF ABI 和全部动态依赖，定位并修复后续源代码兼容问题。
-2. 整理 UNO 注册、过滤器、配置及授权字体资源，构建不申请 INTERNET 的最小 Stage 验证应用。
-3. 在设备上加载、初始化、分别处理真实 DOCX/PPTX、导出 PDF、释放资源；记录包体、耗时、峰值内存和临时空间。
-4. 对参考 PDF 比较页数、页面尺寸、文本、关键数值、表格、图片和逐页外观。确认缺失字体及不支持特征不会静默降级。
-5. 通过后接入正式 OfficeConverter、输入探测、调度与通用 PDF 校验，再分别开放 Debug 路线。Release 和正式保真声明另据验收证据审核。
+1. 整理运行库、UNO 注册、过滤器、配置及授权字体资源，构建不申请 INTERNET 的最小 Stage 验证应用；验证沙箱内动态加载与运行时符号解析。
+2. 在设备上首次断网加载、初始化、分别处理真实 DOCX/PPTX、导出 PDF、释放资源；记录包体、耗时、峰值内存和临时空间。
+3. 对参考 PDF 比较页数、页面尺寸、文本、关键数值、表格、图片和逐页外观。确认缺失字体及不支持特征不会静默降级。
+4. 通过后接入正式 OfficeConverter、输入探测、调度与通用 PDF 校验，再分别开放 Debug 路线。Release 和正式保真声明另据验收证据审核。
 
 LibreOffice 及本地修改需遵循上游 MPL-2.0 等许可；项目的 MIT 许可证不能覆盖第三方引擎。当前没有向应用包再分发该引擎、字体或上游依赖。
