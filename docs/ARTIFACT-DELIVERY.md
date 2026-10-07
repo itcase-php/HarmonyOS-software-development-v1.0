@@ -1,5 +1,21 @@
 # PDF 产物保存与分享（分阶段接入）
 
+## 2026-10-07 保存与分享修复
+
+用户在 `D:\HarmonyOS\harmonyOS` 的 Debug JPEG→PDF 转换成功后，选择保存位置仍失败，分享也失败。已修复：
+
+- Native 原先把已提交的 PDF 留在输入工作区 `cache/workspace/<id>/outputs`。调度完成会删除输入会话及整个工作区，产物登记仍存在但文件已丢失。现将最终 PDF 原子提交到独立的 `cache/artifacts`；输入工作区只保留临时文件，最终产物由 `releaseArtifact` 或 `shutdown` 清理。输入授权和输出校验保持原有要求。
+- `beginShare` 通知界面刷新，忙碌任务的保存/分享按钮会被移除；原分享调用仍以该按钮 ID 为锚点。设备复现 `SDK_401 / Parameter error`。现使用系统默认面板位置，不依赖已消失的按钮。
+- 保存 URI 的打开模式增加 `CREATE`，兼容选择器返回尚未创建的目标；仍在复制、大小检查和关闭完成后才标记保存成功。新增诊断只记录阶段、系统数字错误码或受控 Native 原因，不记录 URI、路径和文件内容。
+
+验证：修复前，两个 Native 回归用例均复现“input workspace cleanup removed owned PDF”；修复后 CTest 25/25、保存分享宿主 6/6、其余 12 组宿主检查通过。签名主应用与测试 HAP 构建并安装，设备 Hypium 65/65 通过；两张真实合成 JPEG 在注册释放、输入工作区删除之后仍能复制和校验 PDF。
+
+另以 `-s class JpegDebugSmoke -s deliveryUi true` 运行可选交付测试，使用真实 Native 产物、真实文件 SDK 和系统 Picker/ShareKit，测试内的 TaskStore 子类仅隔离调度。实际保存到 Download，再通过系统选择器重新授权读取同一测试文件，1351 字节与验证过的分享副本逐字节一致，SHA-256 为 `0114650536ba75a354953318781f95a1d32a7bf6d20c4730f41765e5d664dd3c`。独立 PDF 解析确认一页 8×8 pt、JPEG 字节不变，Poppler 渲染与样例像素一致。实际观察到分享面板显示 `converted.pdf`、1.35 KB 及应用入口，随后取消，未发送给联系人。交付测试 2/2 通过。
+
+证据见 [交付验证记录](../tests/generated/jpeg-delivery-validation.json)、[宿主检查](../tests/generated/artifact-delivery-host-report.json) 和 [独立 PDF 检查](../tests/generated/jpeg-delivery-pdf-validation.json)。独立 PDF 检查脚本自身不操作 Picker/ShareKit，其对应字段仅描述该脚本范围；系统交付证据在交付验证记录中。
+
+边界：尚未验证接收应用实际收取文件、全部文件提供者、首次断网与 Release。任务历史仍是会话状态。修复前已经被清理的旧任务 PDF 无法恢复，需重新转换。下方 2026-10-01 内容为历史阶段记录。
+
 日期：2026-10-01。此阶段接入的是**已成功且已验证的 Native PDF 产物的交付操作**，不激活 JPEG→PDF 路线。`jpeg-pdf` 在共享矩阵及 NAPI 门禁中仍为 `planned`；因此当前应用正常流程尚不会出现可保存的真实 PDF，设备端到端验证仍待进行。
 
 ## A：保存 PDF

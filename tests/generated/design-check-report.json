@@ -6,7 +6,7 @@
   "formatPairCases": 324,
   "routeCases": 43,
   "protectionCases": 12,
-  "rejectedMalformedDesigns": 10,
+  "rejectedMalformedDesigns": 11,
   "generatedCaseExecution": "not_executed",
   "harmonyOsBuild": "not_executed",
   "realConversion": "not_executed",

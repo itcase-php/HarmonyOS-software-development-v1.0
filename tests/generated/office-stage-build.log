@@ -1,0 +1,82 @@
+> hvigor UP-TO-DATE :entry:default@PreBuild...
+> hvigor Finished :entry:default@CreateModuleInfo... after 1 ms
+> hvigor UP-TO-DATE :entry:default@GenerateMetadata...
+> hvigor Finished :entry:default@ConfigureCmake... after 11 ms
+> hvigor UP-TO-DATE :entry:default@MergeProfile...
+> hvigor UP-TO-DATE :entry:default@CreateBuildProfile...
+> hvigor Finished :entry:default@PreCheckSyscap... after 1 ms
+> hvigor Finished :entry:default@GeneratePkgSdkInfo... after 2 ms
+> hvigor Finished :entry:default@ProcessIntegratedHsp... after 1 ms
+> hvigor Finished :entry:default@BuildNativeWithCmake... after 9 ms
+> hvigor UP-TO-DATE :entry:default@MakePackInfo...
+> hvigor Finished :entry:default@SyscapTransform... after 9 ms
+> hvigor UP-TO-DATE :entry:default@GeneratePkgContextInfo...
+> hvigor UP-TO-DATE :entry:default@ProcessProfile...
+> hvigor UP-TO-DATE :entry:default@ProcessRouterMap...
+> hvigor UP-TO-DATE :entry:default@ProcessShareConfig...
+> hvigor Finished :entry:default@ProcessStartupConfig... after 8 ms
+> hvigor UP-TO-DATE :entry:default@ProcessResource...
+> hvigor UP-TO-DATE :entry:default@GenerateLoaderJson...
+> hvigor UP-TO-DATE :entry:default@CompileResource...
+> hvigor Finished :entry:default@BuildJS... after 2 ms
+> hvigor Finished :entry:default@BuildNativeWithNinja... after 79 ms
+> hvigor UP-TO-DATE :entry:default@ProcessLibs...
+> hvigor UP-TO-DATE :entry:default@DoNativeStrip...
+> hvigor UP-TO-DATE :entry:default@CacheNativeLibs...
+> hvigor WARN: WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/entryability/EntryAbility.ets:4:64
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfOfficeConverter.ets:72:31
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfOfficeConverter.ets:121:44
+ 'packing' has been deprecated.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfRebuildProbe.ets:40:33
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfRebuildProbe.ets:45:38
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/services/PdfRebuildProbe.ets:49:32
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:6:19
+ Currently module for 'liboffice_probe.so' is not verified. If you're importing napi, its verification will be enabled in later SDK version. Please make sure the corresponding .d.ts file is provided and the napis are correctly declared.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:14:52
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:15:33
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:20:36
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:25:39
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:31:30
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:31:75
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:72:24
+ Function may throw exceptions. Special handling is required.
+
+WARN: ArkTS:WARN File: D:/HarmonyOS/harmonyOS/tmp/offline-engines/office-stage-probe/entry/src/main/ets/pages/Index.ets:73:37
+ Function may throw exceptions. Special handling is required.
+
+
+> hvigor Finished :entry:default@CompileArkTS... after 3 s 965 ms
+> hvigor UP-TO-DATE :entry:default@GeneratePkgModuleJson...
+> hvigor Finished :entry:default@ProcessCompiledResources... after 1 ms
+> hvigor Finished :entry:default@PackageHap... after 1 s 290 ms
+> hvigor Finished :entry:default@PackingCheck... after 6 ms
+> hvigor Finished :entry:default@SignHap... after 3 s 471 ms
+> hvigor Finished :entry:default@CollectDebugSymbol... after 1 ms
+> hvigor Finished :entry:assembleHap... after 1 ms
+> hvigor BUILD SUCCESSFUL in 11 s 901 ms
+
+33 tasks in total: 17 executed, 16 up-to-date

@@ -79,6 +79,15 @@ inputFailureKey(reason: string): string {
     if (reason === 'FILE_PICKER_UNAVAILABLE' || reason === 'FILE_PICK_FAILED') { return 'input_picker_failed'; }
     if (reason === 'FILE_COPY_FAILED' || reason === 'FILE_CHANGED_DURING_COPY' || reason === 'FILE_WRITE_INCOMPLETE') { return 'input_import_failed'; }
     if (reason === 'NATIVE_INPUT_NOT_VERIFIED') { return 'input_probe_failed'; }
+    if (reason === 'NATIVE_JPEG_METADATA_UNSUPPORTED') { return 'input_jpeg_metadata_unsupported'; }
+    if (reason === 'NATIVE_JPEG_ENCODING_UNSUPPORTED') { return 'input_jpeg_encoding_unsupported'; }
+    if (reason === 'NATIVE_JPEG_COLOR_UNSUPPORTED') { return 'input_jpeg_color_unsupported'; }
+    if (reason === 'NATIVE_JPEG_DENSITY_UNSUPPORTED') { return 'input_jpeg_density_unsupported'; }
+    if (reason === 'NATIVE_JPEG_HEADER_UNSUPPORTED' || reason === 'NATIVE_JPEG_SUBSET_UNSUPPORTED') { return 'input_jpeg_header_unsupported'; }
+    if (reason === 'NATIVE_JPEG_PIXEL_LIMIT') { return 'input_jpeg_pixel_limit'; }
+    if (reason === 'NATIVE_JPEG_MEMORY_LIMIT') { return 'input_jpeg_memory_limit'; }
+    if (reason === 'NATIVE_JPEG_CORRUPTED') { return 'input_jpeg_corrupted'; }
+    if (reason === 'NATIVE_INPUT_SIZE_MISMATCH' || reason === 'NATIVE_INPUT_DIGEST_MISMATCH' || reason === 'NATIVE_INPUT_READ_FAILED') { return 'input_import_failed'; }
     if (reason === 'SANDBOX_FULL') { return 'input_storage_full'; }
     if (reason === 'NATIVE_SESSION_TIMEOUT') { return 'input_session_timeout'; }
     if (reason === 'FILE_GRANT_EXPIRED') { return 'input_grant_expired'; }

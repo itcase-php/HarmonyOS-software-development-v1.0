@@ -4,11 +4,11 @@
   "testedCases": 16,
   "cases": [
     {
-      "name": "Generated metadata pins rawfile hashes counts and the unchanged planned matrix",
+      "name": "Generated metadata pins rawfile hashes counts and the approved JPEG Debug matrix",
       "result": "passed"
     },
     {
-      "name": "Cold registry immediately exposes all 18 approved formats and 43 planned routes",
+      "name": "Cold registry immediately exposes all 18 approved formats and 43 catalogue routes",
       "result": "passed"
     },
     {

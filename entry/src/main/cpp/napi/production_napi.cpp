@@ -1,4 +1,6 @@
 #include "production_napi.h"
+#include "result_serializer.h"
+#include "../production/route_policy.h"
 #include "bridge_problem.h"
 #include "../production/runtime.h"
 #include "../generated/registry_metadata.h"
@@ -209,7 +211,7 @@ ConvertRequest ParseConvert(napi_env env,napi_value value) {
 enum class Kind { Initialize,Register,Probe,Execute,Cancel,Pause,Resume,ReleaseTask,ReleaseArtifact,CopyArtifact,Shutdown };
 struct Work {
     napi_async_work handle{}; napi_deferred deferred{};
-    Kind kind{}; ErrorCode error{ErrorCode::Ok}; const char* reason{"NATIVE_WORK_FAILED"};
+    Kind kind{}; ErrorCode error{ErrorCode::Ok}; std::string reason{"NATIVE_WORK_FAILED"};
     SessionInit init; WorkspaceGrant grant; ProbeRequest probe; ConvertRequest convert;
     std::string first,second,textResult;
     int destinationFd{-1}; std::uint64_t exportBytes{}, copiedBytes{};
@@ -224,12 +226,12 @@ void Run(napi_env,void* data) noexcept {
             case Kind::Register: work.textResult=runtime.Register(work.grant); break;
             case Kind::Probe: work.probeResult=runtime.Probe(work.probe); break;
             case Kind::Execute:
-                if (std::string(kJpegPdfRouteStatus)!="available") {
+                if (!production::IsDebugRouteExecutable(work.convert.plan.routeId)) {
                     work.convertResult.schemaVersion=kSchemaVersion;
                     work.convertResult.taskId=work.convert.taskId;
                     work.convertResult.attemptId=work.convert.attemptId;
                     Status blocked; blocked.code=ErrorCode::EngineMissing;
-                    blocked.reason="NATIVE_ROUTE_PLANNED"; blocked.module="NativeBridge";
+                    blocked.reason="NATIVE_ROUTE_UNAVAILABLE"; blocked.module="NativeBridge";
                     blocked.messageKey="errors.ENGINE_MISSING";
                     work.convertResult.error=blocked;
                 } else work.convertResult=runtime.Execute(work.convert);
@@ -243,7 +245,7 @@ void Run(napi_env,void* data) noexcept {
                 work.copiedBytes=runtime.CopyArtifactToFd(work.first,work.destinationFd,work.second,work.exportBytes); break;
             case Kind::Shutdown: runtime.Shutdown(); break;
         }
-    } catch (const BridgeProblem& failure) { work.error=failure.code; work.reason="NATIVE_WORK_REJECTED"; }
+    } catch (BridgeProblem& failure) { work.error=failure.code; work.reason=std::move(failure.reason); }
     catch (const std::bad_alloc&) { work.error=ErrorCode::ResourceLimitExceeded; work.reason="NATIVE_ALLOCATION_FAILED"; }
     catch (...) { work.error=ErrorCode::InternalError; work.reason="NATIVE_WORK_FAILED"; }
 }
@@ -278,42 +280,6 @@ napi_value SerializeControl(napi_env env,const ControlAck& control) {
     auto result=Object(env); PutText(env,result,"taskId",control.taskId);
     PutText(env,result,"attemptId",control.attemptId);
     PutText(env,result,"state",ControlState(control.state)); return result;
-}
-napi_value SerializeResult(napi_env env,const ConvertResult& native) {
-    auto result=Object(env); PutNumber(env,result,"schemaVersion",native.schemaVersion);
-    PutText(env,result,"taskId",native.taskId); PutText(env,result,"attemptId",native.attemptId);
-    PutText(env,result,"status",native.status==ResultState::Success?"success":
-        native.status==ResultState::Cancelled?"cancelled":"failed");
-    if (native.error) Put(env,result,"error",Error(env,native.error->code,native.error->reason.c_str()));
-    Put(env,result,"warnings",Array(env));
-    auto outputs=Array(env);
-    for (std::uint32_t i=0;i<native.outputs.size();++i) {
-        const auto& output=native.outputs[i]; auto item=Object(env);
-        PutText(env,item,"artifactId",output.artifactId); PutText(env,item,"role",output.role);
-        PutText(env,item,"formatId",output.formatId); PutText(env,item,"internalRef",output.internalRef);
-        PutText(env,item,"sha256",output.sha256); PutNumber(env,item,"byteSize",output.byteSize);
-        Push(env,outputs,i,item);
-    }
-    Put(env,result,"outputs",outputs);
-    auto validation=Object(env);
-    PutText(env,validation,"state",native.validation.state==ValidationState::Passed?"passed":
-        native.validation.state==ValidationState::Failed?"failed":"not_evaluated");
-    PutText(env,validation,"validatorVersion",native.validation.validatorVersion.empty()?"not-evaluated":native.validation.validatorVersion);
-    auto evidence=Array(env);
-    for (std::uint32_t i=0;i<native.validation.evidenceRefs.size();++i)
-        Push(env,evidence,i,Text(env,native.validation.evidenceRefs[i]));
-    Put(env,validation,"evidenceRefs",evidence); Put(env,result,"validation",validation);
-    auto engines=Array(env);
-    for (std::uint32_t i=0;i<native.engines.size();++i) {
-        auto item=Object(env); PutText(env,item,"engineId",native.engines[i].engineId);
-        PutText(env,item,"version",native.engines[i].version);
-        PutText(env,item,"buildHash",native.engines[i].buildHash); Push(env,engines,i,item);
-    }
-    Put(env,result,"engines",engines);
-    PutNumber(env,result,"elapsedMs",native.elapsedMs);
-    PutNumber(env,result,"nativePeakBytes",native.nativePeakBytes);
-    PutNumber(env,result,"tempPeakBytes",native.tempPeakBytes);
-    return result;
 }
 struct Listener { std::string taskId; napi_ref ref{}; };
 std::mutex listenersMutex;
@@ -352,7 +318,7 @@ void Complete(napi_env env,napi_status status,void* data) noexcept {
         if (status!=napi_ok || work->error!=ErrorCode::Ok) {
             Check(napi_reject_deferred(env,work->deferred,Error(env,
                 status!=napi_ok?ErrorCode::InternalError:work->error,
-                status!=napi_ok?"ASYNC_WORK_FAILED":work->reason)));
+                status!=napi_ok?"ASYNC_WORK_FAILED":work->reason.c_str())));
         } else {
             napi_value value{};
             switch (work->kind) {
@@ -360,7 +326,7 @@ void Complete(napi_env env,napi_status status,void* data) noexcept {
                 case Kind::Probe: value=SerializeProbe(env,work->probeResult); break;
                 case Kind::Execute:
                     DispatchProgress(env,work->convertResult);
-                    value=SerializeResult(env,work->convertResult); break;
+                    value=SerializeConvertResult(env,work->convertResult); break;
                 case Kind::Cancel: case Kind::Pause: case Kind::Resume:
                     value=SerializeControl(env,work->controlResult); break;
                 case Kind::CopyArtifact:

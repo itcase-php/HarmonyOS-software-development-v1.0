@@ -1,0 +1,17 @@
+{
+  "scope": "PDF to Office code with modeled SDK objects and independent output parsing",
+  "result": "passed",
+  "targets": [
+    "docx",
+    "pptx"
+  ],
+  "flowCases": 2,
+  "failureAndControlCases": 21,
+  "objectOrderAndCoordinates": "passed for modeled bottom-left PDF coordinates",
+  "protectionAdmission": "requires trusted completed input probe; main PDF protection probe not implemented",
+  "encryptedAndUnsupportedContent": "rejected in modeled cases",
+  "fontSubstitution": "none selected",
+  "actualPdfKitExecution": "not run",
+  "layoutFidelity": "not verified",
+  "mainRouteIntegration": "not implemented"
+}

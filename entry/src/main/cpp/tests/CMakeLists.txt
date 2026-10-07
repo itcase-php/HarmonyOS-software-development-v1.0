@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(hdm_native_contract_tests LANGUAGES CXX)
 include(CTest)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../production/build_manifest.cmake)
+hdm_create_build_manifest("${CMAKE_CURRENT_SOURCE_DIR}/../../../../../")
 
 # An actual host executable; no HarmonyOS NAPI library or third-party fetch required.
 include(${CMAKE_CURRENT_SOURCE_DIR}/../generated/engine_sources.cmake)
@@ -22,28 +24,41 @@ add_test(NAME production_sha256 COMMAND hdm_sha256_tests)
 add_executable(hdm_output_validator_tests output_validator_tests.cpp ../production/output_validator.cpp)
 target_link_libraries(hdm_output_validator_tests PRIVATE hdm_jpeg_pdf)
 target_compile_features(hdm_output_validator_tests PRIVATE cxx_std_17)
-add_test(NAME production_output_validator COMMAND hdm_output_validator_tests)
+add_test(NAME production_output_validator COMMAND hdm_output_validator_tests
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../ohosTest/resources/rawfile/jpeg-debug-exif-icc.jpg)
 add_executable(hdm_runtime_tests runtime_tests.cpp ../production/runtime.cpp ../production/sha256.cpp
     ../production/output_validator.cpp ../core/engine_registry.cpp ${HDM_ENGINE_SOURCES})
 target_link_libraries(hdm_runtime_tests PRIVATE hdm_jpeg_pdf)
 target_compile_features(hdm_runtime_tests PRIVATE cxx_std_17)
 add_test(NAME production_runtime COMMAND hdm_runtime_tests
     ${CMAKE_CURRENT_SOURCE_DIR}/fixtures/baseline.jpg)
+add_test(NAME production_runtime_metadata COMMAND hdm_runtime_tests
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../ohosTest/resources/rawfile/jpeg-debug-exif-icc.jpg)
 
 # Compile the actual production bridge against an explicit host-only NAPI model.
-add_executable(hdm_napi_tests napi_tests.cpp ../napi/native_bridge.cpp)
+add_executable(hdm_napi_tests napi_tests.cpp ../napi/native_bridge.cpp ../napi/result_serializer.cpp)
 target_include_directories(hdm_napi_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/mock)
 target_compile_features(hdm_napi_tests PRIVATE cxx_std_17)
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_compile_options(hdm_napi_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
-foreach(case exports schema unsupported missing controls queue completion boundary)
+foreach(case exports schema unsupported missing controls queue completion boundary reports)
     add_test(NAME napi_${case} COMMAND hdm_napi_tests ${case})
 endforeach()
-add_executable(hdm_capability_diagnostic_tests napi_tests.cpp ../napi/native_bridge.cpp
+add_executable(hdm_capability_diagnostic_tests napi_tests.cpp ../napi/native_bridge.cpp ../napi/result_serializer.cpp
     ../core/engine_registry.cpp ${HDM_ENGINE_SOURCES})
 target_include_directories(hdm_capability_diagnostic_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/mock)
 target_compile_definitions(hdm_capability_diagnostic_tests PRIVATE HDM_PRODUCTION_NATIVE=1)
 target_compile_features(hdm_capability_diagnostic_tests PRIVATE cxx_std_17)
 target_link_libraries(hdm_capability_diagnostic_tests PRIVATE hdm_jpeg_pdf)
 add_test(NAME production_capability_diagnostic COMMAND hdm_capability_diagnostic_tests exports)
+add_executable(hdm_debug_capability_tests napi_tests.cpp ../napi/native_bridge.cpp ../napi/result_serializer.cpp
+    ../core/engine_registry.cpp ${HDM_ENGINE_SOURCES})
+target_include_directories(hdm_debug_capability_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/mock)
+target_compile_definitions(hdm_debug_capability_tests PRIVATE HDM_PRODUCTION_NATIVE=1 HDM_NATIVE_DEBUG=1)
+target_compile_features(hdm_debug_capability_tests PRIVATE cxx_std_17)
+target_link_libraries(hdm_debug_capability_tests PRIVATE hdm_jpeg_pdf)
+add_test(NAME production_debug_capability COMMAND hdm_debug_capability_tests exports)
+foreach(task_target hdm_core_tests hdm_runtime_tests hdm_capability_diagnostic_tests hdm_debug_capability_tests)
+    target_include_directories(${task_target} PRIVATE "${HDM_BUILD_MANIFEST_INCLUDE}")
+endforeach()

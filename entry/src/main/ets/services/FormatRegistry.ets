@@ -9,6 +9,8 @@ import { RegistryFormat, ConversionRouteDefinition, BundledResourceReader,
 import { CapabilityMatrix } from '../models/NativeProtocol';
 import { BridgeError } from '../common/BridgeError';
 import { FormatRegistryPort } from './ServiceContracts';
+import BuildProfile from 'BuildProfile';
+import { debugRouteIds } from '../generated/DebugRoutes';
 
 
 // The complete generated catalogue is available immediately, including in Previewer.
@@ -195,6 +197,12 @@ export class FormatRegistryService implements FormatRegistryPort {
     if (!this.ready) { return []; }
     return this.listPlannedRoutes().filter((route: ConversionRouteDefinition) => {
       const actual = capabilities.routes.find((item) => item.routeId === route.id);
+      if (BuildProfile.DEBUG && route.status === 'experimental' && debugRouteIds.includes(route.id) &&
+        actual !== undefined && actual.availability === 'experimental') {
+        return route.steps.every((step) => capabilities.engines.some((engine) =>
+          engine.engineId === step.executorEngineId && engine.version.length > 0 &&
+          /^[a-f0-9]{64}$/.test(engine.buildHash) && !/^0{64}$/.test(engine.buildHash)));
+      }
       return route.status === 'available' && actual !== undefined && actual.availability === 'available' &&
         actual.releaseEvidenceId !== undefined && actual.releaseEvidenceId.length > 0;
     });

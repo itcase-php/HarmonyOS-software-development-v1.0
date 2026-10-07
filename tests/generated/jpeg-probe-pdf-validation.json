@@ -1,0 +1,20 @@
+{
+  "scope": "independent_parse_and_render_of_synthetic_JPEG_PDF_created_on_device",
+  "result": "passed",
+  "pdfSha256": "0114650536ba75a354953318781f95a1d32a7bf6d20c4730f41765e5d664dd3c",
+  "pdfBytes": 1351,
+  "pageCount": 1,
+  "pageSizePt": [
+    8.0,
+    8.0
+  ],
+  "imageSizePixels": [
+    8,
+    8
+  ],
+  "jpegPayloadByteIdentical": true,
+  "renderDpi": 72,
+  "renderSizeMatchesSource": true,
+  "meanAbsoluteRenderedDifference": 0.0,
+  "systemPickerSaveShareAndUserDocuments": "not_tested"
+}

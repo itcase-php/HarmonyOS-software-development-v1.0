@@ -1,0 +1,24 @@
+diff --git a/sc/source/core/tool/interpr1.cxx b/sc/source/core/tool/interpr1.cxx
+index 9ff9aab6b..0d2469316 100644
+--- a/sc/source/core/tool/interpr1.cxx
++++ b/sc/source/core/tool/interpr1.cxx
+@@ -19,6 +19,8 @@
+ 
+ #include <interpre.hxx>
+ 
++#include <algorithm>
++#include <iterator>
+ #include <optional>
+ #include <scitems.hxx>
+ #include <editeng/langitem.hxx>
+@@ -11797,8 +11799,8 @@ constexpr UBlockScript scriptList[] = {
+     {UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B, UBLOCK_CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT},
+     {UBLOCK_CJK_STROKES, UBLOCK_CJK_STROKES}
+ };
+-static_assert(std::ranges::all_of(scriptList, [](const auto& r) { return r.from <= r.to; }));
+-static_assert(std::ranges::is_sorted(scriptList,
++static_assert(std::all_of(std::begin(scriptList), std::end(scriptList), [](const auto& r) { return r.from <= r.to; }));
++static_assert(std::is_sorted(std::begin(scriptList), std::end(scriptList),
+                                      [](const auto& l, const auto& r)
+                                      {
+                                          // avoid interleaving ranges; without the second part,

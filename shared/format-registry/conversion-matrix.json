@@ -3,7 +3,7 @@
   "configVersion": "1.0.0-design",
   "maxRouteSteps": 3,
   "priorityOrder": "ascending",
-  "notes": "Design only. All routes planned. Lower-fidelity relay requires explicit user approval and cannot satisfy a higher minimum tier.",
+  "notes": "JPEG to PDF is experimental for explicit Debug testing only; other routes remain planned. Lower-fidelity relay requires explicit user approval and cannot satisfy a higher minimum tier.",
   "routes": [
     {
       "id": "jpeg-pdf",
@@ -20,7 +20,7 @@
         "pdf"
       ],
       "priority": 10,
-      "status": "planned",
+      "status": "experimental",
       "phase": 1,
       "steps": [
         {

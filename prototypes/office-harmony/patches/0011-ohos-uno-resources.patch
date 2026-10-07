@@ -1,0 +1,33 @@
+diff --git a/cppuhelper/source/paths.cxx b/cppuhelper/source/paths.cxx
+index 0a4ccf76e..5275b7b7b 100644
+--- a/cppuhelper/source/paths.cxx
++++ b/cppuhelper/source/paths.cxx
+@@ -26,6 +26,7 @@
+ #include <com/sun/star/uno/DeploymentException.hpp>
+ #include <osl/file.hxx>
+ #include <osl/module.hxx>
++#include <rtl/bootstrap.hxx>
+ #include <rtl/ustring.hxx>
+ #include <sal/types.h>
+ #include <o3tl/string_view.hxx>
+@@ -34,7 +35,7 @@
+ 
+ namespace {
+ 
+-#if !(defined ANDROID || defined EMSCRIPTEN)
++#if !(defined ANDROID || defined EMSCRIPTEN || defined __OHOS__)
+ OUString get_this_libpath() {
+     static OUString s_uri = []() {
+         OUString uri;
+@@ -63,6 +64,11 @@ OUString cppu::getUnoIniUri() {
+     OUString uri("file:///assets/program");
+ #elif defined(EMSCRIPTEN)
+     OUString uri("file:///instdir/program");
++#elif defined __OHOS__
++    // HAP native libraries and extracted read-only resources occupy different directories.
++    OUString uri;
++    if (!rtl::Bootstrap::get(u"LO_OFFICE_PROGRAM_URL"_ustr, uri) || !uri.startsWith("file:///"))
++        throw css::uno::DeploymentException("LO_OFFICE_PROGRAM_URL must identify the extracted program resources");
+ #else
+     OUString uri(get_this_libpath());
+ #ifdef MACOSX

@@ -1,5 +1,25 @@
 # 迁移结果与实现边界
 
+## 2026-10-07 Office 无设备代码验证阶段
+
+主应用仍只开放 Debug JPEG→PDF；保存至 Download 和系统分享面板已有设备证据，接收方实际收取仍待验收。Word/PPT→PDF 已完成 arm64 引擎构建及独立调用端，UNO 初始化路径修复后的实际转换尚未验证。PDF→Word/PPT 新增受限文字/图片提取与可编辑 OOXML 写出代码，通过模拟 SDK 流程、独立解析、结构校验及实际鸿蒙 SDK 编译；实际 PDFKit 转换、复杂对象、版式核对、完整保护探测和主应用接入仍待完成。四条 Office 路线没有开放，本阶段未调用设备。详见 [Office 阶段记录](OFFICE-STAGE-VALIDATION.md)。下方记录为对应历史阶段状态。
+
+## 2026-10-07 JPEG PDF 保存与分享修复
+
+已修复输入工作区清理误删已提交 PDF、分享面板引用已移除按钮导致 SDK 401，以及新文档 URI 缺少 CREATE 的问题。最终产物独立保存于应用缓存 `artifacts`，仍由 Native 校验并管理生命周期。Native CTest 25/25、交付宿主 6/6、12 组既有宿主检查、设备 Hypium 65/65 通过。真实系统 Picker 保存至 Download 后重新选择读取，与已验证 PDF 逐字节一致；实际分享面板显示 PDF 及应用入口后取消，未发送给联系人。新主应用已构建安装。接收方实际收取、其他文件提供者、首次断网、Release 和 Office 仍待验收；旧任务需重新转换。详见 [保存分享修复](ARTIFACT-DELIVERY.md)。以下为对应阶段历史记录。
+
+## 2026-10-07 JPEG EXIF/ICC 兼容修复
+
+不再统一拒绝 EXIF/ICC：支持 EXIF 八种方向及物理分辨率、受限的 RGB/灰度 ICC v2/v4 配置，并在 PDF 中实际应用方向矩阵与 ICCBased 色彩空间，保留 JPEG 与 ICC 字节。原生 CTest 25/25、专项主机独立解析/渲染 30 项和真机 Hypium 65/65 通过；手机新增样例同时含 EXIF 方向与 ICC，取回 PDF 的独立解析与渲染通过。用户附上的截图在主机实测转换通过，未随包或提交。仍仅 Debug，渐进式、CMYK、未知 APP/XMP 等受限；系统 Picker/保存/分享、首次断网、Release 与 Office 仍待验收。详见 [兼容修复与证据](JPEG-METADATA-COMPATIBILITY.md)。下方原始阶段记录保留。
+
+## 2026-10-07 原工程自动同步与 JPEG 设备验证
+
+已将 JPEG Debug 修复同步到用户实际使用的原工程，保留签名与既有本地格式检测改动。真机复现并修复硬链接提交失败，OHOS 使用禁止覆盖的原子重命名；真机 Hypium 64/64 通过，包含合成 baseline JPEG 的真实 Native 转换与产物复制，独立 PDF 解析/渲染通过。系统选文件、保存、阅读器和分享交付仍待验收，Office 及其余路线未开放。详见[原工程修复记录](JPEG-DEBUG-LOCAL-SYNC.md)。
+
+## 2026-10-07 JPEG 调试门禁修复
+
+用户批准先修复代码、暂不进行手机测试。JPEG→PDF 现在为 experimental，通过同源白名单与实际 BuildProfile/CMake Debug 模式接入正式预检查和 NAPI 执行；其余 42 条路线保持 planned，Release 继续拒绝。已同步全部配置摘要，使用真实引擎构建清单摘要，未填写发布证据。Native 宿主 24/24、新增 ArkTS 门禁 4 项、相关现行契约回归和双 ABI Debug/Release 构建通过；手机端转换、保存、独立打开和分享仍待验收。详细改动及旧历史保护脚本的失败记录见 [本轮修复说明](JPEG-DEBUG-ROUTE-REPAIR.md)。以下各阶段的原状态保留用于溯源。
+
 ## 2026-10-06 真机修复与引擎验证增量
 
 已修复 Resource 格式参数与真实任务预检查。手机中英文格式详情、Picker导入/取消、引擎缺失的准确提示和输入保留通过；新增宿主11项、实际手机Hypium63/63、应用与ohosTest签名HAP构建、其他宿主及MSVC/Ninja CTest22/22通过。下文此前的“设备未验收”“未签名”是对应阶段的历史记录。

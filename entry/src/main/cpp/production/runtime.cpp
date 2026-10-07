@@ -13,6 +13,10 @@
 #include <fstream>
 #include <random>
 #include <system_error>
+#ifdef __OHOS__
+#include <cstdio>
+#include <fcntl.h>
+#endif
 #ifdef _WIN32
 #include <io.h>
 #else
@@ -91,17 +95,35 @@ InputProbe ProbeOne(const fs::path& directory, const PreparedInput& input, const
     if (!SafeDirectory(inputs) || !SafeFile(path)) return result;
     try {
         prototype::HostFile source(path.string(),false);
-        if (source.Size()!=input.byteSize) return result;
+        if (source.Size()!=input.byteSize) throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_INPUT_SIZE_MISMATCH");
         ProbeIO io{source,0,std::min<std::uint64_t>(budget.maxInputBytes,kMaximumInput),Sha256{}};
         HdmJpegInfo info{};
         const int code=hdm_probe_jpeg(ReadJpeg,CheckJpeg,&io,
             budget.maxNativeBytes,std::min<std::uint64_t>(budget.maxPixels,kMaximumPixels),&info);
-        if (code!=0 || io.bytes!=input.byteSize || io.hash.FinalHex()!=input.sha256) return result;
+        if (code==static_cast<int>(ErrorCode::FileCorrupted))
+            throw BridgeProblem(ErrorCode::FileCorrupted,"NATIVE_JPEG_CORRUPTED");
+        if (code==static_cast<int>(ErrorCode::ResourceLimitExceeded))
+            throw BridgeProblem(ErrorCode::ResourceLimitExceeded,info.issue==HDM_JPEG_PIXELS ? "NATIVE_JPEG_PIXEL_LIMIT" : "NATIVE_JPEG_MEMORY_LIMIT");
+        if (code==static_cast<int>(ErrorCode::UnsupportedFeature)) {
+            const char* reason="NATIVE_JPEG_SUBSET_UNSUPPORTED";
+            switch (info.issue) {
+                case HDM_JPEG_METADATA: reason="NATIVE_JPEG_METADATA_UNSUPPORTED"; break;
+                case HDM_JPEG_ENCODING: reason="NATIVE_JPEG_ENCODING_UNSUPPORTED"; break;
+                case HDM_JPEG_COLOR: reason="NATIVE_JPEG_COLOR_UNSUPPORTED"; break;
+                case HDM_JPEG_DENSITY: reason="NATIVE_JPEG_DENSITY_UNSUPPORTED"; break;
+                case HDM_JPEG_HEADER: reason="NATIVE_JPEG_HEADER_UNSUPPORTED"; break;
+            }
+            throw BridgeProblem(ErrorCode::UnsupportedFeature,reason);
+        }
+        if (code!=0) throw BridgeProblem(ErrorCode::IoError,"NATIVE_INPUT_READ_FAILED");
+        if (io.bytes!=input.byteSize) throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_INPUT_SIZE_MISMATCH");
+        if (io.hash.FinalHex()!=input.sha256) throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_INPUT_DIGEST_MISMATCH");
         result.actualFormatId="jpeg";
         result.protection=ProtectionState::None;
         result.pageCount=1;
         result.needsDeepCheck=false;
-    } catch (...) { return result; }
+    } catch (const BridgeProblem&) { throw; }
+    catch (...) { return result; }
     return result;
 }
 } // namespace
@@ -193,10 +215,15 @@ ConvertResult Runtime::Execute(const ConvertRequest& request) {
         const fs::path outputs=grant.directory/"outputs";
         std::error_code ec; fs::create_directory(outputs,ec);
         if (ec || !SafeDirectory(outputs)) throw BridgeProblem(ErrorCode::IoError,"NATIVE_OUTPUT_DIRECTORY");
+        // Input sessions are deleted after execution. Committed artifacts remain owned by
+        // the result until ReleaseArtifact/Shutdown, outside that temporary workspace.
+        const fs::path artifacts=grant.directory.parent_path().parent_path()/"artifacts";
+        fs::create_directory(artifacts,ec);
+        if (ec || !SafeDirectory(artifacts)) throw BridgeProblem(ErrorCode::IoError,"NATIVE_ARTIFACT_DIRECTORY");
         const auto nonce=RandomId();
         const auto spoolPath=outputs/(nonce+".spool");
         const auto candidatePath=outputs/(nonce+".candidate");
-        const auto finalPath=outputs/(nonce+".pdf");
+        const auto finalPath=artifacts/(nonce+".pdf");
         struct Cleanup {
             fs::path spool,candidate,final;
             bool committed{};
@@ -226,8 +253,14 @@ ConvertResult Runtime::Execute(const ConvertRequest& request) {
         std::uint64_t pdfBytes{}; const auto pdfHash=DigestFile(candidatePath,kMaximumTemp,pdfBytes);
         if (pdfBytes!=candidateOutput.value->files[0].byteSize)
             throw BridgeProblem(ErrorCode::OutputValidationFailed,"NATIVE_OUTPUT_SIZE");
+#ifdef __OHOS__
+        // The app sandbox rejects hard links; commit atomically without replacing a file.
+        if (::renameat2(AT_FDCWD,candidatePath.c_str(),AT_FDCWD,finalPath.c_str(),RENAME_NOREPLACE)!=0)
+            throw BridgeProblem(ErrorCode::IoError,"NATIVE_OUTPUT_COMMIT");
+#else
         fs::create_hard_link(candidatePath,finalPath,ec);
         if (ec) throw BridgeProblem(ErrorCode::IoError,"NATIVE_OUTPUT_COMMIT");
+#endif
         const std::string artifactId=nonce;
         const std::string internalRef="artifact:"+nonce;
         result.outputs.push_back({artifactId,"primary","pdf",internalRef,pdfHash,pdfBytes,std::nullopt});

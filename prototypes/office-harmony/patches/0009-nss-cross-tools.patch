@@ -1,0 +1,49 @@
+diff --git a/external/nss/ExternalProject_nss.mk b/external/nss/ExternalProject_nss.mk
+index cd198051c..eb0900691 100644
+--- a/external/nss/ExternalProject_nss.mk
++++ b/external/nss/ExternalProject_nss.mk
+@@ -68,6 +68,7 @@ $(call gb_ExternalProject_get_state_target,nss,build): \
+ 		$(if $(CROSS_COMPILING),CROSS_COMPILE=1) \
+ 		NSDISTMODE=copy \
+ 		$(MAKE) \
++			$(if $(filter OHOS,$(RTL_OS)),OS_TARGET=Linux OS_TEST=aarch64 CPU_ARCH=aarch64 LD="$(CC)" HOST_CC="$(CC_FOR_BUILD)" HOST_CXX="$(CXX_FOR_BUILD)") \
+ 			AR="$(AR)" \
+ 			RANLIB="$(RANLIB)" \
+ 			NMEDIT="$(NM)edit" \
+diff --git a/external/nss/UnpackedTarball_nss.mk b/external/nss/UnpackedTarball_nss.mk
+index a33a293f9..1d71da478 100644
+--- a/external/nss/UnpackedTarball_nss.mk
++++ b/external/nss/UnpackedTarball_nss.mk
+@@ -30,6 +30,7 @@ $(eval $(call gb_UnpackedTarball_add_patches,nss,\
+     external/nss/nss-restore-manual-pre-dependencies.patch.1 \
+     external/nss/Wincompatible-function-pointer-types.patch.0 \
+     external/nss/nspr-win95-target.patch \
++    $(if $(filter OHOS,$(RTL_OS)),external/nss/nss-ohos-cross.patch.0) \
+     $(if $(filter LINUX,$(OS)), \
+         external/nss/nss.disablefsync.patch \
+         external/nss/nss.getrandom.patch) \
+diff --git a/external/nss/nss-ohos-cross.patch.0 b/external/nss/nss-ohos-cross.patch.0
+new file mode 100644
+index 0000000..34356a4
+--- /dev/null
++++ b/external/nss/nss-ohos-cross.patch.0
+@@ -0,0 +1,19 @@
++--- nspr/config/rules.mk
+++++ nspr/config/rules.mk
++@@ -53,11 +53,11 @@
++ ifdef USE_AUTOCONF
++ ifdef CROSS_COMPILE
++ ifdef INTERNAL_TOOLS
++-CC=$(HOST_CC)
++-CCC=$(HOST_CXX)
++-CFLAGS=$(HOST_CFLAGS)
++-CXXFLAGS=$(HOST_CXXFLAGS)
++-LDFLAGS=$(HOST_LDFLAGS)
+++override CC=$(HOST_CC)
+++override CCC=$(HOST_CXX)
+++override CFLAGS=$(HOST_CFLAGS)
+++override CXXFLAGS=$(HOST_CXXFLAGS)
+++override LDFLAGS=$(HOST_LDFLAGS)
++ endif
++ endif
++ endif

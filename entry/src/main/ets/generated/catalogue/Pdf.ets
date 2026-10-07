@@ -46,7 +46,7 @@ export function createRoutes(): ConversionRouteDefinition[] { return [
       "pdf"
     ],
     "priority": 10,
-    "status": "planned",
+    "status": "experimental",
     "phase": 1,
     "steps": [
       {

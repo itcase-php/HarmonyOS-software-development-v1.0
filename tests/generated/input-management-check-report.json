@@ -4,7 +4,7 @@
   "testedCases": 35,
   "cases": [
     {
-      "name": "Approved task method surface and immutable format matrix and Native protocol remain intact",
+      "name": "Approved task surface and Native protocol remain intact; matrix changes are limited to JPEG Debug status",
       "result": "passed"
     },
     {

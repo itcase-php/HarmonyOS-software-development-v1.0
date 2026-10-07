@@ -1,0 +1,13 @@
+{
+  "scope": "host_logic_with_mock_native_not_device_conversion",
+  "passed": 5,
+  "cases": [
+    "Only JPEG is experimental; generated configuration bytes and digests agree",
+    "Debug requires both route states, the whitelist and a real-shaped engine stamp; Release blocks it",
+    "Release available still requires release evidence",
+    "Preflight and runner share Debug qualification; input probing remains mandatory",
+    "JPEG probe errors reach distinct translated UI messages without claiming protection"
+  ],
+  "device": "not_executed",
+  "previewer": "not_executed"
+}

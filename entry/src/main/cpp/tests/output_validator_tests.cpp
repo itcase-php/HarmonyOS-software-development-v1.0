@@ -27,7 +27,7 @@ void ReplaceOnce(std::string& text,const std::string& old,const std::string& rep
     text.replace(pos,old.size(),replacement);
 }
 }
-int main() {
+int main(int argc,char** argv) {
     try {
         using namespace hdm;
         MemoryFile jpeg,pdf;
@@ -52,6 +52,24 @@ int main() {
         pdf.bytes=original;
         ReplaceOnce(pdf.bytes,"%%EOF\n","%%E0F\n");
         Require(!production::ValidateKnownPdf(pdf,candidate),"trailer mutation accepted");
+        Require(argc==2,"metadata fixture required");
+        prototype::HostFile source(argv[1],false);
+        MemoryFile spool,metadataPdf;
+        budget.maxInputBytes=4096; budget.maxBatchBytes=8192; budget.maxPixels=1024;
+        prototype::JpegIRBuilder builder;
+        const auto metadataDocument=builder.Build(source,spool,budget,{});
+        const auto metadataCandidate=writer.Write(metadataDocument,spool,metadataPdf,budget,{});
+        Require(metadataCandidate.iccBytes>0 && production::ValidateKnownPdf(metadataPdf,metadataCandidate),
+            "generated ICC PDF structure rejected");
+        const auto metadataOriginal=metadataPdf.bytes;
+        ReplaceOnce(metadataPdf.bytes,"/N 3","/N 4");
+        Require(!production::ValidateKnownPdf(metadataPdf,metadataCandidate),"ICC component mutation accepted");
+        metadataPdf.bytes=metadataOriginal;
+        ReplaceOnce(metadataPdf.bytes,"/ICCBased 6 0 R","/ICCBased 5 0 R");
+        Require(!production::ValidateKnownPdf(metadataPdf,metadataCandidate),"ICC reference mutation accepted");
+        metadataPdf.bytes=metadataOriginal;
+        auto wrongLength=metadataCandidate; wrongLength.iccBytes++;
+        Require(!production::ValidateKnownPdf(metadataPdf,wrongLength),"ICC stream length mutation accepted");
         std::cout<<"PASS output validator\n"; return 0;
     } catch (const std::exception& error) { std::cerr<<error.what()<<'\n'; return 1; }
 }

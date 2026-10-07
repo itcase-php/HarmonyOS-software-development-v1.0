@@ -2,6 +2,8 @@
 #include "../../napi/bridge_problem.h"
 #include "../../production/image_context.h"
 #include "../../generated/registry_metadata.h"
+#include "../../production/route_policy.h"
+#include "hdm_build_manifest.h"
 #include <memory>
 
 namespace hdm {
@@ -16,12 +18,11 @@ class ImageConverter final : public IConverter {
 public:
     ConverterCapabilities Describe() const override {
         ConverterCapabilities capabilities;
-        capabilities.engine={"image","1.0.0-experimental","unreleased"};
-        capabilities.decoderIds={"jpeg-baseline-sof0-gray-rgb-jfif-v1"};
-        capabilities.encoderIds={"pdf-dct-single-page-v1"};
-        capabilities.inputSubsetIds={"jpeg-baseline-sof0-jfif-v1"};
-        // Linked for internal tests; public route stays gated until device/release evidence.
-        capabilities.available=false;
+        capabilities.engine={"image","1.1.0-experimental",kImageBuildHash};
+        capabilities.decoderIds={"jpeg-baseline-sof0-gray-rgb-exif-icc-v2"};
+        capabilities.encoderIds={"pdf-dct-single-page-icc-v2"};
+        capabilities.inputSubsetIds={"jpeg-baseline-sof0-jfif-exif-icc-v2"};
+        capabilities.available=production::IsDebugRouteExecutable(kJpegPdfRouteId);
         return capabilities;
     }
     Status Initialize(const EngineInitContext& init) override {

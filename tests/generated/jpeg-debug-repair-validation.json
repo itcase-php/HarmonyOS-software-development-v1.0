@@ -1,0 +1,57 @@
+{
+  "scope": "host_checks_and_actual_hvigor_build_not_device_acceptance",
+  "date": "2026-10-07",
+  "nativeHost": {
+    "passed": 24,
+    "failed": 0
+  },
+  "arktsDebugRouteHost": {
+    "passed": 4,
+    "native": "mock_only"
+  },
+  "builds": [
+    {
+      "mode": "debug",
+      "abi": "arm64-v8a",
+      "nativeDebug": true,
+      "imageBuildManifestSha256": "f52d6e08a3bcf7d9256f6b6aa2a85d7ac793f2dc2a443799bad2a2f3ddd8bea4",
+      "sourceDigestsVerified": true
+    },
+    {
+      "mode": "debug",
+      "abi": "x86_64",
+      "nativeDebug": true,
+      "imageBuildManifestSha256": "5dacad94aafb3930603e51f40fa2406e92c27ba93a3a663d54e85fdd786a9566",
+      "sourceDigestsVerified": true
+    },
+    {
+      "mode": "release",
+      "abi": "arm64-v8a",
+      "nativeDebug": false,
+      "imageBuildManifestSha256": "d5eebaa7a0e7aaed8a49cdcb92befca7041892e682ec0bd1dd334ca70cce7328",
+      "sourceDigestsVerified": true
+    },
+    {
+      "mode": "release",
+      "abi": "x86_64",
+      "nativeDebug": false,
+      "imageBuildManifestSha256": "024c14557423995e9ab5caf0f3688e7288a39ec771da21659bc42f5bb6405e54",
+      "sourceDigestsVerified": true
+    }
+  ],
+  "buildHashDefinition": "SHA-256 of canonical LF build manifest, not shared-library bytes",
+  "finalArktsDebug": true,
+  "actualDevice": "not_executed",
+  "actualPreviewer": "not_executed",
+  "conversionAcceptance": {
+    "jpeg-pdf": "pending_device",
+    "docx-pdf": "engine_not_integrated",
+    "pptx-pdf": "engine_not_integrated"
+  },
+  "legacyPreservationCheck": {
+    "result": "failed",
+    "reason": "historical_2026_09_30_byte_baseline_rejects_local_signing_configuration",
+    "currentContracts": "checked_by_migration_input_architecture_and_language_suites"
+  },
+  "ohosTestBuild": "BUILD SUCCESSFUL, debug, not_device_executed"
+}

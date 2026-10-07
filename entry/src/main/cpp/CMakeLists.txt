@@ -13,6 +13,8 @@ include_directories(${NATIVERENDER_ROOT_PATH}
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/generated/engine_sources.cmake)
 set(HDM_REPOSITORY_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../../")
+include(${CMAKE_CURRENT_SOURCE_DIR}/production/build_manifest.cmake)
+hdm_create_build_manifest("${HDM_REPOSITORY_ROOT}")
 set(HDM_PROTOTYPE_ROOT "${HDM_REPOSITORY_ROOT}/prototypes/jpeg-pdf")
 include(FetchContent)
 include(ExternalProject)
@@ -41,15 +43,17 @@ add_dependencies(hdm_jpeg hdm_jpeg_build)
 add_library(hdm_jpeg_pdf STATIC
     ${HDM_PROTOTYPE_ROOT}/src/stream.cpp ${HDM_PROTOTYPE_ROOT}/src/ir.cpp
     ${HDM_PROTOTYPE_ROOT}/src/prototype.cpp ${HDM_PROTOTYPE_ROOT}/src/jpeg_probe.c
-    ${HDM_PROTOTYPE_ROOT}/src/jpeg_memory.c)
+    ${HDM_PROTOTYPE_ROOT}/src/jpeg_memory.c ${HDM_PROTOTYPE_ROOT}/src/jpeg_metadata.c)
 target_include_directories(hdm_jpeg_pdf PUBLIC ${HDM_PROTOTYPE_ROOT}/include
     PRIVATE ${HDM_PROTOTYPE_ROOT}/src "${hdm_jpeg_source_SOURCE_DIR}/src" "${HDM_JPEG_BINARY}")
 target_link_libraries(hdm_jpeg_pdf PUBLIC hdm_jpeg)
 target_compile_features(hdm_jpeg_pdf PUBLIC cxx_std_17)
-add_library(entry SHARED napi_init.cpp napi/native_bridge.cpp napi/production_napi.cpp core/engine_registry.cpp
+add_library(entry SHARED napi_init.cpp napi/native_bridge.cpp napi/production_napi.cpp napi/result_serializer.cpp core/engine_registry.cpp
     production/runtime.cpp production/sha256.cpp production/output_validator.cpp ${HDM_ENGINE_SOURCES})
 target_compile_features(entry PRIVATE cxx_std_17)
 target_compile_definitions(entry PRIVATE HDM_PRODUCTION_NATIVE=1)
+target_compile_definitions(entry PRIVATE $<$<CONFIG:Debug>:HDM_NATIVE_DEBUG=1>)
+target_include_directories(entry PRIVATE "${HDM_BUILD_MANIFEST_INCLUDE}")
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_compile_options(entry PRIVATE -Wall -Wextra -Wpedantic)
 endif()

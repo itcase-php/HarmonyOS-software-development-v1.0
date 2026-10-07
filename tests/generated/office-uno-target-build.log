@@ -1,0 +1,5 @@
+make -j 4 -rs -f /home/tx/.cache/hdm-office/26.2.6.2/source/Makefile.gbuild Library_cppuhelper
+make[1]: warning: -j4 forced in submake: resetting jobserver mode.
+[build CXX] cppuhelper/source/paths.cxx
+[build DEP] LNK:Library/libuno_cppuhelpergcc3.so.3.d
+[build LNK] Library/libuno_cppuhelpergcc3.so.3

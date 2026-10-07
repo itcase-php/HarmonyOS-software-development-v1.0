@@ -1,6 +1,6 @@
 {
   "scope": "Runtime language logic with host SDK/storage adapters",
-  "resourceCount": 339,
+  "resourceCount": 347,
   "checks": [
     "System default, resources and round-trip switch",
     "Native stages, task status, report limitations and degradation labels follow the app language",

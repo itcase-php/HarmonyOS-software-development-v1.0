@@ -1,0 +1,92 @@
+{
+  "scope": "JPEG_probe_failure_classification_and_real_device_NAPI_reason_delivery",
+  "checkedAtUtc": "2026-10-07T11:35:42.785310+00:00",
+  "project": "D:/HarmonyOS/harmonyOS",
+  "regressionsBeforeFix": {
+    "nativeCTest": "23/24",
+    "deviceHypium": "63/64",
+    "deviceFailure": "NATIVE_WORK_REJECTED_instead_of_specific_JPEG_reason"
+  },
+  "host": {
+    "passedGroups": [
+      "debug-routes",
+      "migration",
+      "audit",
+      "input-management",
+      "architecture",
+      "device-entry",
+      "fidelity",
+      "runtime-language",
+      "interactions",
+      "copy-safety",
+      "refactor",
+      "hypium-host"
+    ],
+    "debugRouteCases": 5,
+    "nativeCTest": "24/24"
+  },
+  "applicationBuild": {
+    "result": "passed",
+    "mode": "Debug",
+    "builds": [
+      {
+        "abi": "arm64-v8a",
+        "nativeDebug": true,
+        "sourceDigestsVerified": true,
+        "imageBuildManifestSha256": "909d596cafb58ec59f06d51a93009c4be043307f03cf16f3eb8ebb80f97617da"
+      },
+      {
+        "abi": "x86_64",
+        "nativeDebug": true,
+        "sourceDigestsVerified": true,
+        "imageBuildManifestSha256": "1336b2b99fdadd59bbb133e458a32c11cee775d3bb16a899be34d530707bca72"
+      }
+    ],
+    "signedHapSha256": "205f7083b53c36f6d7892681f844e053878830056e5861204e2dba420277c706"
+  },
+  "ohosTestBuild": {
+    "result": "passed",
+    "signedHapSha256": "c538f65cf6c204f6e8e277599fec13d62b6b70386262e1fd3bcd74350c59e625"
+  },
+  "device": {
+    "hypiumPassed": 64,
+    "hypiumFailed": 0,
+    "hypiumErrors": 0,
+    "actualNativeProbeReasonsVerified": [
+      "NATIVE_JPEG_METADATA_UNSUPPORTED",
+      "NATIVE_JPEG_CORRUPTED",
+      "NATIVE_INPUT_DIGEST_MISMATCH"
+    ],
+    "installationAndLaunch": "passed",
+    "userImage": "not_provided_not_tested",
+    "runnerLogSha256": "9e029ac6dc06ca9c52672d7839eec5acdfeeffd101333deb3e64a549c9a2e5bc"
+  },
+  "independentPdfValidation": {
+    "scope": "independent_parse_and_render_of_synthetic_JPEG_PDF_created_on_device",
+    "result": "passed",
+    "pdfSha256": "0114650536ba75a354953318781f95a1d32a7bf6d20c4730f41765e5d664dd3c",
+    "pdfBytes": 1351,
+    "pageCount": 1,
+    "pageSizePt": [
+      8.0,
+      8.0
+    ],
+    "imageSizePixels": [
+      8,
+      8
+    ],
+    "jpegPayloadByteIdentical": true,
+    "renderDpi": 72,
+    "renderSizeMatchesSource": true,
+    "meanAbsoluteRenderedDifference": 0.0,
+    "systemPickerSaveShareAndUserDocuments": "not_tested"
+  },
+  "supportAndSafetyPolicy": "unchanged_baseline_JPEG_subset_Debug_only",
+  "notTested": [
+    "actual_user_image",
+    "system_Picker_save_share_UI",
+    "first_launch_offline",
+    "Release_acceptance"
+  ],
+  "officeRoutes": "not_integrated_not_opened"
+}

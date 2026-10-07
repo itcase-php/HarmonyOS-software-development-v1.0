@@ -11,6 +11,7 @@ const formatsBytes = fs.readFileSync(path.join(source,'formats.json'));
 const matrixBytes = fs.readFileSync(path.join(source,'conversion-matrix.json'));
 const formats = JSON.parse(formatsBytes);
 const matrix = JSON.parse(matrixBytes);
+const debugPolicy = JSON.parse(fs.readFileSync(path.join(source,'debug-routes.json')));
 const jpegPdfRoute = matrix.routes.find(route => route.from.length === 1 && route.from[0] === 'jpeg' &&
   route.to === 'pdf' && route.steps.length === 1 && route.steps[0].executorEngineId === 'image');
 if (!jpegPdfRoute) throw new Error('JPEG to PDF route missing from authored matrix');
@@ -49,6 +50,9 @@ write('entry/src/main/ets/generated/RegistryData.ets',
   categories.map(category=>"    case '"+category+"': return "+category+"Formats();").join('\n')+"\n    default: return [];\n  }\n}\n"+
   'export function loadBundledRoutes(category: string): ConversionRouteDefinition[] {\n  switch (category) {\n'+
   categories.map(category=>"    case '"+category+"': return "+category+"Routes();").join('\n')+"\n    default: return [];\n  }\n}\n");
+write('entry/src/main/ets/generated/DebugRoutes.ets',
+  '// Generated from shared/format-registry/debug-routes.json.\n'+
+  'export const debugRouteIds: string[] = '+JSON.stringify(debugPolicy.routeIds)+';\n');
 write('entry/src/main/cpp/generated/registry_metadata.h',
   '#pragma once\n// Generated from shared/format-registry.\n#include <cstdint>\nnamespace hdm {\n'+
   `inline constexpr std::uint32_t kSchemaVersion = ${formats.schemaVersion};\n`+
@@ -58,7 +62,8 @@ write('entry/src/main/cpp/generated/registry_metadata.h',
   `inline constexpr const char* kSecurityPolicyVersion = ${JSON.stringify(formats.securityPolicy.version)};\n`+
   `inline constexpr const char* kJpegPdfRouteId = ${JSON.stringify(jpegPdfRoute.id)};\n`+
   `inline constexpr const char* kJpegPdfRouteStatus = ${JSON.stringify(jpegPdfRoute.status)};\n`+
-  `inline constexpr const char* kJpegPdfValidationProfile = ${JSON.stringify(jpegPdfRoute.validationProfileId)};\n}\n`);
+  `inline constexpr const char* kJpegPdfValidationProfile = ${JSON.stringify(jpegPdfRoute.validationProfileId)};\n`+
+  `inline constexpr const char* kDebugRouteIds[] = {${debugPolicy.routeIds.map(x=>JSON.stringify(x)).join(',')}};\n}\n`);
 for (const [name,bytes] of [['formats.json',formatsBytes],['conversion-matrix.json',matrixBytes]])
   write(`entry/src/main/resources/rawfile/format-registry/${name}`,bytes);
 write('entry/src/main/resources/rawfile/format-registry/manifest.json',JSON.stringify(metadata,null,2)+'\n');

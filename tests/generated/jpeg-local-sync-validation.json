@@ -1,0 +1,122 @@
+{
+  "scope": "original_checkout_JPEG_Debug_sync_and_real_device_synthetic_fixture_validation",
+  "date": "2026-10-07",
+  "checkedAtUtc": "2026-10-07T11:09:40.236832+00:00",
+  "project": "D:/HarmonyOS/harmonyOS",
+  "syncedRepairCommit": "3f86a1ec86f912960da247ab59b65b766f66b724",
+  "preservedLocalChanges": [
+    "personal_signing_configuration",
+    "FormatDetector_unused_import_removal"
+  ],
+  "backup": "tmp/jpeg-debug-sync-backup-20261007-185708",
+  "configuration": {
+    "formats": 18,
+    "routes": 43,
+    "jpegStatus": "experimental",
+    "otherRoutes": "planned",
+    "matrixSha256": "6880fe28fee8e12537bff1324723bc195f051313fc96bec85e0ff62569b0d31f",
+    "rawfileMatchesSource": true
+  },
+  "nativeCommitFix": {
+    "reproducedOnDevice": "IO_ERROR/NATIVE_OUTPUT_COMMIT",
+    "ohosCommit": "renameat2_RENAME_NOREPLACE",
+    "hostCommit": "unchanged_hard_link",
+    "runtimeSourceSha256": "b6ffc6fd90b0fdbe8834cfbaf4fd64823f5e00bce2efb8d9b3579186a24e88b3"
+  },
+  "hostChecks": {
+    "passedGroups": [
+      "debug-routes",
+      "migration",
+      "audit",
+      "input-management",
+      "architecture",
+      "device-entry",
+      "fidelity",
+      "runtime-language",
+      "interactions",
+      "copy-safety",
+      "refactor",
+      "hypium-host"
+    ],
+    "debugRouteCases": 4,
+    "nativeCTestPassed": 24,
+    "legacyBytePreservation": "not_claimed_historical_signing_baseline_mismatch"
+  },
+  "applicationBuild": {
+    "result": "passed",
+    "mode": "debug",
+    "arktsDebug": true,
+    "builds": [
+      {
+        "abi": "arm64-v8a",
+        "nativeDebug": true,
+        "imageBuildManifestSha256": "c31519e9f928dbcfe2f181c38ef9612f154fcf4417d9a8daaaae12451777b927",
+        "sourceDigestsVerified": true
+      },
+      {
+        "abi": "x86_64",
+        "nativeDebug": true,
+        "imageBuildManifestSha256": "cfa89313987681f7c5cbb4eaa8bc10cec39b8622cc92d191fced15b69fc56651",
+        "sourceDigestsVerified": true
+      }
+    ],
+    "signedHapSha256": "9f5034e9a1179e1dca63d4be3fb19ff6c3f0f4dd0b38a8bea0a77c5da9b548e2",
+    "buildLogSha256": "898840bf56b3252d43bd7054baa5549e0a97be7105b3a6037360328b943bddad"
+  },
+  "ohosTestBuild": {
+    "result": "passed",
+    "signedHapSha256": "a931b0c28d0e3807781343a38290f1383bbf6b41127c2c962a0da6771044869b"
+  },
+  "device": {
+    "apiVersion": 24,
+    "installation": "passed",
+    "launch": "passed",
+    "hypiumPassed": 64,
+    "hypiumFailed": 0,
+    "hypiumErrors": 0,
+    "test": "JpegDebugSmoke",
+    "nativeBridge": "actual",
+    "input": "repository_synthetic_baseline_JPEG",
+    "inputBytes": 634,
+    "inputPixels": [
+      8,
+      8
+    ],
+    "inputSha256": "dc9e246d39d38fb43ce0b784dc1c14baf9a3997466bb4c0a2ba65a39851417b5",
+    "probeConversionValidationArtifactCopyAndRelease": "passed",
+    "runnerLogSha256": "43e018d76035c86eec68ca68df13e753435a69531217412cdc0214fe305094d8"
+  },
+  "independentPdfValidation": {
+    "scope": "independent_parse_and_render_of_synthetic_JPEG_PDF_created_on_device",
+    "result": "passed",
+    "pdfSha256": "0114650536ba75a354953318781f95a1d32a7bf6d20c4730f41765e5d664dd3c",
+    "pdfBytes": 1351,
+    "pageCount": 1,
+    "pageSizePt": [
+      8.0,
+      8.0
+    ],
+    "imageSizePixels": [
+      8,
+      8
+    ],
+    "jpegPayloadByteIdentical": true,
+    "renderDpi": 72,
+    "renderSizeMatchesSource": true,
+    "meanAbsoluteRenderedDifference": 0.0,
+    "systemPickerSaveShareAndUserDocuments": "not_tested"
+  },
+  "notTested": [
+    "actual_system_Picker",
+    "document_save_Picker",
+    "independent_device_PDF_reader",
+    "ShareKit_delivery",
+    "first_launch_offline",
+    "user_documents",
+    "sustained_load",
+    "Office_engine_initialization_or_conversion"
+  ],
+  "officeRoutes": "not_integrated_not_opened",
+  "otherFormatRoutes": "not_opened",
+  "releaseReady": false
+}
