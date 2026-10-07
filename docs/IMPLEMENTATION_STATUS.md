@@ -1,5 +1,9 @@
 # 迁移结果与实现边界
 
+## 2026-10-07 JPEG PDF 保存与分享修复
+
+已修复输入工作区清理误删已提交 PDF、分享面板引用已移除按钮导致 SDK 401，以及新文档 URI 缺少 CREATE 的问题。最终产物独立保存于应用缓存 `artifacts`，仍由 Native 校验并管理生命周期。Native CTest 25/25、交付宿主 6/6、12 组既有宿主检查、设备 Hypium 65/65 通过。真实系统 Picker 保存至 Download 后重新选择读取，与已验证 PDF 逐字节一致；实际分享面板显示 PDF 及应用入口后取消，未发送给联系人。新主应用已构建安装。接收方实际收取、其他文件提供者、首次断网、Release 和 Office 仍待验收；旧任务需重新转换。详见 [保存分享修复](ARTIFACT-DELIVERY.md)。以下为对应阶段历史记录。
+
 ## 2026-10-07 JPEG EXIF/ICC 兼容修复
 
 不再统一拒绝 EXIF/ICC：支持 EXIF 八种方向及物理分辨率、受限的 RGB/灰度 ICC v2/v4 配置，并在 PDF 中实际应用方向矩阵与 ICCBased 色彩空间，保留 JPEG 与 ICC 字节。原生 CTest 25/25、专项主机独立解析/渲染 30 项和真机 Hypium 65/65 通过；手机新增样例同时含 EXIF 方向与 ICC，取回 PDF 的独立解析与渲染通过。用户附上的截图在主机实测转换通过，未随包或提交。仍仅 Debug，渐进式、CMYK、未知 APP/XMP 等受限；系统 Picker/保存/分享、首次断网、Release 与 Office 仍待验收。详见 [兼容修复与证据](JPEG-METADATA-COMPATIBILITY.md)。下方原始阶段记录保留。

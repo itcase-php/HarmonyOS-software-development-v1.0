@@ -10,6 +10,7 @@ import { RawfileResources } from '../../../main/ets/services/RawfileResources';
 import { registryMetadata } from '../../../main/ets/generated/RegistryData';
 import { PreparedInput, ConvertRequest, ProbeRequest, ErrorCode } from '../../../main/ets/models/NativeProtocol';
 import { BridgeError } from '../../../main/ets/common/BridgeError';
+import { artifactDeliverySmoke } from './ArtifactDeliverySmoke';
 
 async function expectProbeFailure(native: NativeBridgeService, request: ProbeRequest,
   code: ErrorCode, reason: string): Promise<void> {
@@ -113,6 +114,10 @@ export default function jpegDebugSmokeTest() {
         expect(result.validation.state).assertEqual('passed');
         expect(result.outputs.length).assertEqual(1);
         const artifact = result.outputs[0];
+        // Match the real scheduler: release the registration and remove the input session
+        // before a user later exports or shares the still-owned PDF.
+        await native.releaseTask(taskId, attemptId);
+        fileIo.rmdirSync(root + '/workspace/' + workspaceId);
         const output = fileIo.openSync(root + '/baseline-output.pdf',
           fileIo.OpenMode.CREATE | fileIo.OpenMode.READ_WRITE | fileIo.OpenMode.TRUNC);
         try {
@@ -134,6 +139,10 @@ export default function jpegDebugSmokeTest() {
             }
           }
         } finally { fileIo.closeSync(output); }
+        if (fixtureName === 'jpeg-debug-baseline.jpg' &&
+          abilityDelegatorRegistry.getArguments().parameters['-s deliveryUi'] === 'true') {
+          await artifactDeliverySmoke(native, artifact, context);
+        }
         await native.releaseArtifact(artifact.internalRef);
         await native.releaseTask(taskId, attemptId);
       } finally {

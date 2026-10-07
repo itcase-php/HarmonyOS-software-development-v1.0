@@ -79,7 +79,7 @@ int main(int argc,char** argv) {
         const auto result=fixture.runtime.Execute(fixture.Request());
         Require(result.status==hdm::ResultState::Success && result.outputs.size()==1 &&
             result.validation.state==hdm::ValidationState::Passed,"valid JPEG conversion failed");
-        const auto output=fixture.workspace/"outputs"/(result.outputs[0].artifactId+".pdf");
+        const auto output=fixture.cache/"artifacts"/(result.outputs[0].artifactId+".pdf");
         Require(fs::exists(output) && fs::file_size(output)==result.outputs[0].byteSize &&
             Digest(output)==result.outputs[0].sha256,"committed PDF mismatch");
         const auto exported=fixture.root/"export.pdf";
@@ -115,6 +115,9 @@ int main(int argc,char** argv) {
             "mismatched input digest converted");
         fixture.runtime.ReleaseTask(fixture.taskId,fixture.attemptId);
         Require(fs::exists(output),"releaseTask removed owned artifact");
+        fs::remove_all(fixture.workspace);
+        Require(fs::exists(output) && Digest(output)==result.outputs[0].sha256,
+            "input workspace cleanup removed owned PDF");
         fixture.runtime.ReleaseArtifact(result.outputs[0].internalRef);
         Require(!fs::exists(output),"releaseArtifact failed");
         fixture.runtime.ReleaseArtifact(result.outputs[0].internalRef);

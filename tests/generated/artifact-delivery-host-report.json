@@ -1,0 +1,12 @@
+{
+  "result": "passed",
+  "scope": "host actual ArtifactDelivery with modeled SDK boundaries",
+  "cases": [
+    "Save creates a newly selected document and closes it before reporting success",
+    "Share opens without depending on a removed action button",
+    "Cancelling the picker creates no output and allows retry",
+    "copyFailure closes the descriptor and marks export failed",
+    "badSize closes the descriptor and marks export failed",
+    "Failed share preparation does not open the panel and permits retry"
+  ]
+}

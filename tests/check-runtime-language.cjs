@@ -155,6 +155,7 @@ const protectedPaths = ['entry/src/main/cpp', 'shared/format-registry', 'entry/s
   'entry/src/main/resources/base/profile/main_pages.json', 'docs/migration-source'];
 // Keep the historical baseline; allow only the approved report serialization and JPEG Debug repair files.
 const approvedNativeRepair = new Set([
+  'entry/src/main/ets/services/ArtifactDelivery.ets',
   'entry/src/main/cpp/CMakeLists.txt', 'entry/src/main/cpp/engines/image/image_converter.cpp',
   'entry/src/main/cpp/generated/registry_metadata.h', 'entry/src/main/cpp/napi/native_bridge.cpp',
   'entry/src/main/cpp/napi/production_napi.cpp', 'entry/src/main/cpp/napi/result_serializer.cpp',

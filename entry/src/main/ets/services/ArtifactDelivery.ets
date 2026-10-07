@@ -6,12 +6,25 @@ import { DemoTask } from '../models/InteractionModels';
 import { TaskStore } from '../viewmodel/TaskStore';
 import { NativeBridgePort } from './ServiceContracts';
 import { BridgeError } from '../common/BridgeError';
+import { ConversionDiagnostics } from '../common/ConversionDiagnostics';
+
+interface DeliveryFailure { code?: number; }
 
 // internalRef is an opaque Native key. Only Native opens and validates its committed output.
 export class ArtifactDelivery {
   private store: TaskStore;
   private native: NativeBridgePort;
   constructor(store: TaskStore, native: NativeBridgePort) { this.store = store; this.native = native; }
+
+  private failure(stage: string, error: Error): void {
+    const sdk: DeliveryFailure = error as DeliveryFailure;
+    if (error instanceof BridgeError) {
+      ConversionDiagnostics.failure('ArtifactDelivery', stage, '', error);
+    } else {
+      ConversionDiagnostics.stage('ArtifactDelivery', stage, '',
+        Number.isSafeInteger(sdk.code) ? `SDK_${sdk.code}` : 'SDK_UNKNOWN');
+    }
+  }
 
   private fileName(taskId: string): string {
     const task: DemoTask | undefined = this.store.snapshot().find((item: DemoTask) => item.id === taskId);
@@ -22,15 +35,19 @@ export class ArtifactDelivery {
 
   private async write(output: Artifact, uri: string, mode: number): Promise<void> {
     let target: fileIo.File | null = null;
+    let stage: string = 'open';
     try {
       target = await fileIo.open(uri, mode);
+      stage = 'copy';
       const copied: number = await this.native.copyArtifactToFd(output.internalRef, target.fd,
         output.sha256, output.byteSize);
+      stage = 'stat';
       const stat: fileIo.Stat = await fileIo.stat(target.fd);
       if (copied !== output.byteSize || stat.size !== output.byteSize) {
         throw new BridgeError('IO_ERROR', 'PDF_EXPORT_SIZE_MISMATCH');
       }
-    } finally {
+    } catch (error) { this.failure(stage, error); throw error as Error; }
+    finally {
       if (target) { await fileIo.close(target); }
     }
   }
@@ -44,10 +61,11 @@ export class ArtifactDelivery {
       const uris: string[] = await new picker.DocumentViewPicker(context).save(options);
       if (uris.length === 0) { state = 'cancelled'; return false; }
       if (uris.length !== 1) { throw new BridgeError('INVALID_REQUEST', 'PDF_SAVE_SELECTION'); }
-      await this.write(output, uris[0], fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+      await this.write(output, uris[0], fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.CREATE | fileIo.OpenMode.TRUNC);
       state = 'exported';
       return true;
-    } finally { this.store.finishExport(taskId, output.artifactId, state); }
+    } catch (error) { this.failure('save', error); throw error as Error; }
+    finally { this.store.finishExport(taskId, output.artifactId, state); }
   }
 
   async share(taskId: string, context: common.UIAbilityContext): Promise<void> {
@@ -64,9 +82,12 @@ export class ArtifactDelivery {
         utd: 'com.adobe.pdf', uri: fileUri.getUriFromPath(path), title: this.fileName(taskId), label: 'FILE'
       });
       const controller: systemShare.ShareController = new systemShare.ShareController(data);
+      // beginShare refreshes the task row and removes its action buttons while busy.
+      // Use the system default position instead of anchoring to a removed component.
       await controller.show(context, { selectionMode: systemShare.SelectionMode.SINGLE,
-        previewMode: systemShare.SharePreviewMode.DETAIL, anchor: `share-${taskId}` });
+        previewMode: systemShare.SharePreviewMode.DETAIL });
       shown = true;
-    } finally { this.store.finishShare(taskId, shown); }
+    } catch (error) { this.failure('share', error); throw error as Error; }
+    finally { this.store.finishShare(taskId, shown); }
   }
 }

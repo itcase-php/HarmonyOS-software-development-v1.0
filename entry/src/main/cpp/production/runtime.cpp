@@ -215,10 +215,15 @@ ConvertResult Runtime::Execute(const ConvertRequest& request) {
         const fs::path outputs=grant.directory/"outputs";
         std::error_code ec; fs::create_directory(outputs,ec);
         if (ec || !SafeDirectory(outputs)) throw BridgeProblem(ErrorCode::IoError,"NATIVE_OUTPUT_DIRECTORY");
+        // Input sessions are deleted after execution. Committed artifacts remain owned by
+        // the result until ReleaseArtifact/Shutdown, outside that temporary workspace.
+        const fs::path artifacts=grant.directory.parent_path().parent_path()/"artifacts";
+        fs::create_directory(artifacts,ec);
+        if (ec || !SafeDirectory(artifacts)) throw BridgeProblem(ErrorCode::IoError,"NATIVE_ARTIFACT_DIRECTORY");
         const auto nonce=RandomId();
         const auto spoolPath=outputs/(nonce+".spool");
         const auto candidatePath=outputs/(nonce+".candidate");
-        const auto finalPath=outputs/(nonce+".pdf");
+        const auto finalPath=artifacts/(nonce+".pdf");
         struct Cleanup {
             fs::path spool,candidate,final;
             bool committed{};
