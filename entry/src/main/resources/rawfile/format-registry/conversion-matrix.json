@@ -3,7 +3,7 @@
   "configVersion": "1.0.0-design",
   "maxRouteSteps": 3,
   "priorityOrder": "ascending",
-  "notes": "JPEG to PDF is experimental for explicit Debug testing only; other routes remain planned. Lower-fidelity relay requires explicit user approval and cannot satisfy a higher minimum tier.",
+  "notes": "Four one-way PDF routes have bundled engines and execute in Debug and Release. Definitions outside product-scope.json remain disabled. Device qualification and fidelity are not implied.",
   "routes": [
     {
       "id": "jpeg-pdf",
@@ -42,7 +42,7 @@
       "allowedDegradations": [],
       "inputConstraints": {
         "minInputs": 1,
-        "maxInputs": 100,
+        "maxInputs": 1,
         "protectedInputs": "block"
       },
       "optionsProfileId": "images_pdf",
@@ -63,7 +63,7 @@
         "pdf"
       ],
       "priority": 10,
-      "status": "planned",
+      "status": "experimental",
       "phase": 1,
       "steps": [
         {
@@ -80,14 +80,12 @@
           "executorEngineId": "image"
         }
       ],
-      "fallbackRouteIds": [
-        "png-pdf-alternate"
-      ],
+      "fallbackRouteIds": [],
       "requiresUserApproval": false,
       "allowedDegradations": [],
       "inputConstraints": {
         "minInputs": 1,
-        "maxInputs": 100,
+        "maxInputs": 1,
         "protectedInputs": "block"
       },
       "optionsProfileId": "images_pdf",
@@ -610,7 +608,7 @@
         "pdf"
       ],
       "priority": 10,
-      "status": "planned",
+      "status": "experimental",
       "phase": 3,
       "steps": [
         {
@@ -629,7 +627,9 @@
       ],
       "fallbackRouteIds": [],
       "requiresUserApproval": false,
-      "allowedDegradations": [],
+      "allowedDegradations": [
+        "font_substitution"
+      ],
       "inputConstraints": {
         "minInputs": 1,
         "maxInputs": 1,
@@ -653,7 +653,7 @@
         "pdf"
       ],
       "priority": 10,
-      "status": "planned",
+      "status": "experimental",
       "phase": 3,
       "steps": [
         {
@@ -672,7 +672,9 @@
       ],
       "fallbackRouteIds": [],
       "requiresUserApproval": false,
-      "allowedDegradations": [],
+      "allowedDegradations": [
+        "font_substitution"
+      ],
       "inputConstraints": {
         "minInputs": 1,
         "maxInputs": 1,

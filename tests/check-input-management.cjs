@@ -74,7 +74,7 @@ function sdkFixture(settings={}) {
  return {adapter,bytes,uri,destination,handles,outputs,closed,opens,reads:()=>reads,writes:()=>writes};
 }
 async function main(){
- await test('Approved task surface and Native protocol remain intact; matrix changes are limited to JPEG Debug status',()=>{
+ await test('Approved task surface and Native protocol remain intact; matrix changes are limited to the approved four-route scope',()=>{
   const baseline=JSON.parse(fs.readFileSync(path.join(__dirname,'approved-input-baseline.json')));
   const ts=require(process.env.HDM_TYPESCRIPT_PATH||'D:/DevEco Studio2026/DevEco Studio/tools/arktsdoc/node_modules/typescript/lib/typescript.js');
   const source=fs.readFileSync(path.join(root,'entry/src/main/ets/viewmodel/TaskStore.ets'),'utf8');
@@ -93,10 +93,19 @@ async function main(){
     'a48889500afe6575c74a7b7ab0b1ef9dba852c2274ad335ecd5eb34b8adfdfa1':hash;
    if(name.startsWith('shared/')||name.endsWith('/NativeProtocol.ets')) {
     let actual=fs.readFileSync(path.join(root,name),'utf8').replace(/\r\n/g,'\n');
+    if(name.endsWith('/NativeProtocol.ets')) {
+      const extension='// Private Native-to-validator expectations; consumed before storing a completed result.\n'+
+        'export interface TextMinimum { codePoint: number; count: number; }\n'+
+        'export interface ContentExpectation {\n  textMinimum: TextMinimum[];\n  minimumImages: number;\n  pageCount?: number;\n}\n';
+      assert.ok(actual.includes(extension));assert.ok(actual.includes('  contentExpectation?: ContentExpectation;\n'));
+      actual=actual.replace(extension,'').replace('  contentExpectation?: ContentExpectation;\n','');
+    }
     if(name==='shared/format-registry/conversion-matrix.json') {
      const matrix=JSON.parse(actual);
      assert.equal(matrix.routes.find(route=>route.id==='jpeg-pdf').status,'experimental');
-     assert.equal(matrix.notes,'JPEG to PDF is experimental for explicit Debug testing only; other routes remain planned. Lower-fidelity relay requires explicit user approval and cannot satisfy a higher minimum tier.');
+     assert.ok(matrix.notes.includes('Four one-way PDF routes'));
+     const previous=JSON.parse(require('node:child_process').execFileSync('git',['show','04e6886f5e1ada231970fc07430b4a51004f3826:shared/format-registry/conversion-matrix.json'],{cwd:root,encoding:'utf8'}));
+     for(const id of ['jpeg-pdf','png-pdf','docx-pdf','pptx-pdf']) { const route=matrix.routes.find(r=>r.id===id),old=previous.routes.find(r=>r.id===id); route.status='planned';route.inputConstraints.maxInputs=old.inputConstraints.maxInputs;route.fallbackRouteIds=old.fallbackRouteIds;route.allowedDegradations=old.allowedDegradations; }
      matrix.routes.find(route=>route.id==='jpeg-pdf').status='planned';
      matrix.notes='Design only. All routes planned. Lower-fidelity relay requires explicit user approval and cannot satisfy a higher minimum tier.';
      actual=JSON.stringify(matrix,null,2)+'\n';
@@ -138,10 +147,10 @@ async function main(){
    const f=sdkFixture({openCode});await assert.rejects(()=>f.adapter.copyUri(f.uri,f.destination,100*1024*1024,()=>true),reason(error));
   }
  });
- await test('Format detection covers every extension and MIME in the unchanged 18-format registry',()=>{
+ await test('Format detection covers every extension and MIME in the five-format product catalogue',()=>{
   const h=host(),{FormatDetector}=h.load('./services/FormatDetector');
-  assert.equal(formats.length,18);
-  for(const format of formats){
+  const selected=formats.filter(format=>['jpeg','png','pdf','docx','pptx'].includes(format.id));assert.equal(selected.length,5);
+  for(const format of selected){
    for(const extension of format.extensions)assert.equal(FormatDetector.detectByExtension('example.'+extension.toUpperCase()),format.id);
    for(const mime of format.mimeTypes)assert.equal(FormatDetector.detectByMime(mime.toUpperCase()+'; charset=utf-8'),format.id);
   }
@@ -159,9 +168,9 @@ async function main(){
  await test('Picker cancellation is empty and invalid counts or malformed URIs are rejected',async()=>{
   const f=fixture();assert.deepEqual(Array.from(await f.manager.pickDocuments(10)),[]);
   for(const count of [0,11,1.5])await assert.rejects(()=>f.manager.pickDocuments(count),reason('FILE_SELECTION_LIMIT'));
-  f.select(['x.pdf']);f.platform.selected[0].uri='/outside/user-file';
+  f.select(['x.jpg']);f.platform.selected[0].uri='/outside/user-file';
   await assert.rejects(()=>f.manager.pickDocuments(10),reason('FILE_URI_INVALID'));
-  f.select(['x.pdf']);f.platform.selected[0].fileSize=0;
+  f.select(['x.jpg']);f.platform.selected[0].fileSize=0;
   await assert.rejects(()=>f.manager.pickDocuments(10),reason('FILE_EMPTY_OR_INVALID'));
  });
  await test('Oversized picker metadata is rejected before creating any sandbox file',async()=>{
@@ -169,7 +178,7 @@ async function main(){
   await assert.rejects(()=>f.manager.pickDocuments(10),reason('FILE_TOO_LARGE'));assert.equal(f.platform.reads,0);
  });
  await test('Unauthorized URI and edited picker metadata never reach the copy adapter',async()=>{
-  const f=fixture();f.select(['x.pdf']);const picked=await f.manager.pickDocuments(10),session=await f.manager.createSession();
+  const f=fixture();f.select(['x.jpg']);const picked=await f.manager.pickDocuments(10),session=await f.manager.createSession();
   await assert.rejects(()=>f.manager.copyToSandbox({...picked[0],uri:'file://docs/not-picked.pdf'},session.sessionId),reason('FILE_NOT_PICKER_AUTHORIZED'));
   await assert.rejects(()=>f.manager.copyToSandbox({...picked[0],fileName:'other.pdf'},session.sessionId),reason('FILE_NOT_PICKER_AUTHORIZED'));
   assert.equal(f.platform.reads,0);await f.manager.destroySession(session.sessionId);
@@ -198,7 +207,7 @@ async function main(){
  });
  await test('Actual oversized data and copy failures remove incomplete files and normalize errors',async()=>{
   for(const failure of ['actualBytes','copyFailure']){
-   const f=fixture();f.select(['x.pdf']);const picked=await f.manager.pickDocuments(10),session=await f.manager.createSession();
+   const f=fixture();f.select(['x.jpg']);const picked=await f.manager.pickDocuments(10),session=await f.manager.createSession();
    f.platform[failure]=failure==='actualBytes'?100*1024*1024+1:true;
    await assert.rejects(()=>f.manager.copyToSandbox(picked[0],session.sessionId),reason(failure==='actualBytes'?'FILE_TOO_LARGE':'FILE_COPY_FAILED'));
    assert.equal(f.platform.copies.size,0);assert.equal(f.manager.getSession(session.sessionId).inputFiles.length,0);
@@ -206,24 +215,24 @@ async function main(){
  });
  await test('Hash failures and invalid digests remove the copy and do not publish an authorized file',async()=>{
   for(const failure of ['hashFailure','badDigest']){
-   const f=fixture();f.select(['x.pdf']);const picked=await f.manager.pickDocuments(10),session=await f.manager.createSession();f.platform[failure]=true;
+   const f=fixture();f.select(['x.jpg']);const picked=await f.manager.pickDocuments(10),session=await f.manager.createSession();f.platform[failure]=true;
    await assert.rejects(()=>f.manager.copyToSandbox(picked[0],session.sessionId),reason(failure==='hashFailure'?'FILE_COPY_FAILED':'FILE_HASH_INVALID'));
    assert.equal(f.platform.copies.size,0);assert.equal(f.manager.getSession(session.sessionId).inputFiles.length,0);
   }
  });
  await test('Insufficient storage rejects copying before an adapter opens the input',async()=>{
-  const f=fixture();f.select(['x.pdf']);const picked=await f.manager.pickDocuments(10),session=await f.manager.createSession();f.platform.free=0;
+  const f=fixture();f.select(['x.jpg']);const picked=await f.manager.pickDocuments(10),session=await f.manager.createSession();f.platform.free=0;
   await assert.rejects(()=>f.manager.copyToSandbox(picked[0],session.sessionId),reason('SANDBOX_FULL'));assert.equal(f.platform.reads,0);
  });
  await test('Concurrent imports serialize the 300MB budget and cannot overfill the session',async()=>{
-  const f=fixture();f.select(['a.pdf','b.pdf','c.pdf','d.pdf']);for(const file of f.platform.selected)file.fileSize=100*1024*1024;
+  const f=fixture();f.select(['a.jpg','b.jpg','c.pdf','d.pdf']);for(const file of f.platform.selected)file.fileSize=100*1024*1024;
   f.platform.actualBytes=100*1024*1024;const picked=await f.manager.pickDocuments(10),session=await f.manager.createSession();
   const results=await Promise.allSettled(picked.map(file=>f.manager.copyToSandbox(file,session.sessionId)));
   assert.equal(results.filter(result=>result.status==='fulfilled').length,3);assert.equal(results[3].reason.reason,'BATCH_TOO_LARGE');
   assert.equal(f.manager.getSession(session.sessionId).inputFiles.reduce((count,file)=>count+file.byteSize,0),300*1024*1024);
  });
  await test('Session destruction during copying waits for cancellation and leaves no late files',async()=>{
-  const f=fixture();f.select(['x.pdf']);const picked=await f.manager.pickDocuments(10),session=await f.manager.createSession();let finish;
+  const f=fixture();f.select(['x.jpg']);const picked=await f.manager.pickDocuments(10),session=await f.manager.createSession();let finish;
   f.platform.gate=new Promise(resolve=>finish=resolve);
   const copying=f.manager.copyToSandbox(picked[0],session.sessionId);const failed=assert.rejects(()=>copying,reason('FILE_IMPORT_CANCELLED'));
   await flush();const cleanup=f.manager.destroySession(session.sessionId);finish();await failed;await cleanup;
@@ -254,39 +263,39 @@ async function main(){
   assert.throws(()=>f.manager.claimSession(session.sessionId),reason('SESSION_ALREADY_SUBMITTED'));
  });
  await test('No authorized files preserves original queued demo state timer and duration',async()=>{
-  const f=fixture();const task=await f.h.store.submitTask('x.pdf','pdf','png','pdf-png');
+  const f=fixture();const task=await f.h.store.submitTask('x.jpg','jpeg','pdf','jpeg-pdf');
   assert.equal(task.mode,'demo');assert.equal(task.status,'queued');assert.equal(task.progress,0);assert.equal(f.h.timers.size,1);
   f.h.step(50);f.h.fireTimeouts();f.h.step(3500);f.h.fireTimeouts();assert.equal(f.h.store.snapshot()[0].status,'completed');
   assert.equal(f.h.nativeLoads(),0);
  });
  await test('Current Native session placeholder produces a failed real task without demo success and releases input',async()=>{
-  const f=fixture(),{session,files}=await f.imported(['x.pdf'],true);let workspaceCalls=0;
+  const f=fixture(),{session,files}=await f.imported(['x.jpg'],true);let workspaceCalls=0;
   f.h.setNative(stub(f.h,{initializeSession:async()=>{throw {code:'UNSUPPORTED_FEATURE',reason:'MIGRATED_CONTRACT_NOT_IMPLEMENTED'};},
    registerWorkspace:async()=>{workspaceCalls++;return 'unexpected';}}));
-  const task=await f.h.store.submitTask('x.pdf','pdf','png','pdf-png',false,undefined,files,session);
+  const task=await f.h.store.submitTask('x.jpg','jpeg','pdf','jpeg-pdf',false,undefined,files,session);
   assert.equal(task.mode,'native');assert.equal(task.status,'failed');assert.equal(task.progress,0);
   assert.equal(task.fidelityReport,undefined);assert.equal(task.resultLabel,'');assert.match(task.error,/MIGRATED_CONTRACT_NOT_IMPLEMENTED/);
   assert.equal(workspaceCalls,0);assert.equal(f.platform.copies.size,0);assert.equal(f.h.timers.size,0);
  });
  await test('Forged authorized hashes are rejected before Native initialization',async()=>{
-  const f=fixture(),{session,files}=await f.imported(['x.pdf'],true);let calls=0;
+  const f=fixture(),{session,files}=await f.imported(['x.jpg'],true);let calls=0;
   f.h.setNative(stub(f.h,{initializeSession:async()=>{calls++;return 'native';}}));files[0].sha256='a'.repeat(64);
-  const task=await f.h.store.submitTask('x.pdf','pdf','png','pdf-png',false,undefined,files,session);
+  const task=await f.h.store.submitTask('x.jpg','jpeg','pdf','jpeg-pdf',false,undefined,files,session);
   assert.match(task.error,/AUTHORIZED_INPUT_MISMATCH/);assert.equal(calls,0);assert.equal(f.platform.copies.size,0);
  });
  await test('Native single-file and fidelity gates stay intact for real submissions',async()=>{
   for(const multi of [true,false]){
-   const f=fixture(),{session,files}=await f.imported(multi?['a.pdf','b.pdf']:['a.pdf'],true);
+   const f=fixture(),{session,files}=await f.imported(multi?['a.jpg','b.jpg']:['a.docx'],true);
    const selection={qualityMode:'high_fidelity',requestedIntent:'layout_preserved',requestedTier:'extreme'};
-   const task=await f.h.store.submitTask('a.pdf','pdf','png','pdf-png',false,multi?undefined:selection,files,session);
+   const task=await f.h.store.submitTask(multi?'a.jpg':'a.docx',multi?'jpeg':'docx','pdf',multi?'jpeg-pdf':'docx-pdf',false,multi?undefined:selection,files,session);
    assert.match(task.error,multi?/NATIVE_SINGLE_FILE_REQUIRED/:/FIDELITY_TIER_UNAVAILABLE/);assert.equal(f.h.nativeLoads(),0);
   }
  });
  await test('Successful mock bootstrap uses Native handles and existing unavailable-route gate before probing',async()=>{
-  const f=fixture(),{session,files}=await f.imported(['x.pdf'],true);let init,grant,probes=0,releases=0;
+  const f=fixture(),{session,files}=await f.imported(['x.jpg'],true);let init,grant,probes=0,releases=0;
   f.h.setNative(stub(f.h,{initializeSession:async value=>{init=value;return 'native-session';},registerWorkspace:async value=>{grant=value;return 'native-workspace';},
    probeInputs:async()=>{probes++;return [];},releaseTask:async()=>{releases++;}}));
-  const task=await f.h.store.submitTask('x.pdf','pdf','png','pdf-png',false,undefined,files,session);
+  const task=await f.h.store.submitTask('x.jpg','jpeg','pdf','jpeg-pdf',false,undefined,files,session);
   assert.equal(task.mode,'native');assert.equal(task.status,'queued');assert.equal(init.appSandboxRoot,'/sandbox/cache');
   assert.equal(grant.sessionId,'native-session');assert.equal(grant.relativeDirectory,'workspace/'+session.sessionId);
   const request=f.h.store.nativeRequests.get(task.id);assert.equal(request.workspaceRef,'native-workspace');
@@ -295,40 +304,40 @@ async function main(){
   assert.equal(probes,0);assert.equal(f.platform.copies.size,0);assert.equal(releases,1);
  });
  await test('Queued real cancellation removes owned inputs and cannot resurrect the task',async()=>{
-  const f=fixture(),{session,files}=await f.imported(['x.pdf'],true);let releases=0;f.h.setNative(stub(f.h,{releaseTask:async()=>{releases++;}}));
-  const task=await f.h.store.submitTask('x.pdf','pdf','png','pdf-png',false,undefined,files,session);
+  const f=fixture(),{session,files}=await f.imported(['x.jpg'],true);let releases=0;f.h.setNative(stub(f.h,{releaseTask:async()=>{releases++;}}));
+  const task=await f.h.store.submitTask('x.jpg','jpeg','pdf','jpeg-pdf',false,undefined,files,session);
   assert.equal(f.h.store.cancel(task.id),true);await flush();assert.equal(f.platform.copies.size,0);
   f.h.step(6000);f.h.fireTimeouts();assert.equal(f.h.store.snapshot()[0].status,'cancelled');
   assert.equal(releases,1);
  });
  await test('Running real cancellation keeps sandbox inputs until the Native call and release settle',async()=>{
-  const f=fixture(),{session,files}=await f.imported(['x.pdf'],true);let finish,releases=0;
+  const f=fixture(),{session,files}=await f.imported(['x.jpg'],true);let finish,releases=0;
   const metadata=f.h.load('./generated/RegistryData').registryMetadata;
   f.h.setNative(stub(f.h,{getCapabilities:()=>new Promise(resolve=>finish=resolve),
    cancel:async()=>({accepted:true}),releaseTask:async()=>{releases++;}}));
-  const task=await f.h.store.submitTask('x.pdf','pdf','png','pdf-png',false,undefined,files,session);
+  const task=await f.h.store.submitTask('x.jpg','jpeg','pdf','jpeg-pdf',false,undefined,files,session);
   f.h.store.advance(f.h.now());await flush();assert.equal(typeof finish,'function');
   f.h.store.cancel(task.id);await flush();assert.equal(f.platform.copies.size,1);assert.equal(releases,0);
   finish({schemaVersion:1,offlineOnly:true,abi:'mock',configVersion:metadata.configVersion,engines:[],routes:[]});await flush();
   assert.equal(f.platform.copies.size,0);assert.equal(releases,1);assert.equal(f.h.store.snapshot()[0].status,'cancelled');
  });
  await test('Late Native workspace registration after timeout is released and never enqueued',async()=>{
-  const f=fixture(),{session,files}=await f.imported(['x.pdf'],true);let finish,releases=0;
+  const f=fixture(),{session,files}=await f.imported(['x.jpg'],true);let finish,releases=0;
   f.h.setNative(stub(f.h,{registerWorkspace:()=>new Promise(resolve=>finish=resolve),releaseTask:async()=>{releases++;}}));
-  const submission=f.h.store.submitTask('x.pdf','pdf','png','pdf-png',false,undefined,files,session);
+  const submission=f.h.store.submitTask('x.jpg','jpeg','pdf','jpeg-pdf',false,undefined,files,session);
   await flush();assert.equal(typeof finish,'function');f.h.fireTimeouts();const task=await submission;
   assert.match(task.error,/NATIVE_SESSION_TIMEOUT/);finish('late-workspace');await flush();
   assert.equal(releases,1);assert.equal(f.h.store.nativeRequests.size,0);assert.equal(f.platform.copies.size,0);
  });
  await test('Native bootstrap timeout destroys inputs and prevents a late workspace registration',async()=>{
-  const f=fixture(),{session,files}=await f.imported(['x.pdf'],true);let finish,calls=0;
+  const f=fixture(),{session,files}=await f.imported(['x.jpg'],true);let finish,calls=0;
   f.h.setNative(stub(f.h,{initializeSession:()=>new Promise(resolve=>finish=resolve),registerWorkspace:async()=>{calls++;return 'late';}}));
-  const submission=f.h.store.submitTask('x.pdf','pdf','png','pdf-png',false,undefined,files,session);
+  const submission=f.h.store.submitTask('x.jpg','jpeg','pdf','jpeg-pdf',false,undefined,files,session);
   await flush();f.h.fireTimeouts();const task=await submission;assert.match(task.error,/NATIVE_SESSION_TIMEOUT/);
   assert.equal(f.platform.copies.size,0);finish('late-session');await flush();assert.equal(calls,0);assert.equal(f.h.timers.size,0);
  });
  await test('Ability shutdown closes owned input sessions without affecting the existing shutdown path',async()=>{
-  const f=fixture();await f.imported(['x.pdf'],true);f.h.store.shutdown();await f.h.store.releaseAuthorizedSessions();
+  const f=fixture();await f.imported(['x.jpg'],true);f.h.store.shutdown();await f.h.store.releaseAuthorizedSessions();
   assert.equal(f.platform.copies.size,0);assert.equal(f.FileAuthorizationService.isAvailable(),false);
  });
  await test('Delayed old ability cleanup cannot close a newly configured file service',async()=>{

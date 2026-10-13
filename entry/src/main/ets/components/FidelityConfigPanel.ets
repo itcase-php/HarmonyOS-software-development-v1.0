@@ -25,12 +25,14 @@ export struct FidelityConfigPanel {
           .accessibilityText(this.tr($r('app.string.a11y_route'))).accessibilityDescription(this.model.routeDescription)
           .enabled(this.model.interactive).onSelect((index: number) => { this.formats.selectRoute(index); })
       }
+      if (!this.realInput || this.formats.sourceId === 'docx' || this.formats.sourceId === 'pptx') {
       Row({ space: 8 }) {
         Checkbox({ name: 'approve-demo' }).select(this.formats.approved).enabled(this.model.interactive)
           .accessibilityText(this.tr($r('app.string.a11y_approval'))).accessibilityDescription(this.model.routeNotice)
           .onChange((value: boolean) => { this.formats.approved = value; })
-        Text(this.realInput ? this.tr($r('app.string.input_approval')) : this.tr('demo_approval'))
+        Text(this.realInput ? this.tr($r('app.string.input_font_approval')) : this.tr('demo_approval'))
           .fontSize(13).fontColor($r('app.color.palette_526077')).layoutWeight(1)
+      }
       }
     }.width('100%').alignItems(HorizontalAlign.Start)
   }

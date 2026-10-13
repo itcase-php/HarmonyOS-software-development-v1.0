@@ -34,9 +34,14 @@
 /tmp/pdfs/
 # Isolated engine builds include local signing configuration; never publish them.
 /tmp/offline-engines/
+/tmp/core-engines/
 /tests/native/
 /tests/office-package-validation/bin/
 /tests/office-package-validation/obj/
+
+# Reproducible local engine binaries/resources; tracked manifests verify their contents.
+/entry/libs/arm64-v8a/
+/entry/src/main/resources/rawfile/office/runtime.zip
 
 # OS/editor temporary files
 Thumbs.db

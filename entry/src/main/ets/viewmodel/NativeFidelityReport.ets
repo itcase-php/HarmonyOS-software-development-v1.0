@@ -24,6 +24,9 @@ export class NativeFidelityReport {
       (report.outputPageCount !== undefined && (!Number.isSafeInteger(report.outputPageCount) || report.outputPageCount < 0))) {
       throw new BridgeError('PROTOCOL_INCOMPATIBLE', 'NATIVE_REPORT_METRICS');
     }
+    if (report.achievedTier && (report.evidenceRefs.length === 0 || !report.metrics.some((metric: Metric) => metric.state === 'measured'))) {
+      throw new BridgeError('PROTOCOL_INCOMPATIBLE', 'NATIVE_FIDELITY_EVIDENCE_MISSING');
+    }
     if (report.achievedTier && (!['extreme', 'standard', 'compatible'].includes(report.achievedTier) ||
       FidelityPolicy.tierRank(report.achievedTier) < FidelityPolicy.tierRank(task.requestedTier))) {
       throw new BridgeError('OUTPUT_VALIDATION_FAILED', 'NATIVE_FIDELITY_BELOW_MINIMUM');

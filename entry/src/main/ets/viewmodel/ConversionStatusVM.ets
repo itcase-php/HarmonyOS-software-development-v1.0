@@ -79,6 +79,12 @@ inputFailureKey(reason: string): string {
     if (reason === 'FILE_PICKER_UNAVAILABLE' || reason === 'FILE_PICK_FAILED') { return 'input_picker_failed'; }
     if (reason === 'FILE_COPY_FAILED' || reason === 'FILE_CHANGED_DURING_COPY' || reason === 'FILE_WRITE_INCOMPLETE') { return 'input_import_failed'; }
     if (reason === 'NATIVE_INPUT_NOT_VERIFIED') { return 'input_probe_failed'; }
+    if (reason.startsWith('NATIVE_PNG_') && reason.includes('UNSUPPORTED')) { return 'input_png_subset_unsupported'; }
+    if (reason.startsWith('OFFICE_REQUIRED_FONT') || reason === 'OFFICE_FONT_INVENTORY_EMPTY') { return 'input_office_font_missing'; }
+    if (reason === 'OFFICE_SYMBOL_FONT_MISSING' || reason === 'OFFICE_GLYPH_MISSING') { return 'input_office_glyph_missing'; }
+    if (reason === 'OFFICE_TEXT_MISSING' || reason === 'OFFICE_IMAGES_MISSING' || reason === 'OFFICE_PAGE_COUNT_MISMATCH') { return 'input_office_content_mismatch'; }
+    if (reason === 'NATIVE_OFFICE_EXTERNAL_RELATIONSHIP' || reason === 'NATIVE_OFFICE_ACTIVE_CONTENT') { return 'input_office_feature_unsupported'; }
+    if (reason.startsWith('OFFICE_') && (reason.includes('INITIALIZATION') || reason.includes('LIBRARY') || reason.includes('RESOURCES') || reason.includes('RESOURCE_'))) { return 'input_office_runtime_failed'; }
     if (reason === 'NATIVE_JPEG_METADATA_UNSUPPORTED') { return 'input_jpeg_metadata_unsupported'; }
     if (reason === 'NATIVE_JPEG_ENCODING_UNSUPPORTED') { return 'input_jpeg_encoding_unsupported'; }
     if (reason === 'NATIVE_JPEG_COLOR_UNSUPPORTED') { return 'input_jpeg_color_unsupported'; }

@@ -239,27 +239,24 @@ void Exports() {
     const auto stamp = Field(engines->elements[0], "buildHash");
     Require(Field(engines->elements[0], "engineId")=="image" && stamp.size()==64 &&
         stamp!=std::string(64,'0') && stamp!=hdm::kMatrixHash, "engine build stamp is not a build manifest digest");
-    Require(routes->array && routes->elements.size() == 1, "experimental route diagnostic missing");
+    Require(routes->array && routes->elements.size() == 2, "experimental route diagnostic missing");
     auto route = routes->elements[0];
     Require(Field(route, "routeId") == hdm::kJpegPdfRouteId &&
         Field(route, "availability") == "experimental" &&
-        Field(route, "reason") == (hdm::production::IsDebugRouteExecutable(hdm::kJpegPdfRouteId) ?
-            "NATIVE_DEBUG_ROUTE_ENABLED" : "NATIVE_ROUTE_UNAVAILABLE") &&
+        Field(route, "reason") == (hdm::production::IsProductRouteExecutable(hdm::kJpegPdfRouteId) ?
+            "BUNDLED_OFFLINE_ENGINE" : "NATIVE_ROUTE_UNAVAILABLE") &&
         Field(route, "validationProfileId") == hdm::kJpegPdfValidationProfile,
         "route diagnostic identity changed");
-#ifdef HDM_NATIVE_DEBUG
-    Require(hdm::production::IsDebugRouteExecutable("jpeg-pdf"), "Debug JPEG whitelist blocked");
-#else
-    Require(!hdm::production::IsDebugRouteExecutable("jpeg-pdf"), "Release enabled experimental route");
-#endif
-    Require(!hdm::production::IsDebugRouteExecutable("docx-pdf") &&
-        !hdm::production::IsDebugRouteExecutable("pptx-pdf") &&
-        !hdm::production::IsDebugRouteExecutable("png-pdf"), "Debug enabled an unapproved route");
+    Require(hdm::production::IsProductRouteExecutable("jpeg-pdf"), "product JPEG route blocked");
+    Require(hdm::production::IsProductRouteExecutable("docx-pdf") && hdm::production::IsProductRouteExecutable("pptx-pdf") &&
+        hdm::production::IsProductRouteExecutable("png-pdf"), "approved product scope blocked");
+    Require(!hdm::production::IsProductRouteExecutable("pdf-docx") && !hdm::production::IsProductRouteExecutable("mp3-wav"),
+        "deferred route enabled");
     Require(route->fields.count("releaseEvidenceId") == 0 &&
         route->fields.count("from") == 0 &&
         !route->fields.at("supportsPause")->boolean &&
-        route->fields.at("decoderIds")->elements.size() == 1 &&
-        route->fields.at("encoderIds")->elements.size() == 1,
+        route->fields.at("decoderIds")->elements.size() == 2 &&
+        route->fields.at("encoderIds")->elements.size() == 2,
         "planned diagnostic advertised release capability");
     Require(route->fields.at("decoderIds")->elements[0]->text ==
         "jpeg-baseline-sof0-gray-rgb-exif-icc-v2" &&

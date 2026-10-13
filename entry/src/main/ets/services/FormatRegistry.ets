@@ -9,8 +9,7 @@ import { RegistryFormat, ConversionRouteDefinition, BundledResourceReader,
 import { CapabilityMatrix } from '../models/NativeProtocol';
 import { BridgeError } from '../common/BridgeError';
 import { FormatRegistryPort } from './ServiceContracts';
-import BuildProfile from 'BuildProfile';
-import { debugRouteIds } from '../generated/DebugRoutes';
+import { productFormatIds, productRouteIds } from '../generated/ProductScope';
 
 
 // The complete generated catalogue is available immediately, including in Previewer.
@@ -132,7 +131,12 @@ export class FormatRegistryService implements FormatRegistryPort {
     return selected;
   }
   listFormats(category?: string): RegistryFormat[] {
-    return this.formatDefinitions(category).map((format: RegistryFormat): RegistryFormat => RegistrySnapshotCopy.copyRegistryFormat(format));
+    return this.formatDefinitions(category).filter((format: RegistryFormat) => productFormatIds.includes(format.id)).map((format: RegistryFormat): RegistryFormat => {
+      const selected = RegistrySnapshotCopy.copyRegistryFormat(format);
+      // Catalogue definitions remain intact; the current UI shows only the four one-way roles.
+      selected.operations = format.id === 'pdf' ? ['export'] : ['import'];
+      return selected;
+    });
   }
   private ensureLookupIndex(): void {
     if (this.lookupRevision === this.revision) { return; }
@@ -180,7 +184,7 @@ export class FormatRegistryService implements FormatRegistryPort {
       }
       this.routes = selected.sort((a: ConversionRouteDefinition, b: ConversionRouteDefinition) => routeOrder.indexOf(a.id) - routeOrder.indexOf(b.id));
     }
-    return this.routes.map((route: ConversionRouteDefinition): ConversionRouteDefinition => RegistrySnapshotCopy.copyConversionRouteDefinition(route));
+    return this.routes.filter((route: ConversionRouteDefinition) => productRouteIds.includes(route.id)).map((route: ConversionRouteDefinition): ConversionRouteDefinition => RegistrySnapshotCopy.copyConversionRouteDefinition(route));
   }
 
   normalizeFormat(id: string): string {
@@ -197,7 +201,9 @@ export class FormatRegistryService implements FormatRegistryPort {
     if (!this.ready) { return []; }
     return this.listPlannedRoutes().filter((route: ConversionRouteDefinition) => {
       const actual = capabilities.routes.find((item) => item.routeId === route.id);
-      if (BuildProfile.DEBUG && route.status === 'experimental' && debugRouteIds.includes(route.id) &&
+      // Bundled product routes execute in both builds; experimental records
+      // device qualification status rather than a Debug-only switch.
+      if (route.status === 'experimental' && productRouteIds.includes(route.id) &&
         actual !== undefined && actual.availability === 'experimental') {
         return route.steps.every((step) => capabilities.engines.some((engine) =>
           engine.engineId === step.executorEngineId && engine.version.length > 0 &&

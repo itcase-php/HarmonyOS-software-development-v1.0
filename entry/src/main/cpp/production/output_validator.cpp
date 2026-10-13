@@ -1,8 +1,31 @@
 #include "output_validator.h"
+#include <string>
+#include <cctype>
 #include <array>
 #include <string>
 
 namespace hdm::production {
+bool ValidatePdfEnvelope(prototype::IStream& pdf) {
+    try {
+        if (pdf.Size()<64) return false;
+        char header[8]{}; pdf.Seek(0); if (pdf.Read(header,8)!=8 || std::string(header,5)!="%PDF-") return false;
+        const auto length=static_cast<std::size_t>(std::min<std::uint64_t>(pdf.Size(),65536));
+        std::string tail(length,'\0'); pdf.Seek(pdf.Size()-length);
+        if (pdf.Read(tail.data(),length)!=length) return false;
+        const auto eof=tail.rfind("%%EOF"); const auto start=tail.rfind("startxref");
+        if (eof==std::string::npos || start==std::string::npos || start>eof) return false;
+        for (auto i=eof+5;i<tail.size();++i) if (!std::isspace(static_cast<unsigned char>(tail[i]))) return false;
+        auto i=start+9; while (i<eof && std::isspace(static_cast<unsigned char>(tail[i]))) ++i;
+        std::uint64_t offset=0; const auto first=i;
+        while (i<eof && std::isdigit(static_cast<unsigned char>(tail[i]))) {
+            if (offset>pdf.Size()/10) return false; offset=offset*10+tail[i++]-'0';
+        }
+        if (i==first || offset>=pdf.Size()) return false;
+        char target[64]{}; pdf.Seek(offset); const auto got=pdf.Read(target,sizeof(target));
+        const std::string text(target,got);
+        return text.rfind("xref",0)==0 || (text.find(" obj")!=std::string::npos && text.find("/Type /XRef")!=std::string::npos);
+    } catch (...) { return false; }
+}
 namespace {
 std::string Read(prototype::IStream& file,std::uint64_t offset,std::size_t length) {
     if (offset>file.Size() || length>file.Size()-offset || length>1024) return {};

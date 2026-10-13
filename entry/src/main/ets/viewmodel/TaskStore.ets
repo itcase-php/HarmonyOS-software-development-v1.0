@@ -36,6 +36,7 @@ export class TaskStore implements TaskStorePort {
   private nativeResults: Map<string, ConvertResult> = new Map<string, ConvertResult>();
   private exportRecords: Map<string, ExportRecord[]> = new Map<string, ExportRecord[]>();
   private exporting: Set<string> = new Set<string>();
+  private deliveryWaiters: (() => void)[] = [];
   private nativeRunningId: string = '';
   private nativeIdle: Promise<void> | null = null;
   private resolveNativeIdle: () => void = () => {};
@@ -415,6 +416,7 @@ if (task.progress === 100) {
     this.exporting.delete(id);
     const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === id);
     if (task) { task.resultLabel = succeeded ? 'result_share_open' : 'result_share_retry'; }
+    this.finishDelivery(id);
     this.notify();
   }
 
@@ -426,7 +428,19 @@ if (task.progress === 100) {
       task.resultLabel = state === 'exported' ? 'result_saved' :
         state === 'cancelled' ? 'result_cancelled' : 'result_failed';
     }
+    this.finishDelivery(id);
     this.notify();
+  }
+  waitForDeliveries(): Promise<void> {
+    if (this.exporting.size === 0) { return Promise.resolve(); }
+    return new Promise<void>((resolve) => { this.deliveryWaiters.push(resolve); });
+  }
+  private finishDelivery(id: string): void {
+    if (this.closing) { this.releaseResult(id); }
+    if (this.exporting.size === 0) {
+      const waiters = this.deliveryWaiters; this.deliveryWaiters = [];
+      for (const resolve of waiters) { resolve(); }
+    }
   }
 
   private setExportRecord(id: string, artifactId: string, state: ExportState): void {
@@ -520,7 +534,9 @@ if (task.progress === 100) {
         task.fidelityReport = undefined; task.achievedTier = undefined;
       }
     }
-    for (const id of this.nativeResults.keys()) { this.releaseResult(id); }
+    for (const id of this.nativeResults.keys()) {
+      if (!this.exporting.has(id)) { this.releaseResult(id); }
+    }
     this.timings.clear(); this.queuedTasks = []; this.queueOrder.clear(); this.runningTask = null;
     this.notify(); this.listeners = [];
   }

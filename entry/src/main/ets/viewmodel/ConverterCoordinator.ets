@@ -1,4 +1,5 @@
 import { LanguageManager } from '../common/LanguageManager';
+import BuildProfile from 'BuildProfile';
 import { DemoTask, DemoSubmission, FidelitySelection } from '../models/InteractionModels';
 import { ConversionRouteDefinition } from '../models/RegistryTypes';
 import { AuthorizedFile, SessionContext } from '../models/SessionModels';
@@ -63,6 +64,7 @@ export class ConverterCoordinator {
   start(): void {
     if (this.files.authorizedFiles.length > 0) { this.startAuthorized(); return; }
     if (!this.formats.registryReady || this.status.working || this.status.confirming || this.status.inputBusy) { return; }
+    if (!BuildProfile.DEBUG) { this.files.pickSourceFiles(); return; }
     try {
       const route = this.formats.activeRoutes.find((item: ConversionRouteDefinition) => item.id === this.formats.routeId);
       if (!route) { throw new BridgeError('UNSUPPORTED_FORMAT', 'DEMO_ROUTE_NOT_FOUND'); }

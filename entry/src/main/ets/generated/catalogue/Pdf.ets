@@ -68,7 +68,7 @@ export function createRoutes(): ConversionRouteDefinition[] { return [
     "allowedDegradations": [],
     "inputConstraints": {
       "minInputs": 1,
-      "maxInputs": 100,
+      "maxInputs": 1,
       "protectedInputs": "block"
     },
     "optionsProfileId": "images_pdf",
@@ -89,7 +89,7 @@ export function createRoutes(): ConversionRouteDefinition[] { return [
       "pdf"
     ],
     "priority": 10,
-    "status": "planned",
+    "status": "experimental",
     "phase": 1,
     "steps": [
       {
@@ -106,14 +106,12 @@ export function createRoutes(): ConversionRouteDefinition[] { return [
         "executorEngineId": "image"
       }
     ],
-    "fallbackRouteIds": [
-      "png-pdf-alternate"
-    ],
+    "fallbackRouteIds": [],
     "requiresUserApproval": false,
     "allowedDegradations": [],
     "inputConstraints": {
       "minInputs": 1,
-      "maxInputs": 100,
+      "maxInputs": 1,
       "protectedInputs": "block"
     },
     "optionsProfileId": "images_pdf",
@@ -304,7 +302,7 @@ export function createRoutes(): ConversionRouteDefinition[] { return [
       "pdf"
     ],
     "priority": 10,
-    "status": "planned",
+    "status": "experimental",
     "phase": 3,
     "steps": [
       {
@@ -323,7 +321,9 @@ export function createRoutes(): ConversionRouteDefinition[] { return [
     ],
     "fallbackRouteIds": [],
     "requiresUserApproval": false,
-    "allowedDegradations": [],
+    "allowedDegradations": [
+      "font_substitution"
+    ],
     "inputConstraints": {
       "minInputs": 1,
       "maxInputs": 1,
@@ -347,7 +347,7 @@ export function createRoutes(): ConversionRouteDefinition[] { return [
       "pdf"
     ],
     "priority": 10,
-    "status": "planned",
+    "status": "experimental",
     "phase": 3,
     "steps": [
       {
@@ -366,7 +366,9 @@ export function createRoutes(): ConversionRouteDefinition[] { return [
     ],
     "fallbackRouteIds": [],
     "requiresUserApproval": false,
-    "allowedDegradations": [],
+    "allowedDegradations": [
+      "font_substitution"
+    ],
     "inputConstraints": {
       "minInputs": 1,
       "maxInputs": 1,

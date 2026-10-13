@@ -1,0 +1,17 @@
+{
+  "scope": "actual Release ArkTS with modeled Native, not real engine/device execution",
+  "result": "passed",
+  "fourRoutesDispatch": true,
+  "missingEngineBlocked": true,
+  "failedPdfReleased": true,
+  "deferredRoutesDisabled": true,
+  "releaseCannotCreateImplicitDemo": true,
+  "counters": {
+    "executed": 5,
+    "officePrepared": 2,
+    "pdfVerified": 4,
+    "tasksReleased": 5,
+    "artifactsReleased": 1
+  },
+  "deviceExecution": "not executed"
+}

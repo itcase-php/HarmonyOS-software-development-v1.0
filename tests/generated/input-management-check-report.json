@@ -4,7 +4,7 @@
   "testedCases": 35,
   "cases": [
     {
-      "name": "Approved task surface and Native protocol remain intact; matrix changes are limited to JPEG Debug status",
+      "name": "Approved task surface and Native protocol remain intact; matrix changes are limited to the approved four-route scope",
       "result": "passed"
     },
     {
@@ -32,7 +32,7 @@
       "result": "passed"
     },
     {
-      "name": "Format detection covers every extension and MIME in the unchanged 18-format registry",
+      "name": "Format detection covers every extension and MIME in the five-format product catalogue",
       "result": "passed"
     },
     {

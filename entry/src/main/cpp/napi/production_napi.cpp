@@ -204,7 +204,19 @@ ConvertRequest ParseConvert(napi_env env,napi_value value) {
     }
     auto options=Field(env,value,"options");
     napi_value keys{}; Check(napi_get_property_names(env,options,&keys));
-    if (Length(env,keys,0)!=0) throw BridgeProblem(ErrorCode::UnsupportedFeature,"NATIVE_OPTIONS_UNSUPPORTED");
+    const auto optionCount=Length(env,keys,1);
+    if (optionCount) {
+        if (String(env,Element(env,keys,0))!="office") throw BridgeProblem(ErrorCode::UnsupportedFeature,"NATIVE_OPTIONS_UNSUPPORTED");
+        auto office=Field(env,options,"office"); OfficeOptions selected;
+        selected.allowedDegradations=Strings(env,Field(env,office,"allowedDegradations"),1);
+        selected.missingFontPolicy=FieldString(env,office,"missingFontPolicy");
+        Check(napi_get_value_bool(env,Field(env,office,"includeReferencePages"),&selected.includeReferencePages));
+        napi_value officeKeys{}; Check(napi_get_property_names(env,office,&officeKeys));
+        if (Length(env,officeKeys,3)!=3 || selected.includeReferencePages ||
+            (selected.missingFontPolicy!="reject" && selected.missingFontPolicy!="approved_fallback"))
+            throw BridgeProblem(ErrorCode::UnsupportedFeature,"NATIVE_OFFICE_OPTIONS_UNSUPPORTED");
+        request.options.office=std::move(selected);
+    }
     return request;
 }
 
@@ -226,7 +238,7 @@ void Run(napi_env,void* data) noexcept {
             case Kind::Register: work.textResult=runtime.Register(work.grant); break;
             case Kind::Probe: work.probeResult=runtime.Probe(work.probe); break;
             case Kind::Execute:
-                if (!production::IsDebugRouteExecutable(work.convert.plan.routeId)) {
+                if (!production::IsProductRouteExecutable(work.convert.plan.routeId)) {
                     work.convertResult.schemaVersion=kSchemaVersion;
                     work.convertResult.taskId=work.convert.taskId;
                     work.convertResult.attemptId=work.convert.attemptId;

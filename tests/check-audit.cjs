@@ -30,20 +30,20 @@ async function main() {
    assert.equal(crypto.createHash('sha256').update(bytes(name)).digest('hex'),metadata[key]);
   assert.equal(metadata.formatsCount,18);assert.equal(metadata.routesCount,43);
   assert.ok(JSON.parse(Buffer.from(bytes('conversion-matrix.json')).toString()).routes.every(
-   route=>route.status===(route.id==='jpeg-pdf'?'experimental':'planned')));
+   route=>route.status===(['jpeg-pdf','png-pdf','docx-pdf','pptx-pdf'].includes(route.id)?'experimental':'planned')));
  });
- await test('Cold registry immediately exposes all 18 approved formats and 43 catalogue routes',()=>{
+ await test('Cold registry immediately exposes five scoped formats and four routes while the complete catalogue is retained',()=>{
   const {h,registry}=cold();
-  assert.deepEqual(JSON.parse(JSON.stringify(registry.listFormats())),JSON.parse(Buffer.from(bytes('formats.json')).toString()).formats);
-  assert.deepEqual(JSON.parse(JSON.stringify(registry.listPlannedRoutes())),JSON.parse(Buffer.from(bytes('conversion-matrix.json')).toString()).routes);
+  assert.deepEqual(JSON.parse(JSON.stringify(registry.listFormats())),JSON.parse(Buffer.from(bytes('formats.json')).toString()).formats.filter(f=>['jpeg','png','docx','pptx','pdf'].includes(f.id)).map(f=>({...f,operations:f.id==='pdf'?['export']:['import']})));
+  assert.deepEqual(JSON.parse(JSON.stringify(registry.listPlannedRoutes())),JSON.parse(Buffer.from(bytes('conversion-matrix.json')).toString()).routes.filter(r=>['jpeg-pdf','png-pdf','docx-pdf','pptx-pdf'].includes(r.id)));
   assert.equal(registry.isInitialized(),false);assert.equal(registry.availableRoutes(capabilities('1.0.0-design')).length,0);
   assert.equal(h.timers.size,0);
  });
  await test('Failed initialization installs no partial snapshot and the next request can retry',async()=>{
   const {h,registry}=cold();const resources={getRawFileContent:async name=>name.endsWith('/formats.json')?bytes('formats.json'):new Uint8Array()};
   await assert.rejects(()=>registry.initialize(resources),error=>error.reason==='BUNDLED_RESOURCE_EMPTY');
-  assert.equal(registry.isInitialized(),false);assert.equal(registry.listFormats().length,18);assert.equal(registry.listPlannedRoutes().length,43);
-  await registry.initialize(h.resources);assert.equal(registry.listFormats().length,18);assert.equal(registry.listPlannedRoutes().length,43);
+  assert.equal(registry.isInitialized(),false);assert.equal(registry.listFormats().length,5);assert.equal(registry.listPlannedRoutes().length,4);
+  await registry.initialize(h.resources);assert.equal(registry.listFormats().length,5);assert.equal(registry.listPlannedRoutes().length,4);
   assert.equal(h.timers.size,0);
  });
  await test('Concurrent initializers share one read and atomically cache both documents',async()=>{
@@ -79,10 +79,10 @@ async function main() {
   await RegistryUi.ensure({getHostContext:()=>undefined});
   await RegistryUi.ensure({getHostContext:()=>{throw new Error('unsupported preview context');}});
   await RegistryUi.ensure({getHostContext:()=>({resourceManager:{getRawFileContent:async()=>{throw new Error('missing rawfile');}}})});
-  assert.equal(registry.listFormats().length,18);assert.equal(registry.listPlannedRoutes().length,43);
+  assert.equal(registry.listFormats().length,5);assert.equal(registry.listPlannedRoutes().length,4);
   assert.equal(registry.isInitialized(),false);assert.equal(h.timers.size,0);
   await RegistryUi.ensure({getHostContext:()=>({resourceManager:h.resources})});
-  assert.equal(registry.isInitialized(),true);assert.equal(registry.listFormats().length,18);assert.equal(registry.listPlannedRoutes().length,43);
+  assert.equal(registry.isInitialized(),true);assert.equal(registry.listFormats().length,5);assert.equal(registry.listPlannedRoutes().length,4);
  });
  await test('Unavailable preview hashing and modified resources preserve demo planning without approving Native routes',async()=>{
   for(const options of [{cryptoAvailable:false},{}]) {
@@ -90,7 +90,7 @@ async function main() {
    const changed=bytes('conversion-matrix.json');changed[changed.length-1]^=1;
    const resources=options.cryptoAvailable===false?h.resources:{getRawFileContent:async name=>name.endsWith('/formats.json')?bytes('formats.json'):changed};
    await RegistryUi.ensure({getHostContext:()=>({resourceManager:resources})});
-   assert.equal(registry.isInitialized(),false);assert.equal(registry.listFormats().length,18);assert.equal(registry.listPlannedRoutes().length,43);
+   assert.equal(registry.isInitialized(),false);assert.equal(registry.listFormats().length,5);assert.equal(registry.listPlannedRoutes().length,4);
    assert.equal(registry.availableRoutes(capabilities('1.0.0-design')).length,0);
    assert.equal(h.planner.bestRoute('png','pdf','layout_preserved','high_fidelity','extreme').id,'png-pdf');
    await assert.rejects(()=>registry.initialize(resources),error=>error.reason===
@@ -121,10 +121,10 @@ async function main() {
      }
   }
   assert.equal(offline.planner.routes('pdf','pdf').some(route=>route.id==='pdf-merge'),false);
-  assert.equal(offline.planner.bestRoute('pdf','pptx','layout_preserved','high_fidelity','standard').id,'pdf-pptx-visual');
-  assert.equal(offline.planner.bestRoute('pdf','pptx','structured_rebuild','high_fidelity','compatible').id,'pdf-pptx');
+  assert.equal(offline.planner.bestRoute('pdf','pptx','layout_preserved','high_fidelity','standard'),undefined);
+  assert.equal(offline.planner.bestRoute('pdf','pptx','structured_rebuild','high_fidelity','compatible'),undefined);
   assert.deepEqual(Array.from(offline.planner.routes('png','pdf','high_fidelity','layout_preserved'),route=>route.id),
-   ['png-pdf','mixed-images-pdf','png-pdf-alternate','png-pdf-compatible']);
+   ['png-pdf']);
  });
  await test('Many Native callers share one failed import then one successful retry',async()=>{
   const h=host();const {NativeBridge}=h.load('./services/NativeBridge');
@@ -149,7 +149,7 @@ async function main() {
   await NativeBridge.getCapabilities(request);assert.equal(h.nativeLoads(),2);
  });
  await test('Delayed initial queue publication starts at zero and default runtime has one recursive timer',()=>{
-  const h=host();const tasks=['first','second','third'].map(name=>h.store.enqueue(name+'.pdf','pdf','png','pdf-png'));
+  const h=host();const tasks=['first','second','third'].map(name=>h.store.enqueue(name+'.jpg','jpeg','pdf','jpeg-pdf'));
   assert.ok(tasks.every(task=>task.status==='queued'&&task.progress===0));assert.equal(h.timers.size,1);
   h.step(50);h.fireTimeouts();assert.equal(h.store.snapshot().filter(task=>task.status==='running').length,1);
   assert.equal(h.timers.size,1);
@@ -158,7 +158,7 @@ async function main() {
  });
  await test('Observer-triggered advances and observer failures cannot reenter or strand queue progression',()=>{
   const h=host();let notifications=0;
-  h.store.enqueue('reentrant.pdf','pdf','png','pdf-png');
+  h.store.enqueue('reentrant.jpg','jpeg','pdf','jpeg-pdf');
   h.store.subscribe(()=>{notifications++;h.store.advance(h.now());throw new Error('fixture observer');});
   h.store.advance(h.now());assert.equal(notifications,1);h.step(3500);h.store.advance(h.now());
   assert.equal(notifications,2);assert.equal(h.store.snapshot()[0].status,'completed');assert.equal(h.timers.size,0);

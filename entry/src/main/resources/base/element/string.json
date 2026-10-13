@@ -1,17 +1,8 @@
 {
   "string": [
-    {
-      "name": "module_desc",
-      "value": "module description"
-    },
-    {
-      "name": "EntryAbility_desc",
-      "value": "description"
-    },
-    {
-      "name": "EntryAbility_label",
-      "value": "label"
-    },
+    {"name":"module_desc","value":"module description"},
+    {"name":"EntryAbility_desc","value":"description"},
+    {"name":"EntryAbility_label","value":"label"},
     { "name": "fidelity_settings", "value": "保真度设置" },
     { "name": "fidelity_expand", "value": "保真度设置 ▾" },
     { "name": "fidelity_collapse", "value": "保真度设置 ▴" },
@@ -125,7 +116,7 @@
     { "name": "input_grant_expired", "value": "文件读取授权已失效，请重新选择文件" },
     { "name": "input_action_failed", "value": "文件操作失败，请重试" },
     { "name": "input_source_mismatch", "value": "当前源格式与所选文件不一致，请重新选择源格式" },
-    { "name": "input_native_boundary", "value": "真实文件使用受控临时副本，一次提交一个文件。提交前检查所选路线与引擎；检查失败时保留文件供重试。" },
+    {"name":"input_native_boundary","value":"真实文件使用受控临时副本，一次提交一个文件。提交前检查所选路线与引擎；检查失败时保留文件供重试。"},
     { "name": "input_confirm_title", "value": "确认真实文件转换" },
     { "name": "input_back_edit", "value": "返回修改" },
     { "name": "input_start_real", "value": "确认配置并提交真实文件" },
@@ -136,11 +127,11 @@
     { "name": "input_remove", "value": "移除文件" },
     { "name": "input_cancel_task", "value": "取消转换任务" },
     { "name": "input_task_history", "value": "查看任务记录" },
-    { "name": "input_real_mode", "value": "真实文件输入 · 提交前检查路线" },
+    {"name":"input_real_mode","value":"真实文件输入 · 提交前检查路线"},
     { "name": "input_title", "value": "③ 已授权输入文件" },
     { "name": "input_approval", "value": "同意所选路线配置的兼容降级" },
     {"name":"converter_title","value":"转换执行器"},
-    {"name":"converter_subtitle","value":"选择格式、设置保真策略、确认后体验任务流程"},
+    {"name":"converter_subtitle","value":"选择图片或文档，离线转换为 PDF 并保存或分享"},
     {"name":"demo_badge","value":"演示模式 · 不生成文件"},
     {"name":"demo_fidelity_notice","value":"演示任务的保真报告用于展示流程。真实任务仅展示引擎返回的检测证据；没有证据时不判定保真等级。"},
     {"name":"demo_input_title","value":"③ 模拟选择文件"},
@@ -170,7 +161,7 @@
     {"name":"back","value":"‹ 返回"},
     {"name":"guide_title","value":"功能说明"},
     {"name":"guide_overview","value":"文档转换工具箱收录 PDF、Office 文档、图片、文本和音频的规划转换路线，实际可用路线以运行时能力为准。"},
-    {"name":"guide_formats","value":"一、支持的格式一览"},
+    {"name":"guide_formats","value":"一、当前阶段的格式范围"},
     {"name":"guide_routes","value":"二、规划的转换路线"},
     {"name":"guide_routes_notice","value":"以下为已规划的转换路线，按源格式分组展示目标格式与转换方式。"},
     {"name":"guide_limits","value":"三、不兼容与不适合转换的格式"},
@@ -355,6 +346,15 @@
     {"name":"input_jpeg_header_unsupported","value":"JPEG 文件头超出当前支持范围，无法完成检查。此类图片尚待兼容。"},
     {"name":"input_jpeg_pixel_limit","value":"图片像素超过当前转换任务的上限（最多 1600 万像素）。请选择较小的图片。"},
     {"name":"input_jpeg_memory_limit","value":"图片检查所需内存超过当前任务预算。请选择较小的图片。"},
-    {"name":"input_jpeg_corrupted","value":"JPEG 数据不完整或结构无效。请重新导出或选择完整的 JPEG 文件。"}
+    {"name":"input_jpeg_corrupted","value":"JPEG 数据不完整或结构无效。请重新导出或选择完整的 JPEG 文件。"},
+    {"name":"input_png_subset_unsupported","value":"当前 PNG 路线支持静态、8 位、sRGB 图片及透明度。动画、16 位或特殊颜色/方向元数据尚未兼容，文件不会被当作损坏或受保护。"},
+    {"name":"input_office_font_missing","value":"文档引用的字体在内置和系统字体中缺失。可勾选允许字体替代后重新转换，或改用已安装的字体；替代可能改变换行、分页和外观。"},
+    {"name":"input_office_feature_unsupported","value":"文档包含外部引用、宏、嵌入对象或当前未支持的特征。离线转换尚不接受这类文件。"},
+    {"name":"input_office_runtime_failed","value":"内置 Office 引擎加载或离线资源准备失败。请查看任务记录中的错误码；这不表示文件损坏或受保护。"},
+    {"name":"input_font_approval","value":"允许缺失字体时使用内置或系统替代字体（可能改变换行、分页和外观）"},
+    {"name":"report_source_text_check","value":"正文字符下限核对（不代表版式一致）"},
+    {"name":"report_output_pages","value":"生成 PDF 页数"},
+    {"name":"input_office_glyph_missing","value":"所需字形或图标字体缺失，已停止转换以避免空白、方框或错误图标。请在源文档中使用可用字体或将图标转为标准图片。"},
+    {"name":"input_office_content_mismatch","value":"生成的 PDF 与源文档的文字、图片或页数检查不一致，结果已拒绝，不能保存为成功产物。请检查源文档中的特殊对象。"}
   ]
 }

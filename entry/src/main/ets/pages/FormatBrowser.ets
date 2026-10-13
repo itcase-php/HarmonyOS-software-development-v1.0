@@ -95,14 +95,16 @@ struct FormatBrowser {
               .accessibilityText(this.tr('browser_format_details', [LanguageManager.formatName(format.id, format.displayName)]))
               .onClick(() => { this.expandedId = this.expandedId === format.id ? '' : format.id; })
             if (this.expandedId === format.id) {
-              StatusBadge({ text: this.tr($r('app.string.browser_planned')) })
+              StatusBadge({ text: this.tr($r('app.string.status_experimental')) })
               Text(this.tr('browser_id', [format.id])).fontSize(14).fontColor($r('app.color.palette_172b4d'))
               Text(this.tr('browser_extensions', [format.extensions.map((extension: string) => '.' + extension).join(', ')]))
                 .fontSize(14).fontColor($r('app.color.palette_172b4d'))
               Text(this.tr('browser_mime', [format.mimeTypes.join(', ')])).fontSize(13).fontColor($r('app.color.palette_526077'))
               Text(this.tr('browser_operations', [format.operations.map((value: string) => LanguageManager.operation(value)).join(' / ')])).fontSize(14).fontColor($r('app.color.palette_526077'))
-              Button(this.tr($r('app.string.browser_use'))).fontSize(14).backgroundColor($r('app.color.palette_007aff'))
-                .onClick(() => { UiFeedback.open(this.getUIContext(), 'pages/ConverterPage', { sourceFormatId: format.id }); })
+              if (format.operations.includes('import')) {
+                Button(this.tr($r('app.string.browser_use'))).fontSize(14).backgroundColor($r('app.color.palette_007aff'))
+                  .onClick(() => { UiFeedback.open(this.getUIContext(), 'pages/ConverterPage', { sourceFormatId: format.id }); })
+              }
             }
           }.alignItems(HorizontalAlign.Start).width('100%').padding(16).backgroundColor($r('app.color.palette_ffffff')).borderRadius(16)
         }, (format: RegistryFormat) => `${format.id}-${this.language}`)

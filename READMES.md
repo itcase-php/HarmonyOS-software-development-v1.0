@@ -1,10 +1,12 @@
 # HarmonyOS软件开发v2.0
 
-基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。已完成交互流程、完整目录规划、保真度参数管道、真实文件授权副本和提交入口。JPEG→PDF 的受限单图转换器已接入生产 C++ 构建，并通过主机测试与双 ABI 编译；该路线为 `experimental`，仅 Debug 白名单允许测试，Release 保持关闭。真实文件端到端设备验收尚未完成；DOCX/PPTX→PDF 仍缺 Office 后端。
+**2026-10-13：四条路线支持 Release 执行和真实文件。最新复查补上保存/分享副本回读摘要、交付期间产物保留、Office 文字/图片/字体检查及静态编解码符号隔离。签名 Release 候选包约 393 MB，235 个 Office 库及 3271 个离线资源已核对。没有真机，实际 Office 导出、页面外观和新包交付仍待设备验收。详见 [复查记录](docs/CONVERSION-DELIVERY-AUDIT.md)和 [Release 交付](docs/RELEASE-CANDIDATE.md)。**
+
+基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。主应用收敛为 **JPEG、PNG、DOCX、PPTX → PDF**。图片核心静态编入 Native，DOCX/PPTX 使用真正的 LibreOfficeKit Writer/Impress。Debug 与 Release 均允许范围内的真实转换，实际引擎、输入和输出检查继续生效；`experimental` 表示设备与版式资格尚待验收，不再表示 Debug 专用。其余 39 条路线保留禁用。
 
 公共仓库：<https://github.com/itcase-php/HarmonyOS-software-development-v1.0>。仓库地址使用英文字符，软件展示标题保留“HarmonyOS软件开发v1.0”。许可证为 [MIT](LICENSE)。按交付要求，另提供同内容的 [READMES.md](READMES.md)。
 
-2026-10-07：原工程已自动同步 JPEG Debug 修复，并支持受限的 EXIF 方向/分辨率与 ICC 配置。真机 Hypium 65/65、原生 CTest 25/25、主机专项 30 项通过；手机带 EXIF/ICC 样例的真实转换及独立 PDF 解析/渲染通过。系统 Picker、保存、阅读器、分享及 Office 转换仍待完成。详见[本轮兼容修复](docs/JPEG-METADATA-COMPATIBILITY.md)和[原工程同步记录](docs/JPEG-DEBUG-LOCAL-SYNC.md)。
+2026-10-07 历史验证：JPEG 支持受限 EXIF 方向/分辨率与 ICC，真机 Hypium 65/65 及真实样例的独立 PDF 解析/渲染通过。后续保存至 Download 的内容一致性、系统分享面板也已验证，接收方收取仍待验收；这些证据不等于本轮新包设备复验。详见[JPEG 兼容修复](docs/JPEG-METADATA-COMPATIBILITY.md)和[保存分享记录](docs/ARTIFACT-DELIVERY.md)。
 
 使用 DevEco Studio 打开本仓库根目录，即包含 build-profile.json5 的目录；原开发目录为 `D:/HarmonyOS/harmonyOS`。不要打开其父目录或 `outputs`。
 
@@ -15,17 +17,19 @@
 | 范围 | 当前状态 |
 | --- | --- |
 | 页面 | Index、FormatBrowser、ConverterPage、TaskHistory、FeatureGuide 五页及页面导航 |
-| 格式与规划 | 完整保留 18 种格式、43 条规划路线；启动及独立预览立即提供完整目录，资源加载失败不会缩减；单文件路线、意图、最低保真等级筛选与质量模式排序保持原行为 |
+| 格式与规划 | 原 18 种格式、43 条路线定义保留；当前 UI 仅 5 种格式、4 条单向路线，PDF 仅输出；其余 39 条入口和执行禁用，代码未删除 |
 | 保真度控制 | 快速/均衡/高保真、转换意图、最低等级、路线说明及执行前配置确认 |
 | 演示任务 | 2/3.5/6 秒活动时长，单并发 FIFO、暂停、恢复、取消与会话历史；退出应用不持久化 |
 | 文件输入 | Stage Picker、最多 10 文件管理、单文件 100 MiB/会话 300 MiB、分块副本与 SHA-256、信息卡片/移除/清理；真实提交保持单文件，设备验收待执行 |
 | 报告 | 演示报告展开查看；Native 报告读取接口与上下文/指标校验已预留 |
-| 原生层 | 14 个 Native 接口；会话、工作区、完整受限 JPEG 探测、转换候选、PDF 结构校验、受控 PDF 复制和清理已接入。image 引擎为实验实现，其他四类仍占位；完整通用 IR 和保真报告未实现 |
-| PDF 交付 | 对已验证 Native PDF 的文档选择器保存和 ShareKit 分享入口已接入；SaveButton 不适用于 PDF。JPEG 路线可在 Debug 测试，真实设备保存、独立打开与分享待验收 |
-| JPEG→PDF | 隔离原型源已进入 `libentry.so` 的 Native 构建，仅支持单张 8 位 Baseline SOF0 灰度或三分量 JPEG；主机运行时、独立 PDF 解析/渲染通过。`jpeg-pdf` 为 `experimental`，Debug 需同时满足 ArkTS/Native 白名单、实际引擎、配置及输入校验；Release 拒绝执行 |
-| 国际化与无障碍 | 首页 EN/中运行时切换、五页与组件/任务/报告/提示/读屏文案统一翻译；329 个双语资源键；语言使用 AppStorage + PersistentStorage 保留；实际 Previewer 和设备重启验收待执行 |
+| 原生层 | 14 个 Native 接口；授权输入、深层格式/保护检查、image/office 调度、PDF 候选校验、提交与释放接入；PNG/Office 完成前另要求系统 PDFKit 独立解析，设备运行待验收；其他引擎代码保留禁用 |
+| PDF 交付 | 系统保存与 ShareKit 分享副本关闭后回读核对大小和 SHA-256；交付完成前保留 Native 产物。此前 JPEG 有设备证据，新包及其他路线待复验 |
+| JPEG→PDF | 真实单张 8 位 Baseline SOF0 灰度或三分量 JPEG 转换；主机运行时、独立 PDF 解析/渲染通过；Debug 与 Release 均执行，受产品范围、实际引擎、配置及输入校验约束 |
+| PNG→PDF | 实际 libpng 解码与 RGB/透明度 PDF 写出；6 种模式主机转换及独立像素/渲染检查通过；静态 ≤8 位，按实际物理分辨率计算尺寸，缺失时 96 DPI；ICC/动画等未支持，设备待验收 |
+| DOCX/PPTX→PDF | OHOS arm64 内置 LibreOfficeKit Writer/Impress 导入与 PDF 导出；首次任务校验并解压离线资源；真实引擎加载、文档导出和版式仍待设备验收；旧 DOC/PPT 未开放 |
+| 国际化与无障碍 | 首页 EN/中运行时切换、五页与组件/任务/报告/提示/读屏文案统一翻译；356 个双语资源键；语言使用 AppStorage + PersistentStorage 保留；实际 Previewer 和设备重启验收待执行 |
 
-**已验收的真实转换路线仍为 0；JPEG→PDF 已具备 Debug 测试资格。** 未选择真实文件时，原演示不读取文件、不生成转换结果。真实入口通过 Picker 授权、受控副本、Native 会话与深层探测执行；输出通过校验后才显示保存/分享入口。当前 1 条 experimental、42 条 planned、0 条 available，未制造发布证据。任务历史持久化、后台调度、安全加固和设备验收仍待开发。详见[本轮调试修复与验收说明](docs/JPEG-DEBUG-ROUTE-REPAIR.md)、[产物交付说明](docs/ARTIFACT-DELIVERY.md)与[历史阶段验证](docs/VALIDATION-JPEG-PDF-PRODUCTION.md)。
+当前 **4 条 experimental、39 条 planned、0 条 available**，四条已在 Debug 与 Release 开启真实执行；范围外定义保留禁用。签名 Release 候选包约 393 MB，Office 仅 arm64，首次资源准备要求缓存至少 400 MiB 可用空间。缺失引用字体默认拒绝，只有用户明确同意才允许内置/系统替代；Office 保真等级保持未判定。演示入口仅保留在 Debug。异常产物和无证据保真等级不显示为正常完成。本轮没有真机，Office 实际运行和新包交付仍待设备验收。详见[Release 交付](docs/RELEASE-CANDIDATE.md)与[历史阶段记录](docs/IMPLEMENTATION_STATUS.md)。
 
 ## 工程结构
 
@@ -33,7 +37,7 @@
 
 1.ArkTS 层：页面、组件、模型、格式注册、转换规划、任务管理、NativeBridge
 
-2.C++ 层：NAPI 入口、转换器接口、错误码、IR 结构、资源限制、保真校验、PDF/Office/Media/Image/OCR 引擎占位
+2.C++ 层：NAPI 入口、转换器接口、错误码、IR 结构、资源限制、image/office 实验引擎及保留禁用的其他引擎
 
 3.共享配置：formats.json、conversion-matrix.json
 
@@ -44,7 +48,7 @@
 ```text
 AppScope/                    应用元数据和公共资源
 entry/src/main/ets/           ArkTS 页面、组件、模型、服务和任务管理
-entry/src/main/cpp/           NAPI、C++ 契约与引擎占位
+entry/src/main/cpp/           NAPI、C++ 契约、图片/Office 引擎及其他占位
 entry/src/main/resources/     路由、格式配置副本、中英文资源
 entry/src/test/               本地 Hypium 核心用例
 entry/src/ohosTest/            设备测试入口

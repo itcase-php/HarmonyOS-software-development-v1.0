@@ -1,4 +1,9 @@
 {
   "schemaVersion": 1,
-  "routeIds": ["jpeg-pdf"]
+  "routeIds": [
+    "jpeg-pdf",
+    "png-pdf",
+    "docx-pdf",
+    "pptx-pdf"
+  ]
 }

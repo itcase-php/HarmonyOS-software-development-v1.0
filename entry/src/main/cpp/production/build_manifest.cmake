@@ -11,6 +11,7 @@ function(hdm_create_build_manifest repository_root)
         "${repository_root}/entry/src/main/cpp/production/*.cpp"
         "${repository_root}/entry/src/main/cpp/production/*.cmake"
         "${repository_root}/entry/src/main/cpp/engines/image/*.cpp"
+        "${repository_root}/entry/src/main/cpp/engines/office/*.cpp"
         "${repository_root}/entry/src/main/cpp/generated/*.h"
         "${repository_root}/prototypes/jpeg-pdf/src/*.h"
         "${repository_root}/prototypes/jpeg-pdf/src/*.c"
@@ -18,6 +19,8 @@ function(hdm_create_build_manifest repository_root)
         "${repository_root}/prototypes/jpeg-pdf/include/*.h")
     list(APPEND task_sources "${repository_root}/entry/src/main/cpp/CMakeLists.txt"
         "${repository_root}/shared/format-registry/debug-routes.json"
+        "${repository_root}/shared/format-registry/product-scope.json"
+        "${repository_root}/shared/engines/office-bundle.json"
         "${repository_root}/shared/format-registry/conversion-matrix.json")
     list(SORT task_sources)
     foreach(task_source IN LISTS task_sources)
@@ -48,6 +51,6 @@ function(hdm_create_build_manifest repository_root)
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/hdm-manifest")
     file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/hdm-manifest/image-build-manifest.txt" "${task_manifest}")
     file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/hdm-manifest/hdm_build_manifest.h"
-        "#pragma once\nnamespace hdm { inline constexpr const char* kImageBuildHash = \"${task_build_hash}\"; }\n")
+        "#pragma once\nnamespace hdm { inline constexpr const char* kImageBuildHash = \"${task_build_hash}\"; inline constexpr const char* kOfficeBuildHash = \"${task_build_hash}\"; }\n")
     set(HDM_BUILD_MANIFEST_INCLUDE "${CMAKE_CURRENT_BINARY_DIR}/hdm-manifest" PARENT_SCOPE)
 endfunction()

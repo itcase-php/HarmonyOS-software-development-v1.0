@@ -3,15 +3,11 @@
 #include <string>
 
 namespace hdm::production {
-// Test eligibility is compiled from the same build mode and whitelist as ArkTS.
-// This implementation has no release-qualified conversion routes.
-inline bool IsDebugRouteExecutable(const std::string& routeId) {
-#ifdef HDM_NATIVE_DEBUG
-    if (routeId != kJpegPdfRouteId || std::string(kJpegPdfRouteStatus) != "experimental") return false;
-    for (const auto* allowed : kDebugRouteIds) if (routeId == allowed) return true;
-#else
-    (void)routeId;
-#endif
+// Product execution is independent of Debug/Release. Engine, input and output
+// checks still apply; enabling execution does not manufacture device evidence.
+inline bool IsProductRouteExecutable(const std::string& routeId) {
+    // Unsupported definitions remain archived, but cannot execute.
+    for (const auto* allowed : kProductRouteIds) if (routeId == allowed) return true;
     return false;
 }
 }

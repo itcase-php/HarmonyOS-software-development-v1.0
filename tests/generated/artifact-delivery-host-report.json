@@ -7,6 +7,13 @@
     "Cancelling the picker creates no output and allows retry",
     "copyFailure closes the descriptor and marks export failed",
     "badSize closes the descriptor and marks export failed",
+    "badHash closes the descriptor and marks export failed",
+    "readFailure closes the descriptor and marks export failed",
+    "closeFailure closes the descriptor and marks export failed",
+    "A provider finalizing on close and returning short reads is verified before success",
+    "Same-size corruption never opens a share panel",
+    "Share filenames use the validated opaque reference and cannot traverse via artifact IDs",
+    "Long Unicode and control characters produce a safe PDF picker filename",
     "Failed share preparation does not open the panel and permits retry"
   ]
 }

@@ -15,7 +15,7 @@
       "result": "passed"
     },
     {
-      "name": "Degradation routes require approval in the store as well as the page",
+      "name": "Deferred degradation routes remain disabled even with approval",
       "result": "passed"
     },
     {

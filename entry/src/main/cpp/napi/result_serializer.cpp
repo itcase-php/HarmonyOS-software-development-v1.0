@@ -101,6 +101,16 @@ napi_value SerializeConvertResult(napi_env env,const ConvertResult& native) {
     }
     Put(env,result,"warnings",warnings);
     if (native.fidelity) Put(env,result,"fidelity",Report(env,*native.fidelity));
+    if (native.contentExpectation) {
+        const auto& expected=*native.contentExpectation; auto content=Object(env); auto text=Array(env);
+        for (std::uint32_t i=0;i<expected.textMinimum.size();++i) {
+            auto item=Object(env); PutNumber(env,item,"codePoint",expected.textMinimum[i].first);
+            PutNumber(env,item,"count",expected.textMinimum[i].second); Push(env,text,i,item);
+        }
+        Put(env,content,"textMinimum",text); PutNumber(env,content,"minimumImages",expected.minimumImages);
+        if (expected.pageCount) PutNumber(env,content,"pageCount",*expected.pageCount);
+        Put(env,result,"contentExpectation",content);
+    }
     auto outputs=Array(env);
     for (std::uint32_t i=0;i<native.outputs.size();++i) {
         const auto& output=native.outputs[i]; auto item=Object(env);

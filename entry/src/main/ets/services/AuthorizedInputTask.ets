@@ -84,8 +84,12 @@ export class AuthorizedInputTaskService implements AuthorizedInputTaskPort {
       const plan: ApprovedPlan = { routeId: route.id, steps: route.steps, fallbackRouteIds: route.fallbackRouteIds,
         configVersion: registryMetadata.configVersion, configSha256: registryMetadata.matrixSha256,
         intent: selection.requestedIntent, minimumTier: selection.requestedTier,
-        allowedDegradations: route.allowedDegradations, policyVersion: registryMetadata.securityPolicy.version };
+        allowedDegradations: approved ? route.allowedDegradations : [], policyVersion: registryMetadata.securityPolicy.version };
       const options: ConvertOptions = {};
+      if (route.id === 'docx-pdf' || route.id === 'pptx-pdf') {
+        options.office = { allowedDegradations: plan.allowedDegradations, includeReferencePages: false,
+          missingFontPolicy: approved ? 'approved_fallback' : 'reject' };
+      }
       const request: ConvertRequest = { schemaVersion: registryMetadata.schemaVersion, sessionId: nativeSession,
         taskId: taskId, attemptId: attemptId, workspaceRef: workspace, operation: route.operation, inputs: [input],
         targetFormatId: route.to, qualityMode: selection.qualityMode, intent: selection.requestedIntent,

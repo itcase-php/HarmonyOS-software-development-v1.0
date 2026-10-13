@@ -8,7 +8,7 @@
       "result": "passed"
     },
     {
-      "name": "Cold registry immediately exposes all 18 approved formats and 43 catalogue routes",
+      "name": "Cold registry immediately exposes five scoped formats and four routes while the complete catalogue is retained",
       "result": "passed"
     },
     {

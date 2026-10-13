@@ -21,9 +21,9 @@ function fixture(debug) {
   return { h, registry, route, caps };
 }
 async function main() {
-  await test('Only JPEG is experimental; generated configuration bytes and digests agree', () => {
+  await test('Four product routes are experimental; generated configuration bytes and digests agree', () => {
     assert.equal(matrix.routes.find(r => r.id === 'jpeg-pdf').status, 'experimental');
-    assert.ok(matrix.routes.every(r => r.id === 'jpeg-pdf' || r.status === 'planned'));
+    assert.ok(matrix.routes.every(r => ['jpeg-pdf','png-pdf','docx-pdf','pptx-pdf'].includes(r.id) || r.status === 'planned'));
     const f = fixture(true);
     const generated = f.h.load('./generated/RegistryData');
     assert.equal(f.route.status, 'experimental');
@@ -32,16 +32,16 @@ async function main() {
     assert.equal(crypto.createHash('sha256').update(read('shared/format-registry/conversion-matrix.json')).digest('hex'),
       generated.registryMetadata.matrixSha256);
   });
-  await test('Debug requires both route states, the whitelist and a real-shaped engine stamp; Release blocks it', () => {
+  await test('Debug and Release require the product scope, both route states and a valid engine stamp', () => {
     const f = fixture(true);
     assert.equal(f.registry.availableRoutes(f.caps).length, 1);
-    assert.equal(fixture(false).registry.availableRoutes(f.caps).length, 0);
+    assert.equal(fixture(false).registry.availableRoutes(f.caps).length, 1);
     f.caps.routes[0].availability = 'planned'; assert.equal(f.registry.availableRoutes(f.caps).length, 0);
     f.caps.routes[0].availability = 'experimental';
     f.caps.engines[0].buildHash = '0'.repeat(64); assert.equal(f.registry.availableRoutes(f.caps).length, 0);
     f.caps.engines[0].buildHash = 'a'.repeat(64); f.caps.engines = [];
     assert.equal(f.registry.availableRoutes(f.caps).length, 0);
-    const planned = f.registry.routes.find(r => r.id === 'docx-pdf'); planned.status = 'experimental';
+    const planned = f.registry.routes.find(r => r.id === 'pdf-docx'); planned.status = 'experimental';
     f.caps.routes = [{ routeId: planned.id, availability: 'experimental' }];
     f.caps.engines = [{ engineId: 'office', version: 'test-model', buildHash: 'a'.repeat(64) }];
     assert.equal(f.registry.availableRoutes(f.caps).length, 0);

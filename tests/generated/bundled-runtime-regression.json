@@ -1,0 +1,96 @@
+{
+  "scope": "actual ArkTS lifecycle with Node IO and modeled SDK decompression/PDF parser",
+  "deviceExecution": "not executed",
+  "libreOfficeExecution": "not executed",
+  "passed": 22,
+  "cases": [
+    {
+      "name": "raw offsets, short reads/writes and concurrent bootstrap reuse",
+      "result": "passed"
+    },
+    {
+      "name": "a ready marker cannot hide missing cached engine resources after restart",
+      "result": "passed"
+    },
+    {
+      "name": "a valid cache tolerates Native bootstrap URL rewrites and avoids extraction",
+      "result": "passed"
+    },
+    {
+      "name": "a damaged mutable bootstrap is repaired rather than trusted by its marker",
+      "result": "passed"
+    },
+    {
+      "name": "manifest mismatch rolls back and permits retry",
+      "result": "passed"
+    },
+    {
+      "name": "archive mismatch rolls back and permits retry",
+      "result": "passed"
+    },
+    {
+      "name": "resource mismatch rolls back and permits retry",
+      "result": "passed"
+    },
+    {
+      "name": "insufficient storage fails before copying resources",
+      "result": "passed"
+    },
+    {
+      "name": "PDF traversal updates evidence without granting a fidelity tier",
+      "result": "passed"
+    },
+    {
+      "name": "parseFails rejects PDF and removes temporary copy",
+      "result": "passed"
+    },
+    {
+      "name": "encrypted rejects PDF and removes temporary copy",
+      "result": "passed"
+    },
+    {
+      "name": "emptyPages rejects PDF and removes temporary copy",
+      "result": "passed"
+    },
+    {
+      "name": "pageFails rejects PDF and removes temporary copy",
+      "result": "passed"
+    },
+    {
+      "name": "wrongHash rejects PDF and removes temporary copy",
+      "result": "passed"
+    },
+    {
+      "name": "constructorFails rejects PDF and removes temporary copy",
+      "result": "passed"
+    },
+    {
+      "name": "missingText refuses an otherwise parseable Office PDF",
+      "result": "passed"
+    },
+    {
+      "name": "missingImages refuses an otherwise parseable Office PDF",
+      "result": "passed"
+    },
+    {
+      "name": "wrongPageCount refuses an otherwise parseable Office PDF",
+      "result": "passed"
+    },
+    {
+      "name": "Office content checks tolerate layout text order and Unicode compatibility and release all decoded images",
+      "result": "passed"
+    },
+    {
+      "name": "badImage rejects the PDF and releases page/document/check copy",
+      "result": "passed"
+    },
+    {
+      "name": "releaseFails rejects the PDF and releases page/document/check copy",
+      "result": "passed"
+    },
+    {
+      "name": "an Office result without source expectations is rejected",
+      "result": "passed"
+    }
+  ]
+}

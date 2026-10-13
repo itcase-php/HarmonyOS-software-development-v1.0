@@ -145,6 +145,26 @@ int main(int argc,char** argv) {
         }
         Require(unsupportedMetadata,"JPEG metadata was confused with protection failure");
         Fixture limited(argv[1]);
+        auto officePlan=limited.Request();
+        officePlan.inputs[0].sourceFormatId="docx";
+        officePlan.operation=hdm::Operation::Convert;
+        officePlan.plan.routeId="docx-pdf";
+        auto& officeStep=officePlan.plan.steps[0];
+        officeStep.stepId="docx-pdf-1"; officeStep.operation=hdm::Operation::Convert;
+        officeStep.executorEngineId="office"; officeStep.engineIds={"office","pdf"};
+        officeStep.inputFormatIds={"docx"};
+        officePlan.options.office=hdm::OfficeOptions{{"font_substitution"},false,"approved_fallback"};
+        auto unauthorized=limited.runtime.Execute(officePlan);
+        Require(unauthorized.error && unauthorized.error->reason=="NATIVE_PLAN_MISMATCH",
+            "font fallback without approved degradation passed Native");
+        officePlan.plan.allowedDegradations={"font_substitution"};
+        auto authorized=limited.runtime.Execute(officePlan);
+        Require(authorized.error && authorized.error->reason!="NATIVE_PLAN_MISMATCH",
+            "approved font policy rejected before input checks");
+        officePlan.options.office->missingFontPolicy="reject";
+        auto mismatch=limited.runtime.Execute(officePlan);
+        Require(mismatch.error && mismatch.error->reason=="NATIVE_PLAN_MISMATCH",
+            "contradictory font policy passed Native");
         auto limitedRequest=limited.ProbeRequest(); limitedRequest.resourceBudget.maxPixels=1;
         bool pixelsExceeded=false;
         try { limited.runtime.Probe(limitedRequest); }

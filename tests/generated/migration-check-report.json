@@ -7,8 +7,8 @@
   "originalProjectChanges": [],
   "nativeMethodsPreserved": 14,
   "formats": 18,
-  "plannedRoutes": 42,
-  "experimentalRoutes": 1,
+  "plannedRoutes": 39,
+  "experimentalRoutes": 4,
   "availableRoutes": 0,
   "generatedProtocolEquivalent": true,
   "configCopiesByteIdentical": true,
@@ -19,14 +19,14 @@
       "source": "contracts/converter.h",
       "target": "entry/src/main/cpp/core/converter.h",
       "sourceSha256": "7ae85fa80670570458fbfb25162d281ebffed8e0cc476bd5c5cf26abb2fee2ae",
-      "currentTargetSha256": "7ae85fa80670570458fbfb25162d281ebffed8e0cc476bd5c5cf26abb2fee2ae",
-      "changedSinceFirstImport": false
+      "currentTargetSha256": "5b979561daa63c5b3d97530f254047acac34a8ec77e9f023c76bd714306642c5",
+      "changedSinceFirstImport": true
     },
     {
       "source": "contracts/native_bridge.d.ts",
       "target": "entry/src/main/ets/models/NativeProtocol.ets",
       "sourceSha256": "b557f768c2e3ca21755a68c775b81402dafa0b59f9f5eda0adb83daa99e1bf92",
-      "currentTargetSha256": "a48889500afe6575c74a7b7ab0b1ef9dba852c2274ad335ecd5eb34b8adfdfa1",
+      "currentTargetSha256": "49e230332d19ed6d61ceb33ac029fa21c28defb30e883adbb078a60f1c1d6606",
       "changedSinceFirstImport": true
     },
     {
@@ -96,7 +96,7 @@
       "source": "shared/format-registry/conversion-matrix.json",
       "target": "shared/format-registry/conversion-matrix.json",
       "sourceSha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270",
-      "currentTargetSha256": "6880fe28fee8e12537bff1324723bc195f051313fc96bec85e0ff62569b0d31f",
+      "currentTargetSha256": "37efa2b4d617c878681935608eac12547413d4dea1b0e892d5f13343685d66a9",
       "changedSinceFirstImport": true
     },
     {
@@ -124,7 +124,7 @@
       "source": "tests/check-design.cjs",
       "target": "tests/check-design.cjs",
       "sourceSha256": "3b125c8b83cb7d6b37e0bda9c0ab9da427543c8176ba8a93fd382f3b5733dee5",
-      "currentTargetSha256": "0a38001018657942625a473ea38363d1710ea86ea4673b6a1b289321e502f99a",
+      "currentTargetSha256": "1d756d5b29c03bc630296d5e129c0df25978761c2269af14edadcd43509aa5fb",
       "changedSinceFirstImport": true
     },
     {

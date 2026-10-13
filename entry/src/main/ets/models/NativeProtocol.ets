@@ -195,6 +195,13 @@ export interface Validation {
   evidenceRefs: string[];
 }
 export interface EngineStamp { engineId: string; version: string; buildHash: string; }
+// Private Native-to-validator expectations; consumed before storing a completed result.
+export interface TextMinimum { codePoint: number; count: number; }
+export interface ContentExpectation {
+  textMinimum: TextMinimum[];
+  minimumImages: number;
+  pageCount?: number;
+}
 export interface ConvertResult {
   schemaVersion: number;
   taskId: string;
@@ -205,6 +212,7 @@ export interface ConvertResult {
   outputs: Artifact[];
   validation: Validation;
   fidelity?: FidelityReport;
+  contentExpectation?: ContentExpectation;
   engines: EngineStamp[];
   elapsedMs: number;
   nativePeakBytes: number;
