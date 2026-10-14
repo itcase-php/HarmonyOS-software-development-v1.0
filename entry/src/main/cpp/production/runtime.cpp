@@ -1,6 +1,9 @@
 #include "runtime.h"
 #include "sha256.h"
 #include "image_context.h"
+#include "png_pdf.h"
+#include "office_input.h"
+#include "office_context.h"
 #include "output_validator.h"
 #include "../napi/bridge_problem.h"
 #include "../core/engine_registry.h"
@@ -13,6 +16,10 @@
 #include <fstream>
 #include <random>
 #include <system_error>
+#ifdef __OHOS__
+#include <cstdio>
+#include <fcntl.h>
+#endif
 #ifdef _WIN32
 #include <io.h>
 #else
@@ -84,24 +91,56 @@ extern "C" int CheckJpeg(void*) noexcept { return 0; }
 InputProbe ProbeOne(const fs::path& directory, const PreparedInput& input, const ResourceBudget& budget) {
     InputProbe result; result.fileId=input.fileId;
     if (!IsId(input.fileId) || input.relativePath!="inputs/"+input.fileId ||
-        input.sourceFormatId!="jpeg" || input.byteSize==0 || input.byteSize>budget.maxInputBytes ||
+        (input.sourceFormatId!="jpeg" && input.sourceFormatId!="png" && input.sourceFormatId!="docx" && input.sourceFormatId!="pptx") || input.byteSize==0 || input.byteSize>budget.maxInputBytes ||
         input.byteSize>kMaximumInput || input.sha256.size()!=64) return result;
     const fs::path inputs=directory/"inputs";
     const fs::path path=inputs/input.fileId;
     if (!SafeDirectory(inputs) || !SafeFile(path)) return result;
     try {
+        if (input.sourceFormatId!="jpeg") {
+            std::uint64_t bytes{};
+            if (DigestFile(path,kMaximumInput,bytes)!=input.sha256 || bytes!=input.byteSize)
+                throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_INPUT_DIGEST_MISMATCH");
+            if (input.sourceFormatId=="png") {
+                prototype::HostFile file(path.string(),false);
+                ReadPng(file,budget,[](){return ErrorCode::Ok;}); result.pageCount=1;
+            } else {
+                const auto office=InspectOffice(path,input.sourceFormatId,budget);
+                if (office.slides) result.pageCount=office.slides;
+            }
+            result.actualFormatId=input.sourceFormatId; result.protection=ProtectionState::None;
+            result.needsDeepCheck=false; return result;
+        }
         prototype::HostFile source(path.string(),false);
-        if (source.Size()!=input.byteSize) return result;
+        if (source.Size()!=input.byteSize) throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_INPUT_SIZE_MISMATCH");
         ProbeIO io{source,0,std::min<std::uint64_t>(budget.maxInputBytes,kMaximumInput),Sha256{}};
         HdmJpegInfo info{};
         const int code=hdm_probe_jpeg(ReadJpeg,CheckJpeg,&io,
             budget.maxNativeBytes,std::min<std::uint64_t>(budget.maxPixels,kMaximumPixels),&info);
-        if (code!=0 || io.bytes!=input.byteSize || io.hash.FinalHex()!=input.sha256) return result;
+        if (code==static_cast<int>(ErrorCode::FileCorrupted))
+            throw BridgeProblem(ErrorCode::FileCorrupted,"NATIVE_JPEG_CORRUPTED");
+        if (code==static_cast<int>(ErrorCode::ResourceLimitExceeded))
+            throw BridgeProblem(ErrorCode::ResourceLimitExceeded,info.issue==HDM_JPEG_PIXELS ? "NATIVE_JPEG_PIXEL_LIMIT" : "NATIVE_JPEG_MEMORY_LIMIT");
+        if (code==static_cast<int>(ErrorCode::UnsupportedFeature)) {
+            const char* reason="NATIVE_JPEG_SUBSET_UNSUPPORTED";
+            switch (info.issue) {
+                case HDM_JPEG_METADATA: reason="NATIVE_JPEG_METADATA_UNSUPPORTED"; break;
+                case HDM_JPEG_ENCODING: reason="NATIVE_JPEG_ENCODING_UNSUPPORTED"; break;
+                case HDM_JPEG_COLOR: reason="NATIVE_JPEG_COLOR_UNSUPPORTED"; break;
+                case HDM_JPEG_DENSITY: reason="NATIVE_JPEG_DENSITY_UNSUPPORTED"; break;
+                case HDM_JPEG_HEADER: reason="NATIVE_JPEG_HEADER_UNSUPPORTED"; break;
+            }
+            throw BridgeProblem(ErrorCode::UnsupportedFeature,reason);
+        }
+        if (code!=0) throw BridgeProblem(ErrorCode::IoError,"NATIVE_INPUT_READ_FAILED");
+        if (io.bytes!=input.byteSize) throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_INPUT_SIZE_MISMATCH");
+        if (io.hash.FinalHex()!=input.sha256) throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_INPUT_DIGEST_MISMATCH");
         result.actualFormatId="jpeg";
         result.protection=ProtectionState::None;
         result.pageCount=1;
         result.needsDeepCheck=false;
-    } catch (...) { return result; }
+    } catch (const BridgeProblem&) { throw; }
+    catch (...) { return result; }
     return result;
 }
 } // namespace
@@ -167,36 +206,53 @@ ConvertResult Runtime::Execute(const ConvertRequest& request) {
     ConvertResult result; result.schemaVersion=kSchemaVersion; result.taskId=request.taskId; result.attemptId=request.attemptId;
     const auto started=std::chrono::steady_clock::now();
     try {
+        const std::string format=request.inputs.size()==1?request.inputs[0].sourceFormatId:"";
+        const bool office=format=="docx" || format=="pptx";
+        const bool image=format=="jpeg" || format=="png";
+        const std::string executor=office?"office":"image";
+        const auto operation=office?Operation::Convert:Operation::ImagesToPdf;
+        const std::vector<std::string> fontFallback={"font_substitution"};
+        const bool approvedFontFallback=office && request.options.office &&
+            request.options.office->missingFontPolicy=="approved_fallback" &&
+            request.options.office->allowedDegradations==fontFallback && request.plan.allowedDegradations==fontFallback;
+        const bool validOfficeOptions=!request.options.office || (office && !request.options.office->includeReferencePages &&
+            (approvedFontFallback || (request.options.office->missingFontPolicy=="reject" &&
+                request.options.office->allowedDegradations.empty() && request.plan.allowedDegradations.empty())));
         if (request.schemaVersion!=kSchemaVersion || request.plan.configVersion!=kConfigVersion ||
-            request.plan.configSha256!=kMatrixHash || request.plan.routeId!=kJpegPdfRouteId ||
+            request.plan.configSha256!=kMatrixHash || (!image && !office) || request.plan.routeId!=format+"-pdf" ||
             request.inputs.size()!=1 || request.plan.steps.size()!=1 ||
             request.plan.policyVersion!=kSecurityPolicyVersion ||
             request.plan.intent!=Intent::LayoutPreserved || request.intent!=Intent::LayoutPreserved ||
-            request.operation!=Operation::ImagesToPdf ||
-            !request.plan.fallbackRouteIds.empty() || !request.plan.allowedDegradations.empty() ||
-            request.options.pdf || request.options.image || request.options.office ||
+            request.operation!=operation ||
+            !request.plan.fallbackRouteIds.empty() || (!request.plan.allowedDegradations.empty() && !approvedFontFallback) ||
+            request.options.pdf || request.options.image || !validOfficeOptions ||
             request.options.audio || request.options.ocr ||
-            request.plan.steps[0].stepId!="jpeg-pdf-1" ||
-            request.plan.steps[0].executorEngineId!="image" ||
+            request.plan.steps[0].stepId!=format+"-pdf-1" ||
+            request.plan.steps[0].executorEngineId!=executor ||
             request.plan.steps[0].outputFormatId!="pdf" ||
-            request.plan.steps[0].operation!=Operation::ImagesToPdf ||
-            request.plan.steps[0].engineIds!=std::vector<std::string>({"image","pdf"}) ||
-            request.plan.steps[0].inputFormatIds!=std::vector<std::string>({"jpeg"}) ||
+            request.plan.steps[0].operation!=operation ||
+            request.plan.steps[0].engineIds!=std::vector<std::string>({executor,"pdf"}) ||
+            request.plan.steps[0].inputFormatIds!=std::vector<std::string>({format}) ||
             request.targetFormatId!="pdf")
             throw BridgeProblem(ErrorCode::ConfigInvalid,"NATIVE_PLAN_MISMATCH");
         const auto grant=GetGrant(request.sessionId,request.workspaceRef);
         if (grant.taskId!=request.taskId || grant.attemptId!=request.attemptId)
             throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_TASK_OWNERSHIP");
         const auto probe=ProbeOne(grant.directory,request.inputs[0],request.resourceBudget);
-        if (!probe.actualFormatId || *probe.actualFormatId!="jpeg" || probe.protection!=ProtectionState::None || probe.needsDeepCheck)
+        if (!probe.actualFormatId || *probe.actualFormatId!=format || probe.protection!=ProtectionState::None || probe.needsDeepCheck)
             throw BridgeProblem(ErrorCode::PermissionDenied,"NATIVE_INPUT_NOT_VERIFIED");
         const fs::path outputs=grant.directory/"outputs";
         std::error_code ec; fs::create_directory(outputs,ec);
         if (ec || !SafeDirectory(outputs)) throw BridgeProblem(ErrorCode::IoError,"NATIVE_OUTPUT_DIRECTORY");
+        // Input sessions are deleted after execution. Committed artifacts remain owned by
+        // the result until ReleaseArtifact/Shutdown, outside that temporary workspace.
+        const fs::path artifacts=grant.directory.parent_path().parent_path()/"artifacts";
+        fs::create_directory(artifacts,ec);
+        if (ec || !SafeDirectory(artifacts)) throw BridgeProblem(ErrorCode::IoError,"NATIVE_ARTIFACT_DIRECTORY");
         const auto nonce=RandomId();
         const auto spoolPath=outputs/(nonce+".spool");
         const auto candidatePath=outputs/(nonce+".candidate");
-        const auto finalPath=outputs/(nonce+".pdf");
+        const auto finalPath=artifacts/(nonce+".pdf");
         struct Cleanup {
             fs::path spool,candidate,final;
             bool committed{};
@@ -208,34 +264,62 @@ ConvertResult Runtime::Execute(const ConvertRequest& request) {
         prototype::HostFile candidate(candidatePath.string(),true);
         ImageContext context(source,spool,candidate,*grant.cancelled,
             started+std::chrono::milliseconds(request.resourceBudget.timeoutMs),"outputs/"+nonce+".candidate");
-        ConverterLease engine(CreateConverter("image"));
+        OfficeContext officeContext(grant.directory/request.inputs[0].relativePath,candidatePath,*grant.cancelled,
+            started+std::chrono::milliseconds(request.resourceBudget.timeoutMs),"outputs/"+nonce+".candidate");
+        TaskContext& task=office?static_cast<TaskContext&>(officeContext):static_cast<TaskContext&>(context);
+        ConverterLease engine(CreateConverter(executor));
         if (!engine.Get()) throw BridgeProblem(ErrorCode::EngineMissing,"NATIVE_IMAGE_MISSING");
         EngineInitContext init; init.hardLimits=request.resourceBudget;
+        if (office) init.offlineResourceRootRef=(grant.directory.parent_path().parent_path()/"office-runtime").string();
         auto status=engine.Get()->Initialize(init);
         if (!status.IsOk()) throw BridgeProblem(status.code,status.reason);
-        status=engine.Get()->Validate(request,context);
+        status=engine.Get()->Validate(request,task);
         if (!status.IsOk()) throw BridgeProblem(status.code,status.reason);
-        status=engine.Get()->Execute(request,context);
+        status=engine.Get()->Execute(request,task);
         if (!status.IsOk()) throw BridgeProblem(status.code,status.reason);
-        auto candidateOutput=engine.Get()->CollectOutput(context);
+        auto candidateOutput=engine.Get()->CollectOutput(task);
         if (!candidateOutput.status.IsOk() || !candidateOutput.value || candidateOutput.value->files.size()!=1)
             throw BridgeProblem(ErrorCode::OutputValidationFailed,"NATIVE_OUTPUT_INVALID");
         candidate.Flush();
-        if (!context.result || !ValidateKnownPdf(candidate,context.result->candidate))
+        // Office may atomically replace the path; validate the exported file, not the old open inode.
+        prototype::HostFile exported(candidatePath.string(),false);
+        if (format=="jpeg" ? (!context.result || !ValidateKnownPdf(exported,context.result->candidate)) : !ValidatePdfEnvelope(exported))
             throw BridgeProblem(ErrorCode::OutputValidationFailed,"NATIVE_PDF_STRUCTURE");
         std::uint64_t pdfBytes{}; const auto pdfHash=DigestFile(candidatePath,kMaximumTemp,pdfBytes);
         if (pdfBytes!=candidateOutput.value->files[0].byteSize)
             throw BridgeProblem(ErrorCode::OutputValidationFailed,"NATIVE_OUTPUT_SIZE");
+#ifdef __OHOS__
+        // The app sandbox rejects hard links; commit atomically without replacing a file.
+        if (::renameat2(AT_FDCWD,candidatePath.c_str(),AT_FDCWD,finalPath.c_str(),RENAME_NOREPLACE)!=0)
+            throw BridgeProblem(ErrorCode::IoError,"NATIVE_OUTPUT_COMMIT");
+#else
         fs::create_hard_link(candidatePath,finalPath,ec);
         if (ec) throw BridgeProblem(ErrorCode::IoError,"NATIVE_OUTPUT_COMMIT");
+#endif
         const std::string artifactId=nonce;
         const std::string internalRef="artifact:"+nonce;
         result.outputs.push_back({artifactId,"primary","pdf",internalRef,pdfHash,pdfBytes,std::nullopt});
-        result.validation={ValidationState::Passed,"jpeg-pdf-structure-payload-v1",
+        if (format=="jpeg") result.validation={ValidationState::Passed,"jpeg-pdf-structure-payload-v1",
             {"pdf-fixed-structure","jpeg-payload-identical"}};
+        else result.validation={ValidationState::Passed,"pdf-envelope-v1-platform-parse-required",{"pdf-envelope-checked"}};
+        if (office) {
+            result.contentExpectation=officeContext.content;
+            FidelityReport report; report.schemaVersion=kSchemaVersion; report.intent=request.intent;
+            report.requestedTier=request.plan.minimumTier; report.requiresManualReview=true;
+            report.detectorVersion="office-export-pending-layout-qualification-v1";
+            if (!officeContext.missingFonts.empty()) {
+                report.degradations={"font_substitution"};
+                for (const auto& font:officeContext.missingFonts)
+                    report.unsupportedFeatures.push_back("missing-font-approved: "+font);
+                report.evidenceRefs.push_back("font-family-inventory");
+            }
+            result.fidelity=std::move(report);
+        }
         result.engines.push_back(engine.Get()->Describe().engine);
-        result.nativePeakBytes=context.result->candidate.trackedAllocationPeak;
-        result.tempPeakBytes=context.result->candidate.tempPeak;
+        if (context.result) {
+            result.nativePeakBytes=context.result->candidate.trackedAllocationPeak;
+            result.tempPeakBytes=context.result->candidate.tempPeak;
+        } else result.tempPeakBytes=pdfBytes;
         {
             std::lock_guard<std::mutex> lock(mutex_);
             if (!artifacts_.emplace(internalRef,ArtifactState{finalPath,request.taskId,request.attemptId,pdfHash,pdfBytes}).second)

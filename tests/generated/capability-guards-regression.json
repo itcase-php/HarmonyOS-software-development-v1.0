@@ -1,0 +1,83 @@
+{
+  "scope": "regression for success/fidelity guards, actual services with modeled Native replies",
+  "realEngineExecution": "not run",
+  "deviceExecution": "not run",
+  "productionCodeModified": true,
+  "observations": [
+    {
+      "name": "valid modeled result (control)",
+      "displayedStatus": "completed",
+      "resultLabel": "result_internal_count",
+      "deliveryButtonsEligible": true,
+      "achievedTier": null,
+      "error": ""
+    },
+    {
+      "name": "zero-byte primary PDF",
+      "displayedStatus": "failed",
+      "resultLabel": "",
+      "deliveryButtonsEligible": false,
+      "achievedTier": null,
+      "error": "PROTOCOL_INCOMPATIBLE:EXECUTE_RESPONSE",
+      "exportArgumentCheck": "INVALID_REQUEST:ARTIFACT_EXPORT_ARGUMENTS"
+    },
+    {
+      "name": "wrong primary format (DOCX for PDF request)",
+      "displayedStatus": "failed",
+      "resultLabel": "",
+      "deliveryButtonsEligible": false,
+      "achievedTier": null,
+      "error": "PROTOCOL_INCOMPATIBLE:EXECUTE_RESPONSE"
+    },
+    {
+      "name": "only report output, no primary result",
+      "displayedStatus": "failed",
+      "resultLabel": "",
+      "deliveryButtonsEligible": false,
+      "achievedTier": null,
+      "error": "PROTOCOL_INCOMPATIBLE:EXECUTE_RESPONSE"
+    },
+    {
+      "name": "multiple outputs for a single-output route",
+      "displayedStatus": "failed",
+      "resultLabel": "",
+      "deliveryButtonsEligible": false,
+      "achievedTier": null,
+      "error": "PROTOCOL_INCOMPATIBLE:EXECUTE_RESPONSE"
+    },
+    {
+      "name": "invalid output SHA-256",
+      "displayedStatus": "failed",
+      "resultLabel": "",
+      "deliveryButtonsEligible": false,
+      "achievedTier": null,
+      "error": "PROTOCOL_INCOMPATIBLE:EXECUTE_RESPONSE",
+      "exportArgumentCheck": "INVALID_REQUEST:ARTIFACT_EXPORT_ARGUMENTS"
+    },
+    {
+      "name": "missing opaque output reference",
+      "displayedStatus": "failed",
+      "resultLabel": "",
+      "deliveryButtonsEligible": false,
+      "achievedTier": null,
+      "error": "PROTOCOL_INCOMPATIBLE:EXECUTE_RESPONSE",
+      "exportArgumentCheck": "INVALID_REQUEST:STRING_RANGE"
+    },
+    {
+      "name": "achieved extreme tier without any metrics or evidence",
+      "displayedStatus": "failed",
+      "resultLabel": "",
+      "deliveryButtonsEligible": false,
+      "achievedTier": null,
+      "error": "PROTOCOL_INCOMPATIBLE:NATIVE_FIDELITY_EVIDENCE_MISSING"
+    },
+    {
+      "name": "failed output validation (negative control)",
+      "displayedStatus": "failed",
+      "resultLabel": "",
+      "deliveryButtonsEligible": false,
+      "achievedTier": null,
+      "error": "PROTOCOL_INCOMPATIBLE:EXECUTE_RESPONSE"
+    }
+  ]
+}

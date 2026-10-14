@@ -31,6 +31,7 @@ public:
     prototype::IFile& candidate;
     std::string candidateRelativePath;
     std::optional<prototype::PrototypeResult> result;
+    std::uint64_t pngPdfBytes{};
 private:
     const std::atomic<bool>& cancelled_;
     std::chrono::steady_clock::time_point deadline_;

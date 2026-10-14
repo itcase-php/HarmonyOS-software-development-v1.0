@@ -1,0 +1,56 @@
+Native source rebuilt successfully before CTest. Full compiler output retained locally at tmp/offline-engines/native-current-regression.log.
+Test project D:/HarmonyOS/harmonyOS/tests/native/msvc-build
+      Start  1: core_errors
+ 1/25 Test  #1: core_errors ........................   Passed    0.05 sec
+      Start  2: core_factories
+ 2/25 Test  #2: core_factories .....................   Passed    0.01 sec
+      Start  3: core_missing
+ 3/25 Test  #3: core_missing .......................   Passed    0.01 sec
+      Start  4: core_image
+ 4/25 Test  #4: core_image .........................   Passed    0.01 sec
+      Start  5: core_lease
+ 5/25 Test  #5: core_lease .........................   Passed    0.01 sec
+      Start  6: core_exception
+ 6/25 Test  #6: core_exception .....................   Passed    0.01 sec
+      Start  7: production_sha256
+ 7/25 Test  #7: production_sha256 ..................   Passed    0.03 sec
+      Start  8: production_output_validator
+ 8/25 Test  #8: production_output_validator ........   Passed    0.07 sec
+      Start  9: production_runtime
+ 9/25 Test  #9: production_runtime .................   Passed    0.10 sec
+      Start 10: production_runtime_metadata
+10/25 Test #10: production_runtime_metadata ........   Passed    0.08 sec
+      Start 11: napi_exports
+11/25 Test #11: napi_exports .......................   Passed    0.05 sec
+      Start 12: napi_schema
+12/25 Test #12: napi_schema ........................   Passed    0.01 sec
+      Start 13: napi_unsupported
+13/25 Test #13: napi_unsupported ...................   Passed    0.01 sec
+      Start 14: napi_missing
+14/25 Test #14: napi_missing .......................   Passed    0.01 sec
+      Start 15: napi_controls
+15/25 Test #15: napi_controls ......................   Passed    0.01 sec
+      Start 16: napi_queue
+16/25 Test #16: napi_queue .........................   Passed    0.01 sec
+      Start 17: napi_completion
+17/25 Test #17: napi_completion ....................   Passed    0.02 sec
+      Start 18: napi_boundary
+18/25 Test #18: napi_boundary ......................   Passed    0.01 sec
+      Start 19: napi_reports
+19/25 Test #19: napi_reports .......................   Passed    0.01 sec
+      Start 20: production_capability_diagnostic
+20/25 Test #20: production_capability_diagnostic ...   Passed    0.06 sec
+      Start 21: production_debug_capability
+21/25 Test #21: production_debug_capability ........   Passed    0.04 sec
+      Start 22: prototype_streams
+22/25 Test #22: prototype_streams ..................   Passed    0.02 sec
+      Start 23: prototype_ir
+23/25 Test #23: prototype_ir .......................   Passed    0.01 sec
+      Start 24: prototype_budgets
+24/25 Test #24: prototype_budgets ..................   Passed    0.01 sec
+      Start 25: prototype_payload
+25/25 Test #25: prototype_payload ..................   Passed    0.01 sec
+
+100% tests passed out of 25
+
+Total Test time (real) =   0.71 sec

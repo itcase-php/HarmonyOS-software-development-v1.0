@@ -1,0 +1,13 @@
+diff --git a/external/libeot/UnpackedTarball_libeot.mk b/external/libeot/UnpackedTarball_libeot.mk
+index 532afa5ad..e9674b970 100644
+--- a/external/libeot/UnpackedTarball_libeot.mk
++++ b/external/libeot/UnpackedTarball_libeot.mk
+@@ -18,6 +18,8 @@ $(eval $(call gb_UnpackedTarball_UnpackedTarball,libeot))
+ 
+ $(eval $(call gb_UnpackedTarball_set_tarball,libeot,$(LIBEOT_TARBALL)))
+ 
++$(eval $(call gb_UnpackedTarball_update_autoconf_configs,libeot))
++
+ $(eval $(call gb_UnpackedTarball_set_patchlevel,libeot,1))
+ 
+ $(eval $(call gb_UnpackedTarball_add_patches,libeot,\

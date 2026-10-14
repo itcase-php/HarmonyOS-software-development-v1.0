@@ -1,0 +1,194 @@
+{
+  "scope": "LibreOffice_26.2.6.2_OHOS_arm64_build_and_code_validation_only",
+  "checkedAtUtc": "2026-10-07T09:43:51.468947+00:00",
+  "upstream": {
+    "version": "26.2.6.2",
+    "repository": "https://github.com/LibreOffice/core.git",
+    "tag": "libreoffice-26.2.6.2",
+    "tagObject": "bb82c515eaebfe3b1f966445c446366c2b7da1bb",
+    "revision": "ad5cf9fd4989cacf0bca866ebefc0ec8926cb0b2",
+    "configureSha256Lf": "f9c661dd95afb8c11960f0658d96d5b20dec8f48125bb000d6e3b797b7018fa5",
+    "approvedOn": "2026-10-07",
+    "scope": "OHOS port validation; no conversion or release acceptance"
+  },
+  "compilerPrerequisite": {
+    "scope": "upstream_compiler_prerequisite_only",
+    "revision": "ad5cf9fd4989cacf0bca866ebefc0ec8926cb0b2",
+    "configureSha256Lf": "f9c661dd95afb8c11960f0658d96d5b20dec8f48125bb000d6e3b797b7018fa5",
+    "version": "26.2.6.2",
+    "target": "aarch64-linux-ohos",
+    "sdk": {
+      "apiVersion": "26",
+      "displayName": "Native",
+      "meta": {
+        "metaVersion": "3.0.2"
+      },
+      "path": "native",
+      "platformVersion": "26.0.0",
+      "releaseType": "Release",
+      "version": "26.0.0.105"
+    },
+    "compilerVersion": "15.0.4",
+    "requiredClangMajor": 12,
+    "result": "passed",
+    "officeBuild": "not_checked",
+    "officeDeviceConversion": "not_executed_by_this_check"
+  },
+  "configure": {
+    "result": "passed",
+    "hostToolsAndTargetSeparated": true,
+    "targetFlags": {
+      "CC": "$SDK_NATIVE/llvm/bin/clang --target=aarch64-linux-ohos --sysroot=$SDK_NATIVE/sysroot ",
+      "CXX": "$SDK_NATIVE/llvm/bin/clang++ --target=aarch64-linux-ohos --sysroot=$SDK_NATIVE/sysroot -stdlib=libc++ ",
+      "CROSS_COMPILING": "TRUE",
+      "CPUNAME": "AARCH64",
+      "RTL_OS": "OHOS",
+      "PLATFORMID": "ohos_aarch64",
+      "OS": "LINUX",
+      "DISABLE_GUI": "TRUE",
+      "ENABLE_HEADLESS": "TRUE",
+      "USING_X11": "",
+      "MERGELIBS": "",
+      "SYSTEM_FONTCONFIG": "",
+      "SYSTEM_FREETYPE": "",
+      "ENABLE_PDFIMPORT": "",
+      "ENABLE_NSS": "TRUE",
+      "SYSTEM_NSS": "",
+      "BUILD_TYPE": "LibO DESKTOP AVMEDIA DBCONNECTIVITY SCRIPTING DYNLOADING FONTCONFIG ZSTD MD4C LIBJPEG_TURBO EXPAT XMLSEC LIBEOT REVENGE ODFGEN EPUBGEN WPD WPG WPS VISIO CDR MSPUB MWAW ETONYEK FREEHAND EBOOK ABW PAGEMAKER QXP ZMF STAROFFICE LCMS2 CPPUNIT FREETYPE LIBXSLT LIBXML2 CURL BOOST MDDS DRAGONBOX FAST_FLOAT FROZEN GLM NSS SANE ICU ORCUS GRAPHITE HARFBUZZ OPENSSL CRYPTO_NSS ARGON2 REDLAND HUNSPELL ZXCVBN ZXING BOX2D HYPHEN MYTHES LIBEXTTEXTCAT LIBNUMBERTEXT OPENSYMBOL CAIRO MESON LIBLANGTAG LIBPNG LIBTIFF LIBWEBP"
+    }
+  },
+  "patches": [
+    {
+      "file": "0001-ohos-configure.patch",
+      "sha256": "c0cb5a68ae3d13780dea0aefab02afaad85789a3e8afe57a798567ec39d24a9b",
+      "appliedState": "verified"
+    },
+    {
+      "file": "0002-libeot-config-sub.patch",
+      "sha256": "7f647b2b2781aa3ac1663007447967f39629b84f034e013f85ed0c6839b574ac",
+      "appliedState": "verified"
+    },
+    {
+      "file": "0003-sal-array-allocation.patch",
+      "sha256": "eb4442d92ef36900faacdaa36c7bdc52a71f368a790676fb8af5a15425deb8da",
+      "appliedState": "verified"
+    },
+    {
+      "file": "0004-fontconfig-cross-configure.patch",
+      "sha256": "90977e15e31b7f31e9609d430e9332fb551f49ec3e8c600fc9d66cfe84469e10",
+      "appliedState": "verified"
+    },
+    {
+      "file": "0005-ohos-gettext-interop.patch",
+      "sha256": "f0fdde3b548aea0e86d36ac495e991b529bd0af84f2a24a2f848f7f9693dead9",
+      "appliedState": "verified"
+    },
+    {
+      "file": "0006-ohos-default-paper.patch",
+      "sha256": "e7aed75cbc7ccdad57cd5cf6231d795b4f6d2fb9e9e6dd6db7014ecddfb11bbe",
+      "appliedState": "verified"
+    },
+    {
+      "file": "0007-stream-buffer-access.patch",
+      "sha256": "9762d304d410932a10186fc44df238ea7f1516abfd9b5900988890c7b3d1b456",
+      "appliedState": "verified"
+    },
+    {
+      "file": "0008-constexpr-algorithms.patch",
+      "sha256": "ab9128b564568cf0017e96fb30da9e43d553845460d42cc46c6afe4f02d98a9c",
+      "appliedState": "verified"
+    },
+    {
+      "file": "0009-nss-cross-tools.patch",
+      "sha256": "c8acecb9d76afac69f9c2dc9d72dcdd1fc7ab84f72b44857b6d6e57be041ac80",
+      "appliedState": "verified"
+    }
+  ],
+  "targetBuild": {
+    "result": "passed",
+    "exitCode": 0,
+    "command": "make -j10 PARALLELISM_OPTION=-j10 build",
+    "logFile": "build-arm64-20261007T063848Z.log",
+    "logSha256": "c80b5ea8d78a1e0d96bf3bab51498536189c435475414e1356009e1da72a2bb9"
+  },
+  "staticTargetElf": {
+    "scope": "static_target_elf_and_direct_needed_file_resolution_only",
+    "checkedAtUtc": "2026-10-07T09:41:30.039995+00:00",
+    "result": "passed",
+    "missingRequiredLibraries": [],
+    "libreofficekitHook2Exported": true,
+    "sdkRuntimePackaging": "not_verified",
+    "deviceExecution": "not_executed",
+    "fileCount": 241,
+    "totalBytes": 431833456,
+    "report": "tests/generated/office-26.2-target-elf-validation.json",
+    "reportSha256": "7cdf0f4358003f01a6701f9f2ee29d50a6975176d26c7e0acb2b0ff520ca90d7"
+  },
+  "lokCallerCompileLink": {
+    "result": "passed",
+    "sha256": "281bbc2e6a9f2b70937fa92e288eed30875366fe9ff09bb0c6b823e7ec4d3d46",
+    "bytes": 31832,
+    "elf": "ELF64/AArch64",
+    "needed": [
+      "libc++_shared.so",
+      "libc.so"
+    ],
+    "deviceExecution": "not_executed"
+  },
+  "fontconfigC99CompileLink": {
+    "result": "passed",
+    "sha256": "24bf5f6369a55ee59bd52eec2b5fd558d98e6227204a97567ead0f71ce05f386",
+    "bytes": 14808,
+    "elf": "ELF64/AArch64",
+    "needed": [
+      "libc.so"
+    ],
+    "deviceExecution": "not_executed"
+  },
+  "hostChecks": {
+    "salLongNumberRegression": {
+      "result": "passed",
+      "scope": "Linux_host_only",
+      "script": "prototypes/office-harmony/check-sal-math.sh",
+      "summary": "PASS: long narrow/UTF-16 numbers preserve value, status and parsed end"
+    },
+    "lokFailurePaths": {
+      "result": "passed",
+      "scope": "Linux_host_only",
+      "script": "prototypes/office-harmony/check-lok-host.sh",
+      "summary": "PASS: invalid arguments=64; missing engine=2; no output PDF created."
+    }
+  },
+  "nssCrossBuild": {
+    "hostNowTool": {
+      "elf": "ELF64/X86-64",
+      "sha256": "e8decfad095c37b034fcccf07acc5f34c6ae78905bee8a1be00bb644f429b2ae",
+      "hostExecution": "passed"
+    },
+    "targetLibraries": "included_in_AArch64_ELF_check",
+    "deviceExecution": "not_executed"
+  },
+  "fullUpstreamCppunit": "not_executed_cross_toolset_missing_test_unittest",
+  "deviceValidation": {
+    "status": "not_executed",
+    "reason": "user_has_no_device_this_round"
+  },
+  "runtimeSymbolResolution": "not_verified",
+  "engineInitialization": "not_executed",
+  "docxToPdf": "not_executed",
+  "pptxToPdf": "not_executed",
+  "pdfContentAndLayoutComparison": "not_executed",
+  "stageApplicationAndOfflineResources": "not_packaged_or_validated",
+  "fontsAndMissingFontPolicy": "not_packaged_or_validated",
+  "upstreamBuildFontFiles": [
+    {
+      "file": "share/fonts/truetype/opens___.ttf",
+      "sha256": "f543e6e2d7275557a839a164941c0a86e5f2c3f2a0042bfc434c88c6dde9e140",
+      "bytes": 207992
+    }
+  ],
+  "formalOfficeConverter": "MissingConverter_unchanged",
+  "officeDebugAndReleaseRoutes": "not_opened",
+  "applicationBuildThisRound": "not_executed_application_source_unchanged",
+  "releaseReady": false
+}

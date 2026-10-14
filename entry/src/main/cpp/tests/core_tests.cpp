@@ -40,14 +40,14 @@ void Factories() {
         auto second = hdm::CreateConverter(id);
         Require(first && second && first.get() != second.get(), "factories must create independent instances");
         Require(first->Describe().engine.engineId == id, "factory identity");
-        Require(!first->Describe().available, "unverified engines cannot be available");
+        Require(first->Describe().available==(std::string(id)=="image"), "only bundled host image engine can execute");
     }
     for (const auto* id : {"", "IMAGE", "unknown", "../image"}) Require(!hdm::CreateConverter(id), "invalid factory id");
 }
 void Image() {
     Context context;
     auto engine=hdm::CreateConverter("image");
-    Require(engine && !engine->Describe().available, "image must stay gated before device evidence");
+    Require(engine && engine->Describe().available, "bundled product image engine must execute");
     hdm::EngineInitContext init; init.hardLimits.maxInputBytes=104857600;
     init.hardLimits.maxTempBytes=536870912; init.hardLimits.maxPixels=16000000;
     init.hardLimits.timeoutMs=180000;
@@ -58,7 +58,7 @@ void Image() {
 }
 void Missing() {
     Context context;
-    for (const auto* id : {"pdf", "office", "media", "ocr"}) {
+    for (const auto* id : {"pdf", "media", "ocr"}) {
         auto engine = hdm::CreateConverter(id);
         for (const auto& status : {engine->Initialize({}), engine->Validate({}, context), engine->Execute({}, context)}) {
             Require(status.code == hdm::ErrorCode::EngineMissing && !status.IsOk(), "placeholder success");

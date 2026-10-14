@@ -2,6 +2,7 @@
 #ifdef HDM_PRODUCTION_NATIVE
 #include "production_napi.h"
 #include "../core/engine_registry.h"
+#include "../production/route_policy.h"
 #endif
 #include "bridge_problem.h"
 #include "../core/converter.h"
@@ -146,31 +147,30 @@ napi_value CapabilityResult(napi_env env) {
     auto engines = Array(env);
     auto routes = Array(env);
 #ifdef HDM_PRODUCTION_NATIVE
-    // Describe the linked subset without publishing an executable engine or route.
-    // A missing/broken factory simply leaves the diagnostic arrays empty.
-    if (std::string(kJpegPdfRouteStatus) == "planned") {
+    std::uint32_t engineIndex=0,routeIndex=0;
+    for (const char* executor : {"image","office"}) {
         ConverterCapabilities caps;
-        bool linked = false;
-        try {
-            auto converter = CreateConverter("image");
-            if (converter) {
-                caps = converter->Describe();
-                linked = caps.engine.engineId == "image" && !caps.decoderIds.empty() &&
-                    !caps.encoderIds.empty() && !caps.inputSubsetIds.empty();
-            }
-        } catch (...) { linked = false; }
-        if (linked) {
-            auto route = Object(env);
-            PutText(env, route, "routeId", kJpegPdfRouteId);
-            PutText(env, route, "availability", "planned");
-            PutText(env, route, "reason", "NATIVE_ROUTE_PLANNED");
-            PutBool(env, route, "supportsPause", caps.supportsPause);
-            PutBool(env, route, "supportsCheckpoint", caps.supportsCheckpoint);
-            Put(env, route, "decoderIds", StringArray(env, caps.decoderIds));
-            Put(env, route, "encoderIds", StringArray(env, caps.encoderIds));
-            PutText(env, route, "inputSubsetId", caps.inputSubsetIds.front());
-            PutText(env, route, "validationProfileId", kJpegPdfValidationProfile);
-            Check(napi_set_element(env, routes, 0, route));
+        try { auto converter=CreateConverter(executor); if (converter) caps=converter->Describe(); }
+        catch (...) { continue; }
+        if (!caps.available || caps.decoderIds.empty() || caps.encoderIds.empty() || caps.inputSubsetIds.empty()) continue;
+        auto engine=Object(env);
+        PutText(env,engine,"engineId",caps.engine.engineId);
+        PutText(env,engine,"version",caps.engine.version);
+        PutText(env,engine,"buildHash",caps.engine.buildHash);
+        Check(napi_set_element(env,engines,engineIndex++,engine));
+        for (const auto* id : kProductRouteIds) {
+            const bool office=std::string(id)=="docx-pdf" || std::string(id)=="pptx-pdf";
+            if (office!=(std::string(executor)=="office")) continue;
+            auto route=Object(env);
+            PutText(env,route,"routeId",id);
+            PutText(env,route,"availability","experimental");
+            PutText(env,route,"reason",production::IsProductRouteExecutable(id)?"BUNDLED_OFFLINE_ENGINE":"NATIVE_ROUTE_UNAVAILABLE");
+            PutBool(env,route,"supportsPause",false); PutBool(env,route,"supportsCheckpoint",false);
+            Put(env,route,"decoderIds",StringArray(env,caps.decoderIds));
+            Put(env,route,"encoderIds",StringArray(env,caps.encoderIds));
+            PutText(env,route,"inputSubsetId",office?caps.inputSubsetIds.front():caps.inputSubsetIds[std::string(id)=="png-pdf"?1:0]);
+            PutText(env,route,"validationProfileId",office?"office_pdf":"image_pdf");
+            Check(napi_set_element(env,routes,routeIndex++,route));
         }
     }
 #endif

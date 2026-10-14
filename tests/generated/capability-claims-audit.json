@@ -1,0 +1,89 @@
+{
+  "scope": "read-only capability audit, actual services with modeled Native replies",
+  "realEngineExecution": "not run",
+  "deviceExecution": "not run",
+  "productionCodeModified": false,
+  "observations": [
+    {
+      "name": "valid modeled result (control)",
+      "displayedStatus": "completed",
+      "resultLabel": "result_internal_count",
+      "deliveryButtonsEligible": true,
+      "achievedTier": null,
+      "error": ""
+    },
+    {
+      "name": "zero-byte primary PDF",
+      "displayedStatus": "completed",
+      "resultLabel": "result_internal_count",
+      "deliveryButtonsEligible": true,
+      "achievedTier": null,
+      "error": "",
+      "exportArgumentCheck": "INVALID_REQUEST:ARTIFACT_EXPORT_ARGUMENTS"
+    },
+    {
+      "name": "wrong primary format (DOCX for PDF request)",
+      "displayedStatus": "completed",
+      "resultLabel": "result_internal_count",
+      "deliveryButtonsEligible": false,
+      "achievedTier": null,
+      "error": ""
+    },
+    {
+      "name": "only report output, no primary result",
+      "displayedStatus": "completed",
+      "resultLabel": "result_internal_count",
+      "deliveryButtonsEligible": false,
+      "achievedTier": null,
+      "error": ""
+    },
+    {
+      "name": "invalid output SHA-256",
+      "displayedStatus": "completed",
+      "resultLabel": "result_internal_count",
+      "deliveryButtonsEligible": true,
+      "achievedTier": null,
+      "error": "",
+      "exportArgumentCheck": "INVALID_REQUEST:ARTIFACT_EXPORT_ARGUMENTS"
+    },
+    {
+      "name": "missing opaque output reference",
+      "displayedStatus": "completed",
+      "resultLabel": "result_internal_count",
+      "deliveryButtonsEligible": true,
+      "achievedTier": null,
+      "error": "",
+      "exportArgumentCheck": "INVALID_REQUEST:STRING_RANGE"
+    },
+    {
+      "name": "achieved extreme tier without any metrics or evidence",
+      "displayedStatus": "completed",
+      "resultLabel": "result_internal_count",
+      "deliveryButtonsEligible": true,
+      "achievedTier": "extreme",
+      "error": ""
+    },
+    {
+      "name": "failed output validation (negative control)",
+      "displayedStatus": "failed",
+      "resultLabel": "",
+      "deliveryButtonsEligible": false,
+      "achievedTier": null,
+      "error": "PROTOCOL_INCOMPATIBLE:EXECUTE_RESPONSE"
+    }
+  ],
+  "sourceSha256": {
+    "entry/src/main/ets/services/NativeBridge.ets": "4e0913a1ed95008f7ed40ac068c55e9999e1fe165dc1c9160e195ebd349c71ab",
+    "entry/src/main/ets/viewmodel/TaskStore.ets": "02dbe96bd1ce45410aa9f751b63ec4ed5ac5e03a720465e30582a2409e344f9a",
+    "entry/src/main/ets/viewmodel/NativeFidelityReport.ets": "14d008e29ea54a4ce955c2c7889574c32f101ebb436c77ddefb787c701ea80f7",
+    "entry/src/main/ets/services/PdfOfficeConverter.ets": "417092920a5566f58b3a9cb827167b319fbc1d8441a15b2761e3d0ec6d3a03b1"
+  },
+  "checks": {
+    "freshNativeCtest": "25/25",
+    "jpegIndependentParseAndRender": 29,
+    "debugRouteChecks": 5,
+    "artifactDeliveryChecks": 6,
+    "existingDispatcherChecks": 12,
+    "device": "not run"
+  }
+}

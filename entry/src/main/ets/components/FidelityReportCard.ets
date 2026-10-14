@@ -30,6 +30,8 @@ export struct FidelityReportCard {
       case 'layout_similarity': return this.tr($r('app.string.report_layout'));
       case 'content_coverage_demo': return this.tr($r('app.string.report_content_demo'));
       case 'content_coverage': return this.tr($r('app.string.report_content'));
+      case 'source_text_minimum': return this.tr($r('app.string.report_source_text_check'));
+      case 'output_page_count': return this.tr($r('app.string.report_output_pages'));
       case 'page_count': return this.tr($r('app.string.report_pages'));
       default: return name;
     }

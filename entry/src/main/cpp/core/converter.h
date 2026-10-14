@@ -167,6 +167,11 @@ struct Validation {
     std::vector<std::string> evidenceRefs;
 };
 struct EngineStamp { std::string engineId, version, buildHash; };
+struct ContentExpectation {
+    std::vector<std::pair<std::uint32_t,std::uint32_t>> textMinimum;
+    std::uint32_t minimumImages{};
+    std::optional<std::uint32_t> pageCount;
+};
 struct ConvertResult {
     std::uint32_t schemaVersion{};
     std::string taskId, attemptId;
@@ -176,6 +181,7 @@ struct ConvertResult {
     std::vector<Artifact> outputs;
     Validation validation;
     std::optional<FidelityReport> fidelity;
+    std::optional<ContentExpectation> contentExpectation;
     std::vector<EngineStamp> engines;
     std::uint64_t elapsedMs{}, nativePeakBytes{}, tempPeakBytes{};
 };

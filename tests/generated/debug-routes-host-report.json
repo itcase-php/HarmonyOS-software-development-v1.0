@@ -1,0 +1,13 @@
+{
+  "scope": "host_logic_with_mock_native_not_device_conversion",
+  "passed": 5,
+  "cases": [
+    "Four product routes are experimental; generated configuration bytes and digests agree",
+    "Debug and Release require the product scope, both route states and a valid engine stamp",
+    "Release available still requires release evidence",
+    "Preflight and runner share Debug qualification; input probing remains mandatory",
+    "JPEG probe errors reach distinct translated UI messages without claiming protection"
+  ],
+  "device": "not_executed",
+  "previewer": "not_executed"
+}

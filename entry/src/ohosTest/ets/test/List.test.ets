@@ -9,6 +9,8 @@ import formatRegistryTest from './FormatRegistry.test';
 import fidelitySettingsVMTest from './FidelitySettingsVM.test';
 import formatDetectorTest from './FormatDetector.test';
 import languageResourceTest from './LanguageResource.test';
+import jpegDebugSmokeTest from './JpegDebugSmoke.test';
+import corePdfSmokeTest from './CorePdfSmoke.test';
 
 export default function testsuite() {
   abilityTest();
@@ -22,4 +24,6 @@ export default function testsuite() {
   fidelitySettingsVMTest();
   formatDetectorTest();
   languageResourceTest();
+  jpegDebugSmokeTest();
+  corePdfSmokeTest();
 }

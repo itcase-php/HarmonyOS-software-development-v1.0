@@ -2,6 +2,9 @@
 #include "../../napi/bridge_problem.h"
 #include "../../production/image_context.h"
 #include "../../generated/registry_metadata.h"
+#include "../../production/route_policy.h"
+#include "../../production/png_pdf.h"
+#include "hdm_build_manifest.h"
 #include <memory>
 
 namespace hdm {
@@ -16,12 +19,11 @@ class ImageConverter final : public IConverter {
 public:
     ConverterCapabilities Describe() const override {
         ConverterCapabilities capabilities;
-        capabilities.engine={"image","1.0.0-experimental","unreleased"};
-        capabilities.decoderIds={"jpeg-baseline-sof0-gray-rgb-jfif-v1"};
-        capabilities.encoderIds={"pdf-dct-single-page-v1"};
-        capabilities.inputSubsetIds={"jpeg-baseline-sof0-jfif-v1"};
-        // Linked for internal tests; public route stays gated until device/release evidence.
-        capabilities.available=false;
+        capabilities.engine={"image","1.1.0-experimental",kImageBuildHash};
+        capabilities.decoderIds={"jpeg-baseline-sof0-gray-rgb-exif-icc-v2","libpng-1.6.59-rgba8"};
+        capabilities.encoderIds={"pdf-dct-single-page-icc-v2","pdf-flate-rgb-soft-mask-v1"};
+        capabilities.inputSubsetIds={"jpeg-baseline-sof0-jfif-exif-icc-v2","png-static-8bit-srgb-alpha-v1"};
+        capabilities.available=production::IsProductRouteExecutable(kJpegPdfRouteId);
         return capabilities;
     }
     Status Initialize(const EngineInitContext& init) override {
@@ -32,8 +34,8 @@ public:
     Status Validate(const ConvertRequest& request, const TaskContext& context) const override {
         if (!initialized_) return Failure(ErrorCode::InvalidRequest,"IMAGE_NOT_INITIALIZED");
         if (dynamic_cast<const production::ImageContext*>(&context)==nullptr || request.inputs.size()!=1 ||
-            request.inputs[0].sourceFormatId!="jpeg" || request.targetFormatId!="pdf" ||
-            request.operation!=Operation::ImagesToPdf || request.plan.routeId!=kJpegPdfRouteId ||
+            (request.inputs[0].sourceFormatId!="jpeg" && request.inputs[0].sourceFormatId!="png") || request.targetFormatId!="pdf" ||
+            request.operation!=Operation::ImagesToPdf || request.plan.routeId!=request.inputs[0].sourceFormatId+"-pdf" ||
             request.plan.steps.size()!=1 || request.plan.steps[0].executorEngineId!="image" ||
             request.resourceBudget.maxInputBytes>limits_.maxInputBytes ||
             request.resourceBudget.maxTempBytes>limits_.maxTempBytes)
@@ -44,6 +46,11 @@ public:
         auto* image=dynamic_cast<production::ImageContext*>(&context);
         if (!image) return Failure(ErrorCode::InvalidRequest,"IMAGE_CONTEXT_REQUIRED");
         try {
+            if (request.inputs[0].sourceFormatId=="png") {
+                const auto pixels=production::ReadPng(image->source,request.resourceBudget,image->Control());
+                image->pngPdfBytes=production::WritePngPdf(pixels,image->candidate,request.resourceBudget,image->Control());
+                return {};
+            }
             image->result=prototype::Convert(image->source,image->spool,image->candidate,
                 request.resourceBudget,image->Control());
             return {};
@@ -57,6 +64,10 @@ public:
     }
     Result<CandidateOutput> CollectOutput(TaskContext& context) override {
         auto* image=dynamic_cast<production::ImageContext*>(&context);
+        if (image && image->pngPdfBytes) {
+            CandidateOutput output; output.files.push_back({"primary","pdf",image->candidateRelativePath,image->pngPdfBytes,std::nullopt});
+            return {{},std::move(output)};
+        }
         if (!image || !image->result || !image->result->candidate.payloadIdentical)
             return {Failure(ErrorCode::OutputValidationFailed,"IMAGE_CANDIDATE_UNVALIDATED"),std::nullopt};
         CandidateOutput output;

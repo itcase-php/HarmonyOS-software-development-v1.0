@@ -1,0 +1,281 @@
+{
+  "scope": "native_converter_independent_PDF_parse_and_render",
+  "hostPassed": 30,
+  "cases": [
+    {
+      "name": "exif-orientation-1",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 0,
+      "orientation": 1,
+      "renderedSize": [
+        96,
+        64
+      ],
+      "meanAbsoluteRenderedDifference": 1.832736545138889
+    },
+    {
+      "name": "exif-orientation-2",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 0,
+      "orientation": 2,
+      "renderedSize": [
+        96,
+        64
+      ],
+      "meanAbsoluteRenderedDifference": 1.0589735243055556
+    },
+    {
+      "name": "exif-orientation-3",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 0,
+      "orientation": 3,
+      "renderedSize": [
+        96,
+        64
+      ],
+      "meanAbsoluteRenderedDifference": 1.0589735243055556
+    },
+    {
+      "name": "exif-orientation-4",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 0,
+      "orientation": 4,
+      "renderedSize": [
+        96,
+        64
+      ],
+      "meanAbsoluteRenderedDifference": 1.3926323784722223
+    },
+    {
+      "name": "exif-orientation-5",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 0,
+      "orientation": 5,
+      "renderedSize": [
+        64,
+        96
+      ],
+      "meanAbsoluteRenderedDifference": 1.0589735243055556
+    },
+    {
+      "name": "exif-orientation-6",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 0,
+      "orientation": 6,
+      "renderedSize": [
+        64,
+        96
+      ],
+      "meanAbsoluteRenderedDifference": 1.0589735243055556
+    },
+    {
+      "name": "exif-orientation-7",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 0,
+      "orientation": 7,
+      "renderedSize": [
+        64,
+        96
+      ],
+      "meanAbsoluteRenderedDifference": 1.0589735243055556
+    },
+    {
+      "name": "exif-orientation-8",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 0,
+      "orientation": 8,
+      "renderedSize": [
+        64,
+        96
+      ],
+      "meanAbsoluteRenderedDifference": 1.0589735243055556
+    },
+    {
+      "name": "icc",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 588,
+      "orientation": 1,
+      "renderedSize": [
+        96,
+        64
+      ],
+      "meanAbsoluteRenderedDifference": 1.832736545138889
+    },
+    {
+      "name": "icc-exif-6",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 588,
+      "orientation": 6,
+      "renderedSize": [
+        64,
+        96
+      ],
+      "meanAbsoluteRenderedDifference": 1.0589735243055556
+    },
+    {
+      "name": "exif-invalid-orientation",
+      "result": "passed",
+      "expectedRejection": "FILE_CORRUPTED"
+    },
+    {
+      "name": "icc-invalid-signature",
+      "result": "passed",
+      "expectedRejection": "FILE_CORRUPTED"
+    },
+    {
+      "name": "icc-color-mismatch",
+      "result": "passed",
+      "expectedRejection": "UNSUPPORTED_FEATURE"
+    },
+    {
+      "name": "icc-truncated",
+      "result": "passed",
+      "expectedRejection": "FILE_CORRUPTED"
+    },
+    {
+      "name": "unknown-app-segment",
+      "result": "passed",
+      "expectedRejection": "UNSUPPORTED_FEATURE"
+    },
+    {
+      "name": "icc-reordered-chunks",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 588,
+      "orientation": 1,
+      "renderedSize": [
+        96,
+        64
+      ],
+      "meanAbsoluteRenderedDifference": 1.832736545138889
+    },
+    {
+      "name": "icc-missing-chunk",
+      "result": "passed",
+      "expectedRejection": "FILE_CORRUPTED"
+    },
+    {
+      "name": "icc-duplicate-chunk",
+      "result": "passed",
+      "expectedRejection": "FILE_CORRUPTED"
+    },
+    {
+      "name": "icc-zero-chunk",
+      "result": "passed",
+      "expectedRejection": "FILE_CORRUPTED"
+    },
+    {
+      "name": "icc-tag-out-of-bounds",
+      "result": "passed",
+      "expectedRejection": "FILE_CORRUPTED"
+    },
+    {
+      "name": "exif-little-endian-6",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 0,
+      "orientation": 6,
+      "renderedSize": [
+        64,
+        96
+      ],
+      "meanAbsoluteRenderedDifference": 1.0589735243055556
+    },
+    {
+      "name": "exif-offset-out-of-bounds",
+      "result": "passed",
+      "expectedRejection": "FILE_CORRUPTED"
+    },
+    {
+      "name": "exif-duplicate",
+      "result": "passed",
+      "expectedRejection": "FILE_CORRUPTED"
+    },
+    {
+      "name": "xmp-not-supported",
+      "result": "passed",
+      "expectedRejection": "UNSUPPORTED_FEATURE"
+    },
+    {
+      "name": "late-exif-not-ignored",
+      "result": "passed",
+      "expectedRejection": "UNSUPPORTED_FEATURE"
+    },
+    {
+      "name": "exif-physical-density",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 0,
+      "orientation": 6,
+      "renderedSize": [
+        64,
+        96
+      ],
+      "meanAbsoluteRenderedDifference": 1.0589735243055556
+    },
+    {
+      "name": "exif-color-1",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 0,
+      "orientation": 1,
+      "renderedSize": [
+        96,
+        64
+      ],
+      "meanAbsoluteRenderedDifference": 1.832736545138889
+    },
+    {
+      "name": "exif-color-65535",
+      "result": "passed",
+      "expectedRejection": "UNSUPPORTED_FEATURE"
+    },
+    {
+      "name": "exif-color-65535-icc",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 588,
+      "orientation": 1,
+      "renderedSize": [
+        96,
+        64
+      ],
+      "meanAbsoluteRenderedDifference": 1.832736545138889
+    },
+    {
+      "name": "supplied-image",
+      "result": "passed",
+      "jpegPayloadIdentical": true,
+      "iccBytesPreserved": 456,
+      "orientation": 1,
+      "renderedSize": [
+        1224,
+        2700
+      ],
+      "meanAbsoluteRenderedDifference": 2.2529177761639634
+    }
+  ],
+  "actualDeviceMetadataPdf": {
+    "name": "device-metadata",
+    "result": "passed",
+    "jpegPayloadIdentical": true,
+    "iccBytesPreserved": 588,
+    "orientation": 6,
+    "renderedSize": [
+      16,
+      24
+    ],
+    "meanAbsoluteRenderedDifference": 1.6119791666666667,
+    "pdfSha256": "47335835fb32063bc25d7d31cb5fef45ee22faed7cd70e1fe93f0bfc786eb18b"
+  }
+}

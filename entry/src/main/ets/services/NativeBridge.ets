@@ -3,6 +3,8 @@ import * as protocol from '../models/NativeProtocol';
 import { BridgeError } from '../common/BridgeError';
 import { errorCodes } from '../generated/ErrorCatalog';
 import { NativeModuleLoader, NativeBridgePort } from './ServiceContracts';
+import { ConversionRuntimePort } from './ConversionRuntimeContracts';
+import { productRouteIds } from '../generated/ProductScope';
 interface NativeFailure {
   code?: string;
   reason?: string;
@@ -18,7 +20,8 @@ interface NativeModuleImport {
 // Uses dynamic import so the previewer (which cannot load native .so) can still work.
 export class NativeBridgeService implements NativeBridgePort {
   private loader: NativeModuleLoader;
-  constructor(loader: NativeModuleLoader = new PlatformNativeLoader()) { this.loader = loader; }
+  private runtime: ConversionRuntimePort | null;
+  constructor(loader: NativeModuleLoader = new PlatformNativeLoader(), runtime: ConversionRuntimePort | null = null) { this.loader = loader; this.runtime = runtime; }
 
   private nativeModule: protocol.NativeModule | null = null;
   private nativeLoadPromise: Promise<void> | null = null;
@@ -141,6 +144,7 @@ export class NativeBridgeService implements NativeBridgePort {
   }
 
   async execute(request: protocol.ConvertRequest): Promise<protocol.ConvertResult> {
+    if (!productRouteIds.includes(request.plan.routeId)) { throw new BridgeError('UNSUPPORTED_FORMAT', 'PRODUCT_ROUTE_DISABLED'); }
     this.requireSchema(request.schemaVersion);
     this.requireText(request.taskId);
     this.requireText(request.attemptId);
@@ -152,13 +156,38 @@ export class NativeBridgeService implements NativeBridgePort {
       !/^[a-f0-9]{64}$/.test(request.plan.configSha256)) {
       throw new BridgeError('INVALID_REQUEST', 'APPROVED_PLAN');
     }
+    const office = request.plan.routeId === 'docx-pdf' || request.plan.routeId === 'pptx-pdf';
+    if (office) {
+      if (!this.runtime) { throw new BridgeError('ENGINE_MISSING', 'OFFICE_RESOURCES_MISSING'); }
+      await this.runtime.prepareOffice();
+    }
     const result = await this.call<protocol.ConvertResult>((native) => native.execute(request));
-    if ((result.status !== 'success' && result.status !== 'failed' && result.status !== 'cancelled') ||
+    if (result.schemaVersion !== request.schemaVersion || (result.status !== 'success' && result.status !== 'failed' && result.status !== 'cancelled') ||
       result.taskId !== request.taskId || result.attemptId !== request.attemptId ||
-      (result.status === 'success' && (result.validation.state !== 'passed' || result.outputs.length === 0))) {
+      (result.status === 'success' && (!Array.isArray(result.outputs) || result.outputs.length !== 1 || result.validation.state !== 'passed' ||
+        !result.outputs.some((item: protocol.Artifact) => item.role === 'primary' && item.formatId === request.targetFormatId &&
+          typeof item.artifactId === 'string' && item.artifactId.length > 0 && typeof item.internalRef === 'string' &&
+          /^artifact:[a-f0-9]{32}$/.test(item.internalRef) && Number.isSafeInteger(item.byteSize) && item.byteSize > 0 && /^[a-f0-9]{64}$/.test(item.sha256))))) {
+      await this.releaseResult(result);
       throw new BridgeError('PROTOCOL_INCOMPATIBLE', 'EXECUTE_RESPONSE');
     }
+    if (result.status === 'success' && request.plan.routeId !== 'jpeg-pdf') {
+      try {
+        if (!this.runtime) { throw new BridgeError('ENGINE_MISSING', 'PDF_VALIDATOR_MISSING'); }
+        const native = await this.ensureNativeModule();
+        await this.runtime.verifyPdf(result, native, request.resourceBudget, request.inputs[0].sourceFormatId);
+      } catch (error) { await this.releaseResult(result); throw ErrorHandler.catchBridge(error, 'NativeBridge.verifyPdf', 'OUTPUT_VALIDATION_FAILED', 'PDF_PARSER_REJECTED'); }
+    }
     return result;
+  }
+
+  private async releaseResult(result: protocol.ConvertResult): Promise<void> {
+    if (!Array.isArray(result.outputs)) { return; }
+    for (const output of result.outputs) {
+      if (typeof output.internalRef === 'string' && /^artifact:[a-f0-9]{32}$/.test(output.internalRef)) {
+        try { await this.releaseArtifact(output.internalRef); } catch (error) { ErrorHandler.swallow('NativeBridge.rejectOutput', error); }
+      }
+    }
   }
 
   async subscribeProgress(taskId: string, listener: (event: protocol.ProgressEvent) => void): Promise<string> {

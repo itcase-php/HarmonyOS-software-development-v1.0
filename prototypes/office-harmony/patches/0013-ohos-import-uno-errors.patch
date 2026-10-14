@@ -1,0 +1,18 @@
+diff --git a/sfx2/source/doc/objstor.cxx b/sfx2/source/doc/objstor.cxx
+index 9c23ef5fd..bee3eae27 100644
+--- a/sfx2/source/doc/objstor.cxx
++++ b/sfx2/source/doc/objstor.cxx
+@@ -2762,6 +2762,13 @@ bool SfxObjectShell::ImportFrom(SfxMedium& rMedium,
+             SetError(ErrCodeMsg(ERRCODE_SFX_FORMAT_ROWCOL,
+                 e.Message, DialogMask::ButtonsOk | DialogMask::MessageError ));
+         }
++#if defined __OHOS__
++        catch (const css::uno::Exception& e)
++        {
++            SAL_WARN("sfx.doc", "UNO exception importing " << e.Message);
++            SetError(ERRCODE_SFX_DOLOADFAILED);
++        }
++#endif
+         catch (const std::exception& e)
+         {
+             const char *msg = e.what();

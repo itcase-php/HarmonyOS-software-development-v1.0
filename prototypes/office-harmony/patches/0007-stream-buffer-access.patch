@@ -1,0 +1,19 @@
+diff --git a/svx/source/svdraw/svdmrkv.cxx b/svx/source/svdraw/svdmrkv.cxx
+index 4af1bb8dc..df9143483 100644
+--- a/svx/source/svdraw/svdmrkv.cxx
++++ b/svx/source/svdraw/svdmrkv.cxx
+@@ -1229,12 +1229,12 @@ void SdrMarkView::SetMarkHandlesForLOKit(tools::Rectangle const & rRect, const S
+                 responseJSON.add_child("kinds", nodes);
+                 std::stringstream aStream;
+                 boost::property_tree::write_json(aStream, responseJSON, /*pretty=*/ false);
+-                handleArrayStr = OString::Concat(", \"handles\":") + aStream.view();
++                handleArrayStr = OString::Concat(", \"handles\":") + std::string_view(aStream.str());
+                 if (bConnectorSelection)
+                 {
+                     aStream.str("");
+                     boost::property_tree::write_json(aStream, aGluePointsTree, /*pretty=*/ false);
+-                    handleArrayStr += OString::Concat(", \"GluePoints\":") + aStream.view();
++                    handleArrayStr += OString::Concat(", \"GluePoints\":") + std::string_view(aStream.str());
+                 }
+             }
+ 

@@ -92,10 +92,18 @@ exif = FIXTURES / "exif.jpg"
 metadata = Image.Exif()
 metadata[274] = 6
 rgb.save(exif, "JPEG", exif=metadata)
-run_case("exif_orientation_rejected", exif, OUTPUT / "exif.pdf", expected="UNSUPPORTED_FEATURE")
+exif_output = OUTPUT / "exif.pdf"
+if exif_output.exists():
+    exif_output.unlink()  # Exact test artifact owned by this script.
+run_case("exif_orientation_supported", exif, exif_output)
+exif_page = PdfReader(exif_output, strict=True).pages[0]
+assert abs(float(exif_page.mediabox.width) - rgb.height) < .00001
+assert abs(float(exif_page.mediabox.height) - rgb.width) < .00001
+assert exif_page["/Resources"]["/XObject"]["/Im0"].get_object().get_data() == exif.read_bytes()
+CASES.append({"case": "exif_orientation_supported", "result": "passed", "embeddedJpegIdentical": True})
 icc = FIXTURES / "icc.jpg"
 rgb.save(icc, "JPEG", icc_profile=b"test-profile")
-run_case("icc_rejected", icc, OUTPUT / "icc.pdf", expected="UNSUPPORTED_FEATURE")
+run_case("invalid_icc_rejected", icc, OUTPUT / "icc.pdf", expected="FILE_CORRUPTED")
 cmyk = FIXTURES / "cmyk.jpg"
 rgb.convert("CMYK").save(cmyk, "JPEG")
 run_case("cmyk_rejected", cmyk, OUTPUT / "cmyk.pdf", expected="UNSUPPORTED_FEATURE")
@@ -132,9 +140,9 @@ assert process.returncode and existing.read_bytes() == b"protected"
 assert json.loads(process.stderr)["code"] == "INVALID_REQUEST"
 CASES.append({"case": "no_overwrite", "result": "passed"})
 
-report = {"scope": "isolated_host_prototype_with_independent_pdf_parser_and_renderer", "result": "passed",
+report = {"scope": "host_CLI_shared_JPEG_core_with_independent_pdf_parser_and_renderer", "result": "passed",
           "source": "Pillow generated fixtures", "parser": "pypdf strict", "renderer": "Poppler pdftoppm",
-          "testedCases": len(CASES), "cases": CASES, "applicationIntegrated": False,
+          "testedCases": len(CASES), "cases": CASES, "applicationExecution": "not_executed_by_this_script",
           "deviceExecution": "not_executed", "realRoutesAvailable": 0}
-(ROOT / "tests/generated/jpeg-pdf-prototype-integration.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+(ROOT / "tests/generated/jpeg-pdf-prototype-integration.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8", newline="\n")
 print(json.dumps({"result": "passed", "testedCases": len(CASES)}))

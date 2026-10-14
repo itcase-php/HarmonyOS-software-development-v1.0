@@ -483,8 +483,18 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "browser_use",
-    "zh": "使用此格式演示",
-    "en": "Use this format in a demo"
+    "zh": "使用此格式转换",
+    "en": "Convert this format"
+  },
+  {
+    "name": "browser_pdf_output_only",
+    "zh": "PDF 当前作为输出格式。请选择 JPEG、PNG、DOCX 或 PPTX 文件生成 PDF。",
+    "en": "PDF is an output format. Select a JPEG, PNG, DOCX or PPTX file to create a PDF."
+  },
+  {
+    "name": "browser_create_pdf",
+    "zh": "将文件转为 PDF",
+    "en": "Convert a file to PDF"
   },
   {
     "name": "browser_empty",
@@ -583,8 +593,8 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "input_native_boundary",
-    "zh": "真实文件将使用受控临时副本。当前真实转换路线尚未开放，不会回退为演示或生成文件。一次转换提交一个文件。",
-    "en": "Real files use controlled temporary copies. Real conversion routes are not enabled yet. Failed real tasks do not become demos or generate files. Submit one file per conversion."
+    "zh": "真实文件使用受控临时副本，一次提交一个文件。提交前检查所选路线与引擎；检查失败时保留文件供重试。",
+    "en": "Real files use controlled temporary copies. Submit one file at a time. The selected route and engine are checked before submission; a failed check keeps the file for retry."
   },
   {
     "name": "input_confirm_title",
@@ -638,8 +648,8 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "input_real_mode",
-    "zh": "真实文件输入 · 路线尚未开放",
-    "en": "Real file input · Routes not enabled yet"
+    "zh": "真实文件输入 · 提交前检查路线",
+    "en": "Real file input · Route checked before submission"
   },
   {
     "name": "input_title",
@@ -658,8 +668,8 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "converter_subtitle",
-    "zh": "选择格式、设置保真策略、确认后体验任务流程",
-    "en": "Select formats, set fidelity preferences, and confirm the task"
+    "zh": "选择图片或文档，离线转换为 PDF 并保存或分享",
+    "en": "Select an image or document, convert offline to PDF, then save or share"
   },
   {
     "name": "demo_badge",
@@ -668,8 +678,8 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "demo_fidelity_notice",
-    "zh": "真实转换路线尚未开放。保真设置与报告均用于交互演示，不是文件质量的测量结果。",
-    "en": "Real conversion routes are not enabled yet. Fidelity settings and reports illustrate the workflow; they do not measure file quality."
+    "zh": "演示任务的保真报告用于展示流程。真实任务仅展示引擎返回的检测证据；没有证据时不判定保真等级。",
+    "en": "Demo fidelity reports illustrate the workflow. Real tasks display only engine detection evidence; no fidelity grade is assigned without evidence."
   },
   {
     "name": "demo_input_title",
@@ -808,7 +818,7 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "guide_formats",
-    "zh": "一、支持的格式一览",
+    "zh": "一、当前阶段的格式范围",
     "en": "1. Format catalog"
   },
   {
@@ -988,8 +998,8 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "home_gate_notice",
-    "zh": "演示模式不会生成真实文件。当前真实转换路线尚未开放。",
-    "en": "Demo mode does not generate real files. Real conversion routes are not enabled yet."
+    "zh": "演示模式不会生成真实文件。真实转换需通过所选路线与引擎的能力检查。",
+    "en": "Demo mode does not generate real files. Real conversion requires the selected route and engine to pass capability checks."
   },
   {
     "name": "home_version",
@@ -1693,7 +1703,92 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "input_probe_failed",
-    "zh": "文件的真实格式或保护状态未通过检查。请使用未受保护且格式正确的文件。",
-    "en": "The actual file format or protection state did not pass verification. Use a valid unprotected file."
+    "zh": "无法确认该文件适用于当前转换器。请重新选择文件；持续失败时查看诊断记录。",
+    "en": "Compatibility with the current converter could not be verified. Select the file again; if it persists, check the diagnostic log."
+  },
+  {
+    "name": "input_jpeg_metadata_unsupported",
+    "zh": "图片含当前不支持的附加数据段或元数据特征。标准 EXIF 方向与受支持的 RGB/灰度 ICC 配置已支持，其他特征仍待兼容。",
+    "en": "This image contains unsupported extra segments or metadata features. Standard EXIF orientation and supported RGB/grayscale ICC profiles are accepted; other features still need compatibility work."
+  },
+  {
+    "name": "input_jpeg_encoding_unsupported",
+    "zh": "当前 JPEG 转换器仅支持 8 位基线编码，渐进式等编码尚不支持。",
+    "en": "The current JPEG converter supports only 8-bit baseline encoding. Progressive and other encodings are not supported yet."
+  },
+  {
+    "name": "input_jpeg_color_unsupported",
+    "zh": "图片的颜色配置尚不支持。CMYK、颜色配置不匹配，或非 sRGB EXIF 色彩标记缺少匹配 ICC 时，无法可靠转换。",
+    "en": "This color configuration is unsupported. CMYK, mismatched profiles, or non-sRGB EXIF color tags without a matching ICC profile cannot be converted reliably."
+  },
+  {
+    "name": "input_jpeg_density_unsupported",
+    "zh": "图片的 JFIF 分辨率信息不在当前支持范围内，无法确认 PDF 页面尺寸。",
+    "en": "The image's JFIF resolution information is outside the supported range, so PDF page dimensions cannot be verified."
+  },
+  {
+    "name": "input_jpeg_header_unsupported",
+    "zh": "JPEG 文件头超出当前支持范围，无法完成检查。此类图片尚待兼容。",
+    "en": "The JPEG header is outside the supported range and cannot be checked. Compatibility with this image is still pending."
+  },
+  {
+    "name": "input_jpeg_pixel_limit",
+    "zh": "图片像素超过当前转换任务的上限（最多 1600 万像素）。请选择较小的图片。",
+    "en": "The image exceeds this task's pixel limit (at most 16 million pixels). Select a smaller image."
+  },
+  {
+    "name": "input_jpeg_memory_limit",
+    "zh": "图片检查所需内存超过当前任务预算。请选择较小的图片。",
+    "en": "Checking this image exceeds the task's memory budget. Select a smaller image."
+  },
+  {
+    "name": "input_jpeg_corrupted",
+    "zh": "JPEG 数据不完整或结构无效。请重新导出或选择完整的 JPEG 文件。",
+    "en": "The JPEG data is incomplete or structurally invalid. Export it again or select a complete JPEG file."
+  },
+  {
+    "name": "input_png_subset_unsupported",
+    "zh": "当前 PNG 路线支持静态、8 位、sRGB 图片及透明度。动画、16 位或特殊颜色/方向元数据尚未兼容，文件不会被当作损坏或受保护。",
+    "en": "PNG supports static 8-bit sRGB images with transparency. Animation, 16-bit or special color/orientation metadata is not supported yet; the file is not treated as corrupt or protected."
+  },
+  {
+    "name": "input_office_font_missing",
+    "zh": "文档引用的字体在内置和系统字体中缺失。可勾选允许字体替代后重新转换，或改用已安装的字体；替代可能改变换行、分页和外观。",
+    "en": "A referenced font is missing. Enable font fallback and retry, or use an installed font. Fallback may change line breaks, pagination and appearance."
+  },
+  {
+    "name": "input_office_feature_unsupported",
+    "zh": "文档包含外部引用、宏、嵌入对象或当前未支持的特征。离线转换尚不接受这类文件。",
+    "en": "The document contains external references, macros, embedded objects or currently unsupported features. These files are not accepted for offline conversion yet."
+  },
+  {
+    "name": "input_office_runtime_failed",
+    "zh": "内置 Office 引擎加载或离线资源准备失败。请查看任务记录中的错误码；这不表示文件损坏或受保护。",
+    "en": "The bundled Office engine or its offline resources failed to initialize. See the error code in the task record; this does not mean the file is corrupt or protected."
+  },
+  {
+    "name": "input_font_approval",
+    "zh": "允许缺失字体时使用内置或系统替代字体（可能改变换行、分页和外观）",
+    "en": "Allow bundled/system fallback for missing fonts (line breaks, pages and appearance may change)"
+  },
+  {
+    "name": "report_source_text_check",
+    "zh": "正文字符下限核对（不代表版式一致）",
+    "en": "Body character minimum check (not layout equality)"
+  },
+  {
+    "name": "report_output_pages",
+    "zh": "生成 PDF 页数",
+    "en": "Generated PDF pages"
+  },
+  {
+    "name": "input_office_glyph_missing",
+    "zh": "所需字形或图标字体缺失，已停止转换以避免空白、方框或错误图标。请在源文档中使用可用字体或将图标转为标准图片。",
+    "en": "A required glyph or icon font is missing. Conversion stopped to avoid blanks, boxes or incorrect icons. Use an available font or a standard image for the icon."
+  },
+  {
+    "name": "input_office_content_mismatch",
+    "zh": "生成的 PDF 与源文档的文字、图片或页数检查不一致，结果已拒绝，不能保存为成功产物。请检查源文档中的特殊对象。",
+    "en": "The PDF did not match source text, image or page checks. The result was rejected and cannot be saved as a successful output. Check special objects in the source."
   }
 ];

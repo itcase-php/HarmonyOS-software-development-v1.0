@@ -15,6 +15,7 @@ import { FidelityConfigPanel } from '../components/FidelityConfigPanel';
 import { AuthorizedFilePanel } from '../components/AuthorizedFilePanel';
 import { ConversionProgressPanel } from '../components/ConversionProgressPanel';
 import { ConversionErrorBanner } from '../components/ConversionErrorBanner';
+import BuildProfile from 'BuildProfile';
 
 @Entry
 @Preview
@@ -47,17 +48,17 @@ struct ConverterPage {
         PageHeader({ title: this.tr('converter_title'), subtitle: this.tr('converter_subtitle') })
         if (this.files.authorizedFiles.length > 0) {
           StatusBadge({ text: this.status.inputText(this.tr($r('app.string.input_real_mode'))), color: $r('app.color.palette_a65c00') })
-        } else { StatusBadge({ text: this.tr('demo_badge'), color: $r('app.color.palette_a65c00') }) }
-        Text(this.tr('demo_fidelity_notice'))
+        } else if (BuildProfile.DEBUG) { StatusBadge({ text: this.tr('demo_badge'), color: $r('app.color.palette_a65c00') }) }
+        Text(this.tr(BuildProfile.DEBUG ? 'demo_fidelity_notice' : 'input_native_boundary'))
           .fontSize(14).fontColor($r('app.color.palette_526077'))
         Column({ space: 12 }) {
           SourceFormatSelector({ model: this.formats })
           TargetFormatSelector({ model: this.formats })
-          FidelityConfigPanel({ model: this.fidelity, formats: this.formats, realInput: this.files.authorizedFiles.length > 0 })
-          Text(this.files.authorizedFiles.length > 0 ? this.tr($r('app.string.input_title')) : this.tr('demo_input_title'))
+          FidelityConfigPanel({ model: this.fidelity, formats: this.formats, realInput: !BuildProfile.DEBUG || this.files.authorizedFiles.length > 0 })
+          Text(!BuildProfile.DEBUG || this.files.authorizedFiles.length > 0 ? this.tr($r('app.string.input_title')) : this.tr('demo_input_title'))
             .fontSize(18).fontWeight(FontWeight.Medium).fontColor($r('app.color.palette_172b4d'))
           AuthorizedFilePanel({ model: this.files, status: this.status })
-          if (this.files.authorizedFiles.length === 0) {
+          if (BuildProfile.DEBUG && this.files.authorizedFiles.length === 0) {
           TextInput({ text: this.formats.fileName, placeholder: this.tr('demo_filename_placeholder') }).maxLength(180)
             .accessibilityText(this.tr($r('app.string.a11y_filename'))).accessibilityDescription(this.tr($r('app.string.a11y_filename')))
             .enabled(this.formats.interactive).onChange((value: string) => { this.formats.fileName = value; this.status.errorText = ''; })
@@ -67,11 +68,11 @@ struct ConverterPage {
           Text(this.tr('demo_input_notice')).fontSize(12).fontColor($r('app.color.palette_526077'))
           }
           ConversionErrorBanner({ model: this.status, formats: this.formats, onRetry: () => { this.coordinator.retry(); } })
-          Button(this.status.checkingCapability ? this.tr('input_checking_capability') : this.files.authorizedFiles.length > 0 ? this.status.inputText(this.tr($r('app.string.input_start_real'))) :
+          Button(this.status.checkingCapability ? this.tr('input_checking_capability') : !BuildProfile.DEBUG || this.files.authorizedFiles.length > 0 ? this.status.inputText(this.tr($r('app.string.input_start_real'))) :
             this.status.working ? this.tr('demo_running') : this.status.confirming ? this.tr('demo_confirming') : this.tr('demo_start_config'))
-            .accessibilityText(this.files.authorizedFiles.length > 0 ? this.tr($r('app.string.input_start_real')) : this.tr($r('app.string.a11y_start')))
+            .accessibilityText(!BuildProfile.DEBUG || this.files.authorizedFiles.length > 0 ? this.tr($r('app.string.input_start_real')) : this.tr($r('app.string.a11y_start')))
             .accessibilityDescription(this.fidelity.selectionSummary)
-            .enabled(!this.status.working && !this.status.confirming && !this.files.pickingFile && !this.files.fileSubmitting && this.formats.routeId.length > 0).width('100%').backgroundColor($r('app.color.palette_007aff'))
+            .enabled((BuildProfile.DEBUG || this.files.authorizedFiles.length === 1) && !this.status.working && !this.status.confirming && !this.files.pickingFile && !this.files.fileSubmitting && this.formats.routeId.length > 0).width('100%').backgroundColor($r('app.color.palette_007aff'))
             .onClick(() => { this.coordinator.start(); })
           if (this.status.inlineConfirmationText.length > 0) {
             Text(this.status.inlineConfirmationText).fontSize(14).fontColor($r('app.color.palette_172b4d'))

@@ -1,0 +1,10 @@
+{
+  "version": "26.2.6.2",
+  "repository": "https://github.com/LibreOffice/core.git",
+  "tag": "libreoffice-26.2.6.2",
+  "tagObject": "bb82c515eaebfe3b1f966445c446366c2b7da1bb",
+  "revision": "ad5cf9fd4989cacf0bca866ebefc0ec8926cb0b2",
+  "configureSha256Lf": "f9c661dd95afb8c11960f0658d96d5b20dec8f48125bb000d6e3b797b7018fa5",
+  "approvedOn": "2026-10-07",
+  "scope": "OHOS port validation; no conversion or release acceptance"
+}

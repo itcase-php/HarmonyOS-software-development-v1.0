@@ -1,0 +1,13 @@
+diff --git a/bridges/source/cpp_uno/gcc3_linux_aarch64/cpp2uno.cxx b/bridges/source/cpp_uno/gcc3_linux_aarch64/cpp2uno.cxx
+index e4f7029e6..05235d398 100644
+--- a/bridges/source/cpp_uno/gcc3_linux_aarch64/cpp2uno.cxx
++++ b/bridges/source/cpp_uno/gcc3_linux_aarch64/cpp2uno.cxx
+@@ -583,7 +583,7 @@ unsigned char * bridges::cpp_uno::shared::VtableFactory::addLocalFunctions(
+ void bridges::cpp_uno::shared::VtableFactory::flushCode(
+     unsigned char const * begin, unsigned char const * end)
+ {
+-#if !defined ANDROID && !defined MACOSX
++#if !defined ANDROID && !defined MACOSX && !defined __OHOS__
+     static void (*clear_cache)(unsigned char const *, unsigned char const *)
+         = reinterpret_cast<void (*)(unsigned char const *, unsigned char const *)>
+             (dlsym(RTLD_DEFAULT, "__clear_cache"));

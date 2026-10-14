@@ -1,0 +1,1 @@
+PASS: unpatched source fails the regression; patched source uses explicit resource URI and rejects missing/non-file URI. Host branch test only.
