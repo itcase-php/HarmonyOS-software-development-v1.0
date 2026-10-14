@@ -57,6 +57,13 @@ export class BundledConversionRuntime implements ConversionRuntimePort {
       }
     } finally { await fileIo.close(file); }
   }
+  private fontConfig(root: string): string {
+    const escaped = root.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+    return '<?xml version="1.0"?><fontconfig><dir>' + escaped +
+      '/fonts</dir><dir>/system/fonts</dir><cachedir>' + escaped + '/font-cache</cachedir>' +
+      '<match target="pattern"><edit name="family" mode="append" binding="weak">' +
+      '<string>DejaVu Sans</string></edit></match></fontconfig>';
+  }
   private async prepare(): Promise<void> {
     const root = this.context.cacheDir + '/office-runtime';
     const staging = this.context.cacheDir + '/office-runtime-staging';
@@ -93,9 +100,7 @@ export class BundledConversionRuntime implements ConversionRuntimePort {
       // Fixed sandbox path; only this service owns both directories.
       if (await fileIo.access(root)) { await fileIo.rmdir(root); }
       await fileIo.rename(staging, root);
-      const escaped = root.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-      await this.write(root + '/fonts.conf', '<?xml version="1.0"?><fontconfig><dir>' + escaped +
-        '/fonts</dir><dir>/system/fonts</dir><cachedir>' + escaped + '/font-cache</cachedir></fontconfig>');
+      await this.write(root + '/fonts.conf', this.fontConfig(root));
       await this.write(root + '/ready.sha256', officeBundleHash);
     } catch (error) {
       if (await fileIo.access(staging)) { await fileIo.rmdir(staging); }
@@ -107,7 +112,8 @@ export class BundledConversionRuntime implements ConversionRuntimePort {
       if (!await fileIo.access(root + '/ready.sha256') ||
         await fileIo.readText(root + '/ready.sha256') !== officeBundleHash ||
         (await hash.hash(root + '/manifest.json', 'sha256')).toLowerCase() !== officeBundleHash ||
-        !await fileIo.access(root + '/fonts.conf')) { return false; }
+        !await fileIo.access(root + '/fonts.conf') ||
+        await fileIo.readText(root + '/fonts.conf') !== this.fontConfig(root)) { return false; }
       const manifest = JSON.parse(await fileIo.readText(root + '/manifest.json')) as OfficeManifest;
       for (const entry of manifest.resources) {
         const path = root + '/' + entry.name;

@@ -1,6 +1,6 @@
 # HarmonyOS软件开发v2.0
 
-**2026-10-14：设备排查后修复 Office 清单摘要、初始化资源、编译器 builtins、UNO 加载顺序与缓存刷新空指针；PDF 输出入口及主机 CLI 也已修正。新签名 Release 约 393 MB，235 个 Office 库与 3284 个离线文件已核对。PNG 样例曾通过设备转换和产物复制；Word/PPT 尚未成功导出设备 PDF，最终修复版待接回设备复验。详见 [最新故障修复记录](docs/OFFICE-DEVICE-REPAIR-20261014.md)。**
+**2026-10-14 真机复验：补修 Office 导出文件句柄及中文/符号字体回退后，签名 Release 的 Core 6/6、JPEG 2/2、保存后重新打开 1/1 通过。五份真实 PDF 已独立解析、渲染并逐页检查；主界面 DOCX 转换、Download 保存和系统分享面板通过。当前证明受控样例与本机可运行，未宣称任意 Office 文件无损。详见 [Release 真机样例验收](docs/DEVICE-ACCEPTANCE-20261014.md)。**
 
 基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。主应用收敛为 **JPEG、PNG、DOCX、PPTX → PDF**。图片核心静态编入 Native，DOCX/PPTX 使用真正的 LibreOfficeKit Writer/Impress。Debug 与 Release 均允许范围内的真实转换，实际引擎、输入和输出检查继续生效；`experimental` 表示设备与版式资格尚待验收，不再表示 Debug 专用。其余 39 条路线保留禁用。
 
@@ -20,16 +20,16 @@
 | 格式与规划 | 原 18 种格式、43 条路线定义保留；当前 UI 仅 5 种格式、4 条单向路线，PDF 仅输出；其余 39 条入口和执行禁用，代码未删除 |
 | 保真度控制 | 快速/均衡/高保真、转换意图、最低等级、路线说明及执行前配置确认 |
 | 演示任务 | 2/3.5/6 秒活动时长，单并发 FIFO、暂停、恢复、取消与会话历史；退出应用不持久化 |
-| 文件输入 | Stage Picker、最多 10 文件管理、单文件 100 MiB/会话 300 MiB、分块副本与 SHA-256、信息卡片/移除/清理；真实提交保持单文件，设备验收待执行 |
+| 文件输入 | Stage Picker、最多 10 文件管理、单文件 100 MiB/会话 300 MiB、分块副本与 SHA-256、信息卡片/移除/清理；真实提交保持单文件，DOCX 主界面选取及授权副本已在真机验证 |
 | 报告 | 演示报告展开查看；Native 报告读取接口与上下文/指标校验已预留 |
-| 原生层 | 14 个 Native 接口；授权输入、深层格式/保护检查、image/office 调度、PDF 候选校验、提交与释放接入；PNG/Office 完成前另要求系统 PDFKit 独立解析，设备运行待验收；其他引擎代码保留禁用 |
-| PDF 交付 | 系统保存与 ShareKit 分享副本关闭后回读核对大小和 SHA-256；交付完成前保留 Native 产物。此前 JPEG 有设备证据，新包及其他路线待复验 |
+| 原生层 | 14 个 Native 接口；授权输入、深层格式/保护检查、image/office 调度、PDF 候选校验、提交与释放接入；PNG/Office 完成前要求系统 PDFKit 独立解析，Release 受控样例已通过；其他引擎代码保留禁用 |
+| PDF 交付 | 系统保存与 ShareKit 分享副本关闭后回读核对大小和 SHA-256；交付完成前保留 Native 产物。主应用 DOCX 保存到 Download、重新打开及分享面板通过；接收方实际收取未测试 |
 | JPEG→PDF | 真实单张 8 位 Baseline SOF0 灰度或三分量 JPEG 转换；主机运行时、独立 PDF 解析/渲染通过；Debug 与 Release 均执行，受产品范围、实际引擎、配置及输入校验约束 |
-| PNG→PDF | 实际 libpng 解码与 RGB/透明度 PDF 写出；6 种模式主机转换及独立像素/渲染检查通过；设备样例转换 / PDFKit / 产物复制通过，最终包仍待复验；静态 ≤8 位，按实际物理分辨率计算尺寸，缺失时 96 DPI；ICC/动画等未支持 |
-| DOCX/PPTX→PDF | OHOS arm64 内置 LibreOfficeKit Writer/Impress 导入与 PDF 导出；首次任务校验并解压离线资源；真实引擎加载、文档导出和版式仍待设备验收；旧 DOC/PPT 未开放 |
+| PNG→PDF | 实际 libpng 解码与 RGB/透明度 PDF 写出；6 种模式主机转换及独立像素/渲染检查通过；Release 真机样例转换 / PDFKit / 产物复制通过；静态 ≤8 位，按实际物理分辨率计算尺寸，缺失时 96 DPI；ICC/动画等未支持 |
+| DOCX/PPTX→PDF | OHOS arm64 内置 LibreOfficeKit Writer/Impress；Release 真机完成 Word 2 页、PPT 2 页及中文/符号样例，独立解析和逐页渲染检查通过；任意文档的版式等价性未保证；旧 DOC/PPT 未开放 |
 | 国际化与无障碍 | 首页 EN/中运行时切换、五页与组件/任务/报告/提示/读屏文案统一翻译；358 个双语资源键；语言使用 AppStorage + PersistentStorage 保留；实际 Previewer 和设备重启验收待执行 |
 
-当前 **4 条 experimental、39 条 planned、0 条 available**，四条已在 Debug 与 Release 开启真实执行；范围外定义保留禁用。签名 Release 候选包约 393 MB，Office 仅 arm64，首次资源准备要求缓存至少 400 MiB 可用空间。缺失引用字体默认拒绝，只有用户明确同意才允许内置/系统替代；Office 保真等级保持未判定。演示入口仅保留在 Debug。异常产物和无证据保真等级不显示为正常完成。用户已移除设备，最终修复版的 Office 导出和系统保存 / 分享仍待设备验收。详见[最新故障修复记录](docs/OFFICE-DEVICE-REPAIR-20261014.md)与[历史阶段记录](docs/IMPLEMENTATION_STATUS.md)。
+当前 **4 条 experimental、39 条 planned、0 条 available**，四条已在 Debug 与 Release 开启真实执行；范围外定义保留禁用。签名 Release 候选包约 393 MB，Office 仅 arm64，首次资源准备要求缓存至少 400 MiB 可用空间。缺失引用字体默认拒绝，只有用户明确同意才允许内置/系统替代；Office 保真等级保持未判定。演示入口仅保留在 Debug。异常产物和无证据保真等级不显示为正常完成。本轮四条路线的 Release 受控样例已通过真机，DOCX 主界面保存及分享面板已验证；更多文档/设备及分享接收方仍需覆盖。详见[Release 真机样例验收](docs/DEVICE-ACCEPTANCE-20261014.md)与[历史阶段记录](docs/IMPLEMENTATION_STATUS.md)。
 
 ## 工程结构
 

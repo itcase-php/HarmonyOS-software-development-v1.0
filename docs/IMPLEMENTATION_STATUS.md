@@ -1,5 +1,9 @@
 # 迁移结果与实现边界
 
+## 2026-10-14 Release 真机复验通过
+
+用户重新连接设备后，补修 Office 导出候选文件句柄与中文勾号字体回退问题。签名 Release 的 Core 6/6、JPEG 2/2、保存后重新打开 1/1 通过；五份真实 PDF 独立解析、渲染并逐页检查通过。主应用真实 DOCX 队列、Download 保存及系统分享面板均已验证，接收方收取未测试。手机已恢复到安装的主应用；最新包摘要与限制见 [Release 真机样例验收](DEVICE-ACCEPTANCE-20261014.md)。以下为历史状态。
+
 ## 2026-10-14 真机故障定位与离线修复
 
 已复现并修复清单换行导致的摘要不一致、Office presets 缺失、libetonyek builtins 缺失、UNO 加载顺序及桥接缓存刷新空指针问题。PNG 样例曾通过真机转换 / PDFKit / 产物复制；DOCX / PPTX 尚未成功导出设备 PDF。用户移除设备后，完成 Native 25/25、文档 CLI 38 项以及实际 SDK Debug / 测试 / Release 构建和包内检查。最新状态以 [2026-10-14 修复记录](OFFICE-DEVICE-REPAIR-20261014.md)为准，以下为历史记录。

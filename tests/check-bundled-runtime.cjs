@@ -135,6 +135,17 @@ async function test(name, fn) { await fn(); cases.push({ name, result: 'passed' 
       await m.restart().prepareOffice();assert.equal(m.stats.decompressions,2);
     } finally { m.clean(); }
   });
+  await test('outdated font fallback configuration is replaced after restart', async () => {
+    const m = model();
+    try {
+      await m.runtime.prepareOffice();
+      const fontConfig = path.join(m.cacheDir,'office-runtime/fonts.conf');
+      fs.writeFileSync(fontConfig,'<fontconfig><dir>/system/fonts</dir></fontconfig>');
+      await m.restart().prepareOffice();
+      assert.equal(m.stats.decompressions,2);
+      assert.ok(fs.readFileSync(fontConfig,'utf8').includes('DejaVu Sans'));
+    } finally { m.clean(); }
+  });
   for (const kind of ['manifest', 'archive', 'resource']) await test(kind + ' mismatch rolls back and permits retry', async () => {
     const m = model({ corruptResource: kind === 'resource' });
     try {

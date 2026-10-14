@@ -53,9 +53,33 @@ for index, title in enumerate(['Harmony Presentation', 'Editable Objects']):
             for paragraph in cell.text_frame.paragraphs:
                 paragraph.font.name, paragraph.font.size = 'DejaVu Sans', SlidePt(18)
 deck.save(root / 'layout.pptx')
+
+cjk_text = '鸿蒙离线文档转换：金额 678.90，编号 12345。符号 ✓ → ©'
+cjk_doc = Document()
+cjk_doc.styles['Normal'].font.name = 'DejaVu Sans'
+cjk_doc.styles['Normal'].font.size = Pt(14)
+cjk_doc.add_paragraph(cjk_text)
+cjk_doc.add_table(rows=1, cols=2).rows[0].cells[0].text = '中文表格'
+cjk_doc.tables[0].rows[0].cells[1].text = '核对 98765'
+cjk_doc.add_picture(str(root / 'shapes.png'), width=Inches(3))
+cjk_doc.save(root / 'cjk.docx')
+cjk_deck = Presentation()
+cjk_deck.slide_width, cjk_deck.slide_height = deck.slide_width, deck.slide_height
+cjk_slide = cjk_deck.slides.add_slide(cjk_deck.slide_layouts[6])
+cjk_box = cjk_slide.shapes.add_textbox(SlideInches(0.6), SlideInches(0.6), SlideInches(12), SlideInches(2))
+cjk_paragraph = cjk_box.text_frame.paragraphs[0]
+cjk_paragraph.text = cjk_text
+cjk_paragraph.font.name, cjk_paragraph.font.size = 'DejaVu Sans', SlidePt(26)
+cjk_slide.shapes.add_picture(str(root / 'shapes.png'), SlideInches(0.6), SlideInches(3), width=SlideInches(4.8))
+cjk_deck.save(root / 'cjk.pptx')
+missing_symbol = Document()
+missing_symbol.styles['Normal'].font.name = 'HDM Missing Symbol Font'
+missing_symbol.add_paragraph('Missing icon: \ue000')
+missing_symbol.save(root / 'missing-symbol.docx')
 (root / 'expected.json').write_text(json.dumps({
     'docx': {'pages': 2, 'sizePt': [612, 792], 'requiredText': ['Harmony Office Conversion', '678.90', 'Second Page', '98765']},
     'pptx': {'pages': 2, 'sizePt': [960, 540], 'requiredText': ['Harmony Presentation', 'Editable Objects', '12345', '678.90']},
     'fixtureFont': 'DejaVu Sans', 'imageObjectsPerPageOrSlide': [1, 0],
+    'cjkText': cjk_text, 'missingSymbolMustBeRejected': True,
 }, indent=2) + '\n', encoding='utf-8')
 print(root)

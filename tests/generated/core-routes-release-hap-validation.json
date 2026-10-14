@@ -1,11 +1,11 @@
 {
   "scope": "main release signed HAP, ELF exports/direct dependencies and pinned resource bytes only",
   "buildMode": "release",
-  "checkedAtUtc": "2026-10-14T12:39:33.379103+00:00",
+  "checkedAtUtc": "2026-10-14T13:30:45.670746+00:00",
   "result": "passed",
   "hapPath": "D:\\HarmonyOS\\harmonyOS\\entry\\build\\default\\outputs\\default\\entry-release-signed.hap",
-  "hapBytes": 392683857,
-  "hapSha256": "0101543eaa666fd926b3e7358d6002f2b7594eab64771ea92c67c96c8ec98ecc",
+  "hapBytes": 392699662,
+  "hapSha256": "f5117138be3132975cd9afc1069f9d596f5d1647f72a7dc0ca540d9a99693967",
   "officeLibraryCount": 235,
   "nativeLibraryCount": 238,
   "officeResourceFiles": 3284,
@@ -18,8 +18,8 @@
   "internetPermissionDeclared": false,
   "archiveDefinitionsRetained": 43,
   "productScopeRoutes": 4,
-  "deviceExecution": "not executed",
-  "officeInitializationAndConversion": "pending OHOS arm64 device",
+  "deviceExecution": "not performed by this static check",
+  "officeInitializationAndConversion": "not assessed by this static check; see device acceptance report",
   "libraries": [
     {
       "name": "libs/arm64-v8a/libLanguageToollo.so",
@@ -981,8 +981,8 @@
     },
     {
       "name": "libs/arm64-v8a/libentry.so",
-      "byteSize": 1100392,
-      "sha256": "f98c9edbfe3a005320ae25c6fda2a05f71a537c1b9257de3ae2146a0e1e22457",
+      "byteSize": 1100408,
+      "sha256": "517991e61831d42b218c35d289bd55c9eec0d148ecb33f0dd8a405f7d577a799",
       "needed": [
         "libace_napi.z.so",
         "libc++_shared.so",
@@ -4302,8 +4302,8 @@
     },
     {
       "name": "libs/x86_64/libentry.so",
-      "byteSize": 1294112,
-      "sha256": "196ad334fec2a6b7d702cb98307eb20ef26d331e31b338a833143e65433f5edf",
+      "byteSize": 1294320,
+      "sha256": "3a5583b23881d4a675fec72b9d4e251ce98e3572637ae03d5b1008fb192dbb88",
       "needed": [
         "libace_napi.z.so",
         "libc++_shared.so",

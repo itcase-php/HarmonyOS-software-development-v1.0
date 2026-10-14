@@ -142,7 +142,8 @@ report = {'scope': 'main ' + args.build_mode + ' signed HAP, ELF exports/direct 
           'unoCacheFlushBuiltinLinked': True, 'officeLibraryManifestCodeAndDataMatch': True,
           'directNeededResolution': 'package files or SDK files; loader namespaces not tested',
           'internetPermissionDeclared': False, 'archiveDefinitionsRetained': 43, 'productScopeRoutes': 4,
-          'deviceExecution': 'not executed', 'officeInitializationAndConversion': 'pending OHOS arm64 device',
+          'deviceExecution': 'not performed by this static check',
+          'officeInitializationAndConversion': 'not assessed by this static check; see device acceptance report',
           'libraries': records}
 (root / ('tests/generated/core-routes-' + args.build_mode + '-hap-validation.json')).write_text(json.dumps(report, indent=2) + '\n', encoding='utf8')
 print(json.dumps({key: value for key, value in report.items() if key != 'libraries'}, indent=2))

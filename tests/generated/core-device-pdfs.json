@@ -1,0 +1,87 @@
+{
+  "scope": "actual device fixture PDFs, hash-checked capture, independent pypdf and Poppler",
+  "checks": [
+    {
+      "label": "docx",
+      "bytes": 22936,
+      "sha256": "e37bc058891b092802e8cd8622c8023742438c9351481093a3d60309b7dba91e",
+      "pages": 2,
+      "imageResourcesPerPage": [
+        1,
+        1
+      ],
+      "fonts": [
+        "/BAAAAA+DejaVuSans"
+      ],
+      "text": "OFFLINE OFFICE TEST\nHarmony Office Conversion\nEditable document sample 12345. The total must remain 678.90.\nItem Count Value\nAlpha 2 123.45\nBeta 3 555.45\n\nOFFLINE OFFICE TEST\nSecond Page\nPage two keeps its manual page break and the key value 98765.",
+      "independentParse": "passed",
+      "rendered": "passed",
+      "visualInspection": "not assessed by script"
+    },
+    {
+      "label": "pptx",
+      "bytes": 21849,
+      "sha256": "158243f893df6dcfd7866345128e974343c2b5cd1fea8b768f56d11e0c41a669",
+      "pages": 2,
+      "imageResourcesPerPage": [
+        1,
+        1
+      ],
+      "fonts": [
+        "/BAAAAA+DejaVuSans"
+      ],
+      "text": "Harmony Presentation\nKey value 12345. T otal 678.90. Slide 1\nItem Value\nAlpha 678.90\nEditable Objects\nKey value 12345. T otal 678.90. Slide 2\nItem Value\nAlpha 678.90",
+      "independentParse": "passed",
+      "rendered": "passed",
+      "visualInspection": "not assessed by script"
+    },
+    {
+      "label": "png",
+      "bytes": 1774,
+      "sha256": "8dbccad5a84480efc67438e7a7443a5dc0a3c406ab782c257d06ea13092a37cc",
+      "pages": 1,
+      "imageResourcesPerPage": [
+        1
+      ],
+      "fonts": [],
+      "text": "",
+      "independentParse": "passed",
+      "rendered": "passed",
+      "visualInspection": "not assessed by script"
+    },
+    {
+      "label": "docx-cjk",
+      "bytes": 22751,
+      "sha256": "3585a0778a7c4f907603828a0d56a5754ca62805c00dc9b6f5f605199bb9d332",
+      "pages": 1,
+      "imageResourcesPerPage": [
+        1
+      ],
+      "fonts": [
+        "/BAAAAA+DejaVuSans",
+        "/CAAAAA+HarmonyOS_Sans_SC"
+      ],
+      "text": " 鸿蒙离线文档转换：金额 678.90  ，编号 12345  ✓ → 。符号 ©\n中文表格  核对 98765\n",
+      "independentParse": "passed",
+      "rendered": "passed",
+      "visualInspection": "not assessed by script"
+    },
+    {
+      "label": "pptx-cjk",
+      "bytes": 24446,
+      "sha256": "0441d789919a9fcc9225033cbc0089f05f35f622b5c1d850c9068d9e1db9aafe",
+      "pages": 1,
+      "imageResourcesPerPage": [
+        1
+      ],
+      "fonts": [
+        "/BAAAAA+NotoSansCJKsc-Regular",
+        "/CAAAAA+DejaVuSans"
+      ],
+      "text": "鸿蒙离线文档转换：金额 678.90 ，编号 12345 。符号 ✓ → ©\n",
+      "independentParse": "passed",
+      "rendered": "passed",
+      "visualInspection": "not assessed by script"
+    }
+  ]
+}

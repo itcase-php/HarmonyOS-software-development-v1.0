@@ -2,7 +2,7 @@
   "scope": "actual ArkTS lifecycle with Node IO and modeled SDK decompression/PDF parser",
   "deviceExecution": "not executed",
   "libreOfficeExecution": "not executed",
-  "passed": 22,
+  "passed": 23,
   "cases": [
     {
       "name": "raw offsets, short reads/writes and concurrent bootstrap reuse",
@@ -18,6 +18,10 @@
     },
     {
       "name": "a damaged mutable bootstrap is repaired rather than trusted by its marker",
+      "result": "passed"
+    },
+    {
+      "name": "outdated font fallback configuration is replaced after restart",
       "result": "passed"
     },
     {

@@ -281,7 +281,9 @@ ConvertResult Runtime::Execute(const ConvertRequest& request) {
         if (!candidateOutput.status.IsOk() || !candidateOutput.value || candidateOutput.value->files.size()!=1)
             throw BridgeProblem(ErrorCode::OutputValidationFailed,"NATIVE_OUTPUT_INVALID");
         candidate.Flush();
-        if (format=="jpeg" ? (!context.result || !ValidateKnownPdf(candidate,context.result->candidate)) : !ValidatePdfEnvelope(candidate))
+        // Office may atomically replace the path; validate the exported file, not the old open inode.
+        prototype::HostFile exported(candidatePath.string(),false);
+        if (format=="jpeg" ? (!context.result || !ValidateKnownPdf(exported,context.result->candidate)) : !ValidatePdfEnvelope(exported))
             throw BridgeProblem(ErrorCode::OutputValidationFailed,"NATIVE_PDF_STRUCTURE");
         std::uint64_t pdfBytes{}; const auto pdfHash=DigestFile(candidatePath,kMaximumTemp,pdfBytes);
         if (pdfBytes!=candidateOutput.value->files[0].byteSize)

@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-14",
+  "scope": "real HarmonyOS arm64 API 24, installed signed Release main application",
+  "releaseHap": {
+    "bytes": 392699662,
+    "sha256": "f5117138be3132975cd9afc1069f9d596f5d1647f72a7dc0ca540d9a99693967",
+    "installed": true,
+    "mainNativeSha256": "517991e61831d42b218c35d289bd55c9eec0d148ecb33f0dd8a405f7d577a799",
+    "testModuleHasNoNativeEntryOverride": true,
+    "officeLibraries": 235,
+    "offlineFiles": 3284
+  },
+  "hypium": {
+    "core": {
+      "total": 6,
+      "passed": 6,
+      "failures": 0,
+      "errors": 0,
+      "logSha256": "93686ae6f3e49071d63f77f232d9160b63468f33dfa5a141880d41f8d0765ce3"
+    },
+    "jpeg": {
+      "total": 2,
+      "passed": 2,
+      "failures": 0,
+      "errors": 0,
+      "logSha256": "07ac1aca9b43848686188c7fac97577e83e5e4ea2471ecef3da947500721f8e6"
+    },
+    "savedPdfReopen": {
+      "total": 1,
+      "passed": 1,
+      "failures": 0,
+      "errors": 0,
+      "logSha256": "6b07052b2609095e04f2a4e90f554deb3dbb60814869b047be00abba549f82e1"
+    }
+  },
+  "coreCases": [
+    "DOCX two pages",
+    "PPTX two slides",
+    "PNG image",
+    "Chinese DOCX with table and symbols",
+    "Chinese PPTX with symbols",
+    "missing private-use icon glyph is rejected without output"
+  ],
+  "additionalMainUiFlow": {
+    "pdfDetailsButtonNavigates": true,
+    "systemPickerImportsRepositoryDocx": true,
+    "fontFallbackExplicitlyApproved": true,
+    "realQueueCompleted": true,
+    "saveToDownloadPassedReadbackHash": true,
+    "systemSharePanelOpenedWithCorrectPdfNameAndSize": true,
+    "savedPdfReopenedThroughSystemPicker": true,
+    "savedPdfPages": 2,
+    "savedPdfBytes": 22936,
+    "savedPdfSha256": "f0cad253459da28e21d0deb83cea2dee4824ab688221321fe389eda4b4680b45",
+    "savedPagesRenderIdenticallyToControlledConversion": true,
+    "mainApplicationRestored": true,
+    "shareRecipientReceipt": "not tested"
+  },
+  "independentChecks": {
+    "capturedFixturePdfs": 5,
+    "totalPages": 7,
+    "pypdfStrictParse": "passed",
+    "pageCountSizeTextAndKeyNumbers": "passed",
+    "popplerRendering": "passed",
+    "manualVisualInspection": "all seven fixture pages inspected; saved pages have identical rendered pixels",
+    "reports": [
+      "core-device-pdfs.json",
+      "saved-device-pdf.json"
+    ]
+  },
+  "repairsDuringDeviceRun": [
+    "reopen actual exported candidate path before structural validation",
+    "append bundled DejaVu Sans as weak fallback and repair stale font configuration caches"
+  ],
+  "hostRegressions": {
+    "nativeCTest": 25,
+    "coreDocumentChecks": 38,
+    "bundledRuntimeModeledSdk": 23,
+    "artifactDeliveryModeledSdk": 13
+  },
+  "limits": [
+    "controlled repository fixtures and one phone, not arbitrary-file compatibility",
+    "missing original fonts still require explicit approval; private-use icon gaps remain blocked",
+    "no Microsoft Office reference-render equivalence claim",
+    "no receiving-contact share delivery claim",
+    "four routes remain experimental; other 39 routes remain disabled"
+  ]
+}
