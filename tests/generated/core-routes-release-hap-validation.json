@@ -1,17 +1,19 @@
 {
   "scope": "main release signed HAP, ELF exports/direct dependencies and pinned resource bytes only",
   "buildMode": "release",
-  "checkedAtUtc": "2026-10-13T13:14:21.465726+00:00",
+  "checkedAtUtc": "2026-10-14T12:39:33.379103+00:00",
   "result": "passed",
   "hapPath": "D:\\HarmonyOS\\harmonyOS\\entry\\build\\default\\outputs\\default\\entry-release-signed.hap",
-  "hapBytes": 392680329,
-  "hapSha256": "7fc3f884ae74b4b7e1ff673c2f6b95549fc494af9317ae618ef00b7d876daed3",
+  "hapBytes": 392683857,
+  "hapSha256": "0101543eaa666fd926b3e7358d6002f2b7594eab64771ea92c67c96c8ec98ecc",
   "officeLibraryCount": 235,
   "nativeLibraryCount": 238,
-  "officeResourceFiles": 3271,
-  "officeResourceUncompressedBytes": 163012146,
+  "officeResourceFiles": 3284,
+  "officeResourceUncompressedBytes": 163182118,
   "libreofficekitHook2Exported": true,
   "unoProgramPathPatchPackaged": true,
+  "unoCacheFlushBuiltinLinked": true,
+  "officeLibraryManifestCodeAndDataMatch": true,
   "directNeededResolution": "package files or SDK files; loader namespaces not tested",
   "internetPermissionDeclared": false,
   "archiveDefinitionsRetained": 43,
@@ -979,8 +981,8 @@
     },
     {
       "name": "libs/arm64-v8a/libentry.so",
-      "byteSize": 1099864,
-      "sha256": "02eb5b0309a0b7ccfe1d74e1b3a409cd4ea15684bf7935c684ea517cf85b183f",
+      "byteSize": 1100392,
+      "sha256": "f98c9edbfe3a005320ae25c6fda2a05f71a537c1b9257de3ae2146a0e1e22457",
       "needed": [
         "libace_napi.z.so",
         "libc++_shared.so",
@@ -989,8 +991,8 @@
     },
     {
       "name": "libs/arm64-v8a/libetonyek-0.1-lo.so.1",
-      "byteSize": 2523792,
-      "sha256": "a72ec13ccabbd7b6d35ed55010200ffc67fbe7e17822aae2966bc232aca79aaa",
+      "byteSize": 2526336,
+      "sha256": "c2ce12613edcb1b7860ab236f7503f9e3ee073841ecc1e6e99903736ba8a317c",
       "needed": [
         "librevenge-0.0-lo.so.0",
         "liblangtag-lo.so.1",
@@ -1237,8 +1239,8 @@
     },
     {
       "name": "libs/arm64-v8a/libgcc3_uno.so",
-      "byteSize": 53416,
-      "sha256": "e85a3b169c26276bedaf92b2614d22c55c9d31dd9e8a7453614901007ed36230",
+      "byteSize": 53336,
+      "sha256": "b3862eea2346cd49bc6d87b6ac041813e49a96c5a2ada0119098e19c0394f1b8",
       "needed": [
         "libuno_cppu.so.3",
         "libuno_sal.so.3",
@@ -2626,8 +2628,8 @@
     },
     {
       "name": "libs/arm64-v8a/libsfxlo.so",
-      "byteSize": 6106536,
-      "sha256": "9c77bc9f4d6a10620add8e51005a83db9db5def8dcd690079b858368014e8cec",
+      "byteSize": 6106680,
+      "sha256": "8f33f3813973091a09ea1448b5d2d789b550f903546384f2c222a5f624f6fa4c",
       "needed": [
         "libicui18n.so.78",
         "libicuuc.so.78",
@@ -4301,7 +4303,7 @@
     {
       "name": "libs/x86_64/libentry.so",
       "byteSize": 1294112,
-      "sha256": "51cb773c4bbdb03a2e2a238f4f1f6e7d40356e05f7244bed92bd764ffdc01620",
+      "sha256": "196ad334fec2a6b7d702cb98307eb20ef26d331e31b338a833143e65433f5edf",
       "needed": [
         "libace_napi.z.so",
         "libc++_shared.so",

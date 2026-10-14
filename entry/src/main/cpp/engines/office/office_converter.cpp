@@ -113,10 +113,15 @@ public:
             std::ifstream ready(root_+"/ready.sha256"); std::string readyHash;
             std::getline(ready,readyHash);
             if (readyHash!=kOfficeBundleHash) return Failure(ErrorCode::EngineMissing,"OFFICE_RESOURCE_VERSION_MISMATCH");
+            if (!std::filesystem::is_regular_file(root_+"/presets/basic/script.xlc"))
+                return Failure(ErrorCode::EngineMissing,"OFFICE_PROFILE_RESOURCES_MISSING");
             setenv("SAL_USE_VCLPLUGIN","svp",1);
             setenv("URE_BOOTSTRAP",Url(root_+"/program/fundamentalrc").c_str(),1);
             setenv("LO_OFFICE_PROGRAM_URL",Url(root_+"/program").c_str(),1);
             setenv("FONTCONFIG_FILE",(root_+"/fonts.conf").c_str(),1);
+            // Publish UNO's common RTTI before loading any document components.
+            if (!dlopen("libuno_cppuhelpergcc3.so.3",RTLD_NOW|RTLD_GLOBAL))
+                return Failure(ErrorCode::EngineMissing,"OFFICE_UNO_LIBRARY_LOAD_FAILED");
             void* library=dlopen("libsofficeapp.so",RTLD_NOW|RTLD_GLOBAL);
             if (!library) return Failure(ErrorCode::EngineMissing,"OFFICE_LIBRARY_LOAD_FAILED");
             using Hook=LibreOfficeKit*(*)(const char*,const char*);

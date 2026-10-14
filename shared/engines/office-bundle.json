@@ -2,7 +2,7 @@
   "version": "26.2.6.2",
   "sourceRevision": "ad5cf9fd4989cacf0bca866ebefc0ec8926cb0b2",
   "abi": "arm64-v8a",
-  "resourcesSha256": "3eb048372637a85650dfd2d4fa4fde3b864d0e4caa9f75d2df252605445771fa",
+  "resourcesSha256": "93d909bf3fdcb00a251b6ee3ff406e7bbab3f1f2031335249933e1052cbd7ccd",
   "libraries": [
     {
       "name": "libabplo.so",
@@ -246,8 +246,8 @@
     },
     {
       "name": "libetonyek-0.1-lo.so.1",
-      "sha256": "42bb802bfb23fb1112a8e3e5e74d73a8b5f285e6653e2bb4c6107761e059b6be",
-      "byteSize": 4312176
+      "sha256": "e41796d7572b6752dcfc079a3650372e2c4273d1089e81adf69fc677f04da033",
+      "byteSize": 4435776
     },
     {
       "name": "libevtattlo.so",
@@ -321,8 +321,8 @@
     },
     {
       "name": "libgcc3_uno.so",
-      "sha256": "47662e61a701c3b0a1b8d94f5e0c3735b6a8f83bf6b2b275668cd12998089415",
-      "byteSize": 83120
+      "sha256": "6df3a4348460d3a56c6f10237b55c0e4be5d989d3a0006f6560949b5a1c065a4",
+      "byteSize": 84784
     },
     {
       "name": "libgraphicfilterlo.so",
@@ -751,8 +751,8 @@
     },
     {
       "name": "libsfxlo.so",
-      "sha256": "d772f7f0824b1b493b991c803c45bc3a9133f1e3b63d9c05f03aedbc81e0675b",
-      "byteSize": 8728952
+      "sha256": "3d470953fa8cb719ce2fc2dc54748669be32c393a55496b7c1a5651beb4ede93",
+      "byteSize": 8867728
     },
     {
       "name": "libsimplecanvaslo.so",
@@ -1176,8 +1176,8 @@
     },
     {
       "name": "libxstor.so",
-      "sha256": "d47b36d9a6edc7b70e07e188356d565959f795b9d264ea96db4455b308bd83c1",
-      "byteSize": 662168
+      "sha256": "38839a4d176d2bf1b3cc88dd71c173dc162eda4891b24eb62a28caf454ae6df3",
+      "byteSize": 669024
     }
   ],
   "resources": [
@@ -17520,6 +17520,71 @@
       "name": "fonts/DejaVu-LICENSE.txt",
       "sha256": "63d3ba759d12804c5b31a9d5940d855c1820d1f5999e6b0872eb1c7ff045fbc9",
       "byteSize": 3859
+    },
+    {
+      "name": "presets/basic/dialog.xlc",
+      "sha256": "5b72c4cc5130eccab44cbfb91270befaeaf8ee7ab97cf205ee2abb582fa4a9e5",
+      "byteSize": 339
+    },
+    {
+      "name": "presets/basic/script.xlc",
+      "sha256": "5b72c4cc5130eccab44cbfb91270befaeaf8ee7ab97cf205ee2abb582fa4a9e5",
+      "byteSize": 339
+    },
+    {
+      "name": "presets/config/autotbl.fmt",
+      "sha256": "713229151490c66f043cb4865147c97458b4f33e4eb5f2bb4133c58cbe77041e",
+      "byteSize": 35313
+    },
+    {
+      "name": "presets/autotext/mytexts.bau",
+      "sha256": "b8fddd33ea2b3b3b46a45a399d84795b1f2b9617f68977b6300acb23b4574c1a",
+      "byteSize": 557
+    },
+    {
+      "name": "presets/database/evolocal.odb",
+      "sha256": "c72f8fd2b0e8f2b90e967a4cc29ae2f6333901a25862d69a81fc47fe44a444df",
+      "byteSize": 3759
+    },
+    {
+      "name": "presets/database/biblio.odb",
+      "sha256": "c3dd4e9008be33cdede3abf822e9b748a201704adf95aad92ab894dd98b3fe85",
+      "byteSize": 2892
+    },
+    {
+      "name": "presets/gallery/sg30.thm",
+      "sha256": "f1f24dff4f58a716033bcf96ad175d3436bff0e0a233ab09f6215973ed843fed",
+      "byteSize": 565
+    },
+    {
+      "name": "presets/gallery/sg30.sdv",
+      "sha256": "65365530165a871772e21962a5d7dda107d8d010f329bf59c878eabc3465bbe4",
+      "byteSize": 2048
+    },
+    {
+      "name": "presets/database/biblio/biblio.dbf",
+      "sha256": "aefc2bb614c2e307870405e0fd72f4a22cf794c396a73ce0551f18a478e80ed2",
+      "byteSize": 75798
+    },
+    {
+      "name": "presets/database/biblio/biblio.dbt",
+      "sha256": "3ab142231d8075fdd02c95a691ddce590e0f81450744cb87ca610fd06d75cac1",
+      "byteSize": 46601
+    },
+    {
+      "name": "presets/basic/Standard/Module1.xba",
+      "sha256": "b434faf21386064e2e81af758f307ae8bea72c0cb6c8510d55b1bc1bb38f8612",
+      "byteSize": 1124
+    },
+    {
+      "name": "presets/basic/Standard/dialog.xlb",
+      "sha256": "85c83411f1285a0d0d9b511a7ea7dd06d5ac9b97f90d286adaca084212e3fe80",
+      "byteSize": 288
+    },
+    {
+      "name": "presets/basic/Standard/script.xlb",
+      "sha256": "80cb10b100053f6e0b26bb009a2b8ccbdedb761901680500a4736f7afbf1f959",
+      "byteSize": 349
     },
     {
       "name": "LICENSE",

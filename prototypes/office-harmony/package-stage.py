@@ -20,7 +20,7 @@ for path in (source / 'program').iterdir():
         (libraries / path.name).unlink()
 archive = app / 'src/main/resources/rawfile/office-resources.zip'
 with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=1) as target:
-    for directory in ['program', 'share', 'fonts']:
+    for directory in ['program', 'share', 'fonts', 'presets']:
         for path in (source / directory).rglob('*'):
             if not path.is_file() or path.is_symlink():
                 continue

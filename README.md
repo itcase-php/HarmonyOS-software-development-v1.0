@@ -1,6 +1,6 @@
 # HarmonyOS软件开发v2.0
 
-**2026-10-13：四条路线支持 Release 执行和真实文件。最新复查补上保存/分享副本回读摘要、交付期间产物保留、Office 文字/图片/字体检查及静态编解码符号隔离。签名 Release 候选包约 393 MB，235 个 Office 库及 3271 个离线资源已核对。没有真机，实际 Office 导出、页面外观和新包交付仍待设备验收。详见 [复查记录](docs/CONVERSION-DELIVERY-AUDIT.md)和 [Release 交付](docs/RELEASE-CANDIDATE.md)。**
+**2026-10-14：设备排查后修复 Office 清单摘要、初始化资源、编译器 builtins、UNO 加载顺序与缓存刷新空指针；PDF 输出入口及主机 CLI 也已修正。新签名 Release 约 393 MB，235 个 Office 库与 3284 个离线文件已核对。PNG 样例曾通过设备转换和产物复制；Word/PPT 尚未成功导出设备 PDF，最终修复版待接回设备复验。详见 [最新故障修复记录](docs/OFFICE-DEVICE-REPAIR-20261014.md)。**
 
 基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。主应用收敛为 **JPEG、PNG、DOCX、PPTX → PDF**。图片核心静态编入 Native，DOCX/PPTX 使用真正的 LibreOfficeKit Writer/Impress。Debug 与 Release 均允许范围内的真实转换，实际引擎、输入和输出检查继续生效；`experimental` 表示设备与版式资格尚待验收，不再表示 Debug 专用。其余 39 条路线保留禁用。
 
@@ -25,11 +25,11 @@
 | 原生层 | 14 个 Native 接口；授权输入、深层格式/保护检查、image/office 调度、PDF 候选校验、提交与释放接入；PNG/Office 完成前另要求系统 PDFKit 独立解析，设备运行待验收；其他引擎代码保留禁用 |
 | PDF 交付 | 系统保存与 ShareKit 分享副本关闭后回读核对大小和 SHA-256；交付完成前保留 Native 产物。此前 JPEG 有设备证据，新包及其他路线待复验 |
 | JPEG→PDF | 真实单张 8 位 Baseline SOF0 灰度或三分量 JPEG 转换；主机运行时、独立 PDF 解析/渲染通过；Debug 与 Release 均执行，受产品范围、实际引擎、配置及输入校验约束 |
-| PNG→PDF | 实际 libpng 解码与 RGB/透明度 PDF 写出；6 种模式主机转换及独立像素/渲染检查通过；静态 ≤8 位，按实际物理分辨率计算尺寸，缺失时 96 DPI；ICC/动画等未支持，设备待验收 |
+| PNG→PDF | 实际 libpng 解码与 RGB/透明度 PDF 写出；6 种模式主机转换及独立像素/渲染检查通过；设备样例转换 / PDFKit / 产物复制通过，最终包仍待复验；静态 ≤8 位，按实际物理分辨率计算尺寸，缺失时 96 DPI；ICC/动画等未支持 |
 | DOCX/PPTX→PDF | OHOS arm64 内置 LibreOfficeKit Writer/Impress 导入与 PDF 导出；首次任务校验并解压离线资源；真实引擎加载、文档导出和版式仍待设备验收；旧 DOC/PPT 未开放 |
-| 国际化与无障碍 | 首页 EN/中运行时切换、五页与组件/任务/报告/提示/读屏文案统一翻译；356 个双语资源键；语言使用 AppStorage + PersistentStorage 保留；实际 Previewer 和设备重启验收待执行 |
+| 国际化与无障碍 | 首页 EN/中运行时切换、五页与组件/任务/报告/提示/读屏文案统一翻译；358 个双语资源键；语言使用 AppStorage + PersistentStorage 保留；实际 Previewer 和设备重启验收待执行 |
 
-当前 **4 条 experimental、39 条 planned、0 条 available**，四条已在 Debug 与 Release 开启真实执行；范围外定义保留禁用。签名 Release 候选包约 393 MB，Office 仅 arm64，首次资源准备要求缓存至少 400 MiB 可用空间。缺失引用字体默认拒绝，只有用户明确同意才允许内置/系统替代；Office 保真等级保持未判定。演示入口仅保留在 Debug。异常产物和无证据保真等级不显示为正常完成。本轮没有真机，Office 实际运行和新包交付仍待设备验收。详见[Release 交付](docs/RELEASE-CANDIDATE.md)与[历史阶段记录](docs/IMPLEMENTATION_STATUS.md)。
+当前 **4 条 experimental、39 条 planned、0 条 available**，四条已在 Debug 与 Release 开启真实执行；范围外定义保留禁用。签名 Release 候选包约 393 MB，Office 仅 arm64，首次资源准备要求缓存至少 400 MiB 可用空间。缺失引用字体默认拒绝，只有用户明确同意才允许内置/系统替代；Office 保真等级保持未判定。演示入口仅保留在 Debug。异常产物和无证据保真等级不显示为正常完成。用户已移除设备，最终修复版的 Office 导出和系统保存 / 分享仍待设备验收。详见[最新故障修复记录](docs/OFFICE-DEVICE-REPAIR-20261014.md)与[历史阶段记录](docs/IMPLEMENTATION_STATUS.md)。
 
 ## 工程结构
 

@@ -104,6 +104,10 @@ struct FormatBrowser {
               if (format.operations.includes('import')) {
                 Button(this.tr($r('app.string.browser_use'))).fontSize(14).backgroundColor($r('app.color.palette_007aff'))
                   .onClick(() => { UiFeedback.open(this.getUIContext(), 'pages/ConverterPage', { sourceFormatId: format.id }); })
+              } else if (format.id === 'pdf') {
+                Text(this.tr('browser_pdf_output_only')).fontSize(14).fontColor($r('app.color.palette_526077'))
+                Button(this.tr('browser_create_pdf')).fontSize(14).backgroundColor($r('app.color.palette_007aff'))
+                  .onClick(() => { UiFeedback.open(this.getUIContext(), 'pages/ConverterPage'); })
               }
             }
           }.alignItems(HorizontalAlign.Start).width('100%').padding(16).backgroundColor($r('app.color.palette_ffffff')).borderRadius(16)

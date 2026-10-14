@@ -54,9 +54,9 @@ export default function jpegDebugSmokeTest() {
         const registry = new FormatRegistryService();
         await registry.initialize(new RawfileResources(context.resourceManager));
         const routes = registry.availableRoutes(capabilities);
-        expect(routes.length).assertEqual(1);
-        expect(routes[0].id).assertEqual('jpeg-pdf');
-        const route = routes[0];
+        const route = routes.find((item) => item.id === 'jpeg-pdf');
+        expect(route !== undefined).assertTrue();
+        if (!route) { throw new Error('JPEG_ROUTE_MISSING'); }
         const workspaceRef = await native.registerWorkspace({ sessionId, taskId, attemptId,
           relativeDirectory: 'workspace/' + workspaceId });
         const input: PreparedInput = { fileId, sourceFormatId: 'jpeg', relativePath: 'inputs/' + fileId,

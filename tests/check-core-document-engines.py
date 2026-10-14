@@ -11,7 +11,8 @@ poppler=Path.home()/'.cache/codex-runtimes/codex-primary-runtime/dependencies/na
 cases=[]
 def call(format,path,expected=0):
     output=directory/(path.stem+'.pdf')
-    command=[str(args.cli.resolve()),format,str(path),str(output)]
+    command=[str(args.cli.resolve()),format,str(path)]
+    if format not in ['docx','pptx']:command.append(str(output))
     result=subprocess.run(command,capture_output=True,text=True)
     assert result.returncode==expected,(path.name,result.returncode,result.stderr)
     cases.append({'name':path.name,'expectedExit':expected,'passed':True})
@@ -33,6 +34,11 @@ for mode in ['RGBA','RGB','L','LA','P','1']:
     rendered=Image.open(str(prefix)+'.png').convert('RGB').resize(rgba.size, Image.Resampling.NEAREST);background=Image.new('RGBA',rgba.size,'white');background.alpha_composite(rgba)
     difference=ImageChops.difference(rendered,background.convert('RGB'))
     assert max(difference.getextrema(),key=lambda p:p[1])[1]<=2,(mode,difference.getextrema())
+jpeg_output=call('jpeg',root/'entry/src/main/cpp/tests/fixtures/baseline.jpg')
+assert len(PdfReader(jpeg_output,strict=True).pages)==1
+bad_save=subprocess.run([str(args.cli.resolve()),'png',str(directory/'RGB.png'),str(directory)],capture_output=True,text=True)
+assert bad_save.returncode!=0 and 'CLI_OUTPUT_OPEN' in bad_save.stderr
+cases.append({'name':'output directory cannot be reported as a saved PDF','passed':True})
 corrupted=directory/'crc.png';data=bytearray((directory/'RGB.png').read_bytes());data[29]^=1;corrupted.write_bytes(data);call('png',corrupted,5)
 truncated=directory/'truncated.png';truncated.write_bytes((directory/'RGB.png').read_bytes()[:-10]);call('png',truncated,5)
 profile=directory/'icc.png';source.save(profile,icc_profile=ImageCms.ImageCmsProfile(ImageCms.createProfile('sRGB')).tobytes());call('png',profile,17)
@@ -54,7 +60,14 @@ def package(name,format,extra=None,body=None,content_types=None):
         if format=='pptx':package.writestr('ppt/slides/slide1.xml','<p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"/>')
         for key,value in (extra or {}).items():package.writestr(key,value)
     return path
-for format in ['docx','pptx']:call(format,package('basic',format))
+for format in ['docx','pptx']:
+    path=package('basic',format)
+    call(format,path)
+    output=directory/('inspection-must-not-convert-'+format+'.pdf')
+    result=subprocess.run([str(args.cli.resolve()),format,str(path),str(output)],capture_output=True,text=True)
+    assert result.returncode==99,(format,'Office inspection accepted an output path and reported conversion success',result.stdout)
+    assert not output.exists()
+    cases.append({'name':format+' inspection rejects conversion arguments','expectedExit':99,'passed':True})
 picture_body='<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><w:body><w:p><w:r><w:t>Text 123 中文</w:t><w:drawing><a:blip/></w:drawing></w:r></w:p></w:body></w:document>'
 for name in ['RGB.png','RGBA.png']:
     call('docx',package('picture-'+Path(name).stem,'docx',{'word/media/image.png':(directory/name).read_bytes()},body=picture_body))
@@ -80,7 +93,7 @@ call('docx',package('entity','docx',{'word/settings.xml':'<!DOCTYPE settings SYS
 call('docx',package('traversal','docx',{'../outside.xml':'<x/>'}),5)
 call('docx',package('wrong-format','pptx'),5)
 encrypted=directory/'encrypted.docx';encrypted.write_bytes(bytes.fromhex('d0cf11e0a1b11ae1')+b'EncryptedPackage');call('docx',encrypted,11)
-report={'scope':'native PNG real conversion and independent pypdf/Poppler; Office package checks only','passed':len(cases),'cases':cases,
+report={'scope':'native PNG real conversion and independent pypdf/Poppler; JPEG delivery; Office package checks only','passed':len(cases),'cases':cases,
         'officeRuntimeExecution':'requires OHOS arm64 device; not executed','device':'not executed'}
 (root/'tests/generated/core-document-engines.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps({'passed':len(cases),'device':'not executed'}))

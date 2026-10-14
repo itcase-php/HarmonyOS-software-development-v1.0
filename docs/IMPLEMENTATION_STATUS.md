@@ -1,5 +1,9 @@
 # 迁移结果与实现边界
 
+## 2026-10-14 真机故障定位与离线修复
+
+已复现并修复清单换行导致的摘要不一致、Office presets 缺失、libetonyek builtins 缺失、UNO 加载顺序及桥接缓存刷新空指针问题。PNG 样例曾通过真机转换 / PDFKit / 产物复制；DOCX / PPTX 尚未成功导出设备 PDF。用户移除设备后，完成 Native 25/25、文档 CLI 38 项以及实际 SDK Debug / 测试 / Release 构建和包内检查。最新状态以 [2026-10-14 修复记录](OFFICE-DEVICE-REPAIR-20261014.md)为准，以下为历史记录。
+
 ## 2026-10-13 保存、分享与转换内容复查
 
 修复目标 PDF 关闭后未重新核验、退出期间产物提前释放及旧作用域关闭新 Runtime 的风险；分享路径与 Unicode 文件名也已收紧。Office 增加正文字符下限、PPTX 页数、内嵌 PNG/JPEG 解码和输出图片检查，缺字 / 缺失符号字体拒绝，输出 PixelMap 正常释放。静态图像编解码符号已从 libentry.so 导出表隔离，避免干扰 Office 库。

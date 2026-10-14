@@ -84,7 +84,7 @@ inputFailureKey(reason: string): string {
     if (reason === 'OFFICE_SYMBOL_FONT_MISSING' || reason === 'OFFICE_GLYPH_MISSING') { return 'input_office_glyph_missing'; }
     if (reason === 'OFFICE_TEXT_MISSING' || reason === 'OFFICE_IMAGES_MISSING' || reason === 'OFFICE_PAGE_COUNT_MISMATCH') { return 'input_office_content_mismatch'; }
     if (reason === 'NATIVE_OFFICE_EXTERNAL_RELATIONSHIP' || reason === 'NATIVE_OFFICE_ACTIVE_CONTENT') { return 'input_office_feature_unsupported'; }
-    if (reason.startsWith('OFFICE_') && (reason.includes('INITIALIZATION') || reason.includes('LIBRARY') || reason.includes('RESOURCES') || reason.includes('RESOURCE_'))) { return 'input_office_runtime_failed'; }
+    if (reason.startsWith('OFFICE_') && (reason.includes('INITIALIZATION') || reason.includes('LIBRARY') || reason.includes('RESOURCES') || reason.includes('RESOURCE_') || reason.includes('MANIFEST') || reason.includes('ARCHIVE') || reason.includes('BOOTSTRAP') || reason.includes('LOK_') || reason.includes('FONTCONFIG'))) { return 'input_office_runtime_failed'; }
     if (reason === 'NATIVE_JPEG_METADATA_UNSUPPORTED') { return 'input_jpeg_metadata_unsupported'; }
     if (reason === 'NATIVE_JPEG_ENCODING_UNSUPPORTED') { return 'input_jpeg_encoding_unsupported'; }
     if (reason === 'NATIVE_JPEG_COLOR_UNSUPPORTED') { return 'input_jpeg_color_unsupported'; }

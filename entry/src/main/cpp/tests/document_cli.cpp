@@ -7,24 +7,38 @@
 #include <fstream>
 #include <iostream>
 #include <chrono>
+#include <cstdio>
+#if defined(_WIN32)
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
 namespace fs=std::filesystem;
 std::string Digest(const fs::path& path) {
     hdm::production::Sha256 digest; std::ifstream file(path,std::ios::binary); std::array<char,65536> buffer{};
+    if (!file) throw hdm::BridgeProblem(hdm::ErrorCode::IoError,"CLI_INPUT_OPEN");
     while (file) { file.read(buffer.data(),buffer.size()); digest.Update(buffer.data(),static_cast<std::size_t>(file.gcount())); }
+    if (!file.eof()) throw hdm::BridgeProblem(hdm::ErrorCode::IoError,"CLI_INPUT_READ");
     return digest.FinalHex();
 }
 int main(int argc,char** argv) {
-    if (argc<3) return 99;
+    const auto usage=[]() {
+        std::cerr<<"Usage: hdm_document_cli jpeg|png INPUT OUTPUT.pdf\n"
+            <<"       hdm_document_cli docx|pptx INPUT (package inspection only; no PDF conversion)\n";
+        return 99;
+    };
+    if (argc<3) return usage();
     hdm::ResourceBudget budget{104857600,314572800,201326592,536870912,300,16000000,2,180000};
     try {
         const std::string format=argv[1];
         if (format=="docx" || format=="pptx") {
+            if (argc!=3) return usage();
             const auto input=hdm::production::InspectOffice(argv[2],format,budget);
             std::uint64_t characters{};for(const auto& item:input.content.textMinimum)characters+=item.second;
-            std::cout<<"slides="<<input.slides<<" fonts="<<input.fonts.size()<<" characters="<<characters
+            std::cout<<"inspection only: slides="<<input.slides<<" fonts="<<input.fonts.size()<<" characters="<<characters
                 <<" images="<<input.content.minimumImages<<" private="<<input.hasPrivateGlyphs<<'\n';return 0;
         }
-        if (argc!=4) return 99;
+        if (argc!=4 || (format!="jpeg" && format!="png")) return usage();
         const auto root=fs::temp_directory_path()/("hdm-document-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
         struct Cleanup { fs::path root; ~Cleanup(){std::error_code ec;fs::remove_all(root,ec);} } cleanup{root};
         const std::string id(32,'a'),task(32,'b'),attempt(32,'c');
@@ -49,10 +63,20 @@ int main(int argc,char** argv) {
             return 98;
         }
         const auto& artifact=result.outputs.at(0);
-        fs::copy_file(cache/"artifacts"/(artifact.artifactId+".pdf"),argv[3],fs::copy_options::overwrite_existing);
+        runtime.ReleaseTask(task,attempt); fs::remove_all(work);
+        std::unique_ptr<std::FILE,decltype(&std::fclose)> output(std::fopen(argv[3],"wb"),&std::fclose);
+        if (!output) throw hdm::BridgeProblem(hdm::ErrorCode::IoError,"CLI_OUTPUT_OPEN");
+#if defined(_WIN32)
+        const int fd=_fileno(output.get());
+#else
+        const int fd=fileno(output.get());
+#endif
+        if (runtime.CopyArtifactToFd(artifact.internalRef,fd,artifact.sha256,artifact.byteSize)!=artifact.byteSize)
+            throw hdm::BridgeProblem(hdm::ErrorCode::IoError,"CLI_OUTPUT_SIZE");
+        if (std::fclose(output.release())!=0) throw hdm::BridgeProblem(hdm::ErrorCode::IoError,"CLI_OUTPUT_CLOSE");
         if (Digest(argv[3])!=artifact.sha256) return 97;
-        runtime.ReleaseArtifact(artifact.internalRef); runtime.ReleaseTask(task,attempt); runtime.Shutdown();
-        std::cout<<"probe/execute/commit/hash/release passed\n"; return 0;
+        runtime.ReleaseArtifact(artifact.internalRef); runtime.Shutdown();
+        std::cout<<"probe/execute/release/copy/hash passed\n"; return 0;
     } catch (const hdm::BridgeProblem& problem) { std::cerr<<problem.what()<<'\n'; return static_cast<int>(problem.code); }
     catch (const std::exception& error) { std::cerr<<error.what()<<'\n'; return 96; }
 }

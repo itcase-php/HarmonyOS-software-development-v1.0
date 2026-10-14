@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-14",
+  "scope": "observed device failures followed by offline fixes; final package not device verified",
+  "deviceOperationsAfterUserRemovedDevice": "none",
+  "fixes": [
+    "deterministic UTF-8 LF manifest bytes and digest gates",
+    "presets profile resources packaged and checked",
+    "official compiler-rt builtins linked into libetonyek",
+    "UNO common RTTI provider loaded globally before Office",
+    "OHOS UNO bridge uses linked SDK cache-flush builtin",
+    "OHOS import UNO exceptions return failure instead of aborting",
+    "PDF output-format navigation",
+    "host CLI cannot report Office inspection as conversion",
+    "host image CLI exercises artifact descriptor copy after task cleanup"
+  ],
+  "hostValidation": {
+    "nativeCTestPassed": 25,
+    "coreDocumentCasesPassed": 38,
+    "documentCliMsvcBuild": "passed",
+    "documentCliOhosClang15SyntaxWithWarningsAsErrors": "passed",
+    "bundledRuntimeModeledSdkCasesPassed": 22,
+    "artifactDeliveryModeledSdkCasesPassed": 13,
+    "releaseRouteModeledNative": "passed",
+    "debugRouteCasesPassed": 5,
+    "bilingualResourceCount": 358,
+    "actualPackagerSyntheticInputRegression": "passed",
+    "newUpstreamPatchesReverseApplicationCheck": "passed"
+  },
+  "actualSdkBuilds": {
+    "debugMain": "passed",
+    "debugOhosTest": "passed",
+    "signedReleaseMain": "passed",
+    "debugAndReleaseHapValidation": "passed"
+  },
+  "release": {
+    "path": "entry/build/default/outputs/default/entry-release-signed.hap",
+    "byteSize": 392683857,
+    "sha256": "0101543eaa666fd926b3e7358d6002f2b7594eab64771ea92c67c96c8ec98ecc",
+    "officeManifestSha256": "d24d315331984e9613e14a3bd85b450096a4f925df7951191942e9d4416255aa",
+    "officeLibraries": 235,
+    "offlineResourceFiles": 3284,
+    "unoCacheFlushBuiltinLinked": true,
+    "officeLibraryLoadedSectionsMatchManifestLibraries": true,
+    "internetPermission": false,
+    "installedOnDevice": false,
+    "deviceValidation": "pending"
+  },
+  "observedEarlierOnDevice": {
+    "pdfOutputButtonNavigation": "passed",
+    "pngFixtureNativePdfkitCleanupAndArtifactCopy": {
+      "result": "passed",
+      "byteSize": 1774,
+      "sha256": "8dbccad5a84480efc67438e7a7443a5dc0a3c406ab782c257d06ea13092a37cc"
+    },
+    "docx": "no successful PDF; after UNO preload progressed past storage error and crashed in flushCode; final cache-flush fix remains untested",
+    "pptx": "previous storage error; final fixes not device tested",
+    "finalSystemSaveOpenAndShare": "not executed"
+  },
+  "notEstablished": [
+    "final DOCX and PPTX conversion success on OHOS",
+    "final Release device save/open/share lifecycle",
+    "reference layout equivalence or arbitrary-file content completeness",
+    "CJK and symbol-font device fidelity",
+    "release acceptance"
+  ]
+}

@@ -40,18 +40,20 @@ with zipfile.ZipFile(archive) as package:
         seen.add(entry.filename)
         if not entry.is_dir():
             manifest['resources'].append({'name': entry.filename, 'sha256': hashlib.sha256(package.read(entry)).hexdigest(), 'byteSize': entry.file_size})
-    for required in ['program/fundamentalrc', 'program/unorc', 'fonts/DejaVuSans.ttf', 'LICENSE', 'NOTICE']:
+    for required in ['program/fundamentalrc', 'program/unorc', 'fonts/DejaVuSans.ttf',
+                     'presets/basic/script.xlc', 'LICENSE', 'NOTICE']:
         if required not in seen:
             raise SystemExit(f'Offline resource missing: {required}')
 shutil.copyfile(archive, target_resources / 'runtime.zip')
 headers = stage / 'src/main/cpp/include/LibreOfficeKit'
 shutil.copytree(headers, root / 'entry/src/main/cpp/include/LibreOfficeKit', dirs_exist_ok=True)
 text = json.dumps(manifest, indent=2) + '\n'
+manifest_bytes = text.encode('utf-8')
 manifest_path = root / 'shared/engines/office-bundle.json'
 manifest_path.parent.mkdir(parents=True, exist_ok=True)
-manifest_path.write_text(text, encoding='utf-8')
-(target_resources / 'manifest.json').write_text(text, encoding='utf-8')
-digest = hashlib.sha256(text.encode()).hexdigest()
+manifest_path.write_bytes(manifest_bytes)
+(target_resources / 'manifest.json').write_bytes(manifest_bytes)
+digest = hashlib.sha256(manifest_bytes).hexdigest()
 (root / 'entry/src/main/cpp/generated/office_bundle.h').write_text(
     '#pragma once\nnamespace hdm { inline constexpr const char* kOfficeBundleHash = "' + digest + '"; }\n')
 (root / 'entry/src/main/ets/generated/OfficeBundle.ets').write_text(

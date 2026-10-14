@@ -483,8 +483,18 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "browser_use",
-    "zh": "使用此格式演示",
-    "en": "Use this format in a demo"
+    "zh": "使用此格式转换",
+    "en": "Convert this format"
+  },
+  {
+    "name": "browser_pdf_output_only",
+    "zh": "PDF 当前作为输出格式。请选择 JPEG、PNG、DOCX 或 PPTX 文件生成 PDF。",
+    "en": "PDF is an output format. Select a JPEG, PNG, DOCX or PPTX file to create a PDF."
+  },
+  {
+    "name": "browser_create_pdf",
+    "zh": "将文件转为 PDF",
+    "en": "Convert a file to PDF"
   },
   {
     "name": "browser_empty",

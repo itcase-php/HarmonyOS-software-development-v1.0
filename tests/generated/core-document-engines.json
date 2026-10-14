@@ -1,6 +1,6 @@
 {
-  "scope": "native PNG real conversion and independent pypdf/Poppler; Office package checks only",
-  "passed": 34,
+  "scope": "native PNG real conversion and independent pypdf/Poppler; JPEG delivery; Office package checks only",
+  "passed": 38,
   "cases": [
     {
       "name": "RGBA.png",
@@ -30,6 +30,15 @@
     {
       "name": "1.png",
       "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "baseline.jpg",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "output directory cannot be reported as a saved PDF",
       "passed": true
     },
     {
@@ -73,8 +82,18 @@
       "passed": true
     },
     {
+      "name": "docx inspection rejects conversion arguments",
+      "expectedExit": 99,
+      "passed": true
+    },
+    {
       "name": "basic.pptx",
       "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "pptx inspection rejects conversion arguments",
+      "expectedExit": 99,
       "passed": true
     },
     {
