@@ -202,6 +202,7 @@ export interface ContentExpectation {
   minimumImages: number;
   pageCount?: number;
 }
+export interface FontDiagnostic { family: string; part: string; }
 export interface ConvertResult {
   schemaVersion: number;
   taskId: string;
@@ -213,6 +214,7 @@ export interface ConvertResult {
   validation: Validation;
   fidelity?: FidelityReport;
   contentExpectation?: ContentExpectation;
+  fontDiagnostics?: FontDiagnostic[];
   engines: EngineStamp[];
   elapsedMs: number;
   nativePeakBytes: number;

@@ -12,6 +12,7 @@ root = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--build-mode', choices=['debug', 'release'], default='debug')
 parser.add_argument('--hap', type=Path, default=root / 'entry/build/default/outputs/default/entry-default-signed.hap')
+parser.add_argument('--test-hap', type=Path, help='Also verify the paired test module and its owned fixtures')
 args = parser.parse_args()
 hap = args.hap.resolve()
 profile = (root / 'entry/build/default/generated/profile/default/BuildProfile.ets').read_text(encoding='utf8')
@@ -145,5 +146,23 @@ report = {'scope': 'main ' + args.build_mode + ' signed HAP, ELF exports/direct 
           'deviceExecution': 'not performed by this static check',
           'officeInitializationAndConversion': 'not assessed by this static check; see device acceptance report',
           'libraries': records}
+if args.test_hap:
+    test_hap = args.test_hap.resolve()
+    with zipfile.ZipFile(hap) as main_package, zipfile.ZipFile(test_hap) as test_package:
+        test_names = set(test_package.namelist())
+        assert not any(name.endswith('/libentry.so') for name in test_names), 'Test module must use the main Native engine'
+        common_libraries = sorted(name for name in test_names & set(main_package.namelist())
+                                  if name.startswith('libs/') and not name.endswith('/'))
+        assert len(common_libraries) >= len(manifest['libraries'])
+        for name in common_libraries:
+            assert sha(main_package.read(name)) == sha(test_package.read(name)), 'Test library differs: ' + name
+        for name in ['core-layout.docx', 'core-layout.pptx', 'core-default-font.docx',
+                     'core-missing-font.docx', 'core-missing-symbol.docx']:
+            matches = [entry for entry in test_names if entry.endswith('/rawfile/' + name)]
+            assert len(matches) == 1, name
+            assert test_package.read(matches[0]) == (root / 'entry/src/ohosTest/resources/rawfile' / name).read_bytes(), name
+    report['testPackage'] = {'hapSha256': sha(test_hap.read_bytes()), 'hapBytes': test_hap.stat().st_size,
+                             'noNativeEngineOverride': True, 'matchingNativeLibraries': len(common_libraries),
+                             'ownedFixturesMatch': True, 'deviceExecution': 'not performed by this check'}
 (root / ('tests/generated/core-routes-' + args.build_mode + '-hap-validation.json')).write_text(json.dumps(report, indent=2) + '\n', encoding='utf8')
 print(json.dumps({key: value for key, value in report.items() if key != 'libraries'}, indent=2))

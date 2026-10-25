@@ -48,7 +48,7 @@ foreach(dependency hdm_core_zlib hdm_core_png hdm_core_miniz hdm_core_xml)
     set_target_properties(${dependency} PROPERTIES POSITION_INDEPENDENT_CODE ON C_VISIBILITY_PRESET hidden CXX_VISIBILITY_PRESET hidden)
 endforeach()
 add_library(hdm_document_inputs STATIC "${CMAKE_CURRENT_LIST_DIR}/png_pdf.cpp" "${CMAKE_CURRENT_LIST_DIR}/office_input.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/office_media.cpp")
+    "${CMAKE_CURRENT_LIST_DIR}/office_media.cpp" "${CMAKE_CURRENT_LIST_DIR}/office_font_usage.cpp")
 get_target_property(hdm_jpeg_includes hdm_jpeg_pdf INCLUDE_DIRECTORIES)
 target_include_directories(hdm_document_inputs PRIVATE ${hdm_jpeg_includes})
 target_compile_features(hdm_document_inputs PUBLIC cxx_std_17)

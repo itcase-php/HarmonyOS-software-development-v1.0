@@ -1753,8 +1753,83 @@ export const languageCatalog: LanguageEntry[] = [
   },
   {
     "name": "input_office_font_missing",
-    "zh": "文档引用的字体在内置和系统字体中缺失。可勾选允许字体替代后重新转换，或改用已安装的字体；替代可能改变换行、分页和外观。",
-    "en": "A referenced font is missing. Enable font fallback and retry, or use an installed font. Fallback may change line breaks, pagination and appearance."
+    "zh": "文档实际使用的字体在内置和系统字体中缺失。请查看下方字体名称；可允许字体替代后重新转换，或改用已安装的字体。替代可能改变换行、分页和外观。",
+    "en": "A font used by this document is missing. See the font names below, then approve fallback and retry, or use an installed font. Fallback may change line breaks, pagination and appearance."
+  },
+  {
+    "name": "input_office_font_inventory_failed",
+    "zh": "Office 字体系统未能读取内置或系统字体。请重试；持续失败时请检查应用安装与离线资源。这不等于文档缺少某种字体，允许替代不能跳过此检查。",
+    "en": "Office could not read the bundled or system font inventory. Retry and check the application installation and offline resources. This is not a missing document font; fallback cannot bypass this check."
+  },
+  {
+    "name": "input_office_font_usage_unsupported",
+    "zh": "文档使用了当前尚不能可靠判断的字体继承或主题关系。请将相关内容设为明确字体后重试；允许字体替代不能跳过此检查。",
+    "en": "The document uses a font inheritance or theme relationship that cannot yet be resolved reliably. Set explicit fonts on the affected content and retry. Font fallback cannot bypass this check."
+  },
+  {
+    "name": "input_office_font_detail",
+    "zh": "字体：%s；位置：%s",
+    "en": "Font: %s; location: %s"
+  },
+  {
+    "name": "font_part_header",
+    "zh": "页眉",
+    "en": "Header"
+  },
+  {
+    "name": "font_part_footer",
+    "zh": "页脚",
+    "en": "Footer"
+  },
+  {
+    "name": "font_part_footnotes",
+    "zh": "脚注",
+    "en": "Footnotes"
+  },
+  {
+    "name": "font_part_endnotes",
+    "zh": "尾注",
+    "en": "Endnotes"
+  },
+  {
+    "name": "font_part_master",
+    "zh": "幻灯片母版",
+    "en": "Slide master"
+  },
+  {
+    "name": "font_part_layout",
+    "zh": "幻灯片版式",
+    "en": "Slide layout"
+  },
+  {
+    "name": "font_part_slide",
+    "zh": "幻灯片文字",
+    "en": "Slide text"
+  },
+  {
+    "name": "font_part_body",
+    "zh": "文档正文",
+    "en": "Document body"
+  },
+  {
+    "name": "input_office_default_font",
+    "zh": "应用默认字体",
+    "en": "Application default font"
+  },
+  {
+    "name": "input_font_retry",
+    "zh": "允许字体替代并重试",
+    "en": "Allow font fallback and retry"
+  },
+  {
+    "name": "input_font_retry_confirm",
+    "zh": "同意可能的版式变化并重试",
+    "en": "Accept possible layout changes and retry"
+  },
+  {
+    "name": "input_font_retry_failed",
+    "zh": "无法重新转换。请重新选择源文件并确认字体替代。",
+    "en": "Unable to retry. Select the source file again and confirm font fallback."
   },
   {
     "name": "input_office_feature_unsupported",

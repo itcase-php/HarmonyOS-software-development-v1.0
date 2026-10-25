@@ -1,0 +1,10 @@
+{
+  "scope": "saved OHOS test transcript; no device commands executed",
+  "passed": false,
+  "tests": 10,
+  "failures": 0,
+  "errors": 9,
+  "passes": 1,
+  "ignored": 0,
+  "reason": "test_cases_not_all_passed"
+}

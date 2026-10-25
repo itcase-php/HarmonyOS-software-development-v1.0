@@ -3,8 +3,22 @@
   "result": "passed",
   "exactSourceSnapshots": 21,
   "originalOutputFilesChecked": 21,
-  "originalProjectFilesRetained": null,
-  "originalProjectChanges": [],
+  "originalProjectFilesRetained": 46,
+  "originalProjectChanges": [
+    ".gitignore",
+    "build-profile.json5",
+    "entry/src/main/cpp/CMakeLists.txt",
+    "entry/src/main/cpp/napi_init.cpp",
+    "entry/src/main/cpp/types/libentry/Index.d.ts",
+    "entry/src/main/ets/entryability/EntryAbility.ets",
+    "entry/src/main/ets/pages/Index.ets",
+    "entry/src/main/resources/base/element/color.json",
+    "entry/src/main/resources/base/element/string.json",
+    "entry/src/main/resources/base/profile/backup_config.json",
+    "entry/src/main/resources/base/profile/main_pages.json",
+    "entry/src/ohosTest/ets/test/List.test.ets",
+    "entry/src/test/List.test.ets"
+  ],
   "nativeMethodsPreserved": 14,
   "formats": 18,
   "plannedRoutes": 39,
@@ -19,14 +33,14 @@
       "source": "contracts/converter.h",
       "target": "entry/src/main/cpp/core/converter.h",
       "sourceSha256": "7ae85fa80670570458fbfb25162d281ebffed8e0cc476bd5c5cf26abb2fee2ae",
-      "currentTargetSha256": "5b979561daa63c5b3d97530f254047acac34a8ec77e9f023c76bd714306642c5",
+      "currentTargetSha256": "66669410fa6e2094509f3c6a60fb04815572371e7ed404ae9b3ad38f51381442",
       "changedSinceFirstImport": true
     },
     {
       "source": "contracts/native_bridge.d.ts",
       "target": "entry/src/main/ets/models/NativeProtocol.ets",
       "sourceSha256": "b557f768c2e3ca21755a68c775b81402dafa0b59f9f5eda0adb83daa99e1bf92",
-      "currentTargetSha256": "49e230332d19ed6d61ceb33ac029fa21c28defb30e883adbb078a60f1c1d6606",
+      "currentTargetSha256": "0048f842acbd45728e148cd9b0b402c178e06b8415b54131f02ffac74d2fcb3b",
       "changedSinceFirstImport": true
     },
     {

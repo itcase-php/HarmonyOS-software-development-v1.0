@@ -15,6 +15,9 @@ import { ErrorHandler } from '../../../main/ets/common/ErrorHandler';
 import { window } from '@kit.ArkUI';
 import { artifactDeliverySmoke } from './ArtifactDeliverySmoke';
 import { pdfService } from '@kit.PDFKit';
+import { coreTestContext } from './CoreTestContext';
+
+interface CoreFixture { name: string; label: string; approved: boolean; blocked: string; }
 
 async function captureFixturePdf(path: string, byteSize: number, sha256: string, label: string): Promise<void> {
   const file = await fileIo.open(path, fileIo.OpenMode.READ_ONLY);
@@ -40,17 +43,32 @@ async function captureFixturePdf(path: string, byteSize: number, sha256: string,
 
 export default function corePdfSmokeTest() {
   describe('CorePdfSmoke', () => {
-    for (const fixtureName of ['core-layout.docx', 'core-layout.pptx', 'core-layout.png',
-      'core-cjk.docx', 'core-cjk.pptx', 'core-missing-symbol.docx']) {
+    const fixtures: CoreFixture[] = [
+      { name: 'core-layout.docx', label: 'docx', approved: true, blocked: '' },
+      { name: 'core-layout.pptx', label: 'pptx', approved: false, blocked: '' },
+      { name: 'core-layout.png', label: 'png', approved: false, blocked: '' },
+      { name: 'core-cjk.docx', label: 'docx-cjk', approved: true, blocked: '' },
+      { name: 'core-cjk.pptx', label: 'pptx-cjk', approved: true, blocked: '' },
+      { name: 'core-default-font.docx', label: 'docx-default', approved: false, blocked: '' },
+      { name: 'core-missing-font.docx', label: 'docx-font-reject', approved: false, blocked: 'OFFICE_REQUIRED_FONT_MISSING' },
+      { name: 'core-missing-font.docx', label: 'docx-font-approved', approved: true, blocked: '' },
+      { name: 'core-missing-symbol.docx', label: 'docx-missing-symbol', approved: false, blocked: 'OFFICE_SYMBOL_FONT_MISSING' },
+      { name: 'core-missing-symbol.docx', label: 'docx-missing-symbol-approved', approved: true, blocked: 'OFFICE_SYMBOL_FONT_MISSING' }
+    ];
+    for (const testCase of fixtures) {
+      const fixtureName = testCase.name;
       const format = fixtureName.substring(fixtureName.lastIndexOf('.') + 1);
-      const label = format + (fixtureName.includes('cjk') ? '-cjk' : fixtureName.includes('missing-symbol') ? '-missing-symbol' : '');
+      const label = testCase.label;
       const selected = abilityDelegatorRegistry.getArguments().parameters['-s fixtureLabel'];
       if (selected && selected !== label) { continue; }
       it('checks repository ' + label + ' using real engines and PDFKit', 0, async () => {
-        const ability = await abilityDelegatorRegistry.getAbilityDelegator().getCurrentTopAbility();
-        const context = ability.context;
-        const appWindow = await window.getLastWindow(context);
-        await appWindow.setWindowKeepScreenOn(true);
+        const context = await coreTestContext();
+        const parameters = abilityDelegatorRegistry.getArguments().parameters;
+        const needsUi = label === 'docx' && (parameters['-s publishFixture'] === 'true' || parameters['-s deliveryUi'] === 'true');
+        const ability = needsUi ? await abilityDelegatorRegistry.getAbilityDelegator().getCurrentTopAbility() : undefined;
+        const appWindow = ability ? await window.getLastWindow(ability.context) : undefined;
+        if (appWindow) { await appWindow.setWindowKeepScreenOn(true); }
+        hilog.info(0, 'CorePdfSmoke', 'CORE_CONTEXT format=%{public}s mode=entry-module ui=%{public}s', label, needsUi.toString());
         const testContext = await application.createModuleContext(context, 'entry_test');
         const fixture = await testContext.resourceManager.getRawFileContent(fixtureName);
         if (label === 'docx' && abilityDelegatorRegistry.getArguments().parameters['-s publishFixture'] === 'true') {
@@ -58,7 +76,8 @@ export default function corePdfSmokeTest() {
           const name = 'hdm-office-source-' + Date.now().toString() + '.docx';
           options.newFileNames = [name];
           hilog.info(0, 'CorePdfSmoke', 'FIXTURE_SOURCE_SAVE_START name=%{public}s', name);
-          const uris = await new picker.DocumentViewPicker(context).save(options);
+          if (!ability) { throw new Error('CORE_UI_CONTEXT_REQUIRED'); }
+          const uris = await new picker.DocumentViewPicker(ability.context).save(options);
           expect(uris.length).assertEqual(1);
           const destination = await fileIo.open(uris[0], fileIo.OpenMode.CREATE | fileIo.OpenMode.READ_WRITE | fileIo.OpenMode.TRUNC);
           try {
@@ -103,10 +122,10 @@ export default function corePdfSmokeTest() {
           const input: PreparedInput = { fileId, sourceFormatId: format, relativePath: 'inputs/' + fileId,
             byteSize: fixture.byteLength, sha256: (await hash.hash(sourcePath, 'sha256')).toLowerCase() };
           const office = format !== 'png';
-          const allowed: string[] = office ? ['font_substitution'] : [];
+          const allowed: string[] = office && testCase.approved ? ['font_substitution'] : [];
           const request: ConvertRequest = { schemaVersion: 1, sessionId, taskId, attemptId, workspaceRef,
             operation: route.operation, inputs: [input], targetFormatId: 'pdf', qualityMode: 'balanced',
-            intent: route.intent, options: office ? { office: { missingFontPolicy: 'approved_fallback',
+            intent: route.intent, options: office ? { office: { missingFontPolicy: testCase.approved ? 'approved_fallback' : 'reject',
               allowedDegradations: allowed, includeReferencePages: false } } : {},
             resourceBudget: registryMetadata.defaultBudget,
             plan: { routeId: route.id, steps: route.steps, fallbackRouteIds: route.fallbackRouteIds,
@@ -115,10 +134,14 @@ export default function corePdfSmokeTest() {
               policyVersion: registryMetadata.securityPolicy.version } };
           hilog.info(0, 'CorePdfSmoke', 'CORE_START format=%{public}s', label);
           const result = await native.execute(request);
-          if (fixtureName.includes('missing-symbol')) {
+          if (testCase.blocked.length > 0) {
             expect(result.status).assertEqual('failed');
             expect(result.error?.code).assertEqual('FONT_MISSING');
-            expect(['OFFICE_SYMBOL_FONT_MISSING', 'OFFICE_GLYPH_MISSING'].includes(result.error?.reason ?? '')).assertTrue();
+            expect(result.error?.reason).assertEqual(testCase.blocked);
+            expect((result.fontDiagnostics?.length ?? 0) > 0).assertTrue();
+            if (label === 'docx-font-reject') {
+              expect(result.fontDiagnostics?.some((item) => item.family === 'HDM Missing Normal Font' && item.part === 'word/document.xml')).assertTrue();
+            }
             expect(result.outputs.length).assertEqual(0);
             hilog.info(0, 'CorePdfSmoke', 'CORE_BLOCKED format=%{public}s reason=%{public}s', label, result.error?.reason ?? '');
             return;
@@ -128,6 +151,11 @@ export default function corePdfSmokeTest() {
               label, result.error.code, result.error.reason);
           }
           expect(result.status).assertEqual('success');
+          if (label === 'docx-default' || label === 'pptx') { expect(result.fontDiagnostics?.length ?? 0).assertEqual(0); }
+          if (label === 'docx-font-approved') {
+            expect(result.fidelity?.degradations.includes('font_substitution')).assertTrue();
+            expect(result.fontDiagnostics?.some((item) => item.family === 'HDM Missing Normal Font')).assertTrue();
+          }
           expect(result.validation.state).assertEqual('passed');
           expect(result.outputs.length).assertEqual(1);
           const artifact = result.outputs[0];
@@ -144,7 +172,8 @@ export default function corePdfSmokeTest() {
             await captureFixturePdf(outputPath, artifact.byteSize, artifact.sha256, label);
           }
           if (label === 'docx' && abilityDelegatorRegistry.getArguments().parameters['-s deliveryUi'] === 'true') {
-            await artifactDeliverySmoke(native, artifact, context);
+            if (!ability) { throw new Error('CORE_UI_CONTEXT_REQUIRED'); }
+            await artifactDeliverySmoke(native, artifact, ability.context);
           }
           await native.releaseArtifact(artifact.internalRef);
         } catch (error) {
@@ -153,9 +182,11 @@ export default function corePdfSmokeTest() {
             label, failure.code, failure.reason);
           throw error as Error;
         } finally {
-          await native.shutdown();
-          if (await fileIo.access(directory)) { await fileIo.rmdir(directory); }
-          await appWindow.setWindowKeepScreenOn(false);
+          try { await native.shutdown(); }
+          finally {
+            try { if (await fileIo.access(directory)) { await fileIo.rmdir(directory); } }
+            finally { if (appWindow) { await appWindow.setWindowKeepScreenOn(false); } }
+          }
         }
       });
     }

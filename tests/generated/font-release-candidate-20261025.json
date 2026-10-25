@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-25",
+  "implementationState": "code_and_release_build_verified",
+  "releaseReady": false,
+  "mainPackage": {
+    "path": "entry/build/default/outputs/default/entry-font-rc-20261025-signed.hap",
+    "bytes": 392844700,
+    "sha256": "c2e227482a35e0af2f35cef6ee667b84b3444a8bb58afc36bd5a65bf5ac72a6f"
+  },
+  "testPackage": {
+    "path": "entry/build/default/outputs/ohosTest/entry-ohosTest-signed.hap",
+    "hapSha256": "c0e2ef2ce19587229aeff29184e1598717110efa4affaee153fe471868ce8322",
+    "hapBytes": 390685965,
+    "noNativeEngineOverride": true,
+    "matchingNativeLibraries": 235,
+    "ownedFixturesMatch": true,
+    "deviceExecution": "not performed by this check"
+  },
+  "hostChecks": {
+    "nativeCTest": 26,
+    "documentCli": 38,
+    "officeFontUsage": 36,
+    "fontDiagnostics": 17,
+    "testContext": 5,
+    "delivery": 13,
+    "deliveryLifecycle": 5,
+    "bundledRuntime": 23,
+    "savedTestReportParser": 6
+  },
+  "enginePackage": {
+    "officeLibraries": 235,
+    "offlineResourceFiles": 3284,
+    "internetPermission": false
+  },
+  "deviceExecutionThisRun": "not performed; user deferred device work until evening",
+  "historicalDeviceAttempt": {
+    "date": "2026-10-23",
+    "report": "tests/generated/core-device-font-attempt-20261023.json",
+    "tests": 10,
+    "passes": 1,
+    "errors": 9,
+    "passed": false
+  },
+  "pendingReleaseGates": [
+    "complete Core 10 and JPEG 2 device cases on this exact pair of packages",
+    "reproduce the user failing Word or user-approved equivalent file",
+    "each route conversion/save/reopen/share with recipient receipt and opening",
+    "user-approved reference-PDF visual comparison",
+    "first offline initialization, repeated conversions, cancellation and resource measurements"
+  ],
+  "publicationPolicy": "four routes remain experimental; keep PR draft; no merge or store release"
+}

@@ -1,6 +1,7 @@
 #include "../../core/converter.h"
 #include "../../production/office_context.h"
 #include "../../production/office_input.h"
+#include "../../production/office_font_usage.h"
 #include "../../production/route_policy.h"
 #include "../../generated/office_bundle.h"
 #include "../../napi/bridge_problem.h"
@@ -8,6 +9,7 @@
 #include <fstream>
 #include <mutex>
 #include <set>
+#include <map>
 #include <algorithm>
 #if defined(__OHOS__) && defined(__aarch64__) && defined(HDM_BUNDLED_OFFICE)
 #include <LibreOfficeKit/LibreOfficeKit.h>
@@ -46,11 +48,12 @@ std::string Fold(std::string value) {
     std::transform(value.begin(),value.end(),value.begin(),[](unsigned char c){ return c<128?static_cast<char>(std::tolower(c)):static_cast<char>(c); });
     return value;
 }
-std::vector<std::string> CheckFonts(const std::vector<std::string>& required,const ContentExpectation& content) {
+Status CheckFonts(const std::vector<production::OfficeFontUse>& uses,bool approved,std::vector<FontDiagnostic>& diagnostics) {
     // Exact family inventory, no FcFontMatch fallback which could silently substitute.
     struct FontSet { int count,size; void** fonts; };
     void* library=dlopen("libfontconfig-lo.so.1.16.1",RTLD_NOW|RTLD_LOCAL);
     if (!library) throw BridgeProblem(ErrorCode::EngineMissing,"OFFICE_FONTCONFIG_MISSING");
+    const std::unique_ptr<void,decltype(&dlclose)> libraryOwner(library,dlclose);
     const auto create=reinterpret_cast<void*(*)()>(dlsym(library,"FcPatternCreate"));
     const auto objects=reinterpret_cast<void*(*)(const char*,...)>(dlsym(library,"FcObjectSetBuild"));
     const auto list=reinterpret_cast<FontSet*(*)(void*,void*,void*)>(dlsym(library,"FcFontList"));
@@ -61,32 +64,32 @@ std::vector<std::string> CheckFonts(const std::vector<std::string>& required,con
     const auto freeObjects=reinterpret_cast<void(*)(void*)>(dlsym(library,"FcObjectSetDestroy"));
     const auto freeSet=reinterpret_cast<void(*)(FontSet*)>(dlsym(library,"FcFontSetDestroy"));
     if (!create || !objects || !list || !get || !charset || !contains || !freePattern || !freeObjects || !freeSet) {
-        dlclose(library);
         throw BridgeProblem(ErrorCode::EngineMissing,"OFFICE_FONTCONFIG_API");
     }
-    void* pattern=create(); void* fields=objects("family","charset",nullptr);
-    FontSet* set=list(nullptr,pattern,fields); std::set<std::string> available;
+    const std::unique_ptr<void,decltype(freePattern)> pattern(create(),freePattern);
+    const std::unique_ptr<void,decltype(freeObjects)> fields(objects("family","charset",nullptr),freeObjects);
+    if (!pattern || !fields) return Failure(ErrorCode::ResourceLimitExceeded,"OFFICE_FONT_INVENTORY_ALLOCATION");
+    FontSet* set=list(nullptr,pattern.get(),fields.get());
+    const std::unique_ptr<FontSet,decltype(freeSet)> fontSet(set,freeSet);
+    std::map<std::string,std::vector<int>> available;
     if (set) for (int index=0;index<set->count;++index) for (int alias=0;;++alias) {
         unsigned char* name{}; if (get(set->fonts[index],"family",alias,&name)!=0) break;
-        if (name) available.insert(Fold(reinterpret_cast<char*>(name)));
+        if (name) available[Fold(reinterpret_cast<char*>(name))].push_back(index);
     }
-    bool missingGlyph=false;
-    for (const auto& entry:content.textMinimum) {
-        bool covered=false;
-        if (set) for (int index=0;index<set->count && !covered;++index) {
+    const auto familyAvailable=[&](const std::string& name) {return available.count(Fold(name))!=0;};
+    const auto hasGlyph=[&](const std::string& family,std::uint32_t cp) {
+        const auto found=available.find(Fold(family));
+        if (!family.empty() && found==available.end()) return false;
+        if (set) for (int index=0;index<set->count;++index) {
+            if (!family.empty() && std::find(found->second.begin(),found->second.end(),index)==found->second.end()) continue;
             void* characters{};
-            if (charset(set->fonts[index],"charset",0,&characters)==0 && characters)
-                covered=contains(characters,entry.first)!=0;
+            if (charset(set->fonts[index],"charset",0,&characters)==0 && characters && contains(characters,cp)!=0) return true;
         }
-        missingGlyph|=!covered;
-    }
-    if (set) freeSet(set); if (fields) freeObjects(fields); if (pattern) freePattern(pattern);
-    dlclose(library);
-    if (available.empty()) throw BridgeProblem(ErrorCode::FontMissing,"OFFICE_FONT_INVENTORY_EMPTY");
-    if (missingGlyph) throw BridgeProblem(ErrorCode::FontMissing,"OFFICE_GLYPH_MISSING");
-    std::vector<std::string> missing;
-    for (const auto& name:required) if (!available.count(Fold(name))) missing.push_back(name);
-    return missing;
+        return false;
+    };
+    const auto status=available.empty()?Failure(ErrorCode::EngineMissing,"OFFICE_FONT_INVENTORY_EMPTY"):
+        production::ValidateOfficeFontUsage(uses,familyAvailable,hasGlyph,approved,diagnostics);
+    return status;
 }
 #endif
 class OfficeConverter final : public IConverter {
@@ -159,11 +162,11 @@ public:
             auto status=task->CheckBudgetAndDeadline(); if (!status.IsOk()) return status;
             const auto inspected=production::InspectOffice(task->input,request.inputs[0].sourceFormatId,budget_);
             task->content=inspected.content;
-            task->missingFonts=CheckFonts(inspected.fonts,inspected.content);
-            if (!task->missingFonts.empty() && inspected.hasPrivateGlyphs)
-                return Failure(ErrorCode::FontMissing,"OFFICE_SYMBOL_FONT_MISSING");
-            if (!task->missingFonts.empty() && (!request.options.office || request.options.office->missingFontPolicy!="approved_fallback"))
-                return Failure(ErrorCode::FontMissing,"OFFICE_REQUIRED_FONT_MISSING");
+            status=CheckFonts(inspected.fontUses,request.options.office && request.options.office->missingFontPolicy=="approved_fallback",task->fontDiagnostics);
+            std::set<std::string> missing;
+            for (const auto& item:task->fontDiagnostics) if (!item.family.empty()) missing.insert(item.family);
+            task->missingFonts.assign(missing.begin(),missing.end());
+            if (!status.IsOk()) return status;
             auto* document=office->pClass->documentLoadWithOptions(office,Url(task->input.string()).c_str(),"Batch=true,EnableMacrosExecution=false");
             if (!document) return Failure(ErrorCode::FileCorrupted,"OFFICE_DOCUMENT_LOAD_FAILED");
             struct Cleanup { LibreOfficeKitDocument* doc; ~Cleanup(){doc->pClass->destroy(doc);} } cleanup{document};

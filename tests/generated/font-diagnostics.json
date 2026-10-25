@@ -1,0 +1,13 @@
+{
+  "scope": "actual ArkTS with modeled Native/filesystem; no phone or conversion",
+  "passed": 17,
+  "optionalBackwardCompatibility": true,
+  "detachedSnapshots": true,
+  "boundedDiagnostics": true,
+  "distinctFontErrors": true,
+  "explicitRetryApproval": true,
+  "retainedInputRetry": true,
+  "glyphFailureCannotRetry": true,
+  "historyAndShutdownReleaseRetainedInputs": true,
+  "device": "not executed"
+}

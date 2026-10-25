@@ -100,6 +100,14 @@ napi_value SerializeConvertResult(napi_env env,const ConvertResult& native) {
         Push(env,warnings,i,item);
     }
     Put(env,result,"warnings",warnings);
+    if (!native.fontDiagnostics.empty()) {
+        auto fonts=Array(env);
+        for (std::uint32_t i=0;i<native.fontDiagnostics.size();++i) {
+            auto item=Object(env);PutText(env,item,"family",native.fontDiagnostics[i].family);
+            PutText(env,item,"part",native.fontDiagnostics[i].part);Push(env,fonts,i,item);
+        }
+        Put(env,result,"fontDiagnostics",fonts);
+    }
     if (native.fidelity) Put(env,result,"fidelity",Report(env,*native.fidelity));
     if (native.contentExpectation) {
         const auto& expected=*native.contentExpectation; auto content=Object(env); auto text=Array(env);

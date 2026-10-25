@@ -3,8 +3,14 @@
 #include <filesystem>
 #include <vector>
 namespace hdm::production {
+struct OfficeFontUse {
+    std::string family,part;
+    std::vector<std::uint32_t> characters;
+    bool symbol{};
+};
 struct OfficeInput {
     std::vector<std::string> fonts;
+    std::vector<OfficeFontUse> fontUses;
     std::uint32_t slides{};
     ContentExpectation content;
     bool hasPrivateGlyphs{};

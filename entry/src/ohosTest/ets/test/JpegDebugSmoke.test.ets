@@ -11,6 +11,7 @@ import { registryMetadata } from '../../../main/ets/generated/RegistryData';
 import { PreparedInput, ConvertRequest, ProbeRequest, ErrorCode } from '../../../main/ets/models/NativeProtocol';
 import { BridgeError } from '../../../main/ets/common/BridgeError';
 import { artifactDeliverySmoke } from './ArtifactDeliverySmoke';
+import { coreTestContext } from './CoreTestContext';
 
 async function expectProbeFailure(native: NativeBridgeService, request: ProbeRequest,
   code: ErrorCode, reason: string): Promise<void> {
@@ -28,9 +29,8 @@ async function expectProbeFailure(native: NativeBridgeService, request: ProbeReq
 export default function jpegDebugSmokeTest() {
   describe('JpegDebugSmoke', () => {
     for (const fixtureName of ['jpeg-debug-baseline.jpg', 'jpeg-debug-exif-icc.jpg']) {
-    it('converts ' + fixtureName + ' through the real Debug Native bridge', 0, async () => {
-      const ability = await abilityDelegatorRegistry.getAbilityDelegator().getCurrentTopAbility();
-      const context = ability.context;
+    it('converts ' + fixtureName + ' through the real Native bridge', 0, async () => {
+      const context = await coreTestContext();
       const testContext = await application.createModuleContext(context, 'entry_test');
       const fixture = await testContext.resourceManager.getRawFileContent(fixtureName);
       if (fixtureName === 'jpeg-debug-baseline.jpg') { expect(fixture.byteLength).assertEqual(634); }
@@ -141,7 +141,8 @@ export default function jpegDebugSmokeTest() {
         } finally { fileIo.closeSync(output); }
         if (fixtureName === 'jpeg-debug-baseline.jpg' &&
           abilityDelegatorRegistry.getArguments().parameters['-s deliveryUi'] === 'true') {
-          await artifactDeliverySmoke(native, artifact, context);
+          const ability = await abilityDelegatorRegistry.getAbilityDelegator().getCurrentTopAbility();
+          await artifactDeliverySmoke(native, artifact, ability.context);
         }
         await native.releaseArtifact(artifact.internalRef);
         await native.releaseTask(taskId, attemptId);

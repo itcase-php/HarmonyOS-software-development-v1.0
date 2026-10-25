@@ -36,7 +36,10 @@ int main(int argc,char** argv) {
             const auto input=hdm::production::InspectOffice(argv[2],format,budget);
             std::uint64_t characters{};for(const auto& item:input.content.textMinimum)characters+=item.second;
             std::cout<<"inspection only: slides="<<input.slides<<" fonts="<<input.fonts.size()<<" characters="<<characters
-                <<" images="<<input.content.minimumImages<<" private="<<input.hasPrivateGlyphs<<'\n';return 0;
+                <<" images="<<input.content.minimumImages<<" private="<<input.hasPrivateGlyphs<<'\n';
+            for (const auto& font:input.fonts) std::cout<<"font="<<font<<'\n';
+            for (const auto& use:input.fontUses) std::cout<<"font-part="<<use.part<<'\n';
+            return 0;
         }
         if (argc!=4 || (format!="jpeg" && format!="png")) return usage();
         const auto root=fs::temp_directory_path()/("hdm-document-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));

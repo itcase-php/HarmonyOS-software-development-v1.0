@@ -6,6 +6,7 @@ import { BridgeError } from '../common/BridgeError';
 import { ErrorHandler } from '../common/ErrorHandler';
 import { ConversionDiagnostics } from '../common/ConversionDiagnostics';
 import { ConverterUiPort, PreviewConverterUi } from './ConverterUiPort';
+import { FontDiagnostic } from '../models/NativeProtocol';
 
 @Observed
 export class ConversionStatusVM {
@@ -63,6 +64,19 @@ inputText(key: ResourceStr): string { return this.ui.read( key); }
 
 inputFailure(reason: string): string { return LanguageManager.getString(this.inputFailureKey(reason)); }
 
+fontDiagnosticText(items: FontDiagnostic[]): string {
+    return items.map((item: FontDiagnostic) => LanguageManager.getString('input_office_font_detail',
+      [item.family || LanguageManager.getString('input_office_default_font'), this.fontPartText(item.part)])).join('\n');
+}
+
+private fontPartText(part: string): string {
+    const key = part.startsWith('word/header') ? 'font_part_header' : part.startsWith('word/footer') ? 'font_part_footer' :
+      part === 'word/footnotes.xml' ? 'font_part_footnotes' : part === 'word/endnotes.xml' ? 'font_part_endnotes' :
+      part.startsWith('ppt/slideMasters/') ? 'font_part_master' : part.startsWith('ppt/slideLayouts/') ? 'font_part_layout' :
+      part.startsWith('ppt/slides/') ? 'font_part_slide' : 'font_part_body';
+    return LanguageManager.getString(key);
+}
+
 inputFailureKey(reason: string): string {
     if (reason === 'FILE_TOO_LARGE') { return 'file_too_large'; }
     if (reason === 'BATCH_TOO_LARGE') { return 'input_batch_too_large'; }
@@ -80,7 +94,9 @@ inputFailureKey(reason: string): string {
     if (reason === 'FILE_COPY_FAILED' || reason === 'FILE_CHANGED_DURING_COPY' || reason === 'FILE_WRITE_INCOMPLETE') { return 'input_import_failed'; }
     if (reason === 'NATIVE_INPUT_NOT_VERIFIED') { return 'input_probe_failed'; }
     if (reason.startsWith('NATIVE_PNG_') && reason.includes('UNSUPPORTED')) { return 'input_png_subset_unsupported'; }
-    if (reason.startsWith('OFFICE_REQUIRED_FONT') || reason === 'OFFICE_FONT_INVENTORY_EMPTY') { return 'input_office_font_missing'; }
+    if (reason === 'OFFICE_FONT_INVENTORY_EMPTY') { return 'input_office_font_inventory_failed'; }
+    if (reason === 'OFFICE_FONT_USAGE_UNRESOLVED') { return 'input_office_font_usage_unsupported'; }
+    if (reason.startsWith('OFFICE_REQUIRED_FONT')) { return 'input_office_font_missing'; }
     if (reason === 'OFFICE_SYMBOL_FONT_MISSING' || reason === 'OFFICE_GLYPH_MISSING') { return 'input_office_glyph_missing'; }
     if (reason === 'OFFICE_TEXT_MISSING' || reason === 'OFFICE_IMAGES_MISSING' || reason === 'OFFICE_PAGE_COUNT_MISMATCH') { return 'input_office_content_mismatch'; }
     if (reason === 'NATIVE_OFFICE_EXTERNAL_RELATIONSHIP' || reason === 'NATIVE_OFFICE_ACTIVE_CONTENT') { return 'input_office_feature_unsupported'; }

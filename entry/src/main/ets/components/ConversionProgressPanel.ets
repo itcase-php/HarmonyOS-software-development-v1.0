@@ -5,6 +5,7 @@ import { DemoTask, taskStatusLabel, taskStatusColor, isActiveTask } from '../mod
 import { UiFeedback } from '../common/UiFeedback';
 import { StatusBadge } from './StatusBadge';
 import { FidelityReportCard } from './FidelityReportCard';
+import { FontFallbackRetry } from './FontFallbackRetry';
 
 @Component
 export struct ConversionProgressPanel {
@@ -22,6 +23,8 @@ export struct ConversionProgressPanel {
       Text(task.fileName).fontSize(16)
       Text(LanguageManager.stage(task.stage, task.stageArgs, this.language)).fontSize(13).fontColor($r('app.color.palette_526077'))
       if (task.error.length > 0) { Text(this.model.inputFailure(task.error.substring(task.error.indexOf(':') + 1))).fontColor($r('app.color.palette_c53030')) }
+      if (task.fontDiagnostics.length > 0) { Text(this.model.fontDiagnosticText(task.fontDiagnostics)).fontSize(13).fontColor($r('app.color.palette_526077')).copyOption(CopyOptions.LocalDevice) }
+      FontFallbackRetry({ taskId: task.id, onRetried: (id: string) => { this.model.taskId = id; this.model.receiveTasks(this.services.tasks.snapshot()); } })
       if (isActiveTask(task.status)) {
         Progress({ value: task.progress, total: 100, type: ProgressType.Linear }).width('100%')
         Button(this.tr($r('app.string.input_cancel_task'))).onClick(() => { this.services.tasks.cancel(task.id); })

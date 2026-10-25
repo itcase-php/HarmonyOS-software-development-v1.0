@@ -341,6 +341,7 @@ void Completion() {
 void Reports() {
     Fixture fixture; hdm::ConvertResult input; input.schemaVersion=1;
     input.taskId="task"; input.attemptId="attempt";
+    input.fontDiagnostics={{"Missing Font","word/document.xml"}};
     input.warnings.push_back({hdm::ErrorCode::FontMissing,"FONT_ABSENT","errors.FONT_MISSING",true,std::string("font-check")});
     hdm::FidelityReport report; report.schemaVersion=1;
     report.intent=hdm::Intent::LayoutPreserved; report.requestedTier=hdm::FidelityTier::Extreme;
@@ -356,6 +357,8 @@ void Reports() {
     failure.traceId="trace-42"; failure.messageKey="errors.OUTPUT_VALIDATION_FAILED";
     failure.retryable=true; failure.detailKey="errors.pdf_structure"; input.error=failure;
     const auto output=hdm::SerializeConvertResult(&fixture.env,input);
+    Require(Field(output->fields.at("fontDiagnostics")->elements[0],"family")=="Missing Font" &&
+        Field(output->fields.at("fontDiagnostics")->elements[0],"part")=="word/document.xml","font diagnostics lost in NAPI");
     const auto error=output->fields.at("error");
     Require(Field(error,"module")=="pdf" && Field(error,"stage")=="validating" &&
         Field(error,"traceId")=="trace-42" && error->fields.at("retryable")->boolean &&
@@ -377,10 +380,11 @@ void Reports() {
     Require(metrics->elements.size()==2 && metrics->elements[0]->fields.at("value")->number==0 &&
         metrics->elements[0]->fields.at("denominator")->number==1 &&
         metrics->elements[1]->fields.count("value")==0,"native report changed measurement state");
-    input.fidelity.reset(); input.warnings.clear();
+    input.fidelity.reset(); input.warnings.clear();input.fontDiagnostics.clear();
     const auto missing=hdm::SerializeConvertResult(&fixture.env,input);
     Require(missing->fields.count("fidelity")==0 && missing->fields.at("warnings")->elements.empty(),
         "missing evidence was fabricated");
+    Require(missing->fields.count("fontDiagnostics")==0,"absent font diagnostics were fabricated");
 }
 void Boundary() {
     Fixture allocation; allocation.env.allocateNext = "napi_get_cb_info";

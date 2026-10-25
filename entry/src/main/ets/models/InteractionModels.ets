@@ -1,4 +1,4 @@
-import { FidelityTier, Intent, QualityMode, FidelityReport } from './NativeProtocol';
+import { FidelityTier, Intent, QualityMode, FidelityReport, FontDiagnostic } from './NativeProtocol';
 import { FidelityReportSnapshot } from './FidelityReportSnapshot';
 
 export type ExecutionMode = 'demo' | 'native';
@@ -90,6 +90,7 @@ export class DemoTask {
   resultLabel: string = '';
   resultArgs: (string | number)[] = [];
   error: string = '';
+  fontDiagnostics: FontDiagnostic[] = [];
 
   clone(): DemoTask {
     const copy = new DemoTask();
@@ -103,6 +104,7 @@ export class DemoTask {
     copy.createdAtMs = this.createdAtMs; copy.elapsedMs = this.elapsedMs;
     copy.resultLabel = this.resultLabel; copy.error = this.error;
     copy.resultArgs = this.resultArgs.slice();
+    copy.fontDiagnostics = this.fontDiagnostics.map((item: FontDiagnostic): FontDiagnostic => ({ family: item.family, part: item.part }));
     return copy;
   }
 }

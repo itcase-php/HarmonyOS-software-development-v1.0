@@ -99,6 +99,9 @@ async function main(){
         'export interface ContentExpectation {\n  textMinimum: TextMinimum[];\n  minimumImages: number;\n  pageCount?: number;\n}\n';
       assert.ok(actual.includes(extension));assert.ok(actual.includes('  contentExpectation?: ContentExpectation;\n'));
       actual=actual.replace(extension,'').replace('  contentExpectation?: ContentExpectation;\n','');
+      const fonts='export interface FontDiagnostic { family: string; part: string; }\n';
+      assert.ok(actual.includes(fonts));assert.ok(actual.includes('  fontDiagnostics?: FontDiagnostic[];\n'));
+      actual=actual.replace(fonts,'').replace('  fontDiagnostics?: FontDiagnostic[];\n','');
     }
     if(name==='shared/format-registry/conversion-matrix.json') {
      const matrix=JSON.parse(actual);

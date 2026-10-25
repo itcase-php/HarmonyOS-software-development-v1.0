@@ -1,5 +1,9 @@
 # HarmonyOS软件开发v2.0
 
+**2026-10-25 代码候选版：修正批量测试对前台窗口的依赖、退出时 Native 关闭顺序及 Windows 验证脚本；主机回归和配套 Release 构建通过。上次设备测试实际为 1 项通过、9 项错误，本轮按要求未调试手机。当前包、证据与晚间验收清单见 [最新候选记录](docs/FONT-RELEASE-CANDIDATE-20261025.md)。**
+
+**2026-10-23 候选版：修正 Office 未使用字体误拦截，增加缺失字族/使用部件诊断及明确批准后的源文件重试；四条路线仍等待完整发布验收。电脑端 MSVC 测试旧对象混用导致的栈检查弹窗已修复，内存检查保留。详见 [字体修复与验收记录](docs/FONT-RELEASE-CANDIDATE-20261023.md)。**
+
 **2026-10-14 真机复验：补修 Office 导出文件句柄及中文/符号字体回退后，签名 Release 的 Core 6/6、JPEG 2/2、保存后重新打开 1/1 通过。五份真实 PDF 已独立解析、渲染并逐页检查；主界面 DOCX 转换、Download 保存和系统分享面板通过。当前证明受控样例与本机可运行，未宣称任意 Office 文件无损。详见 [Release 真机样例验收](docs/DEVICE-ACCEPTANCE-20261014.md)。**
 
 基于 HarmonyOS Stage 模型的原生文档转换工具工程，采用 **ArkTS / ArkUI 上层业务 + C++ / NAPI 底层能力**架构。主应用收敛为 **JPEG、PNG、DOCX、PPTX → PDF**。图片核心静态编入 Native，DOCX/PPTX 使用真正的 LibreOfficeKit Writer/Impress。Debug 与 Release 均允许范围内的真实转换，实际引擎、输入和输出检查继续生效；`experimental` 表示设备与版式资格尚待验收，不再表示 Debug 专用。其余 39 条路线保留禁用。

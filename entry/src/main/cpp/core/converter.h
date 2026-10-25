@@ -172,6 +172,7 @@ struct ContentExpectation {
     std::uint32_t minimumImages{};
     std::optional<std::uint32_t> pageCount;
 };
+struct FontDiagnostic { std::string family,part; };
 struct ConvertResult {
     std::uint32_t schemaVersion{};
     std::string taskId, attemptId;
@@ -182,6 +183,7 @@ struct ConvertResult {
     Validation validation;
     std::optional<FidelityReport> fidelity;
     std::optional<ContentExpectation> contentExpectation;
+    std::vector<FontDiagnostic> fontDiagnostics;
     std::vector<EngineStamp> engines;
     std::uint64_t elapsedMs{}, nativePeakBytes{}, tempPeakBytes{};
 };

@@ -76,6 +76,15 @@ missing_symbol = Document()
 missing_symbol.styles['Normal'].font.name = 'HDM Missing Symbol Font'
 missing_symbol.add_paragraph('Missing icon: \ue000')
 missing_symbol.save(root / 'missing-symbol.docx')
+default_font = Document()
+default_font.styles['Normal'].font.name = 'DejaVu Sans'
+default_font.add_paragraph('Bundled font default policy 12345.')
+default_font.styles.add_style('HDM Unused Missing Style', 1).font.name = 'HDM Missing Unused Font'
+default_font.save(root / 'default-font.docx')
+missing_font = Document()
+missing_font.styles['Normal'].font.name = 'HDM Missing Normal Font'
+missing_font.add_paragraph('Explicit fallback sample 12345.')
+missing_font.save(root / 'missing-font.docx')
 (root / 'expected.json').write_text(json.dumps({
     'docx': {'pages': 2, 'sizePt': [612, 792], 'requiredText': ['Harmony Office Conversion', '678.90', 'Second Page', '98765']},
     'pptx': {'pages': 2, 'sizePt': [960, 540], 'requiredText': ['Harmony Presentation', 'Editable Objects', '12345', '678.90']},

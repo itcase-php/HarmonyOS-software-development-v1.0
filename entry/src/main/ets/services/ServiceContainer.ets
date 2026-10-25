@@ -71,8 +71,11 @@ export class ServiceContainer {
   private async closeOwned(): Promise<void> {
     this.tasks.shutdown();
     await this.tasks.waitForDeliveries();
-    // A recreated ability may already own the same process-global Native runtime.
-    try { if (ServiceContainer.currentScope === this) { await this.native.shutdown(); } }
-    finally { await this.tasks.releaseAuthorizedSessions(() => this.files.destroyAllSessions()); }
+    // Wait for the active Native call before releasing the process-global runtime.
+    try { await this.tasks.releaseAuthorizedSessions(() => this.files.destroyAllSessions()); }
+    finally {
+      // A recreated ability may now own the same Native runtime.
+      if (ServiceContainer.currentScope === this) { await this.native.shutdown(); }
+    }
   }
 }

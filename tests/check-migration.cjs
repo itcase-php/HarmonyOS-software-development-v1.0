@@ -32,7 +32,10 @@ const contentExtension='struct ContentExpectation {\n'+
   '    std::uint32_t minimumImages{};\n    std::optional<std::uint32_t> pageCount;\n};\n';
 const currentContract=text('entry/src/main/cpp/core/converter.h');
 assert.ok(currentContract.includes(contentExtension));
-assert.equal(currentContract.replace(contentExtension,'').replace('    std::optional<ContentExpectation> contentExpectation;\n',''),
+const fontExtension='struct FontDiagnostic { std::string family,part; };\n';
+assert.ok(currentContract.includes(fontExtension));
+assert.equal(currentContract.replace(contentExtension,'').replace('    std::optional<ContentExpectation> contentExpectation;\n','')
+  .replace(fontExtension,'').replace('    std::vector<FontDiagnostic> fontDiagnostics;\n',''),
   text('docs/migration-source/contracts/converter.h'), 'Original C++ contract lost beyond optional content checks');
 const protocol = text('entry/src/main/ets/models/NativeProtocol.ets');
 const expectedProtocol = text('docs/migration-source/contracts/native_bridge.d.ts')
@@ -46,7 +49,10 @@ const textExtension='// Private Native-to-validator expectations; consumed befor
   'export interface TextMinimum { codePoint: number; count: number; }\n'+
   'export interface ContentExpectation {\n  textMinimum: TextMinimum[];\n  minimumImages: number;\n  pageCount?: number;\n}\n';
 assert.ok(protocol.includes(textExtension));
-assert.equal(protocol.replace(textExtension,'').replace('  contentExpectation?: ContentExpectation;\n',''),deliveryProtocol,
+const fontProtocolExtension='export interface FontDiagnostic { family: string; part: string; }\n';
+assert.ok(protocol.includes(fontProtocolExtension));
+assert.equal(protocol.replace(textExtension,'').replace('  contentExpectation?: ContentExpectation;\n','')
+  .replace(fontProtocolExtension,'').replace('  fontDiagnostics?: FontDiagnostic[];\n',''),deliveryProtocol,
   'Native protocol changed beyond optional content checks');
 assert.equal(text('entry/src/main/cpp/types/libentry/Protocol.d.ts'),
   '// Generated from models/NativeProtocol.ets. Do not edit independently.\n'+protocol,

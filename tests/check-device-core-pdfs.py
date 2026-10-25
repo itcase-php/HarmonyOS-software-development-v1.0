@@ -36,7 +36,9 @@ for label, digest, total in parts:
                 'pptx':(2,[960,540],['Harmony Presentation','Editable Objects','12345','678.90']),
                 'png':(1,None,[]),
                 'docx-cjk':(1,[612,792],['鸿蒙离线文档转换','678.90','12345','中文表格','98765','✓','→','©']),
-                'pptx-cjk':(1,[960,540],['鸿蒙离线文档转换','678.90','12345','✓','→','©'])}.get(label)
+                'pptx-cjk':(1,[960,540],['鸿蒙离线文档转换','678.90','12345','✓','→','©']),
+                'docx-default':(1,[612,792],['Bundled font default policy','12345']),
+                'docx-font-approved':(1,[612,792],['Explicit fallback sample','12345'])}.get(label)
     if label == 'saved-docx':
         expected = (2,[612,792],['Harmony Office Conversion','678.90','Second Page','98765','Alpha','Beta','123.45','555.45'])
     assert expected, 'Unexpected fixture label: ' + label
@@ -47,7 +49,7 @@ for label, digest, total in parts:
             for page in document.pages:
                 assert abs(float(page.mediabox.width)-expected[1][0]) < .1
                 assert abs(float(page.mediabox.height)-expected[1][1]) < .1
-    if label != 'png': assert len(document.pages[0].images) >= 1
+    if label not in {'png','docx-default','docx-font-approved'}: assert len(document.pages[0].images) >= 1
     images = []
     fonts = []
     for index, page in enumerate(document.pages):
@@ -64,6 +66,7 @@ for label, digest, total in parts:
 assert checks, 'No complete PDF captures'
 labels = {item['label'] for item in checks}
 expected_labels = {'docx','pptx','png'} | ({'docx-cjk','pptx-cjk'} if 'format=docx-cjk' in lines else set())
+if 'CORE_START format=docx-default' in lines: expected_labels |= {'docx-default','docx-font-approved'}
 if 'SAVED_PDF_SELECT_START' in lines or 'SAVED_PDF_READBACK_OK' in lines: expected_labels = {'saved-docx'}
 if not args.allow_partial: assert labels == expected_labels, (labels, expected_labels)
 args.report.write_text(json.dumps({'scope':'actual device fixture PDFs, hash-checked capture, independent pypdf and Poppler',

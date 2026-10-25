@@ -1,6 +1,7 @@
 #include "../production/runtime.h"
 #include "../production/sha256.h"
 #include "../napi/bridge_problem.h"
+#include "test_diagnostics.h"
 #include "../generated/registry_metadata.h"
 #include <array>
 #include <chrono>
@@ -69,6 +70,7 @@ struct Fixture {
 };
 }
 int main(int argc,char** argv) {
+    ConfigureNativeTestDiagnostics();
     try {
         Require(argc==2 || argc==3,"fixture path required");
         Fixture fixture(argv[1]);

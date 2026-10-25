@@ -276,6 +276,7 @@ ConvertResult Runtime::Execute(const ConvertRequest& request) {
         status=engine.Get()->Validate(request,task);
         if (!status.IsOk()) throw BridgeProblem(status.code,status.reason);
         status=engine.Get()->Execute(request,task);
+        if (office) result.fontDiagnostics=officeContext.fontDiagnostics;
         if (!status.IsOk()) throw BridgeProblem(status.code,status.reason);
         auto candidateOutput=engine.Get()->CollectOutput(task);
         if (!candidateOutput.status.IsOk() || !candidateOutput.value || candidateOutput.value->files.size()!=1)

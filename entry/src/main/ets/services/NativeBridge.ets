@@ -162,6 +162,13 @@ export class NativeBridgeService implements NativeBridgePort {
       await this.runtime.prepareOffice();
     }
     const result = await this.call<protocol.ConvertResult>((native) => native.execute(request));
+    if (result.fontDiagnostics !== undefined && (!Array.isArray(result.fontDiagnostics) || result.fontDiagnostics.length > 4096 ||
+      result.fontDiagnostics.some((item: protocol.FontDiagnostic) => !item || typeof item.family !== 'string' || item.family.length > 256 ||
+        /[\x00-\x1f\x7f]/.test(item.family) || typeof item.part !== 'string' || item.part.length > 400 ||
+        !/^(word|ppt)\/[^\\:\x00-\x1f\x7f]+\.xml$/.test(item.part) || item.part.includes('../')))) {
+      await this.releaseResult(result);
+      throw new BridgeError('PROTOCOL_INCOMPATIBLE', 'FONT_DIAGNOSTICS_RESPONSE');
+    }
     if (result.schemaVersion !== request.schemaVersion || (result.status !== 'success' && result.status !== 'failed' && result.status !== 'cancelled') ||
       result.taskId !== request.taskId || result.attemptId !== request.attemptId ||
       (result.status === 'success' && (!Array.isArray(result.outputs) || result.outputs.length !== 1 || result.validation.state !== 'passed' ||

@@ -7,8 +7,9 @@ import { BridgeError } from '../common/BridgeError';
 import { FidelityPolicy } from './FidelityPolicy';
 import { DemoFidelityReport } from './DemoFidelityReport';
 import { NativeFidelityReport } from './NativeFidelityReport';
-import { ConvertRequest, ConvertResult, ProgressEvent, ExportRecord, ExportState, Artifact } from '../models/NativeProtocol';
+import { ConvertRequest, ConvertResult, ProgressEvent, ExportRecord, ExportState, Artifact, FontDiagnostic } from '../models/NativeProtocol';
 import { AuthorizedFile, SessionContext } from '../models/SessionModels';
+import { util } from '@kit.ArkTS';
 
 class SystemTaskRuntime implements TaskRuntime {
   now(): number { return Date.now(); }
@@ -49,6 +50,7 @@ export class TaskStore implements TaskStorePort {
   private inputRegistrations: Map<string, ConvertRequest> = new Map<string, ConvertRequest>();
   private inputDispatched: Set<string> = new Set<string>();
   private inputCleanup: Promise<void>[] = [];
+  private fontRetrying: Set<string> = new Set<string>();
 
   constructor(runtime: TaskRuntime = new SystemTaskRuntime(), services: TaskStoreDependencies = new TaskDependencies()) { this.runtime = runtime; this.services = services; }
 
@@ -172,6 +174,8 @@ export class TaskStore implements TaskStorePort {
     for (const entry of this.inputSessions.entries()) {
       if (this.nativeRunningId === entry[0]) { this.inputDispatched.add(entry[0]); }
       const task: DemoTask | undefined = this.tasks.find((item: DemoTask) => item.id === entry[0]);
+      if (this.fontRetrying.has(entry[0]) || (!this.closing && task?.status === 'failed' &&
+        task.error === 'FONT_MISSING:OFFICE_REQUIRED_FONT_MISSING')) { continue; }
       if ((!task || !isActiveTask(task.status)) && !this.nativeRequests.has(entry[0]) && this.nativeRunningId !== entry[0]) {
         this.inputSessions.delete(entry[0]);
         const request: ConvertRequest | undefined = this.inputRegistrations.get(entry[0]);
@@ -182,6 +186,49 @@ export class TaskStore implements TaskStorePort {
         cleanup.finally(() => { this.inputCleanup = this.inputCleanup.filter((item: Promise<void>) => item !== cleanup); });
       }
     }
+  }
+
+  canRetryFontFallback(id: string): boolean {
+    const task = this.tasks.find((item: DemoTask) => item.id === id);
+    return !this.closing && !this.fontRetrying.has(id) && task?.status === 'failed' &&
+      task.error === 'FONT_MISSING:OFFICE_REQUIRED_FONT_MISSING' && this.nativeRunningId !== id &&
+      this.inputSessions.has(id) && this.inputRegistrations.has(id);
+  }
+
+  async retryFontFallback(id: string, approved: boolean = false): Promise<DemoTask> {
+    if (!approved) { throw new BridgeError('INVALID_REQUEST', 'NATIVE_APPROVAL_REQUIRED'); }
+    if (!this.canRetryFontFallback(id)) { throw new BridgeError('INVALID_REQUEST', 'NATIVE_FONT_RETRY_UNAVAILABLE'); }
+    const previous = this.inputRegistrations.get(id)!;
+    const sessionId = this.inputSessions.get(id)!;
+    const original = this.tasks.find((item: DemoTask) => item.id === id)!;
+    const request = ConversionSnapshot.copyConvertRequest(previous);
+    request.taskId = util.generateRandomUUID(false); request.attemptId = util.generateRandomUUID(false);
+    const root = this.services.files.getWorkspaceRoot();
+    let registered = false;
+    this.fontRetrying.add(id);
+    try {
+      this.services.files.getSession(sessionId);
+      request.sessionId = await this.services.native.initializeSession({ schemaVersion: request.schemaVersion,
+        appSandboxRoot: root.substring(0, root.lastIndexOf('/')), configVersion: request.plan.configVersion,
+        configSha256: request.plan.configSha256 });
+      if (this.closing) { throw new BridgeError('CONVERSION_CANCELLED', 'NATIVE_DISPATCH_CANCELLED'); }
+      registered = true;
+      request.workspaceRef = await this.services.native.registerWorkspace({ sessionId: request.sessionId,
+        taskId: request.taskId, attemptId: request.attemptId, relativeDirectory: 'workspace/' + sessionId });
+      if (this.closing) { throw new BridgeError('CONVERSION_CANCELLED', 'NATIVE_DISPATCH_CANCELLED'); }
+      request.plan.allowedDegradations = ['font_substitution'];
+      request.options.office = { missingFontPolicy: 'approved_fallback', allowedDegradations: ['font_substitution'], includeReferencePages: false };
+      const next = this.enqueueNative(original.fileName, request, true);
+      this.inputSessions.delete(id); this.inputRegistrations.delete(id); this.inputDispatched.delete(id);
+      this.inputSessions.set(next.id, sessionId); this.inputRegistrations.set(next.id, request);
+      return next;
+    } catch (error) {
+      if (registered) {
+        try { await this.services.native.releaseTask(request.taskId, request.attemptId); }
+        catch (cleanupError) { ErrorHandler.swallow('TaskStore.fontRetry.cleanup', cleanupError); }
+      }
+      throw error as Error;
+    } finally { this.fontRetrying.delete(id); this.releaseSettledInputs(); this.notify(); }
   }
 
   private async releaseOwnedInput(sessionId: string, request?: ConvertRequest): Promise<void> {
@@ -329,6 +376,7 @@ if (task.progress === 100) {
         task.error = result.error ? `${result.error.code}:${result.error.reason}` : '';
       }
       task.elapsedMs = result.elapsedMs;
+      task.fontDiagnostics = (result.fontDiagnostics ?? []).map((item: FontDiagnostic): FontDiagnostic => ({ family: item.family, part: item.part }));
     } catch (error) {
       if (task.status === 'running') {
         const failure: BridgeError = ErrorHandler.catchBridge(error, 'TaskStore');

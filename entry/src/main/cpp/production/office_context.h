@@ -21,6 +21,7 @@ public:
     std::string relative;
     std::uint64_t bytes{};
     std::vector<std::string> missingFonts;
+    std::vector<FontDiagnostic> fontDiagnostics;
     ContentExpectation content;
 private:
     const std::atomic<bool>& cancelled_;

@@ -1,5 +1,5 @@
 // Explicit DTO ownership snapshots. Update with the schema; coverage checks detect omissions.
-import { AppError, ConversionWarning, Artifact, Validation, EngineStamp, ConvertResult, PageRange, PdfOptions, ImageOptions, OfficeOptions, AudioOptions, OcrOptions, ConvertOptions, PreparedInput, PlanStep, ApprovedPlan, ResourceBudget, ConvertRequest, Metric, FidelityReport } from './NativeProtocol';
+import { AppError, ConversionWarning, Artifact, Validation, EngineStamp, ConvertResult, PageRange, PdfOptions, ImageOptions, OfficeOptions, AudioOptions, OcrOptions, ConvertOptions, PreparedInput, PlanStep, ApprovedPlan, ResourceBudget, ConvertRequest, Metric, FidelityReport, FontDiagnostic } from './NativeProtocol';
 
 export class ConversionSnapshot {
   static copyAppError(value: AppError): AppError {
@@ -73,6 +73,7 @@ export class ConversionSnapshot {
     const fields: string[] = Object.keys(value);
     if (fields.includes('error')) { copy.error = value.error === undefined ? undefined : ConversionSnapshot.copyAppError(value.error); }
     if (fields.includes('fidelity')) { copy.fidelity = value.fidelity === undefined ? undefined : ConversionSnapshot.copyFidelityReport(value.fidelity); }
+    if (fields.includes('fontDiagnostics')) { copy.fontDiagnostics = value.fontDiagnostics === undefined ? undefined : value.fontDiagnostics.map((item: FontDiagnostic): FontDiagnostic => ({ family: item.family, part: item.part })); }
     return copy;
   }
   static copyMetric(value: Metric): Metric {

@@ -14,8 +14,8 @@ interface OfficeManifest { resources: ResourceEntry[]; }
 
 export class BundledConversionRuntime implements ConversionRuntimePort {
   private preparing: Promise<void> | null = null;
-  private context: common.UIAbilityContext;
-  constructor(context: common.UIAbilityContext) { this.context = context; }
+  private context: common.Context;
+  constructor(context: common.Context) { this.context = context; }
   async prepareOffice(): Promise<void> {
     if (!this.preparing) { this.preparing = this.prepare(); }
     try { await this.preparing; }

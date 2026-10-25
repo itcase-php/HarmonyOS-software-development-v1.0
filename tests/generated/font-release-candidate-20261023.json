@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-23",
+  "scope": "historical package and saved device test attempt; not current acceptance",
+  "releaseReady": false,
+  "deviceAttempt": {
+    "scope": "saved OHOS test transcript; no device commands executed",
+    "passed": false,
+    "tests": 10,
+    "failures": 0,
+    "errors": 9,
+    "passes": 1,
+    "ignored": 0,
+    "reason": "test_cases_not_all_passed"
+  },
+  "supersededBy": "tests/generated/font-release-candidate-20261025.json",
+  "packageSha256": "1c836b8d8b6014ac08f2f41510a8d2dd3f9d8d96b2bbaab3a037ca078a852c58"
+}
