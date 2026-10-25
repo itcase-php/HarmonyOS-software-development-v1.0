@@ -1,7 +1,8 @@
 """Repository-owned editable Office fixtures for device conversion acceptance."""
 from pathlib import Path
 from docx import Document
-from docx.shared import Inches, Pt
+from docx.shared import Inches, Pt, Mm
+from docx.oxml.ns import qn
 from pptx import Presentation
 from pptx.util import Inches as SlideInches, Pt as SlidePt
 from PIL import Image, ImageDraw
@@ -85,6 +86,28 @@ missing_font = Document()
 missing_font.styles['Normal'].font.name = 'HDM Missing Normal Font'
 missing_font.add_paragraph('Explicit fallback sample 12345.')
 missing_font.save(root / 'missing-font.docx')
+common_fonts = Document()
+common_fonts.sections[0].page_width, common_fonts.sections[0].page_height = Mm(210), Mm(297)
+for name, family, size in [('Normal', '宋体', 14), ('Heading 1', '黑体', 18),
+                           ('Header', '宋体', 10), ('Footer', '宋体', 10)]:
+    style = common_fonts.styles[name]
+    style.font.name, style.font.size = family, Pt(size)
+    fonts = style.element.get_or_add_rPr().rFonts
+    for attribute in list(fonts.attrib):
+        if 'theme' in attribute.lower(): del fonts.attrib[attribute]
+    for slot in ['ascii', 'hAnsi', 'eastAsia', 'cs']: fonts.set(qn('w:' + slot), family)
+common_fonts.sections[0].header.paragraphs[0].text = '鸿蒙离线字体验证'
+common_fonts.sections[0].footer.paragraphs[0].text = '自有测试文件，仅用于转换、保存与分享验证'
+common_fonts.add_heading('宋体与黑体转换测试', level=1)
+common_fonts.add_paragraph('正文采用宋体，标题采用黑体。核对金额 678.90，编号 12345。符号 ✓ → ©')
+table = common_fonts.add_table(rows=3, cols=3)
+table.style = 'Table Grid'
+for row, values in zip(table.rows, [('项目', '数量', '金额'), ('服务 A', '2', '123.45'), ('服务 B', '3', '555.45')]):
+    for cell, value in zip(row.cells, values): cell.text = value
+common_fonts.add_paragraph('表格与图片必须保留，末尾核对数字 98765。')
+common_fonts.add_picture(str(root / 'shapes.png'), width=Inches(3))
+common_fonts.styles.add_style('Unused Missing Family', 1).font.name = 'HDM Missing Unused Font'
+common_fonts.save(root / 'common-fonts.docx')
 (root / 'expected.json').write_text(json.dumps({
     'docx': {'pages': 2, 'sizePt': [612, 792], 'requiredText': ['Harmony Office Conversion', '678.90', 'Second Page', '98765']},
     'pptx': {'pages': 2, 'sizePt': [960, 540], 'requiredText': ['Harmony Presentation', 'Editable Objects', '12345', '678.90']},

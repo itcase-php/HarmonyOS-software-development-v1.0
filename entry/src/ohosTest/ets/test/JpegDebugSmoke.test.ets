@@ -1,6 +1,6 @@
 import { abilityDelegatorRegistry } from '@kit.TestKit';
 import { application } from '@kit.AbilityKit';
-import { fileIo, hash } from '@kit.CoreFileKit';
+import { fileIo, hash, picker } from '@kit.CoreFileKit';
 import { util } from '@kit.ArkTS';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { describe, it, expect } from '@ohos/hypium';
@@ -33,6 +33,25 @@ export default function jpegDebugSmokeTest() {
       const context = await coreTestContext();
       const testContext = await application.createModuleContext(context, 'entry_test');
       const fixture = await testContext.resourceManager.getRawFileContent(fixtureName);
+      if (fixtureName === 'jpeg-debug-exif-icc.jpg' &&
+        abilityDelegatorRegistry.getArguments().parameters['-s publishJpegFixture'] === 'true') {
+        const ability = await abilityDelegatorRegistry.getAbilityDelegator().getCurrentTopAbility();
+        const options = new picker.DocumentSaveOptions();
+        const name = 'hdm-image-source-' + Date.now().toString() + '.jpg';
+        options.newFileNames = [name];
+        const uris = await new picker.DocumentViewPicker(ability.context).save(options);
+        expect(uris.length).assertEqual(1);
+        const destination = await fileIo.open(uris[0], fileIo.OpenMode.CREATE | fileIo.OpenMode.READ_WRITE | fileIo.OpenMode.TRUNC);
+        try {
+          let offset = 0;
+          while (offset < fixture.byteLength) {
+            const count = await fileIo.write(destination.fd, fixture.slice(offset).buffer);
+            if (count <= 0) { throw new Error('FIXTURE_PUBLISH_SHORT_WRITE'); }
+            offset += count;
+          }
+        } finally { await fileIo.close(destination); }
+        hilog.info(0, 'JpegDebugSmoke', 'FIXTURE_SOURCE_SAVED name=%{public}s', name);
+      }
       if (fixtureName === 'jpeg-debug-baseline.jpg') { expect(fixture.byteLength).assertEqual(634); }
       const testRoot = context.cacheDir + '/jpeg-debug-smoke-' + Date.now().toString();
       const root = testRoot + '/cache';

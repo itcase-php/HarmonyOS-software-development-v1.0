@@ -1,7 +1,7 @@
 {
   "scope": "main release signed HAP, ELF exports/direct dependencies and pinned resource bytes only",
   "buildMode": "release",
-  "checkedAtUtc": "2026-10-25T03:45:59.220479+00:00",
+  "checkedAtUtc": "2026-10-25T06:58:32.464215+00:00",
   "result": "passed",
   "hapPath": "D:\\HarmonyOS\\harmonyOS\\entry\\build\\default\\outputs\\default\\entry-font-rc-20261025-signed.hap",
   "hapBytes": 392844700,
@@ -4312,8 +4312,8 @@
     }
   ],
   "testPackage": {
-    "hapSha256": "c0e2ef2ce19587229aeff29184e1598717110efa4affaee153fe471868ce8322",
-    "hapBytes": 390685965,
+    "hapSha256": "269100435a76bc0cb22b1c0d4e70fa6b75e5830b11e6a1ede713a91ee17c0787",
+    "hapBytes": 390728206,
     "noNativeEngineOverride": true,
     "matchingNativeLibraries": 235,
     "ownedFixturesMatch": true,

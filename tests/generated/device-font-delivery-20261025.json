@@ -1,0 +1,349 @@
+{
+  "date": "2026-10-25",
+  "scope": "actual API 24 arm64 device; repository-owned fixtures; no user document contents or device identity",
+  "mainPackage": {
+    "sha256": "c2e227482a35e0af2f35cef6ee667b84b3444a8bb58afc36bd5a65bf5ac72a6f",
+    "bytes": 392844700
+  },
+  "testPackage": {
+    "hapSha256": "269100435a76bc0cb22b1c0d4e70fa6b75e5830b11e6a1ede713a91ee17c0787",
+    "hapBytes": 390728206,
+    "noNativeEngineOverride": true,
+    "matchingNativeLibraries": 235,
+    "ownedFixturesMatch": true,
+    "deviceExecution": "not performed by this check"
+  },
+  "initialAttempt": {
+    "tests": 10,
+    "passes": 0,
+    "errors": 10,
+    "passed": false,
+    "reason": "delegator context wrapper rejected by createModuleContext before engine execution",
+    "resolution": "getAppContext().getApplicationContext() before creating entry module context"
+  },
+  "finalCore": {
+    "scope": "saved OHOS test transcript; no device commands executed",
+    "passed": true,
+    "tests": 11,
+    "failures": 0,
+    "errors": 0,
+    "passes": 11,
+    "ignored": 0,
+    "reason": "all_expected_cases_passed"
+  },
+  "finalJpeg": {
+    "scope": "saved OHOS test transcript; no device commands executed",
+    "passed": true,
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "passes": 2,
+    "ignored": 0,
+    "reason": "all_expected_cases_passed"
+  },
+  "enginePdfCount": 8,
+  "enginePdfPages": 10,
+  "enginePdfs": [
+    {
+      "label": "docx",
+      "bytes": 22936,
+      "sha256": "1e572dd53ab5517237470a33cc09cf01e2f03d8f4393f5e80d194950a72ed2a8",
+      "pages": 2,
+      "imageResourcesPerPage": [
+        1,
+        1
+      ],
+      "fonts": [
+        "/BAAAAA+DejaVuSans"
+      ],
+      "independentParse": "passed",
+      "rendered": "passed"
+    },
+    {
+      "label": "pptx",
+      "bytes": 21849,
+      "sha256": "0eec4f01a471f102b2d567fe0f0945596fd818add7726c96c978aca7d8de0fb7",
+      "pages": 2,
+      "imageResourcesPerPage": [
+        1,
+        1
+      ],
+      "fonts": [
+        "/BAAAAA+DejaVuSans"
+      ],
+      "independentParse": "passed",
+      "rendered": "passed"
+    },
+    {
+      "label": "png",
+      "bytes": 1774,
+      "sha256": "8dbccad5a84480efc67438e7a7443a5dc0a3c406ab782c257d06ea13092a37cc",
+      "pages": 1,
+      "imageResourcesPerPage": [
+        1
+      ],
+      "fonts": [],
+      "independentParse": "passed",
+      "rendered": "passed"
+    },
+    {
+      "label": "docx-cjk",
+      "bytes": 22751,
+      "sha256": "3220ffa598200f8d308678cd1d2ff3245a07e112420209b048d8f73ea864d813",
+      "pages": 1,
+      "imageResourcesPerPage": [
+        1
+      ],
+      "fonts": [
+        "/BAAAAA+DejaVuSans",
+        "/CAAAAA+HarmonyOS_Sans_SC"
+      ],
+      "independentParse": "passed",
+      "rendered": "passed"
+    },
+    {
+      "label": "pptx-cjk",
+      "bytes": 24446,
+      "sha256": "08b16ce7280a42531625205b1ca5e0f3ba988da670fd9409ec917c4c70e68a6d",
+      "pages": 1,
+      "imageResourcesPerPage": [
+        1
+      ],
+      "fonts": [
+        "/BAAAAA+NotoSansCJKsc-Regular",
+        "/CAAAAA+DejaVuSans"
+      ],
+      "independentParse": "passed",
+      "rendered": "passed"
+    },
+    {
+      "label": "docx-common-fonts",
+      "bytes": 28930,
+      "sha256": "8a9fcfd89cdd435abfd0d57066625c69396917a882d622ca237db021862ff068",
+      "pages": 1,
+      "imageResourcesPerPage": [
+        1
+      ],
+      "fonts": [
+        "/BAAAAA+HarmonyOS_Sans_SC",
+        "/CAAAAA+DejaVuSans"
+      ],
+      "independentParse": "passed",
+      "rendered": "passed"
+    },
+    {
+      "label": "docx-default",
+      "bytes": 16685,
+      "sha256": "e455d17dd09bfcaaa73921a53b8c6a92d176dfb6216dac95f8cf4cfed707b47e",
+      "pages": 1,
+      "imageResourcesPerPage": [
+        0
+      ],
+      "fonts": [
+        "/BAAAAA+DejaVuSans"
+      ],
+      "independentParse": "passed",
+      "rendered": "passed"
+    },
+    {
+      "label": "docx-font-approved",
+      "bytes": 16836,
+      "sha256": "e32817426e7d8717d1e6c2b37337cb121c9e027af5cc0ab254deb797789726f2",
+      "pages": 1,
+      "imageResourcesPerPage": [
+        0
+      ],
+      "fonts": [
+        "/BAAAAA+DejaVuSans"
+      ],
+      "independentParse": "passed",
+      "rendered": "passed"
+    }
+  ],
+  "visualInspection": {
+    "corePages": 10,
+    "result": "all pages visually inspected; final rerun pixel-identical to inspected renders",
+    "checks": "owned text, numbers, symbols, table, image, header, footer, clipping and overlap",
+    "referencePdfComparison": "not performed; requires user-approved reference and layout confirmation"
+  },
+  "fontReproduction": {
+    "originalUserFile": "unavailable; user explicitly approved creating another test file",
+    "missingFamiliesAndParts": [
+      {
+        "family": "宋体",
+        "part": "word/document.xml"
+      },
+      {
+        "family": "宋体",
+        "part": "word/footer1.xml"
+      },
+      {
+        "family": "宋体",
+        "part": "word/header1.xml"
+      },
+      {
+        "family": "黑体",
+        "part": "word/document.xml"
+      }
+    ],
+    "unusedMissingStyle": "not included in diagnostics and not blocked",
+    "mainUiDefaultPolicy": "rejected with exact family and part labels",
+    "mainUiApprovedRetry": "explicit confirmation then success using retained source",
+    "outputFontResourcesObservation": [
+      "HarmonyOS_Sans_SC",
+      "DejaVuSans"
+    ],
+    "perFamilyReplacementMapping": "not established; font resources are not a mapping",
+    "originalFileRootCause": "not asserted"
+  },
+  "deliveryRoutes": [
+    {
+      "route": "docx-pdf",
+      "mainApplicationConversion": "passed",
+      "systemPickerSave": "passed",
+      "savedUriHashAndSizeReadback": "passed",
+      "systemSharePanel": "opened with matching owned PDF filename and size",
+      "recipientDelivery": "skipped at user request; not tested",
+      "pdfKitReopenTest": {
+        "scope": "saved OHOS test transcript; no device commands executed",
+        "passed": true,
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "passes": 1,
+        "ignored": 0,
+        "reason": "all_expected_cases_passed"
+      },
+      "savedPdf": {
+        "label": "saved-docx-common-fonts",
+        "bytes": 28931,
+        "sha256": "53981d93ee849cf929c348267ca0c8ebe700f4ded5bdab99abf40306ca917911",
+        "pages": 1,
+        "imageResourcesPerPage": [
+          1
+        ],
+        "fonts": [
+          "/BAAAAA+HarmonyOS_Sans_SC",
+          "/CAAAAA+DejaVuSans"
+        ],
+        "independentParse": "passed",
+        "rendered": "passed"
+      }
+    },
+    {
+      "route": "pptx-pdf",
+      "mainApplicationConversion": "passed",
+      "systemPickerSave": "passed",
+      "savedUriHashAndSizeReadback": "passed",
+      "systemSharePanel": "opened with matching owned PDF filename and size",
+      "recipientDelivery": "skipped at user request; not tested",
+      "pdfKitReopenTest": {
+        "scope": "saved OHOS test transcript; no device commands executed",
+        "passed": true,
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "passes": 1,
+        "ignored": 0,
+        "reason": "all_expected_cases_passed"
+      },
+      "savedPdf": {
+        "label": "saved-pptx",
+        "bytes": 21849,
+        "sha256": "1f4619743191dfab98b58d8fbf077b15215b6a37f7899592642df2022680932d",
+        "pages": 2,
+        "imageResourcesPerPage": [
+          1,
+          1
+        ],
+        "fonts": [
+          "/BAAAAA+DejaVuSans"
+        ],
+        "independentParse": "passed",
+        "rendered": "passed"
+      }
+    },
+    {
+      "route": "png-pdf",
+      "mainApplicationConversion": "passed",
+      "systemPickerSave": "passed",
+      "savedUriHashAndSizeReadback": "passed",
+      "systemSharePanel": "opened with matching owned PDF filename and size",
+      "recipientDelivery": "skipped at user request; not tested",
+      "pdfKitReopenTest": {
+        "scope": "saved OHOS test transcript; no device commands executed",
+        "passed": true,
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "passes": 1,
+        "ignored": 0,
+        "reason": "all_expected_cases_passed"
+      },
+      "savedPdf": {
+        "label": "saved-png",
+        "bytes": 1774,
+        "sha256": "8dbccad5a84480efc67438e7a7443a5dc0a3c406ab782c257d06ea13092a37cc",
+        "pages": 1,
+        "imageResourcesPerPage": [
+          1
+        ],
+        "fonts": [],
+        "independentParse": "passed",
+        "rendered": "passed"
+      }
+    },
+    {
+      "route": "jpeg-pdf",
+      "mainApplicationConversion": "passed",
+      "systemPickerSave": "passed",
+      "savedUriHashAndSizeReadback": "passed",
+      "systemSharePanel": "opened with matching owned PDF filename and size",
+      "recipientDelivery": "skipped at user request; not tested",
+      "pdfKitReopenTest": {
+        "scope": "saved OHOS test transcript; no device commands executed",
+        "passed": true,
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "passes": 1,
+        "ignored": 0,
+        "reason": "all_expected_cases_passed"
+      },
+      "savedPdf": {
+        "label": "saved-jpeg",
+        "bytes": 2872,
+        "sha256": "47335835fb32063bc25d7d31cb5fef45ee22faed7cd70e1fe93f0bfc786eb18b",
+        "pages": 1,
+        "imageResourcesPerPage": [
+          1
+        ],
+        "fonts": [],
+        "independentParse": "passed",
+        "rendered": "passed"
+      }
+    }
+  ],
+  "jpegMetadata": {
+    "name": "device-metadata",
+    "result": "passed",
+    "jpegPayloadIdentical": true,
+    "iccBytesPreserved": 588,
+    "orientation": 6,
+    "renderedSize": [
+      16,
+      24
+    ],
+    "meanAbsoluteRenderedDifference": 1.6119791666666667,
+    "pdfSha256": "47335835fb32063bc25d7d31cb5fef45ee22faed7cd70e1fe93f0bfc786eb18b"
+  },
+  "publicDataPolicy": "only owned-fixture hashes and sanitized results committed; no raw phone logs, UI trees, HAPs, signing files or user files",
+  "releaseReady": false,
+  "pendingReleaseGates": [
+    "actual share recipient receipt and opening; user skipped this turn",
+    "user-approved reference PDF comparison and fallback layout confirmation",
+    "first offline initialization",
+    "cancellation and leaving page during delivery",
+    "continuous task and resource measurements"
+  ]
+}

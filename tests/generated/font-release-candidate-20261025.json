@@ -1,6 +1,6 @@
 {
   "date": "2026-10-25",
-  "implementationState": "code_and_release_build_verified",
+  "implementationState": "code_release_build_and_owned_fixture_device_delivery_verified",
   "releaseReady": false,
   "mainPackage": {
     "path": "entry/build/default/outputs/default/entry-font-rc-20261025-signed.hap",
@@ -8,9 +8,8 @@
     "sha256": "c2e227482a35e0af2f35cef6ee667b84b3444a8bb58afc36bd5a65bf5ac72a6f"
   },
   "testPackage": {
-    "path": "entry/build/default/outputs/ohosTest/entry-ohosTest-signed.hap",
-    "hapSha256": "c0e2ef2ce19587229aeff29184e1598717110efa4affaee153fe471868ce8322",
-    "hapBytes": 390685965,
+    "hapSha256": "269100435a76bc0cb22b1c0d4e70fa6b75e5830b11e6a1ede713a91ee17c0787",
+    "hapBytes": 390728206,
     "noNativeEngineOverride": true,
     "matchingNativeLibraries": 235,
     "ownedFixturesMatch": true,
@@ -32,7 +31,13 @@
     "offlineResourceFiles": 3284,
     "internetPermission": false
   },
-  "deviceExecutionThisRun": "not performed; user deferred device work until evening",
+  "deviceExecutionThisRun": {
+    "report": "tests/generated/device-font-delivery-20261025.json",
+    "corePassed": 11,
+    "jpegPassed": 2,
+    "publicSavedPdfReopensPassed": 4,
+    "recipientVerification": "skipped at user request"
+  },
   "historicalDeviceAttempt": {
     "date": "2026-10-23",
     "report": "tests/generated/core-device-font-attempt-20261023.json",
@@ -42,11 +47,11 @@
     "passed": false
   },
   "pendingReleaseGates": [
-    "complete Core 10 and JPEG 2 device cases on this exact pair of packages",
-    "reproduce the user failing Word or user-approved equivalent file",
-    "each route conversion/save/reopen/share with recipient receipt and opening",
-    "user-approved reference-PDF visual comparison",
-    "first offline initialization, repeated conversions, cancellation and resource measurements"
+    "actual share recipient receipt and opening; user skipped this turn",
+    "user-approved reference PDF comparison and fallback layout confirmation",
+    "first offline initialization",
+    "cancellation and leaving page during delivery",
+    "continuous task and resource measurements"
   ],
   "publicationPolicy": "four routes remain experimental; keep PR draft; no merge or store release"
 }

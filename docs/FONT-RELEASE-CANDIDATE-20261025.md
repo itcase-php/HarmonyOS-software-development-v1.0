@@ -1,4 +1,8 @@
-# 2026-10-25 代码修复与晚间真机验收准备
+# 2026-10-25 代码修复与真机验证记录
+
+当前状态：接入设备后又修正了测试上下文包装问题，最终 Core 11/11、JPEG 2/2、四路线公共保存文件重开各 1/1 通过；主应用四路线保存与分享面板检查通过。接收端验证由用户选择跳过，尚未发布放行。详见 [本日真机记录](DEVICE-FONT-DELIVERY-20261025.md) 和脱敏设备结果。以下保留接入手机前的历史准备记录，不代表当前尚未执行真机测试。
+
+## 历史：接入手机前的代码阶段
 
 本轮按用户要求仅修改代码、执行主机回归和正式构建，没有连接、查询、安装或调试手机。四条路线仍为 JPEG、PNG、DOCX、PPTX → PDF，其他 39 条继续禁用；本包仍为候选版，不是已经通过发布验收的版本。
 
@@ -31,7 +35,7 @@
 测试包：`entry/build/default/outputs/ohosTest/entry-ohosTest-signed.hap`。
 两个包的最终摘要、测试计数和待验收项目见 `tests/generated/font-release-candidate-20261025.json`。历史失败记录见 `tests/generated/core-device-font-attempt-20261023.json`；它不能用作本包通过证据。
 
-## 晚间执行顺序
+## 历史晚间执行计划（已由本日真机记录更新，Core 现为 11 项）
 
 1. 升级安装上述配套包，先运行默认 Core 10 项及 JPEG 2 项；不要给默认用例统一批准字体替代。
 2. 保存每次 `aa test` 的完整输出，分别用 `tests/check-ohos-test-report.py LOG --expected-tests 10` 和 `--expected-tests 2` 核验。任一错误、忽略、缺测或结束标记缺失都停止放行，保留日志排查。

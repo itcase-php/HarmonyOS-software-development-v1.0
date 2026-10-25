@@ -1,6 +1,6 @@
 # HarmonyOS软件开发v2.0
 
-**2026-10-25 代码候选版：修正批量测试对前台窗口的依赖、退出时 Native 关闭顺序及 Windows 验证脚本；主机回归和配套 Release 构建通过。上次设备测试实际为 1 项通过、9 项错误，本轮按要求未调试手机。当前包、证据与晚间验收清单见 [最新候选记录](docs/FONT-RELEASE-CANDIDATE-20261025.md)。**
+**2026-10-25 真机候选版：补修测试上下文包装问题后，最终 Core 11/11、JPEG 2/2、四路线已保存 PDF 重开各 1/1 通过。自建宋体/黑体 Word 验证了准确诊断、明确批准替代后保留原输入重试；四路线主应用保存和系统分享面板通过。接收端由用户选择跳过，参考版式及其他放行门槛仍未完成。详见 [最新真机记录](docs/DEVICE-FONT-DELIVERY-20261025.md)。**
 
 **2026-10-23 候选版：修正 Office 未使用字体误拦截，增加缺失字族/使用部件诊断及明确批准后的源文件重试；四条路线仍等待完整发布验收。电脑端 MSVC 测试旧对象混用导致的栈检查弹窗已修复，内存检查保留。详见 [字体修复与验收记录](docs/FONT-RELEASE-CANDIDATE-20261023.md)。**
 
@@ -33,7 +33,7 @@
 | DOCX/PPTX→PDF | OHOS arm64 内置 LibreOfficeKit Writer/Impress；Release 真机完成 Word 2 页、PPT 2 页及中文/符号样例，独立解析和逐页渲染检查通过；任意文档的版式等价性未保证；旧 DOC/PPT 未开放 |
 | 国际化与无障碍 | 首页 EN/中运行时切换、五页与组件/任务/报告/提示/读屏文案统一翻译；358 个双语资源键；语言使用 AppStorage + PersistentStorage 保留；实际 Previewer 和设备重启验收待执行 |
 
-当前 **4 条 experimental、39 条 planned、0 条 available**，四条已在 Debug 与 Release 开启真实执行；范围外定义保留禁用。签名 Release 候选包约 393 MB，Office 仅 arm64，首次资源准备要求缓存至少 400 MiB 可用空间。缺失引用字体默认拒绝，只有用户明确同意才允许内置/系统替代；Office 保真等级保持未判定。演示入口仅保留在 Debug。异常产物和无证据保真等级不显示为正常完成。本轮四条路线的 Release 受控样例已通过真机，DOCX 主界面保存及分享面板已验证；更多文档/设备及分享接收方仍需覆盖。详见[Release 真机样例验收](docs/DEVICE-ACCEPTANCE-20261014.md)与[历史阶段记录](docs/IMPLEMENTATION_STATUS.md)。
+当前 **4 条 experimental、39 条 planned、0 条 available**，四条已在 Debug 与 Release 开启真实执行；范围外定义保留禁用。签名 Release 候选包约 393 MB，Office 仅 arm64，首次资源准备要求缓存至少 400 MiB 可用空间。缺失引用字体默认拒绝，只有用户明确同意才允许内置/系统替代；Office 保真等级保持未判定。演示入口仅保留在 Debug。异常产物和无证据保真等级不显示为正常完成。本轮四条路线的 Release 受控样例、主界面保存、重开及分享面板已验证；更多文档/设备、参考版式及分享接收方仍需覆盖。详见[最新真机记录](docs/DEVICE-FONT-DELIVERY-20261025.md)与[历史阶段记录](docs/IMPLEMENTATION_STATUS.md)。
 
 ## 工程结构
 

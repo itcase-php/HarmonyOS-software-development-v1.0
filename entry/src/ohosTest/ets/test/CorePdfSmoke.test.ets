@@ -49,6 +49,7 @@ export default function corePdfSmokeTest() {
       { name: 'core-layout.png', label: 'png', approved: false, blocked: '' },
       { name: 'core-cjk.docx', label: 'docx-cjk', approved: true, blocked: '' },
       { name: 'core-cjk.pptx', label: 'pptx-cjk', approved: true, blocked: '' },
+      { name: 'core-common-fonts.docx', label: 'docx-common-fonts', approved: true, blocked: '' },
       { name: 'core-default-font.docx', label: 'docx-default', approved: false, blocked: '' },
       { name: 'core-missing-font.docx', label: 'docx-font-reject', approved: false, blocked: 'OFFICE_REQUIRED_FONT_MISSING' },
       { name: 'core-missing-font.docx', label: 'docx-font-approved', approved: true, blocked: '' },
@@ -64,16 +65,17 @@ export default function corePdfSmokeTest() {
       it('checks repository ' + label + ' using real engines and PDFKit', 0, async () => {
         const context = await coreTestContext();
         const parameters = abilityDelegatorRegistry.getArguments().parameters;
-        const needsUi = label === 'docx' && (parameters['-s publishFixture'] === 'true' || parameters['-s deliveryUi'] === 'true');
+        const publishFixture = ['docx', 'docx-common-fonts', 'pptx', 'png'].includes(label) && parameters['-s publishFixture'] === 'true';
+        const needsUi = publishFixture || (label === 'docx' && parameters['-s deliveryUi'] === 'true');
         const ability = needsUi ? await abilityDelegatorRegistry.getAbilityDelegator().getCurrentTopAbility() : undefined;
         const appWindow = ability ? await window.getLastWindow(ability.context) : undefined;
         if (appWindow) { await appWindow.setWindowKeepScreenOn(true); }
         hilog.info(0, 'CorePdfSmoke', 'CORE_CONTEXT format=%{public}s mode=entry-module ui=%{public}s', label, needsUi.toString());
         const testContext = await application.createModuleContext(context, 'entry_test');
         const fixture = await testContext.resourceManager.getRawFileContent(fixtureName);
-        if (label === 'docx' && abilityDelegatorRegistry.getArguments().parameters['-s publishFixture'] === 'true') {
+        if (publishFixture) {
           const options = new picker.DocumentSaveOptions();
-          const name = 'hdm-office-source-' + Date.now().toString() + '.docx';
+          const name = 'hdm-office-source-' + Date.now().toString() + '.' + format;
           options.newFileNames = [name];
           hilog.info(0, 'CorePdfSmoke', 'FIXTURE_SOURCE_SAVE_START name=%{public}s', name);
           if (!ability) { throw new Error('CORE_UI_CONTEXT_REQUIRED'); }
@@ -134,6 +136,10 @@ export default function corePdfSmokeTest() {
               policyVersion: registryMetadata.securityPolicy.version } };
           hilog.info(0, 'CorePdfSmoke', 'CORE_START format=%{public}s', label);
           const result = await native.execute(request);
+          // Only repository-owned fixtures reach this test, never user documents.
+          for (const item of result.fontDiagnostics ?? []) {
+            hilog.info(0, 'CorePdfSmoke', 'CORE_FONT format=%{public}s family=%{public}s part=%{public}s', label, item.family, item.part);
+          }
           if (testCase.blocked.length > 0) {
             expect(result.status).assertEqual('failed');
             expect(result.error?.code).assertEqual('FONT_MISSING');
@@ -221,19 +227,24 @@ export default function corePdfSmokeTest() {
       const document = new pdfService.PdfDocument();
       try {
         expect(document.loadDocument(path)).assertEqual(pdfService.ParseResult.PARSE_SUCCESS);
-        expect(document.getPageCount()).assertEqual(2);
+        const savedFixture = abilityDelegatorRegistry.getArguments().parameters['-s savedFixture'] ?? 'docx';
+        expect(['docx', 'docx-common-fonts', 'pptx', 'png', 'jpeg'].includes(savedFixture)).assertTrue();
+        expect(document.getPageCount()).assertEqual(savedFixture === 'docx' || savedFixture === 'pptx' ? 2 : 1);
         let text = '';
         for (let index = 0; index < document.getPageCount(); index++) {
           const page = document.getPage(index);
           try { text += page.getTextContent(); } finally { page.release(); }
         }
-        for (const expected of ['Harmony Office Conversion', '678.90', 'Second Page', '98765']) {
+        const expectedText = savedFixture === 'docx-common-fonts' ? ['宋体与黑体转换测试', '678.90', '12345', '服务 A', '服务 B', '123.45', '555.45', '98765', '✓', '→', '©'] :
+          savedFixture === 'docx' ? ['Harmony Office Conversion', '678.90', 'Second Page', '98765'] :
+          savedFixture === 'pptx' ? ['Harmony Presentation', 'Editable Objects', '12345', '678.90'] : [];
+        for (const expected of expectedText) {
           expect(text.includes(expected)).assertTrue();
         }
         const digest = (await hash.hash(path, 'sha256')).toLowerCase();
         hilog.info(0, 'CorePdfSmoke', 'SAVED_PDF_READBACK_OK bytes=%{public}d sha256=%{public}s', total, digest);
         if (abilityDelegatorRegistry.getArguments().parameters['-s captureCorePdf'] === 'true') {
-          await captureFixturePdf(path, total, digest, 'saved-docx');
+          await captureFixturePdf(path, total, digest, 'saved-' + savedFixture);
         }
       } finally { document.releaseDocument(); await fileIo.unlink(path); }
     });

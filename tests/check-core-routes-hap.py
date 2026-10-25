@@ -157,7 +157,7 @@ if args.test_hap:
         for name in common_libraries:
             assert sha(main_package.read(name)) == sha(test_package.read(name)), 'Test library differs: ' + name
         for name in ['core-layout.docx', 'core-layout.pptx', 'core-default-font.docx',
-                     'core-missing-font.docx', 'core-missing-symbol.docx']:
+                     'core-missing-font.docx', 'core-missing-symbol.docx', 'core-common-fonts.docx']:
             matches = [entry for entry in test_names if entry.endswith('/rawfile/' + name)]
             assert len(matches) == 1, name
             assert test_package.read(matches[0]) == (root / 'entry/src/ohosTest/resources/rawfile' / name).read_bytes(), name

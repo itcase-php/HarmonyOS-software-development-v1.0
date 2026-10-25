@@ -7,11 +7,12 @@ const {host} = require('./check-interactions.cjs');
 const testRoot = path.resolve(__dirname, '../entry/src/ohosTest/ets/test');
 let topCalls = 0, moduleCalls = 0;
 const app = {cacheDir:'/application/cache'};
+const delegated = {getApplicationContext:()=>app};
 const main = {cacheDir:'/application/haps/entry/cache'};
 const marker = new Error('CONTROLLED_FIXTURE_READ');
 const fixtureContext = {resourceManager:{getRawFileContent:async()=>{throw marker;}}};
 const sdk = {
-  '@kit.TestKit':{abilityDelegatorRegistry:{getAbilityDelegator:()=>({getAppContext:()=>app,
+  '@kit.TestKit':{abilityDelegatorRegistry:{getAbilityDelegator:()=>({getAppContext:()=>delegated,
     getCurrentTopAbility:async()=>{topCalls++;throw new Error('Calling GetCurrentTopAbility failed.');}}),
     getArguments:()=>({parameters:{'-s fixtureLabel':'docx-default','-s publishFixture':'true'}})}},
   '@kit.AbilityKit':{application:{createModuleContext:async(context,name)=>{
