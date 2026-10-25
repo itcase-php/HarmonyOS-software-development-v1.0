@@ -1,0 +1,11 @@
+diff --git a/external/libetonyek/ExternalProject_libetonyek.mk b/external/libetonyek/ExternalProject_libetonyek.mk
+--- a/external/libetonyek/ExternalProject_libetonyek.mk
++++ b/external/libetonyek/ExternalProject_libetonyek.mk
+@@ -43,6 +43,7 @@ $(call gb_ExternalProject_get_state_target,libetonyek,build) :
+ 			--disable-weffc \
+ 			--without-tools \
+ 			--with-mdds=1.0 \
++			$(if $(filter OHOS,$(RTL_OS)),LIBS="$(shell $(CXX) --rtlib=compiler-rt --print-libgcc-file-name)") \
+ 			$(if $(filter WNT,$(OS_FOR_BUILD)),MKDIR_P="$(shell cygpath -m /usr/bin/mkdir) -p") \
+ 			$(if $(verbose),--disable-silent-rules,--enable-silent-rules) \
+ 			$(if $(filter LINUX,$(OS)), \

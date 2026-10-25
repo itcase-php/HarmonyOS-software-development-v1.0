@@ -1,0 +1,35 @@
+{
+  "checkedAtUtc": "2026-10-13T13:22:18.074732+00:00",
+  "result": "passed",
+  "scope": "four-route source hardening, host regressions and actual SDK Release packaging",
+  "deviceExecution": "not executed",
+  "officeEngineExecution": "not executed this audit",
+  "nativeCtestPassed": 25,
+  "jpegActualParseRenderPassed": 29,
+  "coreDocumentPassed": 34,
+  "artifactDeliveryModeledSdkPassed": 13,
+  "deliveryLifecycleModeledNativePassed": 3,
+  "bundledRuntimeModeledPdfSdkPassed": 22,
+  "publishedCheckoutRegressions": [
+    "release-routes",
+    "core-scope",
+    "capability-guards",
+    "artifact-delivery",
+    "delivery-lifecycle",
+    "bundled-runtime",
+    "migration",
+    "fidelity",
+    "input-management",
+    "runtime-language"
+  ],
+  "releaseHapBytes": 392680329,
+  "releaseHapSha256": "7fc3f884ae74b4b7e1ff673c2f6b95549fc494af9317ae618ef00b7d876daed3",
+  "officeLibraryCount": 235,
+  "offlineResourceCount": 3271,
+  "deviceEvidencePending": [
+    "Office load/export",
+    "PDFKit parse and rendered layout",
+    "system save/reopen and share recipient",
+    "fonts and representative reference PDFs"
+  ]
+}

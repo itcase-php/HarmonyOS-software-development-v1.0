@@ -1,4 +1,3 @@
-import { RegistryFormat } from '../models/RegistryTypes';
 import { FormatRegistry } from './FormatRegistry';
 import { FormatRegistryPort } from './ServiceContracts';
 

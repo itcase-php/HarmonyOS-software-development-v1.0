@@ -1,5 +1,5 @@
 {
-  "scope": "isolated_host_prototype_with_independent_pdf_parser_and_renderer",
+  "scope": "host_CLI_shared_JPEG_core_with_independent_pdf_parser_and_renderer",
   "result": "passed",
   "source": "Pillow generated fixtures",
   "parser": "pypdf strict",
@@ -14,7 +14,7 @@
       "meanAbsoluteRenderedDifference": 4.00166,
       "embeddedJpegIdentical": true,
       "pages": 1,
-      "trackedAllocationPeak": 131072
+      "trackedAllocationPeak": 158609
     },
     {
       "case": "gray_300dpi",
@@ -24,7 +24,7 @@
       "meanAbsoluteRenderedDifference": 2.15801,
       "embeddedJpegIdentical": true,
       "pages": 1,
-      "trackedAllocationPeak": 131072
+      "trackedAllocationPeak": 154035
     },
     {
       "case": "invalid_magic",
@@ -47,14 +47,14 @@
       "code": "UNSUPPORTED_FEATURE"
     },
     {
-      "case": "exif_orientation_rejected",
+      "case": "exif_orientation_supported",
       "result": "passed",
-      "code": "UNSUPPORTED_FEATURE"
+      "embeddedJpegIdentical": true
     },
     {
-      "case": "icc_rejected",
+      "case": "invalid_icc_rejected",
       "result": "passed",
-      "code": "UNSUPPORTED_FEATURE"
+      "code": "FILE_CORRUPTED"
     },
     {
       "case": "cmyk_rejected",
@@ -70,7 +70,7 @@
       "case": "large_multichunk",
       "result": "passed",
       "inputBytes": 859730,
-      "trackedAllocationPeak": 131072,
+      "trackedAllocationPeak": 172865,
       "embeddedJpegIdentical": true
     },
     {
@@ -93,7 +93,7 @@
       "result": "passed"
     }
   ],
-  "applicationIntegrated": false,
+  "applicationExecution": "not_executed_by_this_script",
   "deviceExecution": "not_executed",
   "realRoutesAvailable": 0
 }

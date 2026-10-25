@@ -27,14 +27,33 @@ const records = manifest.records.map(record => {
     changedSinceFirstImport:hash(read(record.target)) !== record.targetSha256};
 });
 assert.equal(hash(read(manifest.attachment.target)),manifest.attachment.sha256);
-assert.ok(read('entry/src/main/cpp/core/converter.h').equals(read('docs/migration-source/contracts/converter.h')),
-  'Original C++ contract lost or changed');
+const contentExtension='struct ContentExpectation {\n'+
+  '    std::vector<std::pair<std::uint32_t,std::uint32_t>> textMinimum;\n'+
+  '    std::uint32_t minimumImages{};\n    std::optional<std::uint32_t> pageCount;\n};\n';
+const currentContract=text('entry/src/main/cpp/core/converter.h');
+assert.ok(currentContract.includes(contentExtension));
+const fontExtension='struct FontDiagnostic { std::string family,part; };\n';
+assert.ok(currentContract.includes(fontExtension));
+assert.equal(currentContract.replace(contentExtension,'').replace('    std::optional<ContentExpectation> contentExpectation;\n','')
+  .replace(fontExtension,'').replace('    std::vector<FontDiagnostic> fontDiagnostics;\n',''),
+  text('docs/migration-source/contracts/converter.h'), 'Original C++ contract lost beyond optional content checks');
 const protocol = text('entry/src/main/ets/models/NativeProtocol.ets');
 const expectedProtocol = text('docs/migration-source/contracts/native_bridge.d.ts')
   .replace('/** Design contract v1. Not a compiled/implemented HarmonyOS binding. */',
     '// Protocol v1 migrated into ArkTS. Implemented binding subset is documented in IMPLEMENTATION_STATUS.md.')
   .replace(/declare const nativeModule: NativeModule;\nexport default nativeModule;\s*$/,'');
-assert.equal(protocol,expectedProtocol,'Original model declarations lost in ArkTS adaptation');
+// The previously approved delivery method is the only addition to the original protocol.
+const deliveryProtocol=expectedProtocol.replace('  shutdown(): Promise<void>;',
+  '  copyArtifactToFd(internalRef: string, destinationFd: number, sha256: string, byteSize: number): Promise<number>;\n  shutdown(): Promise<void>;');
+const textExtension='// Private Native-to-validator expectations; consumed before storing a completed result.\n'+
+  'export interface TextMinimum { codePoint: number; count: number; }\n'+
+  'export interface ContentExpectation {\n  textMinimum: TextMinimum[];\n  minimumImages: number;\n  pageCount?: number;\n}\n';
+assert.ok(protocol.includes(textExtension));
+const fontProtocolExtension='export interface FontDiagnostic { family: string; part: string; }\n';
+assert.ok(protocol.includes(fontProtocolExtension));
+assert.equal(protocol.replace(textExtension,'').replace('  contentExpectation?: ContentExpectation;\n','')
+  .replace(fontProtocolExtension,'').replace('  fontDiagnostics?: FontDiagnostic[];\n',''),deliveryProtocol,
+  'Native protocol changed beyond optional content checks');
 assert.equal(text('entry/src/main/cpp/types/libentry/Protocol.d.ts'),
   '// Generated from models/NativeProtocol.ets. Do not edit independently.\n'+protocol,
   'Native and ArkTS protocol copies drifted');
@@ -43,7 +62,7 @@ const methods = [...protocol.match(/export interface NativeModule \{([\s\S]*?)\}
   .matchAll(/^\s+([a-zA-Z]+)\(/gm)].map(match=>match[1]);
 const native = text('entry/src/main/cpp/napi/native_bridge.cpp');
 const bridge = text('entry/src/main/ets/services/NativeBridge.ets');
-assert.equal(methods.length,13);
+assert.equal(methods.length,14);
 for (const method of methods) {
   assert.match(native,new RegExp(`\\{"${method}", nullptr,`),`NAPI export missing: ${method}`);
   assert.match(bridge,new RegExp(`static (?:async )?${method}\\(`),`ArkTS wrapper missing: ${method}`);
@@ -63,8 +82,14 @@ for (const name of ['formats.json','conversion-matrix.json']) {
   const source = read(`shared/format-registry/${name}`);
   assert.ok(source.equals(read(`entry/src/main/resources/rawfile/format-registry/${name}`)),
     `Packaged rawfile differs: ${name}`);
-  assert.ok(source.equals(read(`docs/migration-source/shared/format-registry/${name}`)),
-    `Original configuration lost: ${name}`);
+  const historical=read(`docs/migration-source/shared/format-registry/${name}`);
+  if(name==='conversion-matrix.json') {
+    const approved=JSON.parse(historical);
+    for(const id of ['jpeg-pdf','png-pdf','docx-pdf','pptx-pdf']) { const route=approved.routes.find(route=>route.id===id); route.status='experimental';route.fallbackRouteIds=[];route.inputConstraints.maxInputs=1; }
+    for(const id of ['docx-pdf','pptx-pdf']) approved.routes.find(route=>route.id===id).allowedDegradations=['font_substitution'];
+    approved.notes='Four one-way PDF routes have bundled engines and execute in Debug and Release. Definitions outside product-scope.json remain disabled. Device qualification and fidelity are not implied.';
+    assert.deepEqual(JSON.parse(source),approved,'Configuration changes exceed approved four-route scope');
+  } else assert.ok(source.equals(historical),`Original configuration lost: ${name}`);
 }
 assert.equal(metadata.formatsSha256, hash(read('shared/format-registry/formats.json')));
 assert.equal(metadata.matrixSha256, hash(read('shared/format-registry/conversion-matrix.json')));
@@ -82,7 +107,8 @@ const bundledRoutes=catalogueFiles.flatMap(name=>JSON.parse(text(`entry/src/main
   .sort((a,b)=>matrix.routes.findIndex(item=>item.id===a.id)-matrix.routes.findIndex(item=>item.id===b.id));
 assert.deepEqual(bundledFormats,formats.formats,'Offline catalogue lost approved formats');
 assert.deepEqual(bundledRoutes,matrix.routes,'Offline catalogue changed approved route definitions');
-assert.ok(matrix.routes.every(route=>route.status==='planned'),'Migration unexpectedly activated routes');
+assert.ok(matrix.routes.every(route=>route.status===(['jpeg-pdf','png-pdf','docx-pdf','pptx-pdf'].includes(route.id)?'experimental':'planned')),
+  'Only the approved four Debug routes may be experimental');
 for (const id of formats.engineIds) {
   const engine = `entry/src/main/cpp/engines/${id}/${id}_converter.cpp`;
   assert.ok(fs.existsSync(path.join(root,engine)),`Engine entry missing: ${id}`);
@@ -106,7 +132,8 @@ const report = {scope:'migration_integrity_not_runtime_conversion',result:'passe
   exactSourceSnapshots:records.length,originalOutputFilesChecked:records.filter(record=>
     fs.existsSync(path.join(manifest.source,record.source))).length,
   originalProjectFilesRetained,originalProjectChanges,nativeMethodsPreserved:methods.length,
-  formats:formats.formats.length,plannedRoutes:matrix.routes.length,availableRoutes:0,
+  formats:formats.formats.length,plannedRoutes:matrix.routes.filter(route=>route.status==='planned').length,
+  experimentalRoutes:matrix.routes.filter(route=>route.status==='experimental').length,availableRoutes:0,
   generatedProtocolEquivalent:true,configCopiesByteIdentical:true,
   realConversion:'not_executed',deviceValidation:'not_executed',records};
 fs.mkdirSync(path.join(root,'tests/generated'),{recursive:true});

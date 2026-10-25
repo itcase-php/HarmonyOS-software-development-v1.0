@@ -13,6 +13,7 @@ import { TaskDependencies } from './TaskDependencies';
 import { TaskStore } from '../viewmodel/TaskStore';
 import { NativeTaskRunner } from './NativeTaskRunner';
 import { ConversionPlanner } from '../viewmodel/ConversionPlanner';
+import { BundledConversionRuntime } from './BundledConversionRuntime';
 
 class PreviewFilePlatform implements FileAuthorizationPlatform {
   isAvailable(): boolean { return false; }
@@ -54,7 +55,7 @@ export class ServiceContainer {
   }
   static initialize(context: common.UIAbilityContext): ServiceContainer {
     const registry: FormatRegistryService = new FormatRegistryService();
-    const scope: ServiceContainer = new ServiceContainer(registry, new NativeBridgeService(), new HarmonyFilePlatform(context, registry));
+    const scope: ServiceContainer = new ServiceContainer(registry, new NativeBridgeService(undefined, new BundledConversionRuntime(context)), new HarmonyFilePlatform(context, registry));
     ConversionDiagnostics.stage('ServiceContainer', 'initialize', '', scope.files.isAvailable() ? 'HARMONY_PICKER_READY' : 'HARMONY_PICKER_UNAVAILABLE');
     ServiceContainer.currentScope = scope;
     FormatRegistry.useDefault(scope.registry); NativeBridge.useDefault(scope.native);
@@ -69,7 +70,12 @@ export class ServiceContainer {
   }
   private async closeOwned(): Promise<void> {
     this.tasks.shutdown();
-    try { await this.native.shutdown(); }
-    finally { await this.tasks.releaseAuthorizedSessions(() => this.files.destroyAllSessions()); }
+    await this.tasks.waitForDeliveries();
+    // Wait for the active Native call before releasing the process-global runtime.
+    try { await this.tasks.releaseAuthorizedSessions(() => this.files.destroyAllSessions()); }
+    finally {
+      // A recreated ability may now own the same Native runtime.
+      if (ServiceContainer.currentScope === this) { await this.native.shutdown(); }
+    }
   }
 }

@@ -1,0 +1,11 @@
+{
+  "scope": "host lifetime logic with modeled Native",
+  "passed": 5,
+  "cases": [
+    "save keeps the Native artifact until delivery finishes during shutdown",
+    "share keeps the Native artifact until delivery finishes during shutdown",
+    "a closing older ability cannot shutdown the new ability Native runtime",
+    "Native shutdown waits until the active conversion and owned input cleanup settle",
+    "a scope recreated during conversion cleanup retains its Native runtime"
+  ]
+}

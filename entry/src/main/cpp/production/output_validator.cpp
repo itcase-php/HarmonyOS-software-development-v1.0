@@ -1,8 +1,31 @@
 #include "output_validator.h"
+#include <string>
+#include <cctype>
 #include <array>
 #include <string>
 
 namespace hdm::production {
+bool ValidatePdfEnvelope(prototype::IStream& pdf) {
+    try {
+        if (pdf.Size()<64) return false;
+        char header[8]{}; pdf.Seek(0); if (pdf.Read(header,8)!=8 || std::string(header,5)!="%PDF-") return false;
+        const auto length=static_cast<std::size_t>(std::min<std::uint64_t>(pdf.Size(),65536));
+        std::string tail(length,'\0'); pdf.Seek(pdf.Size()-length);
+        if (pdf.Read(tail.data(),length)!=length) return false;
+        const auto eof=tail.rfind("%%EOF"); const auto start=tail.rfind("startxref");
+        if (eof==std::string::npos || start==std::string::npos || start>eof) return false;
+        for (auto i=eof+5;i<tail.size();++i) if (!std::isspace(static_cast<unsigned char>(tail[i]))) return false;
+        auto i=start+9; while (i<eof && std::isspace(static_cast<unsigned char>(tail[i]))) ++i;
+        std::uint64_t offset=0; const auto first=i;
+        while (i<eof && std::isdigit(static_cast<unsigned char>(tail[i]))) {
+            if (offset>pdf.Size()/10) return false; offset=offset*10+tail[i++]-'0';
+        }
+        if (i==first || offset>=pdf.Size()) return false;
+        char target[64]{}; pdf.Seek(offset); const auto got=pdf.Read(target,sizeof(target));
+        const std::string text(target,got);
+        return text.rfind("xref",0)==0 || (text.find(" obj")!=std::string::npos && text.find("/Type /XRef")!=std::string::npos);
+    } catch (...) { return false; }
+}
 namespace {
 std::string Read(prototype::IStream& file,std::uint64_t offset,std::size_t length) {
     if (offset>file.Size() || length>file.Size()-offset || length>1024) return {};
@@ -30,7 +53,10 @@ bool ValidateKnownPdf(prototype::IStream& pdf, const prototype::PdfCandidate& ca
         const auto length=pdf.Size();
         if (length!=candidate.bytes || candidate.imageBytes==0 || candidate.imageOffset>length ||
             candidate.imageBytes>length-candidate.imageOffset || length<250) return false;
-        if (Read(pdf,0,9)!="%PDF-1.4\n") return false;
+        const bool hasIcc=candidate.iccBytes!=0;
+        const std::size_t objectCount=hasIcc?7:6;
+        if (Read(pdf,0,9)!=(hasIcc?"%PDF-1.7\n":"%PDF-1.4\n") || candidate.iccBytes>65536 ||
+            (hasIcc && candidate.iccComponents!=1 && candidate.iccComponents!=3)) return false;
         const auto tailStart=length>128?length-128:0;
         const auto tail=Read(pdf,tailStart,static_cast<std::size_t>(length-tailStart));
         const auto marker=tail.rfind("startxref\n");
@@ -40,9 +66,9 @@ bool ValidateKnownPdf(prototype::IStream& pdf, const prototype::PdfCandidate& ca
         std::uint64_t xref{};
         if (!Decimal(tail.substr(marker+10,end-(marker+10)),xref) || xref>=length) return false;
         const auto header=Read(pdf,xref,29);
-        if (header!="xref\n0 6\n0000000000 65535 f \n") return false;
-        std::array<std::uint64_t,6> offsets{};
-        for (std::size_t i=1;i<offsets.size();++i) {
+        if (header!="xref\n0 "+std::to_string(objectCount)+"\n0000000000 65535 f \n") return false;
+        std::array<std::uint64_t,7> offsets{};
+        for (std::size_t i=1;i<objectCount;++i) {
             const auto line=Read(pdf,xref+29+(i-1)*20,20);
             if (line.size()!=20 || line.substr(10)!=" 00000 n \n" || !Decimal(line.substr(0,10),offsets[i]) ||
                 offsets[i]>=xref || (i>1 && offsets[i]<=offsets[i-1])) return false;
@@ -55,6 +81,14 @@ bool ValidateKnownPdf(prototype::IStream& pdf, const prototype::PdfCandidate& ca
         if (image.find("/Subtype /Image")==std::string::npos ||
             image.find("/Filter /DCTDecode")==std::string::npos ||
             image.find("/Length "+std::to_string(candidate.imageBytes)+" >>\nstream\n")==std::string::npos) return false;
+        if (hasIcc) {
+            if (image.find("/ColorSpace [/ICCBased 6 0 R]")==std::string::npos) return false;
+            const std::string prefix="6 0 obj\n<< /N "+std::to_string(candidate.iccComponents)+" /Length "+
+                std::to_string(candidate.iccBytes)+" >>\nstream\n";
+            if (Read(pdf,offsets[6],prefix.size())!=prefix ||
+                offsets[6]+prefix.size()+candidate.iccBytes+18!=xref ||
+                Read(pdf,offsets[6]+prefix.size()+candidate.iccBytes,18)!="\nendstream\nendobj\n") return false;
+        }
         return true;
     } catch (...) { return false; }
 }

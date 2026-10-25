@@ -1,0 +1,7 @@
+{
+  "scope": "actual CorePdfSmoke/JPEG context setup with modeled SDK; no device",
+  "passed": 5,
+  "headlessCasesDoNotRequireTopAbility": true,
+  "entryModuleCacheRetained": true,
+  "interactiveCaseStillRequiresUi": true
+}

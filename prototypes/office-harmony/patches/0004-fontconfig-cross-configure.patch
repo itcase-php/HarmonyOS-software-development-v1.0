@@ -1,0 +1,43 @@
+diff --git a/external/fontconfig/ExternalProject_fontconfig.mk b/external/fontconfig/ExternalProject_fontconfig.mk
+index 0f542e684..349e9172e 100644
+--- a/external/fontconfig/ExternalProject_fontconfig.mk
++++ b/external/fontconfig/ExternalProject_fontconfig.mk
+@@ -40,6 +40,7 @@ $(call gb_ExternalProject_get_state_target,fontconfig,build) :
+ 			--with-expat-includes=$(gb_UnpackedTarball_workdir)/expat/lib \
+ 			--with-expat-lib=$(gb_StaticLibrary_WORKDIR) \
+ 			$(gb_CONFIGURE_PLATFORMS) \
++			$(if $(filter OHOS,$(RTL_OS)),ac_cv_va_copy=C99) \
+ 			$(if $(filter ANDROID,$(OS)), \
+ 				--disable-shared \
+ 				ac_cv_va_copy=no \
+diff --git a/external/fontconfig/UnpackedTarball_fontconfig.mk b/external/fontconfig/UnpackedTarball_fontconfig.mk
+index 622479d65..0c2c09f63 100644
+--- a/external/fontconfig/UnpackedTarball_fontconfig.mk
++++ b/external/fontconfig/UnpackedTarball_fontconfig.mk
+@@ -13,8 +13,13 @@ $(eval $(call gb_UnpackedTarball_set_tarball,fontconfig,$(FONTCONFIG_TARBALL),,f
+ 
+ $(eval $(call gb_UnpackedTarball_set_patchlevel,fontconfig,0))
+ 
++ifeq ($(RTL_OS),OHOS)
++$(eval $(call gb_UnpackedTarball_set_pre_action,fontconfig,sh $(SRCDIR)/external/fontconfig/ohos-regenerate.sh))
++$(call gb_UnpackedTarball_get_target,fontconfig): $(SRCDIR)/external/fontconfig/ohos-regenerate.sh
++endif
++
+ $(eval $(call gb_UnpackedTarball_add_patches,fontconfig,\
+-	external/fontconfig/fontconfig-2.12.1.patch.1 \
++	$(if $(filter OHOS,$(RTL_OS)),,external/fontconfig/fontconfig-2.12.1.patch.1) \
+ 	external/fontconfig/nowarnnoconfig.patch.1 \
+ ))
+ 
+diff --git a/external/fontconfig/ohos-regenerate.sh b/external/fontconfig/ohos-regenerate.sh
+new file mode 100644
+index 000000000..8bc4fca83
+--- /dev/null
++++ b/external/fontconfig/ohos-regenerate.sh
+@@ -0,0 +1,6 @@
++#!/bin/sh
++# Preserve the SONAME adjustment from fontconfig-2.12.1.patch.1 after autoreconf.
++set -eu
++autoreconf -f -i
++grep -Fq '$wl-soname $wl$soname' configure
++sed -i 's/\$wl-soname \$wl\$soname//g' configure

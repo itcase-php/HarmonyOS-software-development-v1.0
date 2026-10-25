@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "configVersion": "1.0.0-design",
   "formatsSha256": "55d416083a65f2cc13a64a17aec06fb23def491534186d013cf5b88ceb8d4f10",
-  "matrixSha256": "1b81e216104899ecee60f95579683124684292bf640553fd03109074a789f270",
+  "matrixSha256": "37efa2b4d617c878681935608eac12547413d4dea1b0e892d5f13343685d66a9",
   "blockedFormats": [
     "ncm",
     "kgg",

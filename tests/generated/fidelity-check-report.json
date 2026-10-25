@@ -1,7 +1,7 @@
 {
   "scope": "fidelity_demo_logic_not_real_document_validation",
   "result": "passed",
-  "testedCases": 13,
+  "testedCases": 12,
   "cases": [
     {
       "name": "Each quality mode retains options and completes at its specified active duration",
@@ -36,11 +36,7 @@
       "result": "passed"
     },
     {
-      "name": "Explicitly approved compatible route records its degradation configuration",
-      "result": "passed"
-    },
-    {
-      "name": "Content-only report makes layout non-applicable and never emits measured document metrics",
+      "name": "Deferred compatibility and content-only routes stay disabled with or without consent",
       "result": "passed"
     },
     {

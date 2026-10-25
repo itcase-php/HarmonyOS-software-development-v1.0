@@ -6,6 +6,7 @@ import { BridgeError } from '../common/BridgeError';
 import { ErrorHandler } from '../common/ErrorHandler';
 import { ConversionDiagnostics } from '../common/ConversionDiagnostics';
 import { ConverterUiPort, PreviewConverterUi } from './ConverterUiPort';
+import { FontDiagnostic } from '../models/NativeProtocol';
 
 @Observed
 export class ConversionStatusVM {
@@ -63,6 +64,19 @@ inputText(key: ResourceStr): string { return this.ui.read( key); }
 
 inputFailure(reason: string): string { return LanguageManager.getString(this.inputFailureKey(reason)); }
 
+fontDiagnosticText(items: FontDiagnostic[]): string {
+    return items.map((item: FontDiagnostic) => LanguageManager.getString('input_office_font_detail',
+      [item.family || LanguageManager.getString('input_office_default_font'), this.fontPartText(item.part)])).join('\n');
+}
+
+private fontPartText(part: string): string {
+    const key = part.startsWith('word/header') ? 'font_part_header' : part.startsWith('word/footer') ? 'font_part_footer' :
+      part === 'word/footnotes.xml' ? 'font_part_footnotes' : part === 'word/endnotes.xml' ? 'font_part_endnotes' :
+      part.startsWith('ppt/slideMasters/') ? 'font_part_master' : part.startsWith('ppt/slideLayouts/') ? 'font_part_layout' :
+      part.startsWith('ppt/slides/') ? 'font_part_slide' : 'font_part_body';
+    return LanguageManager.getString(key);
+}
+
 inputFailureKey(reason: string): string {
     if (reason === 'FILE_TOO_LARGE') { return 'file_too_large'; }
     if (reason === 'BATCH_TOO_LARGE') { return 'input_batch_too_large'; }
@@ -79,6 +93,23 @@ inputFailureKey(reason: string): string {
     if (reason === 'FILE_PICKER_UNAVAILABLE' || reason === 'FILE_PICK_FAILED') { return 'input_picker_failed'; }
     if (reason === 'FILE_COPY_FAILED' || reason === 'FILE_CHANGED_DURING_COPY' || reason === 'FILE_WRITE_INCOMPLETE') { return 'input_import_failed'; }
     if (reason === 'NATIVE_INPUT_NOT_VERIFIED') { return 'input_probe_failed'; }
+    if (reason.startsWith('NATIVE_PNG_') && reason.includes('UNSUPPORTED')) { return 'input_png_subset_unsupported'; }
+    if (reason === 'OFFICE_FONT_INVENTORY_EMPTY') { return 'input_office_font_inventory_failed'; }
+    if (reason === 'OFFICE_FONT_USAGE_UNRESOLVED') { return 'input_office_font_usage_unsupported'; }
+    if (reason.startsWith('OFFICE_REQUIRED_FONT')) { return 'input_office_font_missing'; }
+    if (reason === 'OFFICE_SYMBOL_FONT_MISSING' || reason === 'OFFICE_GLYPH_MISSING') { return 'input_office_glyph_missing'; }
+    if (reason === 'OFFICE_TEXT_MISSING' || reason === 'OFFICE_IMAGES_MISSING' || reason === 'OFFICE_PAGE_COUNT_MISMATCH') { return 'input_office_content_mismatch'; }
+    if (reason === 'NATIVE_OFFICE_EXTERNAL_RELATIONSHIP' || reason === 'NATIVE_OFFICE_ACTIVE_CONTENT') { return 'input_office_feature_unsupported'; }
+    if (reason.startsWith('OFFICE_') && (reason.includes('INITIALIZATION') || reason.includes('LIBRARY') || reason.includes('RESOURCES') || reason.includes('RESOURCE_') || reason.includes('MANIFEST') || reason.includes('ARCHIVE') || reason.includes('BOOTSTRAP') || reason.includes('LOK_') || reason.includes('FONTCONFIG'))) { return 'input_office_runtime_failed'; }
+    if (reason === 'NATIVE_JPEG_METADATA_UNSUPPORTED') { return 'input_jpeg_metadata_unsupported'; }
+    if (reason === 'NATIVE_JPEG_ENCODING_UNSUPPORTED') { return 'input_jpeg_encoding_unsupported'; }
+    if (reason === 'NATIVE_JPEG_COLOR_UNSUPPORTED') { return 'input_jpeg_color_unsupported'; }
+    if (reason === 'NATIVE_JPEG_DENSITY_UNSUPPORTED') { return 'input_jpeg_density_unsupported'; }
+    if (reason === 'NATIVE_JPEG_HEADER_UNSUPPORTED' || reason === 'NATIVE_JPEG_SUBSET_UNSUPPORTED') { return 'input_jpeg_header_unsupported'; }
+    if (reason === 'NATIVE_JPEG_PIXEL_LIMIT') { return 'input_jpeg_pixel_limit'; }
+    if (reason === 'NATIVE_JPEG_MEMORY_LIMIT') { return 'input_jpeg_memory_limit'; }
+    if (reason === 'NATIVE_JPEG_CORRUPTED') { return 'input_jpeg_corrupted'; }
+    if (reason === 'NATIVE_INPUT_SIZE_MISMATCH' || reason === 'NATIVE_INPUT_DIGEST_MISMATCH' || reason === 'NATIVE_INPUT_READ_FAILED') { return 'input_import_failed'; }
     if (reason === 'SANDBOX_FULL') { return 'input_storage_full'; }
     if (reason === 'NATIVE_SESSION_TIMEOUT') { return 'input_session_timeout'; }
     if (reason === 'FILE_GRANT_EXPIRED') { return 'input_grant_expired'; }

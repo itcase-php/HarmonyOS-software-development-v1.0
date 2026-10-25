@@ -28,7 +28,8 @@ export class NativeTaskRunnerService implements NativeTaskRunnerPort {
     }
     FidelityPolicy.validate(route, { qualityMode: request.qualityMode,
       requestedIntent: request.intent, requestedTier: request.plan.minimumTier });
-    if (route.requiresUserApproval && !approved) {
+    if ((route.requiresUserApproval || request.plan.allowedDegradations.length > 0 ||
+      request.options.office?.missingFontPolicy === 'approved_fallback') && !approved) {
       throw new BridgeError('INVALID_REQUEST', 'NATIVE_APPROVAL_REQUIRED');
     }
     if (request.plan.intent !== request.intent || request.plan.configVersion !== registryMetadata.configVersion ||

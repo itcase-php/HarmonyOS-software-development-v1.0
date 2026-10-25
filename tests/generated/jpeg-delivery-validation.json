@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-07",
+  "result": "passed",
+  "scope": "Debug JPEG PDF lifetime and system delivery",
+  "regressions": [
+    "Native committed PDF survives removal of the complete input workspace",
+    "ShareKit opens without a removed component anchor",
+    "Save opens new document URI with CREATE"
+  ],
+  "nativeCtest": "25/25",
+  "deliveryHostCases": "6/6",
+  "existingHostGroups": 12,
+  "deviceHypium": "65/65",
+  "optionalDeliveryDeviceTests": "2/2",
+  "signedMainHapBuiltAndInstalled": true,
+  "signedTestHapBuiltAndInstalled": true,
+  "systemSave": {
+    "provider": "local Download",
+    "pickerConfirmed": true,
+    "publicFileReauthorizedAndReadBack": true,
+    "byteIdenticalToVerifiedNativeCopy": true,
+    "byteSize": 1351,
+    "sha256": "0114650536ba75a354953318781f95a1d32a7bf6d20c4730f41765e5d664dd3c"
+  },
+  "systemShare": {
+    "panelObserved": true,
+    "displayName": "converted.pdf",
+    "displaySize": "1.35 KB",
+    "verifiedCacheCopyHash": true,
+    "dismissedWithoutSending": true,
+    "receivingAppDelivery": "not_tested"
+  },
+  "independentPdfParseAndRender": "jpeg-delivery-pdf-validation.json",
+  "deviceTestBoundary": "Real Native engine, real SDK, explicit input workspace deletion; test TaskStore subclass isolates delivery from scheduling",
+  "notVerified": [
+    "Complete user import/conversion/history UI automation in this run",
+    "Receiving application reading or sending",
+    "Other file providers",
+    "Release",
+    "First launch offline",
+    "Office conversion"
+  ]
+}

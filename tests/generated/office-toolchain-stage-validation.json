@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-06",
+  "scope": "native_result_reports_and_office_toolchain_prerequisites",
+  "host": {
+    "nativeCtest": { "passed": 23, "failed": 0 },
+    "deviceEntryCases": 11,
+    "architectureCases": 21,
+    "redFailures": ["native warnings were lost", "native error diagnostics were overwritten"]
+  },
+  "hvigor": {
+    "debug": "passed",
+    "release": "passed",
+    "ohosTest": "passed",
+    "abis": ["arm64-v8a", "x86_64"]
+  },
+  "device": {
+    "reportedApi": 24,
+    "identity": "omitted",
+    "appAndTestInstall": "passed",
+    "initialTestLaunch": "blocked_by_locked_screen",
+    "hypiumAfterUnlock": { "passed": 63, "failed": 0, "errors": 0 },
+    "nativeReportSerializationOnDevice": "not_exercised"
+  },
+  "linuxSdk": {
+    "archiveSha256": "ab604bd92721d5cbcafd154e6461d46b9f1b105e7b89eab04a9d046681198082",
+    "api": 26,
+    "nativeVersion": "26.0.0.105",
+    "compilerVersion": "15.0.4",
+    "toolchainSmokeArm64": "compiled_linked_elf_checked",
+    "toolchainSmokeX86_64": "compiled_linked_elf_checked",
+    "stageLoad": "not_executed"
+  },
+  "office": {
+    "approvedRevision": "6804c10b45d52787c1e865e3ad192d7dfc7d4862",
+    "configureSha256Lf": "2da1d3c5933c9f3c5d589477284601322ff088a93cc4f01c8de6f510e577f64d",
+    "autogen": "blocked_config_sub_ohos_not_recognized",
+    "requiredClangMajor": 18,
+    "compilerPrerequisite": "blocked",
+    "fullTargetBuild": "not_completed",
+    "proposedRevisionChange": "awaiting_user_review"
+  },
+  "acceptance": {
+    "docxPdf": "not_completed",
+    "pptxPdf": "not_completed",
+    "jpegPdf": "host_runtime_passed_device_end_to_end_not_completed",
+    "offlineSaveOpenShare": "not_completed"
+  },
+  "releaseEvidence": "not_created"
+}

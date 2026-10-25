@@ -1,0 +1,22 @@
+{
+  "scope": "actual device fixture PDFs, hash-checked capture, independent pypdf and Poppler",
+  "checks": [
+    {
+      "label": "saved-docx",
+      "bytes": 22936,
+      "sha256": "f0cad253459da28e21d0deb83cea2dee4824ab688221321fe389eda4b4680b45",
+      "pages": 2,
+      "imageResourcesPerPage": [
+        1,
+        1
+      ],
+      "fonts": [
+        "/BAAAAA+DejaVuSans"
+      ],
+      "text": "OFFLINE OFFICE TEST\nHarmony Office Conversion\nEditable document sample 12345. The total must remain 678.90.\nItem Count Value\nAlpha 2 123.45\nBeta 3 555.45\n\nOFFLINE OFFICE TEST\nSecond Page\nPage two keeps its manual page break and the key value 98765.",
+      "independentParse": "passed",
+      "rendered": "passed",
+      "visualInspection": "not assessed by script"
+    }
+  ]
+}

@@ -42,8 +42,12 @@ function host(options = {}) {
     clearTimeout(id) { timeouts.delete(id); }});
   function load(relative, from=sourceRoot) {
     if (options.sdkModules && Object.prototype.hasOwnProperty.call(options.sdkModules,relative)) return options.sdkModules[relative];
+    // Legacy demo suites model Debug; Release suites opt out explicitly.
+    if (relative === 'BuildProfile') return {__esModule:true,default:{DEBUG:options.debugBuild!==false}};
     if (relative === '@kit.PerformanceAnalysisKit') return {hilog:{info:()=>{},warn:()=>{}}};
     if (relative === '@kit.CoreFileKit') return {};
+    // Definitions only; device PDF parsing and decompression are never modeled as passing here.
+    if (relative === '@kit.PDFKit' || relative === '@kit.BasicServicesKit') return {};
     if (relative === '@kit.LocalizationKit') return {i18n:{System:{getSystemLanguage:()=>options.systemLanguage || 'zh-CN'}}};
     if (relative === '@ohos/hypium' && options.hypium) return options.hypium;
     if (relative === '@kit.ArkTS') return {util:{generateRandomUUID:()=>crypto.randomUUID(),TextDecoder:{create:(encoding,settings)=>{
@@ -94,9 +98,9 @@ function host(options = {}) {
     fireTimeouts() { const callbacks=Array.from(timeouts.values());timeouts.clear();callbacks.forEach(callback=>callback()); },
     setNative(value) { nativeExports=value; },nativeLoads:()=>nativeLoads};
 }
-function enqueue(h,name='报告.pdf') {
-  const route = h.planner.routes('pdf','png')[0];
-  const task=h.store.enqueue(name,'pdf','png',route.id);
+function enqueue(h,name='报告.jpg') {
+  const route = h.planner.routes('jpeg','pdf')[0];
+  const task=h.store.enqueue(name,'jpeg','pdf',route.id);
   h.store.advance(h.now());return task;
 }
 async function test(name,fn) {
@@ -106,7 +110,7 @@ async function main() {
   await test('Every selectable target is backed by a single-input planned route; priorities ascend',()=>{
     const h=host();
     for (const source of formats.formats) {
-      const expected=matrix.routes.filter(route=>route.from.includes(source.id) &&
+      const expected=matrix.routes.filter(route=>['jpeg-pdf','png-pdf','docx-pdf','pptx-pdf'].includes(route.id) && route.from.includes(source.id) &&
         route.inputConstraints.minInputs<=1 && route.inputConstraints.maxInputs>=1 && route.status!=='unavailable');
       assert.deepEqual(Array.from(h.planner.targets(source.id),item=>item.id),
         formats.formats.filter(item=>expected.some(route=>route.to===item.id)).map(item=>item.id));
@@ -122,7 +126,7 @@ async function main() {
   });
   await test('File names reject paths, blocked extensions, missing suffixes and source mismatch',()=>{
     const h=host();
-    for (const name of ['', '../report.pdf', 'x\\report.pdf', 'report', '.pdf', 'x.txt','x.pdf\u0000'])
+    for (const name of ['', '../report.jpg', 'x\\report.jpg', 'report', '.jpg', 'x.txt','x.pdf\u0000'])
       assert.throws(()=>h.planner.validateFileName(name,'pdf'));
     assert.throws(()=>h.planner.validateFileName('music.NCM','pdf'),error=>error.code==='PERMISSION_DENIED');
     assert.equal(h.planner.validateFileName(' image.JPG ','jpeg'),'image.JPG');
@@ -130,20 +134,20 @@ async function main() {
   });
   await test('Unsupported route is rejected before creating a task',()=>{
     const h=host();
-    assert.throws(()=>h.store.enqueue('x.pdf','pdf','mp3','not-a-route'));
+    assert.throws(()=>h.store.enqueue('x.jpg','pdf','mp3','not-a-route'));
     assert.equal(h.store.snapshot().length,0); assert.equal(h.timers.size,0);
   });
-  await test('Degradation routes require approval in the store as well as the page',()=>{
+  await test('Deferred degradation routes remain disabled even with approval',()=>{
     const h=host(); const route=matrix.routes.find(route=>route.requiresUserApproval && route.inputConstraints.minInputs<=1);
     assert.ok(route); const source=formats.formats.find(format=>format.id===route.from[0]);
     const name='report.'+source.extensions[0];
-    assert.throws(()=>h.store.enqueue(name,source.id,route.to,route.id),error=>error.reason==='DEMO_APPROVAL_REQUIRED');
+    assert.throws(()=>h.store.enqueue(name,source.id,route.to,route.id),error=>error.code==='UNSUPPORTED_FORMAT');
     assert.equal(h.store.snapshot().length,0);
-    h.store.enqueue(name,source.id,route.to,route.id,true); assert.equal(h.store.snapshot().length,1);
+    assert.throws(()=>h.store.enqueue(name,source.id,route.to,route.id,true),error=>error.code==='UNSUPPORTED_FORMAT'); assert.equal(h.store.snapshot().length,0);
     h.store.shutdown();
   });
   await test('FIFO queue permits one running task and a single timer',()=>{
-    const h=host(); const first=enqueue(h,'first.pdf'); const second=enqueue(h,'second.pdf');
+    const h=host(); const first=enqueue(h,'first.jpg'); const second=enqueue(h,'second.jpg');
     assert.equal(h.store.snapshot().find(item=>item.id===first.id).status,'running');
     assert.equal(h.store.snapshot().find(item=>item.id===second.id).status,'queued');
     assert.equal(h.timers.size,1);
@@ -188,7 +192,7 @@ async function main() {
     assert.equal(h.store.resume(task.id),false); assert.equal(h.store.cancel(task.id),false);
   });
   await test('History cleanup retains running and paused tasks',()=>{
-    const h=host(); enqueue(h,'one.pdf'); const second=enqueue(h,'two.pdf'); enqueue(h,'three.pdf');
+    const h=host(); enqueue(h,'one.jpg'); const second=enqueue(h,'two.jpg'); enqueue(h,'three.jpg');
     h.step(3500); h.store.advance(h.now()); assert.equal(h.store.pause(second.id),true);
     assert.equal(h.store.clearFinished(),1); assert.equal(h.store.snapshot().length,2);
     assert.deepEqual(Array.from(h.store.snapshot(),item=>item.status).sort(),['paused','running']);
@@ -198,14 +202,14 @@ async function main() {
     const h=host(); let notifications=0;
     h.store.subscribe(()=>{throw new Error('Detached page');});
     const token=h.store.subscribe(tasks=>{ notifications++; if(tasks.length)tasks[0].fileName='changed'; });
-    enqueue(h); assert.equal(h.store.snapshot()[0].fileName,'报告.pdf');
+    enqueue(h); assert.equal(h.store.snapshot()[0].fileName,'报告.jpg');
     const before=notifications; h.store.unsubscribe(token); h.step(120); h.store.advance(h.now());
     assert.equal(notifications,before); h.store.shutdown();
   });
   await test('History is bounded; new tasks evict finished records only',()=>{
-    const h=host(); for(let i=0;i<100;i++)enqueue(h,`report-${i}.pdf`);
-    assert.throws(()=>enqueue(h,'overflow.pdf'),error=>error.code==='TASK_BUSY');
-    const finished=h.store.snapshot()[99]; h.store.cancel(finished.id); enqueue(h,'replacement.pdf');
+    const h=host(); for(let i=0;i<100;i++)enqueue(h,`report-${i}.jpg`);
+    assert.throws(()=>enqueue(h,'overflow.jpg'),error=>error.code==='TASK_BUSY');
+    const finished=h.store.snapshot()[99]; h.store.cancel(finished.id); enqueue(h,'replacement.jpg');
     assert.equal(h.store.snapshot().length,100); assert.equal(h.timers.size,1); h.store.shutdown();
   });
   await test('Native load failure stays unavailable and can be retried',async()=>{

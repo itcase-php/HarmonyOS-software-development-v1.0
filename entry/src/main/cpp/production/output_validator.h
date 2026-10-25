@@ -5,4 +5,6 @@ namespace hdm::production {
 // Validate the fixed writer's structure without loading the JPEG or PDF into memory.
 // The independent PDF parser/renderer integration test remains a separate release gate.
 bool ValidateKnownPdf(prototype::IStream& pdf, const prototype::PdfCandidate& candidate);
+// Structural envelope guard only; Office/PNG also require the platform PDF parser.
+bool ValidatePdfEnvelope(prototype::IStream& pdf);
 } // namespace hdm::production

@@ -1,0 +1,150 @@
+{
+  "scope": "actual native OOXML font usage inspection; no device conversion",
+  "passed": 36,
+  "cases": [
+    {
+      "name": "unused-style",
+      "passed": true
+    },
+    {
+      "name": "unused-script-slot",
+      "passed": true
+    },
+    {
+      "name": "used-missing-family",
+      "passed": true
+    },
+    {
+      "name": "paragraph-inheritance",
+      "passed": true
+    },
+    {
+      "name": "direct-overrides-style",
+      "passed": true
+    },
+    {
+      "name": "character-style",
+      "passed": true
+    },
+    {
+      "name": "document-default",
+      "passed": true
+    },
+    {
+      "name": "mixed-script",
+      "passed": true
+    },
+    {
+      "name": "complex-script",
+      "passed": true
+    },
+    {
+      "name": "unused-theme",
+      "passed": true
+    },
+    {
+      "name": "used-theme",
+      "passed": true
+    },
+    {
+      "name": "explicit-cross-script-theme",
+      "passed": true
+    },
+    {
+      "name": "unresolved-theme",
+      "passed": true
+    },
+    {
+      "name": "used-header",
+      "passed": true
+    },
+    {
+      "name": "unused-numbering",
+      "passed": true
+    },
+    {
+      "name": "used-numbering",
+      "passed": true
+    },
+    {
+      "name": "private-symbol-binding",
+      "passed": true
+    },
+    {
+      "name": "word-symbol",
+      "passed": true
+    },
+    {
+      "name": "style-cycle",
+      "passed": true
+    },
+    {
+      "name": "unused-protected-part",
+      "passed": true
+    },
+    {
+      "name": "table-font",
+      "passed": true
+    },
+    {
+      "name": "table-direct-overrides",
+      "passed": true
+    },
+    {
+      "name": "inactive-first-header",
+      "passed": true
+    },
+    {
+      "name": "active-first-header",
+      "passed": true
+    },
+    {
+      "name": "unused-even-header",
+      "passed": true
+    },
+    {
+      "name": "referenced-footnote",
+      "passed": true
+    },
+    {
+      "name": "empty-run-ignored",
+      "passed": true
+    },
+    {
+      "name": "explicit-font-overrides-theme",
+      "passed": true
+    },
+    {
+      "name": "ppt-unused-theme",
+      "passed": true
+    },
+    {
+      "name": "ppt-master-inheritance",
+      "passed": true
+    },
+    {
+      "name": "ppt-direct-overrides-master",
+      "passed": true
+    },
+    {
+      "name": "ppt-placeholder-type-inherited",
+      "passed": true
+    },
+    {
+      "name": "ppt-theme",
+      "passed": true
+    },
+    {
+      "name": "ppt-unused-slide",
+      "passed": true
+    },
+    {
+      "name": "ppt-bullet",
+      "passed": true
+    },
+    {
+      "name": "ppt-used-master-shape",
+      "passed": true
+    }
+  ]
+}

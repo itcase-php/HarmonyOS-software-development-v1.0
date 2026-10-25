@@ -1,5 +1,6 @@
 import { ConversionStatusVM } from '../viewmodel/ConversionStatusVM';
 import { LanguageManager, AppLanguage } from '../common/LanguageManager';
+import { FontFallbackRetry } from '../components/FontFallbackRetry';
 import { ServiceContainer } from '../services/ServiceContainer';
 import { DemoTask, taskStatusLabel, taskStatusColor, isActiveTask } from '../models/InteractionModels';
 import { TaskStore } from '../viewmodel/TaskStore';
@@ -20,7 +21,7 @@ struct TaskHistory {
     return LanguageManager.getString(resource, args, this.language);
   }
 
-  private services: ServiceContainer = ServiceContainer.current();
+  @Provide('services') services: ServiceContainer = ServiceContainer.current();
   @State tasks: DemoTask[] = [];
   private store: TaskStore = this.services.tasks;
   private statusText: ConversionStatusVM = new ConversionStatusVM();
@@ -129,6 +130,8 @@ struct TaskHistory {
               Text(this.tr($r('app.string.report_missing'))).fontSize(13).fontColor($r('app.color.palette_526077'))
             }
             if (task.error.length > 0) { Text(this.tr(this.statusText.inputFailure(task.error.substring(task.error.indexOf(':') + 1)))).fontSize(13).fontColor($r('app.color.palette_c53030')) }
+            if (task.fontDiagnostics.length > 0) { Text(this.statusText.fontDiagnosticText(task.fontDiagnostics)).fontSize(13).fontColor($r('app.color.palette_526077')).copyOption(CopyOptions.LocalDevice) }
+            FontFallbackRetry({ taskId: task.id })
             Text(task.mode === 'demo' ? this.tr('record_demo') :
               task.status === 'completed' ?
                 this.store.exportSnapshot(task.id).some((record) => record.state === 'exported') ?

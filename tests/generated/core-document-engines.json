@@ -1,0 +1,197 @@
+{
+  "scope": "native PNG real conversion and independent pypdf/Poppler; JPEG delivery; Office package checks only",
+  "passed": 38,
+  "cases": [
+    {
+      "name": "RGBA.png",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "RGB.png",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "L.png",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "LA.png",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "P.png",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "1.png",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "baseline.jpg",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "output directory cannot be reported as a saved PDF",
+      "passed": true
+    },
+    {
+      "name": "crc.png",
+      "expectedExit": 5,
+      "passed": true
+    },
+    {
+      "name": "truncated.png",
+      "expectedExit": 5,
+      "passed": true
+    },
+    {
+      "name": "icc.png",
+      "expectedExit": 17,
+      "passed": true
+    },
+    {
+      "name": "16bit.png",
+      "expectedExit": 17,
+      "passed": true
+    },
+    {
+      "name": "animated.png",
+      "expectedExit": 17,
+      "passed": true
+    },
+    {
+      "name": "density-300.png",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "density-150.png",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "basic.docx",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "docx inspection rejects conversion arguments",
+      "expectedExit": 99,
+      "passed": true
+    },
+    {
+      "name": "basic.pptx",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "pptx inspection rejects conversion arguments",
+      "expectedExit": 99,
+      "passed": true
+    },
+    {
+      "name": "picture-RGB.docx",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "picture-RGBA.docx",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "picture-jpeg.docx",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "picture-progressive.docx",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "broken-png.docx",
+      "expectedExit": 5,
+      "passed": true
+    },
+    {
+      "name": "broken-jpeg.docx",
+      "expectedExit": 5,
+      "passed": true
+    },
+    {
+      "name": "unknown-picture.docx",
+      "expectedExit": 17,
+      "passed": true
+    },
+    {
+      "name": "private-glyph.docx",
+      "expectedExit": 0,
+      "passed": true
+    },
+    {
+      "name": "empty-content-types.docx",
+      "expectedExit": 5,
+      "passed": true
+    },
+    {
+      "name": "wrong-namespace.docx",
+      "expectedExit": 5,
+      "passed": true
+    },
+    {
+      "name": "external.docx",
+      "expectedExit": 17,
+      "passed": true
+    },
+    {
+      "name": "signed.docx",
+      "expectedExit": 11,
+      "passed": true
+    },
+    {
+      "name": "macro.docx",
+      "expectedExit": 17,
+      "passed": true
+    },
+    {
+      "name": "ole.docx",
+      "expectedExit": 17,
+      "passed": true
+    },
+    {
+      "name": "protected.docx",
+      "expectedExit": 11,
+      "passed": true
+    },
+    {
+      "name": "entity.docx",
+      "expectedExit": 11,
+      "passed": true
+    },
+    {
+      "name": "traversal.docx",
+      "expectedExit": 5,
+      "passed": true
+    },
+    {
+      "name": "wrong-format.pptx",
+      "expectedExit": 5,
+      "passed": true
+    },
+    {
+      "name": "encrypted.docx",
+      "expectedExit": 11,
+      "passed": true
+    }
+  ],
+  "officeRuntimeExecution": "requires OHOS arm64 device; not executed",
+  "device": "not executed"
+}

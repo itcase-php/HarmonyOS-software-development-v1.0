@@ -26,7 +26,7 @@ export class FormatSelectionVM {
   constructor(registry: FormatRegistryPort = FormatRegistry.shared(), planner: ConversionPlannerService = new ConversionPlannerService(registry),
     fidelity: FidelityConfigVM = new FidelityConfigVM(), status: ConversionStatusVM = new ConversionStatusVM(), ui: ConverterUiPort = new PreviewConverterUi()) {
     this.registry = registry; this.planner = planner; this.fidelity = fidelity; this.status = status; this.ui = ui;
-    this.formats = registry.listFormats();
+    this.formats = registry.listFormats().filter((format: RegistryFormat) => this.planner.targets(format.id).length > 0);
   }
   setUi(ui: ConverterUiPort): void { this.ui = ui; }
   // Refresh presentation only; the chosen route, consent, filename and task remain intact.
@@ -66,7 +66,7 @@ async loadFormats(): Promise<void> {
     this.registryLoading = true;
     try {
       await this.ui.ensureRegistry(this.registry);
-      this.formats = this.registry.listFormats(); this.registryReady = true;
+      this.formats = this.registry.listFormats().filter((format: RegistryFormat) => this.planner.targets(format.id).length > 0); this.registryReady = true;
       this.status.errorText = ''; this.syncInteractivity();
       this.initializeSelections();
     } catch (error) { ErrorHandler.swallow('FormatSelection.load', error);
@@ -82,7 +82,8 @@ initializeSelections(): void {
       value: `${LanguageManager.formatName(format.id, format.displayName)} (${format.id})`
     }));
     this.fidelity.tierChoices = this.tiers.map((tier: FidelityTier): SelectOption => ({ value: this.ui.tier( tier) }));
-    let source = this.formats.findIndex((format: RegistryFormat) => this.planner.targets(format.id).length > 0);
+    let source = this.formats.findIndex((format: RegistryFormat) => format.id === 'jpeg');
+    if (source < 0) { source = this.formats.findIndex((format: RegistryFormat) => this.planner.targets(format.id).length > 0); }
     try {
       const params = this.ui.navigationParams();
       if (params && params.sourceFormatId) {
